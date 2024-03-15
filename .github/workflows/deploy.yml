@@ -45,7 +45,7 @@ jobs:
         run: python3 -m pip install -r ./requirements.txt
 
       - name: Build static site
-        run: python3 generate_static_site.py
+        run: FREEZER_BASE_URL=https://projects.taeuk.net/fortran-llm/ python3 generate_static_site.py
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
