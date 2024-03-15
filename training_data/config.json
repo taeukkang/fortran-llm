@@ -1,0 +1,6 @@
+{
+  "openai_api_key": "",
+  "prompt_file": "prompt.txt",
+  "dataset_file": "fortran_code.jsonl",
+  "output_file": "train.jsonl"
+}

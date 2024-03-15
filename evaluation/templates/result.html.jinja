@@ -1,0 +1,269 @@
+{% extends "base.html.jinja" %} {% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>{{ leetcode_problem["title"] }}</h2>
+      <div>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="{{ url_for('result', problem_id=prev_id) }}"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="{{ url_for('result', problem_id=next_id) }}"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          {{ leetcode_problem["content"] | markdown | safe }}
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/{{ leetcode_problem['slug'] }}/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card {{ 'border-success' if finetuned_eval['compiled'] else 'border-danger' }}"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    {{ '✅' if finetuned_eval['compiled'] else '❌' }}
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card {{ 'border-success' if finetuned_eval['executed'] else 'border-danger' }}"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    {{ '✅' if finetuned_eval['executed'] else '❌' }}
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card {{ 'border-success' if finetuned_eval['exec_success'] == 'full' else 'border-warning' if finetuned_eval['exec_success'] == 'partial' else 'border-danger' }}"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    {{ '✅' if finetuned_eval['exec_success'] == 'full' else
+                    '⚠️' if finetuned_eval['exec_success'] == 'partial' else '❌' }}
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">{{ finetuned_code }}</code></pre>
+
+          {% if finetuned_eval["stdout"] %}
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>{{ finetuned_eval["stdout"] }}</pre>
+          </div>
+          {% endif %} {% if finetuned_eval["stderr"] %}
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>{{ finetuned_eval["stderr"] }}</pre>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card {{ 'border-success' if baseline_eval['compiled'] else 'border-danger' }}"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    {{ '✅' if baseline_eval['compiled'] else '❌' }}
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card {{ 'border-success' if baseline_eval['executed'] else 'border-danger' }}"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    {{ '✅' if baseline_eval['executed'] else '❌' }}
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card {{ 'border-success' if baseline_eval['success'] == 'Full' else 'border-warning' if baseline_eval['success'] == 'Partial' else 'border-danger' }}"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    {{ '✅' if baseline_eval['exec_success'] == 'full' else
+                    '⚠️' if baseline_eval['exec_success'] == 'partial' else '❌' }}
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">{{ basemodel_code }}</code></pre>
+          {% if baseline_eval["stdout"] %}
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>{{ baseline_eval["stdout"] }}</pre>
+          </div>
+          {% endif %} {% if baseline_eval["stderr"] %}
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>{{ baseline_eval["stderr"] }}</pre>
+          </div>
+          {% endif %}
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          {{ leetcode_problem["python"] | markdown | safe }}
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          {{ leetcode_problem["c++"] | markdown | safe }}
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+{% endblock %}
