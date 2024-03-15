@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Changes To Make Alternating Binary String</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1752/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1763/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>s</code> consisting only of the characters <code>'0'</code> and <code>'1'</code>. In one operation, you can change any <code>'0'</code> to <code>'1'</code> or vice versa.</p>
+<p>The string is called alternating if no two adjacent characters are equal. For example, the string <code>"010 "</code> is alternating, while the string <code>"0100 "</code> is not.</p>
+<p>Return <em>the <strong>minimum</strong> number of operations needed to make</em> <code>s</code> <em>alternating</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "0100 "
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> If you change the last character to '1', s will be  "0101 ", which is alternating.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "10 "
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> s is already alternating.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "1111 "
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> You need two operations to reach  "0101 " or  "1010 ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 104</code></li>
+<li><code>s[i]</code> is either <code>'0'</code> or <code>'1'</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-changes-to-make-alternating-binary-string/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, k, n, m
+    character(len=100) :: s
+
+    ! Examples
+    write (*,*) "Example 1:"
+    s = "0100 "
+    call solve(s)
+    write (*,*) "Expected: 1"
+    write (*,*) "Actual:", s
+
+    write (*,*) "Example 2:"
+    s = "10 "
+    call solve(s)
+    write (*,*) "Expected: 0"
+    write (*,*) "Actual:", s
+
+    write (*,*) "Example 3:"
+    s = "1111 "
+    call solve(s)
+    write (*,*) "Expected: 2"
+    write (*,*) "Actual:", s
+
+contains
+
+    subroutine solve(s)
+        implicit none
+        character(len=*), intent(inout) :: s
+
+        ! Variables
+        integer :: i, j, k, n, m
+
+        ! Initialize variables
+        n = len(s)
+        m = 0
+
+        ! Check if string is already alternating
+        do i = 1, n - 1
+            if (s(i) == s(i+1)) then
+                exit
+            end if
+        end do
+
+        if (i == n) then
+            return
+        end if
+
+        ! Find first non-alternating character
+        do i = 1, n
+            if (s(i) /= s(i+1)) then
+                exit
+            end if
+        end do
+
+        ! Change character to opposite value
+        if (s(i) == '0') then
+            s(i) = '1'
+        else
+            s(i) = '0'
+        end if
+
+        ! Update counter
+        m = m + 1
+
+        ! Recursively call function until string is alternating
+        call solve(s)
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:28:22:
+
+   28 |     subroutine solve(s)
+      |                      1
+Error: PROCEDURE attribute conflicts with INTENT attribute in ‘s’ at (1)
+temp.f95:36:16:
+
+   36 |         n = len(s)
+      |                1
+Error: ‘string’ argument of ‘len’ intrinsic at (1) must be CHARACTER
+temp.f95:59:12:
+
+   59 |             s(i) = '1'
+      |            1
+Error: The function result on the lhs of the assignment at (1) must have the pointer attribute.
+temp.f95:61:12:
+
+   61 |             s(i) = '0'
+      |            1
+Error: The function result on the lhs of the assignment at (1) must have the pointer attribute.
+temp.f95:68:21:
+
+   68 |         call solve(s)
+      |                     1
+Error: SUBROUTINE ‘solve’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:10:15:
+
+   10 |     call solve(s)
+      |               1
+Error: Expected a procedure for argument ‘s’ at (1)
+temp.f95:16:15:
+
+   16 |     call solve(s)
+      |               1
+Error: Expected a procedure for argument ‘s’ at (1)
+temp.f95:22:15:
+
+   22 |     call solve(s)
+      |               1
+Error: Expected a procedure for argument ‘s’ at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module alternating_string
+
+implicit none
+
+contains
+
+integer function min_operations(s) result(res)
+
+! Given a string s consisting only of the characters '0' and '1', return the minimum number of operations needed to make s alternating.
+
+character(len=*), intent(in) :: s
+
+integer :: i, n
+
+! Initialize variables
+
+n = len(s)
+res = 0
+
+! Check if the string is already alternating
+
+if (mod(n, 2) == 0) then
+
+! If the length of the string is even, check if all characters are equal
+
+if (count(s == '0') == n/2) then
+
+res = 1
+
+else
+
+! If the length of the string is even and not all characters are equal, check if the first and last characters are equal
+
+if (s(1) == s(n)) then
+
+res = 1
+
+else
+
+res = 2
+
+endif
+
+endif
+
+else
+
+! If the length of the string is odd, check if the first and last characters are equal
+
+if (s(1) == s(n)) then
+
+res = 1
+
+else
+
+res = 2
+
+endif
+
+endif
+
+! If the string is not alternating, perform operations to make it alternating
+
+if (res > 0) then
+
+do i = 1, n-1
+
+if (s(i) /= s(i+1)) then
+
+res = res + 1
+
+s(i) = s(i+1)
+
+exit
+
+endif
+
+enddo
+
+endif
+
+end function min_operations
+
+end module alternating_string
+
+program test_alternating_string
+
+use alternating_string
+
+implicit none
+
+! Test case 1:
+
+call test("0100 ", 1)
+
+! Test case 2:
+
+call test("10 ", 0)
+
+! Test case 3:
+
+call test("1111 ", 2)
+
+contains
+
+subroutine test(s, expected)
+
+character(len=*), intent(in) :: s
+integer, intent(in) :: expected
+
+integer :: res
+
+res = min_operations(s)
+
+if (res /= expected) then
+
+write (*,*) "Error: min_operations(", s, ") returned ", res, " but expected ", expected
+
+stop
+
+endif
+
+end subroutine test
+
+end program test_alternating_string
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:34:6:
+
+   34 | if (s(1) == s(n)) then
+      |      1
+Error: Syntax error in IF-expression at (1)
+temp.f95:30:4:
+
+   30 | else
+      |    1
+......
+   38 | else
+      |    2
+Error: Duplicate ELSE statements at (1) and (2)
+temp.f95:46:4:
+
+   46 | else
+      |    1
+Error: Unexpected ELSE statement at (1)
+temp.f95:50:6:
+
+   50 | if (s(1) == s(n)) then
+      |      1
+Error: Syntax error in IF-expression at (1)
+temp.f95:54:4:
+
+   54 | else
+      |    1
+Error: Unexpected ELSE statement at (1)
+temp.f95:58:3:
+
+   58 | endif
+      |   1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:60:3:
+
+   60 | endif
+      |   1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:68:6:
+
+   68 | if (s(i) /= s(i+1)) then
+      |      1
+Error: Syntax error in IF-expression at (1)
+temp.f95:76:3:
+
+   76 | endif
+      |   1
+Error: Expecting END DO statement at (1)
+temp.f95:26:10:
+
+   26 | if (count(s == '0') == n/2) then
+      |          1
+Error: ‘mask’ argument of ‘count’ intrinsic at (1) must be a logical array
+temp.f95:88:5:
+
+   88 | use alternating_string
+      |     1
+Fatal Error: Cannot open module file ‘alternating_string.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from typing import List
+
+def canDistribute(nums: List[int], quantity: List[int]) -&gt; bool:
+    counts = [0] * 51
+    for num in nums:
+        counts[num] += 1
+
+    quantity.sort(reverse=True)
+
+    def dfs(idx: int) -&gt; bool:
+        if idx == len(quantity):
+            return True
+        for i in range(1, 51):
+            if counts[i] &gt;= quantity[idx]:
+                counts[i] -= quantity[idx]
+                if dfs(idx + 1):
+                    return True
+                counts[i] += quantity[idx]
+        return False
+
+    return dfs(0)
+</code></pre>
+<pre><code>1. Count the occurrences of each unique value in the `nums` list and store them in an array `counts`.
+</code></pre>
+<ol>
+<li>Sort the <code>quantity</code> array in descending order.</li>
+<li>Define a depth-first search function <code>dfs</code> that takes the index <code>idx</code> of the current customer.
+   a. If <code>idx</code> reaches the total number of customers, all orders have been fulfilled so return true.
+   b. For each unique value, if its count in <code>counts</code> is greater than or equal to the current customer's order quantity, subtract the order quantity from its count and call <code>dfs</code> for the next customer (idx + 1).
+   c. If the quantity can be distributed successfully for the next customers, return true. Otherwise, restore the count in <code>counts</code> and continue to check the next unique value.</li>
+<li>Return the result of <code>dfs(0)</code> for the first customer's order fulfillment.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+bool canDistribute(vector&lt;int&gt;&amp; nums, vector&lt;int&gt;&amp; quantity) {
+    vector&lt;int&gt; counts(51, 0);
+    for (int num : nums) {
+        counts[num]++;
+    }
+
+    sort(quantity.rbegin(), quantity.rend());
+
+    function&lt;bool(int)&gt; dfs = [&amp;](int idx) {
+        if (idx == quantity.size()) {
+            return true;
+        }
+        for (int i = 1; i &lt;= 50; ++i) {
+            if (counts[i] &gt;= quantity[idx]) {
+                counts[i] -= quantity[idx];
+                if (dfs(idx + 1)) {
+                    return true;
+                }
+                counts[i] += quantity[idx];
+            }
+        }
+        return false;
+    };
+
+    return dfs(0);
+}
+</code></pre>
+<pre><code>1. Count the occurrences of each unique value in the `nums` list and store them in an array `counts`.
+</code></pre>
+<ol>
+<li>Sort the <code>quantity</code> array in descending order.</li>
+<li>Define a depth-first search function <code>dfs</code> that takes the index <code>idx</code> of the current customer.
+   a. If <code>idx</code> reaches the total number of customers, all orders have been fulfilled so return true.
+   b. For each unique value, if its count in <code>counts</code> is greater than or equal to the current customer's order quantity, subtract the order quantity from its count and call <code>dfs</code> for the next customer (idx + 1).
+   c. If the quantity can be distributed successfully for the next customers, return true. Otherwise, restore the count in <code>counts</code> and continue to check the next unique value.</li>
+<li>Return the result of <code>dfs(0)</code> for the first customer's order fulfillment.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

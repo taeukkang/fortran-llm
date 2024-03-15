@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Separate the Digits in an Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2549/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2558/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of positive integers <code>nums</code>, return <em>an array</em> <code>answer</code> <em>that consists of the digits of each integer in</em> <code>nums</code> <em>after separating them in <strong>the same order</strong> they appear in</em> <code>nums</code>.</p>
+<p>To separate the digits of an integer is to get all the digits it has in the same order.</p>
+<ul>
+<li>For example, for the integer <code>10921</code>, the separation of its digits is <code>[1,0,9,2,1]</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [13,25,83,77]
+<strong>Output:</strong> [1,3,2,5,8,3,7,7]
+<strong>Explanation:</strong> 
+- The separation of 13 is [1,3].
+- The separation of 25 is [2,5].
+- The separation of 83 is [8,3].
+- The separation of 77 is [7,7].
+answer = [1,3,2,5,8,3,7,7]. Note that answer contains the separations in the same order.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [7,1,3,9]
+<strong>Output:</strong> [7,1,3,9]
+<strong>Explanation:</strong> The separation of each integer in nums is itself.
+answer = [7,1,3,9].</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 1000</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 105</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/separate-the-digits-in-an-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, dimension(n) :: nums = (/ 13, 25, 83, 77 /)
+    integer, dimension(n) :: answer
+    integer :: i
+
+    call solve(nums, answer)
+
+    do i = 1, n
+        write (*, '(I0)') answer(i)
+    end do
+
+contains
+
+    subroutine solve(nums, answer)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer, intent(out) :: answer(:)
+
+        integer :: i, j, k
+
+        do i = 1, size(nums)
+            k = 1
+            do while (k <= len(nums(i)))
+                j = index(nums(i), '0', back=.true.)
+                if (j == 0) then
+                    exit
+                end if
+                answer(i) = ichar(nums(i)(j:j)) - ichar('0') + 1
+                nums(i) = nums(i)(1:j-1) // nums(i)(j+1:)
+                k = k + 1
+            end do
+        end do
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:31:42:
+
+   31 |                 answer(i) = ichar(nums(i)(j:j)) - ichar('0') + 1
+      |                                          1
+Error: Syntax error in argument list at (1)
+temp.f95:27:26:
+
+   27 |                 j = index(nums(i), '0', back=.true.)
+      |                          1
+Error: ‘string’ argument of ‘index’ intrinsic at (1) must be CHARACTER
+temp.f95:26:31:
+
+   26 |             do while (k <= len(nums(i)))
+      |                               1
+Error: ‘string’ argument of ‘len’ intrinsic at (1) must be CHARACTER
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module separation_digits
+    implicit none
+    contains
+    function separate_digits(nums) result(answer)
+        integer, intent(in) :: nums(:)
+        integer :: answer(size(nums))
+        integer :: i, j, digit
+        do i = 1, size(nums)
+            j = 1
+            do while (nums(i) > 0)
+                digit = mod(nums(i), 10)
+                answer(j) = digit
+                j = j + 1
+                nums(i) = nums(i) / 10
+            end do
+        end do
+    end function separate_digits
+end module separation_digits
+
+program test_separation_digits
+    use separation_digits
+    implicit none
+    integer, parameter :: nums(4) = [13, 25, 83, 77]
+    integer :: answer(size(nums))
+    answer = separate_digits(nums)
+    write (*,*) 'Answer: ', answer
+end program test_separation_digits
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:14:16:
+
+   14 |                 nums(i) = nums(i) / 10
+      |                1
+Error: Dummy argument ‘nums’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:21:9:
+
+   21 |     use separation_digits
+      |         1
+Fatal Error: Cannot open module file ‘separation_digits.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def separate_digits(nums):
+    answer = []
+    for num in nums:
+        digits = [int(d) for d in str(num)]
+        answer.extend(digits)
+    return answer
+</code></pre>
+<pre><code>For each number num in the nums array:
+</code></pre>
+<ol>
+<li>Convert the number to its string representation.</li>
+<li>Iterate through the string and extract the digits, appending them to the answer array.</li>
+</ol>
+<p>Repeat this process for all numbers in the nums array.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+
+std::vector&lt;int&gt; separateDigits(const std::vector&lt;int&gt;&amp; nums) {
+    std::vector&lt;int&gt; answer;
+    for(auto num : nums) {
+        std::vector&lt;int&gt; digits;
+        while(num) {
+            digits.insert(digits.begin(), num % 10);
+            num /= 10;
+        }
+        answer.insert(answer.end(), digits.begin(), digits.end());
+    }
+    return answer;
+}
+</code></pre>
+<pre><code>For each number num in the nums array:
+</code></pre>
+<ol>
+<li>Convert the number to its string representation.</li>
+<li>Iterate through the string and extract the digits, appending them to the answer array.</li>
+</ol>
+<p>Repeat this process for all numbers in the nums array.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

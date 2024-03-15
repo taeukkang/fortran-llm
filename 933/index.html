@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Number of Recent Calls</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/929/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/938/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You have a <code>RecentCounter</code> class which counts the number of recent requests within a certain time frame.</p>
+<p>Implement the <code>RecentCounter</code> class:</p>
+<ul>
+<li><code>RecentCounter()</code> Initializes the counter with zero recent requests.</li>
+<li><code>int ping(int t)</code> Adds a new request at time <code>t</code>, where <code>t</code> represents some time in milliseconds, and returns the number of requests that has happened in the past <code>3000</code> milliseconds (including the new request). Specifically, return the number of requests that have happened in the inclusive range <code>[t - 3000, t]</code>.</li>
+</ul>
+<p>It is <strong>guaranteed</strong> that every call to <code>ping</code> uses a strictly larger value of <code>t</code> than the previous call.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input</strong>
+[ "RecentCounter ",  "ping ",  "ping ",  "ping ",  "ping "]
+[[], [1], [100], [3001], [3002]]
+<strong>Output</strong>
+[null, 1, 2, 3, 3]</p>
+<p><strong>Explanation</strong>
+RecentCounter recentCounter = new RecentCounter();
+recentCounter.ping(1);     // requests = [1], range is [-2999,1], return 1
+recentCounter.ping(100);   // requests = [1, 100], range is [-2900,100], return 2
+recentCounter.ping(3001);  // requests = [1, 100, 3001], range is [1,3001], return 3
+recentCounter.ping(3002);  // requests = [1, 100, 3001, 3002], range is [2,3002], return 3</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= t &lt;= 109</code></li>
+<li>Each test case will call <code>ping</code> with <strong>strictly increasing</strong> values of <code>t</code>.</li>
+<li>At most <code>104</code> calls will be made to <code>ping</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/number-of-recent-calls/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, iostat_end
+    implicit none
+    type(RecentCounter) :: recentCounter
+    integer :: t, n, i, status
+    character(len=:), allocatable :: line
+
+    ! Read input from stdin
+    do
+        read (unit=input_unit, fmt='(A)', iostat=status) line
+        if (status == iostat_end) exit
+        if (status /= 0) then
+            write (unit=error_unit, fmt='(2A)') 'error: ', trim(line)
+            stop 1
+        end if
+        backspace input_unit
+        read (unit=input_unit, fmt=*) t
+        n = recentCounter%ping(t)
+        write (unit=output_unit, fmt='(I0)') n
+    end do
+
+contains
+
+    type RecentCounter
+        integer :: count = 0
+        integer, dimension(:), pointer :: requests => null()
+    contains
+        procedure :: ping
+    end type RecentCounter
+
+    integer function ping(this, t) result(n)
+        class(RecentCounter), intent(inout) :: this
+        integer, value :: t
+        integer :: i, j
+
+        ! Check if we need to reallocate the array
+        if (.not. associated(this%requests)) then
+            allocate(this%requests(100))
+        else if (size(this%requests) < size(this%requests) + 1) then
+            allocate(this%requests(size(this%requests)*2))
+        end if
+
+        ! Increment the count
+        this%count = this%count + 1
+
+        ! Shift the requests down by one position
+        do i = this%count, 2, -1
+            this%requests(i) = this%requests(i-1)
+        end do
+
+        ! Store the new request
+        this%requests(1) = t
+
+        ! Count the number of requests in the past 3000 ms
+        n = 0
+        do i = 1, this%count
+            if (this%requests(i) >= t - 3000) then
+                n = n + 1
+            end if
+        end do
+    end function ping
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:24:
+
+    4 |     type(RecentCounter) :: recentCounter
+      |                        1
+Error: Derived type ‘recentcounter’ at (1) is being used before it is defined
+temp.f95:18:27:
+
+   18 |         n = recentCounter%ping(t)
+      |                           1
+Error: Symbol ‘recentcounter’ at (1) has no IMPLICIT type
+temp.f95:24:22:
+
+   24 |     type RecentCounter
+      |                      1
+Error: Unexpected derived type declaration statement in CONTAINS section at (1)
+temp.f95:25:28:
+
+   25 |         integer :: count = 0
+      |                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:26:60:
+
+   26 |         integer, dimension(:), pointer :: requests => null()
+      |                                                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:27:12:
+
+   27 |     contains
+      |            1
+Error: Unexpected CONTAINS statement in CONTAINS section at (1)
+temp.f95:29:7:
+
+   29 |     end type RecentCounter
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:32:29:
+
+   32 |         class(RecentCounter), intent(inout) :: this
+      |                             1
+Error: Derived type ‘recentcounter’ at (1) is being used before it is defined
+temp.f95:37:35:
+
+   37 |         if (.not. associated(this%requests)) then
+      |                                   1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:38:27:
+
+   38 |             allocate(this%requests(100))
+      |                           1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:39:28:
+
+   39 |         else if (size(this%requests) < size(this%requests) + 1) then
+      |                            1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:40:27:
+
+   40 |             allocate(this%requests(size(this%requests)*2))
+      |                           1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:41:11:
+
+   41 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:44:14:
+
+   44 |         this%count = this%count + 1
+      |              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:47:21:
+
+   47 |         do i = this%count, 2, -1
+      |                     1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:48:18:
+
+   48 |             this%requests(i) = this%requests(i-1)
+      |                  1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:49:11:
+
+   49 |         end do
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:52:14:
+
+   52 |         this%requests(1) = t
+      |              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:56:24:
+
+   56 |         do i = 1, this%count
+      |                        1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:57:22:
+
+   57 |             if (this%requests(i) >= t - 3000) then
+      |                      1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:59:15:
+
+   59 |             end if
+      |               1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:60:11:
+
+   60 |         end do
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:31:30:
+
+   31 |     integer function ping(this, t) result(n)
+      |                              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:10:29:
+
+   10 |         read (unit=input_unit, fmt='(A)', iostat=status) line
+      |                             1
+Error: Symbol ‘input_unit’ at (1) has no IMPLICIT type; did you mean ‘error_unit’?
+temp.f95:19:31:
+
+   19 |         write (unit=output_unit, fmt='(I0)') n
+      |                               1
+Error: Symbol ‘output_unit’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module recent_counter
+
+    implicit none
+
+    type :: RecentCounter
+        integer :: count = 0
+        integer :: last_ping = 0
+    contains
+        procedure :: ping
+    end type RecentCounter
+
+contains
+
+    function ping(this, t) result(count)
+        class(RecentCounter), intent(inout) :: this
+        integer, intent(in) :: t
+        integer :: count
+
+        this%count = this%count + 1
+        this%last_ping = t
+
+        if (t - 3000 <= this%last_ping) then
+            count = this%count
+        else
+            count = 0
+        end if
+    end function ping
+
+end module recent_counter
+
+program main
+    use recent_counter
+    implicit none
+
+    integer :: t
+    type(RecentCounter) :: recent_counter
+
+    ! Example 1
+    recent_counter = RecentCounter()
+    t = 1
+    write (*,*) recent_counter%ping(t)
+    t = 100
+    write (*,*) recent_counter%ping(t)
+    t = 3001
+    write (*,*) recent_counter%ping(t)
+    t = 3002
+    write (*,*) recent_counter%ping(t)
+
+    ! Example 2
+    recent_counter = RecentCounter()
+    t = 1
+    write (*,*) recent_counter%ping(t)
+    t = 100
+    write (*,*) recent_counter%ping(t)
+    t = 3001
+    write (*,*) recent_counter%ping(t)
+    t = 3002
+    write (*,*) recent_counter%ping(t)
+
+    ! Example 3
+    recent_counter = RecentCounter()
+    t = 1
+    write (*,*) recent_counter%ping(t)
+    t = 100
+    write (*,*) recent_counter%ping(t)
+    t = 3001
+    write (*,*) recent_counter%ping(t)
+    t = 3002
+    write (*,*) recent_counter%ping(t)
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:36:41:
+
+   36 |     type(RecentCounter) :: recent_counter
+      |                                         1
+Error: Symbol ‘main’ at (1) cannot have a type
+temp.f95:39:19:
+
+   39 |     recent_counter = RecentCounter()
+      |                   1
+Error: ‘recent_counter’ at (1) is not a variable
+temp.f95:41:31:
+
+   41 |     write (*,*) recent_counter%ping(t)
+      |                               1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:43:31:
+
+   43 |     write (*,*) recent_counter%ping(t)
+      |                               1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:45:31:
+
+   45 |     write (*,*) recent_counter%ping(t)
+      |                               1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:47:31:
+
+   47 |     write (*,*) recent_counter%ping(t)
+      |                               1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:50:19:
+
+   50 |     recent_counter = RecentCounter()
+      |                   1
+Error: ‘recent_counter’ at (1) is not a variable
+temp.f95:52:31:
+
+   52 |     write (*,*) recent_counter%ping(t)
+      |                               1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:54:31:
+
+   54 |     write (*,*) recent_counter%ping(t)
+      |                               1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:56:31:
+
+   56 |     write (*,*) recent_counter%ping(t)
+      |                               1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:58:31:
+
+   58 |     write (*,*) recent_counter%ping(t)
+      |                               1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:61:19:
+
+   61 |     recent_counter = RecentCounter()
+      |                   1
+Error: ‘recent_counter’ at (1) is not a variable
+temp.f95:63:31:
+
+   63 |     write (*,*) recent_counter%ping(t)
+      |                               1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:65:31:
+
+   65 |     write (*,*) recent_counter%ping(t)
+      |                               1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:67:31:
+
+   67 |     write (*,*) recent_counter%ping(t)
+      |                               1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:69:31:
+
+   69 |     write (*,*) recent_counter%ping(t)
+      |                               1
+Error: Symbol at (1) is not appropriate for an expression
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def increasingBST(root):
+    def inorder(node):
+        nonlocal prev
+        if not node: return
+
+        inorder(node.left)
+        prev.right = node
+        prev = node
+        node.left = None
+        inorder(node.right)
+
+    dummy = TreeNode(0)
+    prev = dummy
+    inorder(root)
+    return dummy.right
+</code></pre>
+<pre><code>The algorithm uses a recursive inorder traversal of the given binary search tree. It starts by visiting the left child, if any, and then processes the root node, and finally the right child. The important part of this traversal is the processing of each node. When a node is encountered, its left pointer is set to null and its right pointer is set to the current node being processed.
+</code></pre>
+<p>The algorithm maintains a <code>prev</code> variable to keep the previous node encountered during the inorder traversal. Initially, we have a dummy node, and during the traversal, we set the right pointer of the <code>prev</code> node to the current node and update the <code>prev</code> node to the current node.</p>
+<p>Finally, after the traversal, the right child of the dummy node points to the root of the modified tree.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">class TreeNode {
+public:
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+};
+
+void inorder(TreeNode* node, TreeNode*&amp; prev) {
+    if (node == nullptr) return;
+
+    inorder(node-&gt;left, prev);
+    prev-&gt;right = node;
+    prev = node;
+    node-&gt;left = nullptr;
+    inorder(node-&gt;right, prev);
+}
+
+TreeNode* increasingBST(TreeNode* root) {
+    TreeNode dummy(0);
+    TreeNode* prev = &amp;dummy;
+    inorder(root, prev);
+    return dummy.right;
+}
+</code></pre>
+<pre><code>The algorithm uses a recursive inorder traversal of the given binary search tree. It starts by visiting the left child, if any, and then processes the root node, and finally the right child. The important part of this traversal is the processing of each node. When a node is encountered, its left pointer is set to null and its right pointer is set to the current node being processed.
+</code></pre>
+<p>The algorithm maintains a <code>prev</code> variable to keep the previous node encountered during the inorder traversal. Initially, we have a dummy node, and during the traversal, we set the right pointer of the <code>prev</code> node to the current node and update the <code>prev</code> node to the current node.</p>
+<p>Finally, after the traversal, the right child of the dummy node points to the root of the modified tree.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

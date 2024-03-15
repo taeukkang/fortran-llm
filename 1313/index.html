@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Decompress Run-Length Encoded List</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1309/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1317/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>We are given a list <code>nums</code> of integers representing a list compressed with run-length encoding.</p>
+<p>Consider each adjacent pair of elements <code>[freq, val] = [nums[2*i], nums[2*i+1]]</code> (with <code>i &gt;= 0</code>). For each such pair, there are <code>freq</code> elements with value <code>val</code> concatenated in a sublist. Concatenate all the sublists from left to right to generate the decompressed list.</p>
+<p>Return the decompressed list.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,3,4]
+<strong>Output:</strong> [2,4,4,4]
+<strong>Explanation:</strong> The first pair [1,2] means we have freq = 1 and val = 2 so we generate the array [2].
+The second pair [3,4] means we have freq = 3 and val = 4 so we generate [4,4,4].
+At the end the concatenation [2] + [4,4,4] is [2,4,4,4].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,1,2,3]
+<strong>Output:</strong> [1,3,3]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= nums.length &lt;= 100</code></li>
+<li><code>nums.length % 2 == 0</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/decompress-run-length-encoded-list/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, dimension(n) :: nums
+    integer, dimension(n) :: expected
+    integer, dimension(:), allocatable :: actual
+
+    nums = [1, 2, 3, 4]
+    expected = [2, 4, 4, 4]
+    call test_case(nums, expected)
+
+    nums = [1, 1, 2, 3]
+    expected = [1, 3, 3]
+    call test_case(nums, expected)
+
+contains
+
+    subroutine test_case(nums, expected)
+        implicit none
+        integer, dimension(:), intent(in) :: nums
+        integer, dimension(:), intent(in) :: expected
+        integer, dimension(:), allocatable :: actual
+
+        allocate(actual, source=decompress(nums))
+
+        if (size(actual) /= size(expected)) then
+            write (*, '("Test case failed: ", "Expected size:", i0, &
+                          &" Actual size:", i0)') size(expected), size(actual)
+            stop 1
+        end if
+
+        if (any(actual /= expected)) then
+            write (*, '("Test case failed: ", "Expected:", *(i0, ","), &
+                          &" Actual:", *(i0, ","))') expected, actual
+            stop 1
+        end if
+
+        deallocate(actual)
+    end subroutine test_case
+
+    function decompress(nums) result(decompressed)
+        implicit none
+        integer, dimension(:), intent(in) :: nums
+        integer, dimension(:), allocatable :: decompressed
+        integer :: i, j, k, freq, val
+
+        k = 0
+        do i = 1, size(nums), 2
+            freq = nums(i)
+            val = nums(i + 1)
+            do j = 1, freq
+                k = k + 1
+                decompressed(k) = val
+            end do
+        end do
+    end function decompress
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:14:4:
+
+   14 |     expected = [1, 3, 3]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (4 and 3)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module RunLengthEncoding
+  implicit none
+contains
+  function decompress(nums) result(decompressed)
+    integer, intent(in) :: nums(:)
+    integer :: decompressed(size(nums)/2)
+    integer :: i, j, freq, val
+
+    i = 1
+    j = 1
+    do while (i <= size(nums))
+      freq = nums(i)
+      val = nums(i+1)
+      i = i + 2
+      do while (freq > 0)
+        decompressed(j) = val
+        j = j + 1
+        freq = freq - 1
+      end do
+    end do
+  end function decompress
+end module RunLengthEncoding
+
+program main
+  use RunLengthEncoding
+  implicit none
+  integer, parameter :: nums = [1, 2, 3, 4]
+  integer :: decompressed(size(nums)/2)
+
+  decompressed = decompress(nums)
+  write (*,*) 'Decompressed list: ', decompressed
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:27:28:
+
+   27 |   integer, parameter :: nums = [1, 2, 3, 4]
+      |                            1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:28:31:
+
+   28 |   integer :: decompressed(size(nums)/2)
+      |                               1
+Error: Symbol ‘nums’ is used before it is typed at (1)
+temp.f95:30:14:
+
+   30 |   decompressed = decompress(nums)
+      |              1
+Error: Symbol ‘decompressed’ at (1) has no IMPLICIT type; did you mean ‘decompress’?
+temp.f95:30:32:
+
+   30 |   decompressed = decompress(nums)
+      |                                1
+Error: Symbol ‘nums’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">MOD = 10**9 + 7
+
+def add_rooms(idx, children, memo):
+    if not children[idx]:
+        return 1
+    if memo[idx] != -1:
+        return memo[idx]
+
+    res = 1
+    cnt = 0
+    for child in children[idx]:
+        cnt += 1
+        res = (res * add_rooms(child, children, memo)) % MOD
+
+    for i in range(2, cnt + 1):
+        res = (res * i) % MOD
+
+    memo[idx] = res
+    return res
+
+def num_of_ways(prev_room):
+    n = len(prev_room)
+    children = [[] for _ in range(n)]
+    for i in range(1, n):
+        children[prev_room[i]].append(i)
+
+    memo = [-1] * n
+    return add_rooms(0, children, memo)
+</code></pre>
+<ol>
+<li>Create a function addRooms that takes the room index, the array that stores the room dependencies (children), and the memoization array as inputs.</li>
+<li>If there are no dependencies for the current room, return 1.</li>
+<li>If the memoization array already has the result for the current room, return it.</li>
+<li>Calculate the number of ways to create the directly connected rooms with the current room. Multiplying the results is possible because each new room is created after the current room is completed. Apply the modulo operator at each step.</li>
+<li>Factorial of the number of directly connected rooms need to be multiplied since they can be constructed in any order. Apply the modulo operator at each step.</li>
+<li>Store the result in the memoization array.</li>
+<li>Call the addRooms function with room 0 and return the result.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+using namespace std;
+
+const int MOD = 1e9 + 7;
+
+int addRooms(int idx, const vector&lt;vector&lt;int&gt;&gt;&amp; children, vector&lt;int&gt;&amp; memo) {
+    if (children[idx].empty()) return 1;
+
+    if (memo[idx] != -1) return memo[idx];
+
+    long long res = 1;
+    int cnt = 0;
+    for (int child : children[idx]) {
+        cnt++;
+        res = (res * addRooms(child, children, memo)) % MOD;
+    }
+
+    for (int i = 2; i &lt;= cnt; i++) {
+        res = (res * i) % MOD;
+    }
+
+    return memo[idx] = res;
+}
+
+int numOfWays(vector&lt;int&gt;&amp; prevRoom) {
+    int n = prevRoom.size();
+    vector&lt;vector&lt;int&gt;&gt; children(n);
+    for (int i = 1; i &lt; n; i++) {
+        children[prevRoom[i]].push_back(i);
+    }
+
+    vector&lt;int&gt; memo(n, -1);
+    return addRooms(0, children, memo);
+}
+</code></pre>
+<ol>
+<li>Create a function addRooms that takes the room index, the array that stores the room dependencies (children), and the memoization array as inputs.</li>
+<li>If there are no dependencies for the current room, return 1.</li>
+<li>If the memoization array already has the result for the current room, return it.</li>
+<li>Calculate the number of ways to create the directly connected rooms with the current room. Multiplying the results is possible because each new room is created after the current room is completed. Apply the modulo operator at each step.</li>
+<li>Factorial of the number of directly connected rooms need to be multiplied since they can be constructed in any order. Apply the modulo operator at each step.</li>
+<li>Store the result in the memoization array.</li>
+<li>Call the addRooms function with room 0 and return the result.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

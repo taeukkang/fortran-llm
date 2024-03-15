@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Surface Area of 3D Shapes</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/888/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/896/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an <code>n x n</code> <code>grid</code> where you have placed some <code>1 x 1 x 1</code> cubes. Each value <code>v = grid[i][j]</code> represents a tower of <code>v</code> cubes placed on top of cell <code>(i, j)</code>.</p>
+<p>After placing these cubes, you have decided to glue any directly adjacent cubes to each other, forming several irregular 3D shapes.</p>
+<p>Return <em>the total surface area of the resulting shapes</em>.</p>
+<p><strong>Note:</strong> The bottom face of each shape counts toward its surface area.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> grid = [[1,2],[3,4]]
+<strong>Output:</strong> 34</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> grid = [[1,1,1],[1,0,1],[1,1,1]]
+<strong>Output:</strong> 32</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> grid = [[2,2,2],[2,1,2],[2,2,2]]
+<strong>Output:</strong> 46</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == grid.length == grid[i].length</code></li>
+<li><code>1 &lt;= n &lt;= 50</code></li>
+<li><code>0 &lt;= grid[i][j] &lt;= 50</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/surface-area-of-3d-shapes/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 2
+    integer, dimension(n, n) :: grid
+    integer :: i, j, v
+    real :: area
+
+    ! Example 1
+    grid = reshape([1, 2, &
+                     3, 4], shape=[n, n])
+    write(*,*) "Example 1:"
+    call solve(grid, area)
+    write(*,*) "Area: ", area
+
+    ! Example 2
+    grid = reshape([1, 1, 1, &
+                     1, 0, 1, &
+                     1, 1, 1], shape=[n, n])
+    write(*,*) "Example 2:"
+    call solve(grid, area)
+    write(*,*) "Area: ", area
+
+    ! Example 3
+    grid = reshape([2, 2, 2, &
+                     2, 1, 2, &
+                     2, 2, 2], shape=[n, n])
+    write(*,*) "Example 3:"
+    call solve(grid, area)
+    write(*,*) "Area: ", area
+
+contains
+
+    subroutine solve(grid, area)
+        implicit none
+        integer, intent(in) :: grid(:, :)
+        real, intent(out) :: area
+
+        integer :: i, j, v
+        integer :: count
+        logical :: found
+
+        area = 0.0
+        do i = 1, size(grid, 1)
+            do j = 1, size(grid, 2)
+                v = grid(i, j)
+                if (v > 0) then
+                    count = 0
+                    found = .false.
+                    do while (.not. found)
+                        if (i - 1 >= 1) then
+                            if (grid(i-1, j) == v) then
+                                count = count + 1
+                                found = .true.
+                            end if
+                        else
+                            found = .true.
+                        end if
+                        if (.not. found) then
+                            if (j - 1 >= 1) then
+                                if (grid(i, j-1) == v) then
+                                    count = count + 1
+                                    found = .true.
+                                end if
+                            else
+                                found = .true.
+                            end if
+                        end if
+                        if (.not. found) then
+                            if (i + 1 <= size(grid, 1)) then
+                                if (grid(i+1, j) == v) then
+                                    count = count + 1
+                                    found = .true.
+                                end if
+                            else
+                                found = .true.
+                            end if
+                        end if
+                        if (.not. found) then
+                            if (j + 1 <= size(grid, 2)) then
+                                if (grid(i, j+1) == v) then
+                                    count = count + 1
+                                    found = .true.
+                                end if
+                            else
+                                found = .true.
+                            end if
+                        end if
+                    end do
+                    area = area + count * v
+                end if
+            end do
+        end do
+    end subroutine solve
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Example 1:
+ Area:    0.00000000    
+ Example 2:
+ Area:    2.00000000    
+ Example 3:
+ Area:    4.00000000    
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module glue_cubes
+    implicit none
+    private
+    public :: surface_area
+contains
+    function surface_area(grid) result(total_area)
+        integer, intent(in) :: grid(:, :)
+        integer :: total_area, i, j, v
+        integer, allocatable :: stack(:)
+
+        allocate(stack(size(grid, 1)))
+
+        total_area = 0
+        do i = 1, size(grid, 1)
+            do j = 1, size(grid, 2)
+                v = grid(i, j)
+                if (v > 0) then
+                    stack = [v]
+                    do while (size(stack) > 0)
+                        v = stack(size(stack))
+                        stack = stack(:size(stack)-1)
+                        total_area = total_area + v * (v + 1)
+                        if (i > 1 .and. grid(i-1, j) == v) then
+                            stack = [v, stack]
+                            grid(i-1, j) = 0
+                        end if
+                        if (j > 1 .and. grid(i, j-1) == v) then
+                            stack = [v, stack]
+                            grid(i, j-1) = 0
+                        end if
+                    end do
+                end if
+            end do
+        end do
+    end function surface_area
+end module glue_cubes
+
+program test_glue_cubes
+    use glue_cubes
+    implicit none
+    integer, parameter :: n = 2
+    integer, parameter :: grid(n, n) = reshape([1, 2, 3, 4], [n, n])
+    integer :: total_area
+
+    total_area = surface_area(grid)
+    write (*, *) "Total surface area:", total_area
+
+    total_area = surface_area([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
+    write (*, *) "Total surface area:", total_area
+
+    total_area = surface_area([[2, 2, 2], [2, 1, 2], [2, 2, 2]])
+    write (*, *) "Total surface area:", total_area
+end program test_glue_cubes
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:25:28:
+
+   25 |                             grid(i-1, j) = 0
+      |                            1
+Error: Dummy argument ‘grid’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:29:28:
+
+   29 |                             grid(i, j-1) = 0
+      |                            1
+Error: Dummy argument ‘grid’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:39:9:
+
+   39 |     use glue_cubes
+      |         1
+Fatal Error: Cannot open module file ‘glue_cubes.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from collections import deque
+
+def shortest_subarray(nums, k):
+    n = len(nums)
+    prefix_sum = [0] * (n + 1)
+    for i in range(n):
+        prefix_sum[i + 1] = prefix_sum[i] + nums[i]
+
+    res = n + 1
+    dq = deque()
+    for i in range(n + 1):
+        while dq and prefix_sum[i] - prefix_sum[dq[0]] &gt;= k:
+            res = min(res, i - dq.popleft())
+        while dq and prefix_sum[i] &lt;= prefix_sum[dq[-1]]:
+            dq.pop()
+        dq.append(i)
+
+    return res if res &lt;= n else -1
+</code></pre>
+<p>The algorithm first calculates the prefix sum of the array. Then, it initializes a double-ended queue (deque) to store indices of the prefix sum. For each index of the calculated prefix sum, perform these steps:</p>
+<ol>
+<li>Check if the current prefix sum minus the prefix sum at the front of the deque is greater than or equal to <code>k</code>. If true, update the result with the minimum value. This means we found a subarray that meets the requirement of sum &gt;= k, so we remove the deque's front element to see if there's a shorter subarray.</li>
+<li>In an increasing order within the deque, check if the current prefix sum is less than or equal to the prefix sum at the back of deque. If true, remove the last element. The goal here is to maintain each element of the deque in increasing order.</li>
+<li>Add the index to the deque.</li>
+</ol>
+<p>Finally, after iterating through all elements, check if the stored result is valid. If valid, return the result; otherwise, return -1. This logic is implemented in all 4 language solutions.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;deque&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int shortestSubarray(vector&lt;int&gt;&amp; nums, int k) {
+    int n = nums.size();
+    vector&lt;int&gt; prefix_sum(n + 1, 0);
+    for (int i = 0; i &lt; n; i++) prefix_sum[i + 1] = prefix_sum[i] + nums[i];
+
+    int res = n + 1;
+    deque&lt;int&gt; dq;
+    for (int i = 0; i &lt; n + 1; i++) {
+        while (!dq.empty() &amp;&amp; prefix_sum[i] - prefix_sum[dq.front()] &gt;= k) {
+            res = min(res, i - dq.front());
+            dq.pop_front();
+        }
+        while (!dq.empty() &amp;&amp; prefix_sum[i] &lt;= prefix_sum[dq.back()]) {
+            dq.pop_back();
+        }
+        dq.push_back(i);
+    }
+    return res &lt;= n ? res : -1;
+}
+</code></pre>
+<p>The algorithm first calculates the prefix sum of the array. Then, it initializes a double-ended queue (deque) to store indices of the prefix sum. For each index of the calculated prefix sum, perform these steps:</p>
+<ol>
+<li>Check if the current prefix sum minus the prefix sum at the front of the deque is greater than or equal to <code>k</code>. If true, update the result with the minimum value. This means we found a subarray that meets the requirement of sum &gt;= k, so we remove the deque's front element to see if there's a shorter subarray.</li>
+<li>In an increasing order within the deque, check if the current prefix sum is less than or equal to the prefix sum at the back of deque. If true, remove the last element. The goal here is to maintain each element of the deque in increasing order.</li>
+<li>Add the index to the deque.</li>
+</ol>
+<p>Finally, after iterating through all elements, check if the stored result is valid. If valid, return the result; otherwise, return -1. This logic is implemented in all 4 language solutions.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

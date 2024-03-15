@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Largest Perimeter Triangle</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/965/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/977/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code>, return <em>the largest perimeter of a triangle with a non-zero area, formed from three of these lengths</em>. If it is impossible to form any triangle of a non-zero area, return <code>0</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [2,1,2]
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> You can form a triangle with three side lengths: 1, 2, and 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,1,10]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> 
+You cannot use the side lengths 1, 1, and 2 to form a triangle.
+You cannot use the side lengths 1, 1, and 10 to form a triangle.
+You cannot use the side lengths 1, 2, and 10 to form a triangle.
+As we cannot use any three side lengths to form a triangle of non-zero area, we return 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>3 &lt;= nums.length &lt;= 104</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 106</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/largest-perimeter-triangle/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 3
+    integer, dimension(n) :: nums
+    integer :: i, j, k, max_perimeter
+
+    ! Examples
+    nums = [2, 1, 2]
+    write (*, '(A, I0)') 'Example 1: ', largestPerimeter(nums)
+    nums = [1, 2, 1, 10]
+    write (*, '(A, I0)') 'Example 2: ', largestPerimeter(nums)
+
+contains
+
+    function largestPerimeter(nums) result(max_perimeter)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: i, j, k, perimeter
+        logical :: found
+
+        max_perimeter = 0
+        do i = 1, size(nums) - 2
+            do j = i + 1, size(nums) - 1
+                do k = j + 1, size(nums)
+                    perimeter = nums(i) + nums(j) + nums(k)
+                    if (perimeter > max_perimeter .and. &
+                        nums(i) * nums(j) < nums(k)) then
+                        max_perimeter = perimeter
+                    end if
+                end do
+            end do
+        end do
+    end function largestPerimeter
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:16:57:
+
+   16 |     function largestPerimeter(nums) result(max_perimeter)
+      |                                                         1
+Error: Function result ‘max_perimeter’ at (1) has no IMPLICIT type
+temp.f95:11:4:
+
+   11 |     nums = [1, 2, 1, 10]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (3 and 4)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module largest_triangle_perimeter
+    implicit none
+    private
+    public :: largest_triangle_perimeter
+
+contains
+
+    function largest_triangle_perimeter(nums) result(largest_perimeter)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: largest_perimeter
+        integer :: i, j, k
+        integer :: a, b, c
+
+        largest_perimeter = 0
+
+        ! Iterate over all possible combinations of three array elements
+        do i = 1, size(nums) - 2
+            do j = i + 1, size(nums) - 1
+                do k = j + 1, size(nums)
+                    a = nums(i)
+                    b = nums(j)
+                    c = nums(k)
+
+                    ! Check if the three sides form a triangle
+                    if (a**2 + b**2 >= c**2 .and. b**2 + c**2 >= a**2 .and. c**2 + a**2 >= b**2) then
+                        ! Check if the triangle has a non-zero area
+                        if (a + b > c .and. b + c > a .and. c + a > b) then
+                            largest_perimeter = max(largest_perimeter, a + b + c)
+                        end if
+                    end if
+                end do
+            end do
+        end do
+    end function largest_triangle_perimeter
+end module largest_triangle_perimeter
+
+program test_largest_triangle_perimeter
+    use largest_triangle_perimeter
+    implicit none
+    integer, parameter :: nums1(3) = [2, 1, 2]
+    integer, parameter :: nums2(4) = [1, 2, 1, 10]
+    integer, parameter :: nums3(5) = [3, 4, 5, 6, 7]
+    integer, parameter :: nums4(10) = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    integer :: largest_perimeter
+
+    largest_perimeter = largest_triangle_perimeter(nums1)
+    write (*,*) "Largest perimeter of a triangle with non-zero area from nums1:", largest_perimeter
+
+    largest_perimeter = largest_triangle_perimeter(nums2)
+    write (*,*) "Largest perimeter of a triangle with non-zero area from nums2:", largest_perimeter
+
+    largest_perimeter = largest_triangle_perimeter(nums3)
+    write (*,*) "Largest perimeter of a triangle with non-zero area from nums3:", largest_perimeter
+
+    largest_perimeter = largest_triangle_perimeter(nums4)
+    write (*,*) "Largest perimeter of a triangle with non-zero area from nums4:", largest_perimeter
+end program test_largest_triangle_perimeter
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:40:
+
+    4 |     public :: largest_triangle_perimeter
+      |                                        1
+Error: PUBLIC attribute applied to MODULE largest_triangle_perimeter at (1)
+temp.f95:8:39:
+
+    8 |     function largest_triangle_perimeter(nums) result(largest_perimeter)
+      |                                       1
+Error: MODULE attribute of ‘largest_triangle_perimeter’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:21:
+
+    9 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:10:38:
+
+   10 |         integer, intent(in) :: nums(:)
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:36:
+
+   11 |         integer :: largest_perimeter
+      |                                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:26:
+
+   12 |         integer :: i, j, k
+      |                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:26:
+
+   13 |         integer :: a, b, c
+      |                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:29:
+
+   15 |         largest_perimeter = 0
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:18:32:
+
+   18 |         do i = 1, size(nums) - 2
+      |                                1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:19:40:
+
+   19 |             do j = i + 1, size(nums) - 1
+      |                                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:20:40:
+
+   20 |                 do k = j + 1, size(nums)
+      |                                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:21:31:
+
+   21 |                     a = nums(i)
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:31:
+
+   22 |                     b = nums(j)
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:31:
+
+   23 |                     c = nums(k)
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:101:
+
+   26 |                     if (a**2 + b**2 >= c**2 .and. b**2 + c**2 >= a**2 .and. c**2 + a**2 >= b**2) then
+      |                                                                                                     1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:28:75:
+
+   28 |                         if (a + b > c .and. b + c > a .and. c + a > b) then
+      |                                                                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:29:81:
+
+   29 |                             largest_perimeter = max(largest_perimeter, a + b + c)
+      |                                                                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:30:27:
+
+   30 |                         end if
+      |                           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:31:23:
+
+   31 |                     end if
+      |                       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:32:19:
+
+   32 |                 end do
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:33:15:
+
+   33 |             end do
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:11:
+
+   34 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:35:7:
+
+   35 |     end function largest_triangle_perimeter
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:39:9:
+
+   39 |     use largest_triangle_perimeter
+      |         1
+Fatal Error: Cannot open module file ‘largest_triangle_perimeter.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_area_rect(points):
+    point_set = {(x, y) for x, y in points}
+    min_area = float('inf')
+
+    for p1 in point_set:
+        for p2 in point_set:
+            if p1[0] != p2[0] and p1[1] != p2[1]:
+                if (p1[0], p2[1]) in point_set and (p2[0], p1[1]) in point_set:
+                    min_area = min(min_area, abs((p1[0] - p2[0]) * (p1[1] - p2[1])))
+
+    return min_area if min_area != float('inf') else 0
+</code></pre>
+<pre><code>1. Convert the given points into a set for efficient lookups.
+</code></pre>
+<ol>
+<li>Initialize <code>min_area</code> to an infinitely large value initially.</li>
+<li>Iterate through each pair of distinct points <code>p1</code> and <code>p2</code> in the set, and check if two other points <code>p3</code> and <code>p4</code> exist such that p3.x = p1.x, p3.y = p2.y, p4.x = p2.x, p4.y = p1.y.</li>
+<li>If such points exist, calculate the area between <code>p1</code> and <code>p2</code> and update <code>min_area</code> with the minimum value between current <code>min_area</code> and calculated area.</li>
+<li>After the iteration, if <code>min_area</code> still holds the initial value (indicating no rectangles were found), return 0; otherwise, return the <code>min_area</code>.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;set&gt;
+#include &lt;vector&gt;
+
+double minAreaRect(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; points) {
+    std::set&lt;std::pair&lt;int, int&gt;&gt; point_set;
+    for (const auto&amp; point : points) {
+        point_set.emplace(point[0], point[1]);
+    }
+
+    double min_area = INT32_MAX;
+    for (const auto&amp; p1 : point_set) {
+        for (const auto&amp; p2 : point_set) {
+            if (p1.first != p2.first &amp;&amp; p1.second != p2.second) {
+                if (point_set.count({p1.first, p2.second}) &amp;&amp; point_set.count({p2.first, p1.second})) {
+                    min_area = std::min(min_area, abs((p1.first - p2.first) * (p1.second - p2.second)));
+                }
+            }
+        }
+    }
+
+    return min_area == INT32_MAX ? 0 : min_area;
+}
+</code></pre>
+<pre><code>1. Convert the given points into a set for efficient lookups.
+</code></pre>
+<ol>
+<li>Initialize <code>min_area</code> to an infinitely large value initially.</li>
+<li>Iterate through each pair of distinct points <code>p1</code> and <code>p2</code> in the set, and check if two other points <code>p3</code> and <code>p4</code> exist such that p3.x = p1.x, p3.y = p2.y, p4.x = p2.x, p4.y = p1.y.</li>
+<li>If such points exist, calculate the area between <code>p1</code> and <code>p2</code> and update <code>min_area</code> with the minimum value between current <code>min_area</code> and calculated area.</li>
+<li>After the iteration, if <code>min_area</code> still holds the initial value (indicating no rectangles were found), return 0; otherwise, return the <code>min_area</code>.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

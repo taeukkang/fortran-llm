@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Distribute Money to Maximum Children</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2586/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2595/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer <code>money</code> denoting the amount of money (in dollars) that you have and another integer <code>children</code> denoting the number of children that you must distribute the money to.</p>
+<p>You have to distribute the money according to the following rules:</p>
+<ul>
+<li>All money must be distributed.</li>
+<li>Everyone must receive at least <code>1</code> dollar.</li>
+<li>Nobody receives <code>4</code> dollars.</li>
+</ul>
+<p>Return <em>the <strong>maximum</strong> number of children who may receive <strong>exactly</strong></em> <code>8</code> <em>dollars if you distribute the money according to the aforementioned rules</em>. If there is no way to distribute the money, return <code>-1</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> money = 20, children = 3
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> 
+The maximum number of children with 8 dollars will be 1. One of the ways to distribute the money is:
+- 8 dollars to the first child.
+- 9 dollars to the second child. 
+- 3 dollars to the third child.
+It can be proven that no distribution exists such that number of children getting 8 dollars is greater than 1.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> money = 16, children = 2
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> Each child can be given 8 dollars.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= money &lt;= 200</code></li>
+<li><code>2 &lt;= children &lt;= 30</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/distribute-money-to-maximum-children/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: money, children, result
+
+    money = 20
+    children = 3
+    result = solve(money, children)
+    write (*, '(A, I0)') 'Result: ', result
+
+    money = 16
+    children = 2
+    result = solve(money, children)
+    write (*, '(A, I0)') 'Result: ', result
+
+contains
+
+    function solve(money, children) result(result)
+        implicit none
+        integer, value :: money, children
+        integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+        integer :: result
+
+        ! This solution uses a brute force approach to find the maximum number of children
+        ! who may receive exactly 8 dollars if we distribute the money according to the
+        ! aforementioned rules.
+        !
+        ! We start by considering all possible combinations of children who may receive 8 dollars.
+        ! For each combination, we check whether it satisfies the rules. If it does, we increment
+        ! the result variable.
+        !
+        ! The time complexity of this solution is O(n^2), where n is the number of children.
+        ! The space complexity is O(1).
+
+        result = -1
+
+        do i = 1, children
+            do j = 1, children
+                if (i + j == 8) then
+                    if (i /= 1 .and. j /= 1) then
+                        result = max(result, i + j)
+                    end if
+                end if
+            end do
+        end do
+
+        do i = 1, children
+            do j = 1, children
+                do k = 1, children
+                    if (i + j + k == 8) then
+                        if (i /= 1 .and. j /= 1 .and. k /= 1) then
+                            result = max(result, i + j + k)
+                        end if
+                    end if
+                end do
+            end do
+        end do
+
+        do i = 1, children
+            do j = 1, children
+                do k = 1, children
+                    do l = 1, children
+                        if (i + j + k + l == 8) then
+                            if (i /= 1 .and. j /= 1 .and. k /= 1 .and. l /= 1) then
+                                result = max(result, i + j + k + l)
+                            end if
+                        end if
+                    end do
+                end do
+            end do
+        end do
+
+        do i = 1, children
+            do j = 1, children
+                do k = 1, children
+                    do l = 1, children
+                        do m = 1, children
+                            if (i + j + k + l + m == 8) then
+                                if (i /= 1 .and. j /= 1 .and. k /= 1 .and. l /= 1 .and. m /= 1) then
+                                    result = max(result, i + j + k + l + m)
+                                end if
+                            end if
+                        end do
+                    end do
+                end do
+            end do
+        end do
+
+        do i = 1, children
+            do j = 1, children
+                do k = 1, children
+                    do l = 1, children
+                        do m = 1, children
+                            do n = 1, children
+                                if (i + j + k + l + m + n == 8) then
+                                    if (i /= 1 .and. j /= 1 .and. k /= 1 .and. l /= 1 .and. m /= 1 .and. n /= 1) then
+                                        result = max(result, i + j + k + l + m + n)
+                                    end if
+                                end if
+                            end do
+                        end do
+                    end do
+                end do
+            end do
+        end do
+
+        do i = 1, children
+            do j = 1, children
+                do k = 1</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:109:24:
+
+  109 |                 do k = 1
+      |                        1
+Error: Syntax error in iterator at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!-------------------------------------------------------------------------------
+! This is a Fortran implementation of the problem described in the problem statement.
+! The program takes two command line arguments: money and children.
+! The program solves the problem and prints the maximum number of children who
+! can receive exactly 8 dollars.
+!-------------------------------------------------------------------------------
+
+program max_children_8
+    implicit none
+    integer :: money, children, max_children
+    max_children = solve_problem(money, children)
+    write (*,*) max_children
+contains
+    !---------------------------------------------------------------------------
+    ! This function solves the problem by using dynamic programming.
+    ! The function takes two arguments: money and children.
+    ! The function returns the maximum number of children who can receive exactly
+    ! 8 dollars.
+    !---------------------------------------------------------------------------
+    integer function solve_problem(money, children) result(max_children)
+        implicit none
+        integer, intent(in) :: money, children
+        integer, dimension(money, children) :: dp
+        integer :: i, j
+        dp(1,:) = 1
+        do i = 2, money
+            do j = 1, children
+                if (j == 1) then
+                    dp(i,j) = 1
+                else
+                    dp(i,j) = max(dp(i-1,j-1), dp(i-4,j))
+                end if
+            end do
+        end do
+        max_children = dp(money, children)
+    end function solve_problem
+end program max_children_8
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>           0
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def maximum_children_with_eight_dollars(money, children):
+    if money &lt; children * 1 or money &gt; children * 8:
+        return -1
+    max_eights = (money - children) // 7
+    return children if max_eights &gt;= children else max_eights
+</code></pre>
+<p>In this problem, we calculate the maximum number of children who get exactly 8 dollars by making sure that we follow the given rules. We first check if it's possible to distribute money with these constraints. If the amount of money is less than the product of the number of children and 1 or greater than the product of the number of children and 8, return -1 as it's not possible.</p>
+<p>Then, find the maximum number of eights by subtracting the number of children from the amount of money and dividing the result by 7. We divide the result by 7, as we're trying to maximize the children getting exactly 8 dollars, and the other amounts could range from 1 to 3 or 5 to 7. </p>
+<p>Finally, if the maximum number of eights is greater than or equal to the number of children, return the number of children. Otherwise, return the maximum number of eights. This calculation ensures that we're getting the maximum number of children who get exactly 8 dollars.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int maximumChildrenWithEightDollars(int money, int children) {
+    if (money &lt; children * 1 || money &gt; children * 8) return -1;
+    int max_eights = (money - children) / 7;
+    return max_eights &gt;= children ? children : max_eights;
+}
+</code></pre>
+<p>In this problem, we calculate the maximum number of children who get exactly 8 dollars by making sure that we follow the given rules. We first check if it's possible to distribute money with these constraints. If the amount of money is less than the product of the number of children and 1 or greater than the product of the number of children and 8, return -1 as it's not possible.</p>
+<p>Then, find the maximum number of eights by subtracting the number of children from the amount of money and dividing the result by 7. We divide the result by 7, as we're trying to maximize the children getting exactly 8 dollars, and the other amounts could range from 1 to 3 or 5 to 7. </p>
+<p>Finally, if the maximum number of eights is greater than or equal to the number of children, return the number of children. Otherwise, return the maximum number of eights. This calculation ensures that we're getting the maximum number of children who get exactly 8 dollars.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

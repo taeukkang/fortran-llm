@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Two Out of Three</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2027/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2037/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given three integer arrays <code>nums1</code>, <code>nums2</code>, and <code>nums3</code>, return <em>a <strong>distinct</strong> array containing all the values that are present in <strong>at least two</strong> out of the three arrays. You may return the values in <strong>any</strong> order</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums1 = [1,1,3,2], nums2 = [2,3], nums3 = [3]
+<strong>Output:</strong> [3,2]
+<strong>Explanation:</strong> The values that are present in at least two arrays are:
+- 3, in all three arrays.
+- 2, in nums1 and nums2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums1 = [3,1], nums2 = [2,3], nums3 = [1,2]
+<strong>Output:</strong> [2,3,1]
+<strong>Explanation:</strong> The values that are present in at least two arrays are:
+- 2, in nums2 and nums3.
+- 3, in nums1 and nums2.
+- 1, in nums1 and nums3.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums1 = [1,2,2], nums2 = [4,3,3], nums3 = [5]
+<strong>Output:</strong> []
+<strong>Explanation:</strong> No value is present in at least two arrays.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums1.length, nums2.length, nums3.length &lt;= 100</code></li>
+<li><code>1 &lt;= nums1[i], nums2[j], nums3[k] &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/two-out-of-three/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solve the problem described in the task
+    implicit none
+
+    integer, parameter :: n = 3
+    integer, dimension(n) :: nums1 = [1, 1, 3, 2]
+    integer, dimension(n) :: nums2 = [2, 3]
+    integer, dimension(n) :: nums3 = [3]
+    integer, dimension(:), allocatable :: result
+
+    call solve(nums1, nums2, nums3, result)
+
+    write (*, '(*(g0, :, ", "))') result
+
+contains
+
+    subroutine solve(nums1, nums2, nums3, result)
+        implicit none
+        integer, dimension(:), intent(in) :: nums1
+        integer, dimension(:), intent(in) :: nums2
+        integer, dimension(:), intent(in) :: nums3
+        integer, dimension(:), allocatable, intent(out) :: result
+        logical, dimension(size(nums1)) :: mask1
+        logical, dimension(size(nums2)) :: mask2
+        logical, dimension(size(nums3)) :: mask3
+        integer :: i, j
+
+        ! Initialize the masks
+        mask1 = .false.
+        mask2 = .false.
+        mask3 = .false.
+
+        ! Set the masks for the elements that are present in at least two arrays
+        do i = 1, size(nums1)
+            if (any(nums1(i) == nums2)) then
+                mask1(i) = .true.
+            end if
+            if (any(nums1(i) == nums3)) then
+                mask1(i) = .true.
+            end if
+        end do
+        do i = 1, size(nums2)
+            if (any(nums2(i) == nums1)) then
+                mask2(i) = .true.
+            end if
+            if (any(nums2(i) == nums3)) then
+                mask2(i) = .true.
+            end if
+        end do
+        do i = 1, size(nums3)
+            if (any(nums3(i) == nums1)) then
+                mask3(i) = .true.
+            end if
+            if (any(nums3(i) == nums2)) then
+                mask3(i) = .true.
+            end if
+        end do
+
+        ! Allocate the result array
+        allocate(result(count(mask1 .or. mask2 .or. mask3)))
+
+        ! Fill the result array
+        j = 1
+        do i = 1, size(nums1)
+            if (mask1(i)) then
+                result(j) = nums1(i)
+                j = j + 1
+            end if
+        end do
+        do i = 1, size(nums2)
+            if (mask2(i)) then
+                result(j) = nums2(i)
+                j = j + 1
+            end if
+        end do
+        do i = 1, size(nums3)
+            if (mask3(i)) then
+                result(j) = nums3(i)
+                j = j + 1
+            end if
+        end do
+
+    end subroutine solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:34:
+
+    6 |     integer, dimension(n) :: nums1 = [1, 1, 3, 2]
+      |                                  1
+Error: Different shape for array assignment at (1) on dimension 1 (3 and 4)
+temp.f95:7:34:
+
+    7 |     integer, dimension(n) :: nums2 = [2, 3]
+      |                                  1
+Error: Different shape for array assignment at (1) on dimension 1 (3 and 2)
+temp.f95:8:34:
+
+    8 |     integer, dimension(n) :: nums3 = [3]
+      |                                  1
+Error: Different shape for array assignment at (1) on dimension 1 (3 and 1)
+temp.f95:11:20:
+
+   11 |     call solve(nums1, nums2, nums3, result)
+      |                    1
+Error: Symbol ‘nums1’ at (1) has no IMPLICIT type
+temp.f95:11:27:
+
+   11 |     call solve(nums1, nums2, nums3, result)
+      |                           1
+Error: Symbol ‘nums2’ at (1) has no IMPLICIT type
+temp.f95:11:34:
+
+   11 |     call solve(nums1, nums2, nums3, result)
+      |                                  1
+Error: Symbol ‘nums3’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module solve_problem
+
+implicit none
+
+contains
+
+function solve(nums1, nums2, nums3) result(result)
+
+integer, intent(in) :: nums1(:), nums2(:), nums3(:)
+integer :: result(size(nums1))
+
+integer :: i, j, k, count
+
+! Initialize the result array
+result = 0
+
+! Loop through the arrays
+do i = 1, size(nums1)
+    ! Check if the current value is present in at least two arrays
+    count = 0
+    do j = 1, size(nums2)
+        if (nums1(i) == nums2(j)) then
+            count = count + 1
+        end if
+    end do
+    do k = 1, size(nums3)
+        if (nums1(i) == nums3(k)) then
+            count = count + 1
+        end if
+    end do
+    ! If the value is present in at least two arrays, add it to the result array
+    if (count >= 2) then
+        result(i) = nums1(i)
+    end if
+end do
+
+end function solve
+
+end module solve_problem
+
+program test_solve_problem
+
+use solve_problem
+
+implicit none
+
+integer, parameter :: nums1(4) = [1, 1, 3, 2]
+integer, parameter :: nums2(2) = [2, 3]
+integer, parameter :: nums3(1) = [3]
+integer :: result(size(nums1))
+
+result = solve(nums1, nums2, nums3)
+
+write (*,*) "Result: ", result
+
+end program test_solve_problem
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Result:            0           0           3           0
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def largest_odd(num: str) -&gt; str:
+    for i in range(len(num)):
+        if (int(num[i]) % 2) == 1:
+            return num[:i + 1]
+    return &quot;&quot;
+</code></pre>
+<p>The algorithm used iterates through the input string <code>num</code>. For each character, it checks if it's an odd digit (by subtracting '0' and mod-ing 2 to check if it's equal to 1).</p>
+<p>If an odd digit is found, it returns the substring from the beginning of the string to the odd digit (inclusive) as the largest odd integer substring.</p>
+<p>If no odd digit is found, it returns an empty string.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">std::string largestOdd(std::string num) {
+    for (int i = 0; i &lt; num.length(); ++i) {
+        if ((num[i] - '0') % 2 == 1) {
+            return num.substr(0, i + 1);
+        }
+    }
+    return &quot;&quot;;
+}
+</code></pre>
+<p>The algorithm used iterates through the input string <code>num</code>. For each character, it checks if it's an odd digit (by subtracting '0' and mod-ing 2 to check if it's equal to 1).</p>
+<p>If an odd digit is found, it returns the substring from the beginning of the string to the odd digit (inclusive) as the largest odd integer substring.</p>
+<p>If no odd digit is found, it returns an empty string.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

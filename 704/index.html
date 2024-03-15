@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Binary Search</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/703/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/705/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of integers <code>nums</code> which is sorted in ascending order, and an integer <code>target</code>, write a function to search <code>target</code> in <code>nums</code>. If <code>target</code> exists, then return its index. Otherwise, return <code>-1</code>.</p>
+<p>You must write an algorithm with <code>O(log n)</code> runtime complexity.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [-1,0,3,5,9,12], target = 9
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> 9 exists in nums and its index is 4</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [-1,0,3,5,9,12], target = 2
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> 2 does not exist in nums so return -1</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 104</code></li>
+<li><code>-104 &lt; nums[i], target &lt; 104</code></li>
+<li>All the integers in <code>nums</code> are <strong>unique</strong>.</li>
+<li><code>nums</code> is sorted in ascending order.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/binary-search/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 6
+    integer, dimension(n) :: nums = [-1, 0, 3, 5, 9, 12]
+    integer :: target
+    integer :: result
+
+    ! Example 1
+    target = 9
+    result = search(nums, target)
+    print '(A, I0)', 'Example 1: ', result
+
+    ! Example 2
+    target = 2
+    result = search(nums, target)
+    print '(A, I0)', 'Example 2: ', result
+
+contains
+
+    function search(nums, target) result(index)
+        implicit none
+        integer, dimension(:), intent(in) :: nums
+        integer, intent(in) :: target
+        integer :: index
+
+        index = binary_search(nums, target, 1, size(nums))
+    end function search
+
+    recursive function binary_search(nums, target, left, right) result(index)
+        implicit none
+        integer, dimension(:), intent(in) :: nums
+        integer, intent(in) :: target
+        integer, value :: left, right
+        integer :: mid
+
+        if (left > right) then
+            index = -1
+            return
+        end if
+
+        mid = (left + right) / 2
+
+        if (nums(mid) == target) then
+            index = mid
+        else if (nums(mid) < target) then
+            index = binary_search(nums, target, mid + 1, right)
+        else
+            index = binary_search(nums, target, left, mid - 1)
+        end if
+    end function binary_search
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:30:77:
+
+   30 |     recursive function binary_search(nums, target, left, right) result(index)
+      |                                                                             1
+Error: Function result ‘index’ at (1) has no IMPLICIT type
+temp.f95:27:16:
+
+   27 |         index = binary_search(nums, target, 1, size(nums))
+      |                1
+Error: Cannot convert UNKNOWN to INTEGER(4) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module binary_search
+
+implicit none
+
+contains
+
+function search(nums, target) result(index)
+
+integer, intent(in) :: nums(:)
+integer, intent(in) :: target
+integer :: index
+
+index = -1
+
+if (size(nums) == 0) then
+    return
+endif
+
+call binary_search_recursive(nums, target, 1, size(nums), index)
+
+end function search
+
+recursive subroutine binary_search_recursive(nums, target, left, right, index)
+
+integer, intent(in) :: nums(:)
+integer, intent(in) :: target
+integer, intent(in) :: left
+integer, intent(in) :: right
+integer, intent(out) :: index
+
+integer :: mid
+
+if (left > right) then
+    return
+endif
+
+mid = (left + right) / 2
+
+if (nums(mid) == target) then
+    index = mid
+    return
+endif
+
+if (nums(mid) < target) then
+    call binary_search_recursive(nums, target, mid + 1, right, index)
+else
+    call binary_search_recursive(nums, target, left, mid - 1, index)
+endif
+
+end subroutine binary_search_recursive
+
+end module binary_search
+
+program test
+
+use binary_search
+
+implicit none
+
+integer, parameter :: nums = [-1, 0, 3, 5, 9, 12]
+integer :: target
+integer :: index
+
+target = 9
+index = search(nums, target)
+write (*,*) "Target: ", target, " Index: ", index
+
+target = 2
+index = search(nums, target)
+write (*,*) "Target: ", target, " Index: ", index
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:60:26:
+
+   60 | integer, parameter :: nums = [-1, 0, 3, 5, 9, 12]
+      |                          1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:65:19:
+
+   65 | index = search(nums, target)
+      |                   1
+Error: Symbol ‘nums’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def search(nums: List[int], target: int) -&gt; int:
+    left, right = 0, len(nums) - 1
+    while left &lt;= right:
+        mid = left + (right - left) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[mid] &lt; target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+</code></pre>
+<pre><code>The algorithm implements a binary search, since the input array is sorted in ascending order. We start with two pointers, `left` and `right`, representing the beginning and the end of the search range, respectively. We then find the middle element of the array (or subarray) by calculating the average of `left` and `right` and round it down.
+</code></pre>
+<p>If the middle element matches the target, we return its index. If the middle element is smaller than the target, we set <code>left</code> to the next index (<code>mid + 1</code>). If the middle element is greater than the target, we set <code>right</code> to the previous index (<code>mid - 1</code>). We continue iterating until we find the target or the pointers cross (<code>left &gt; right</code>), in which case we return <code>-1</code> because the target is not in the array. The time complexity of this algorithm is O(log n).</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int search(vector&lt;int&gt;&amp; nums, int target) {
+    int left = 0, right = nums.size() - 1;
+    while (left &lt;= right) {
+        int mid = left + (right - left) / 2;
+        if (nums[mid] == target) return mid;
+        if (nums[mid] &lt; target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1;
+}
+</code></pre>
+<pre><code>The algorithm implements a binary search, since the input array is sorted in ascending order. We start with two pointers, `left` and `right`, representing the beginning and the end of the search range, respectively. We then find the middle element of the array (or subarray) by calculating the average of `left` and `right` and round it down.
+</code></pre>
+<p>If the middle element matches the target, we return its index. If the middle element is smaller than the target, we set <code>left</code> to the next index (<code>mid + 1</code>). If the middle element is greater than the target, we set <code>right</code> to the previous index (<code>mid - 1</code>). We continue iterating until we find the target or the pointers cross (<code>left &gt; right</code>), in which case we return <code>-1</code> because the target is not in the array. The time complexity of this algorithm is O(log n).</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

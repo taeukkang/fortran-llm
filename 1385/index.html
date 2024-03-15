@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find the Distance Value Between Two Arrays</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1380/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1394/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two integer arrays <code>arr1</code> and <code>arr2</code>, and the integer <code>d</code>, <em>return the distance value between the two arrays</em>.</p>
+<p>The distance value is defined as the number of elements <code>arr1[i]</code> such that there is not any element <code>arr2[j]</code> where <code>|arr1[i]-arr2[j]| &lt;= d</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr1 = [4,5,8], arr2 = [10,9,1,8], d = 2
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> 
+For arr1[0]=4 we have: 
+|4-10|=6 &gt; d=2 
+|4-9|=5 &gt; d=2 
+|4-1|=3 &gt; d=2 
+|4-8|=4 &gt; d=2 
+For arr1[1]=5 we have: 
+|5-10|=5 &gt; d=2 
+|5-9|=4 &gt; d=2 
+|5-1|=4 &gt; d=2 
+|5-8|=3 &gt; d=2
+For arr1[2]=8 we have:
+<strong>|8-10|=2 &lt;= d=2</strong>
+<strong>|8-9|=1 &lt;= d=2</strong>
+|8-1|=7 &gt; d=2
+<strong>|8-8|=0 &lt;= d=2</strong></p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr1 = [1,4,2,3], arr2 = [-4,-3,6,10,20,30], d = 3
+<strong>Output:</strong> 2</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> arr1 = [2,1,100,3], arr2 = [-5,-2,10,-3,7], d = 6
+<strong>Output:</strong> 1</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= arr1.length, arr2.length &lt;= 500</code></li>
+<li><code>-1000 &lt;= arr1[i], arr2[j] &lt;= 1000</code></li>
+<li><code>0 &lt;= d &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-the-distance-value-between-two-arrays/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 3
+    integer, parameter :: m = 5
+    integer, parameter :: d = 2
+
+    integer, dimension(n) :: arr1 = (/ 4, 5, 8 /)
+    integer, dimension(m) :: arr2 = (/ 10, 9, 1, 8, 20 /)
+
+    write (*, '(I0)') distance(arr1, arr2, d)
+
+contains
+
+    function distance(arr1, arr2, d) result(distance_value)
+        implicit none
+        integer, dimension(:), intent(in) :: arr1
+        integer, dimension(:), intent(in) :: arr2
+        integer, intent(in) :: d
+        integer :: distance_value
+        integer :: i, j
+
+        distance_value = 0
+        do i = 1, size(arr1)
+            do j = 1, size(arr2)
+                if (abs(arr1(i) - arr2(j)) <= d) then
+                    exit
+                end if
+            end do
+            if (j == size(arr2)+1) then
+                distance_value = distance_value + 1
+            end if
+        end do
+    end function distance
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>2
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module distance
+  implicit none
+contains
+  function distance(arr1, arr2, d) result(distance_value)
+    integer, intent(in) :: arr1(:), arr2(:), d
+    integer :: distance_value
+
+    ! Local variables
+    integer :: i, j, diff
+
+    ! Initialize the distance value to the length of arr1
+    distance_value = size(arr1)
+
+    ! Loop through each element of arr1
+    do i = 1, size(arr1)
+      ! Loop through each element of arr2
+      do j = 1, size(arr2)
+        ! Calculate the difference between the two elements
+        diff = abs(arr1(i) - arr2(j))
+
+        ! If the difference is less than or equal to d,
+        ! then the distance value should be decremented
+        if (diff <= d) then
+          distance_value = distance_value - 1
+          exit
+        end if
+      end do
+    end do
+  end function distance
+end module distance
+
+program test_distance
+  use distance
+  implicit none
+
+  ! Test case 1
+  print *, distance([4,5,8], [10,9,1,8], 2)
+
+  ! Test case 2
+  print *, distance([1,4,2,3], [-4,-3,6,10,20,30], 3)
+
+  ! Test case 3
+  print *, distance([2,1,100,3], [-5,-2,10,-3,7], 6)
+end program test_distance
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:19:
+
+    4 |   function distance(arr1, arr2, d) result(distance_value)
+      |                   1
+Error: MODULE attribute of ‘distance’ conflicts with PROCEDURE attribute at (1)
+temp.f95:5:46:
+
+    5 |     integer, intent(in) :: arr1(:), arr2(:), d
+      |                                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:6:29:
+
+    6 |     integer :: distance_value
+      |                             1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:25:
+
+    9 |     integer :: i, j, diff
+      |                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:31:
+
+   12 |     distance_value = size(arr1)
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:24:
+
+   15 |     do i = 1, size(arr1)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:17:26:
+
+   17 |       do j = 1, size(arr2)
+      |                          1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:19:37:
+
+   19 |         diff = abs(arr1(i) - arr2(j))
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:27:
+
+   23 |         if (diff <= d) then
+      |                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:24:45:
+
+   24 |           distance_value = distance_value - 1
+      |                                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:25:14:
+
+   25 |           exit
+      |              1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:26:11:
+
+   26 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:27:9:
+
+   27 |       end do
+      |         1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:7:
+
+   28 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:5:
+
+   29 |   end function distance
+      |     1
+Error: Expecting END MODULE statement at (1)
+temp.f95:33:7:
+
+   33 |   use distance
+      |       1
+Fatal Error: Cannot open module file ‘distance.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def findTheDistanceValue(arr1, arr2, d):
+    distance = 0
+    for a in arr1:
+        found = True
+        for b in arr2:
+            if abs(a - b) &lt;= d:
+                found = False
+                break
+        if found:
+            distance += 1
+    return distance
+</code></pre>
+<p>For each element <code>a</code> in array <code>arr1</code>, we iterate through all elements <code>b</code> in array <code>arr2</code> and check the condition <code>|a-b| &lt;= d</code>. If we find an element <code>b</code> that satisfies the condition, we stop searching and move to the next element of <code>arr1</code>. If we haven't found any such element, we increment the distance value. Finally, we return the distance value after processing all elements of <code>arr1</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int findTheDistanceValue(vector&lt;int&gt;&amp; arr1, vector&lt;int&gt;&amp; arr2, int d) {
+    int distance = 0;
+    for (int a : arr1) {
+        bool found = true;
+        for (int b : arr2) {
+            if (abs(a - b) &lt;= d) {
+                found = false;
+                break;
+            }
+        }
+        if (found) distance++;
+    }
+    return distance;
+}
+</code></pre>
+<p>For each element <code>a</code> in array <code>arr1</code>, we iterate through all elements <code>b</code> in array <code>arr2</code> and check the condition <code>|a-b| &lt;= d</code>. If we find an element <code>b</code> that satisfies the condition, we stop searching and move to the next element of <code>arr1</code>. If we haven't found any such element, we increment the distance value. Finally, we return the distance value after processing all elements of <code>arr1</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

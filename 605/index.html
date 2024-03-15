@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Can Place Flowers</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/604/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/606/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You have a long flowerbed in which some of the plots are planted, and some are not. However, flowers cannot be planted in <strong>adjacent</strong> plots.</p>
+<p>Given an integer array <code>flowerbed</code> containing <code>0</code>'s and <code>1</code>'s, where <code>0</code> means empty and <code>1</code> means not empty, and an integer <code>n</code>, return <code>true</code> <em>if</em> <code>n</code> <em>new flowers can be planted in the</em> <code>flowerbed</code> <em>without violating the no-adjacent-flowers rule and</em> <code>false</code> <em>otherwise</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> flowerbed = [1,0,0,0,1], n = 1
+<strong>Output:</strong> true</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> flowerbed = [1,0,0,0,1], n = 2
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= flowerbed.length &lt;= 2 * 104</code></li>
+<li><code>flowerbed[i]</code> is <code>0</code> or <code>1</code>.</li>
+<li>There are no two adjacent flowers in <code>flowerbed</code>.</li>
+<li><code>0 &lt;= n &lt;= flowerbed.length</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/can-place-flowers/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 5
+    integer, dimension(n) :: flowerbed
+    logical :: result
+
+    flowerbed = [1, 0, 0, 0, 1]
+    result = canPlaceFlowers(flowerbed, 1)
+    print '(L1)', result
+
+    flowerbed = [1, 0, 0, 0, 1]
+    result = canPlaceFlowers(flowerbed, 2)
+    print '(L1)', result
+
+contains
+
+    function canPlaceFlowers(flowerbed, n) result(canPlace)
+        implicit none
+        integer, intent(in) :: flowerbed(:), n
+        logical :: canPlace
+        integer :: i, j
+
+        do i = 1, size(flowerbed) - 1
+            if (flowerbed(i) == 0 .and. flowerbed(i+1) == 0) then
+                do j = i + 1, i + n
+                    if (j > size(flowerbed)) exit
+                    if (flowerbed(j) /= 0) then
+                        canPlace = .false.
+                        exit
+                    end if
+                end do
+                if (canPlace) exit
+            end if
+        end do
+
+        if (i > size(flowerbed)) then
+            canPlace = .true.
+        else
+            canPlace = .false.
+        end if
+
+    end function canPlaceFlowers
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>F
+F
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! This is a full Fortran script with a valid main entry point that solves the problem
+! described in the statement.
+
+! Declare the input variables
+integer, dimension(:), allocatable :: flowerbed
+integer :: n
+
+! Declare the output variable
+logical :: can_plant_flowers
+
+! Declare the temporary variables
+integer :: i, j, count
+
+! Main entry point
+program main
+    ! Read the input from the standard input
+    read(*,*) flowerbed
+    read(*,*) n
+
+    ! Call the function to check if flowers can be planted
+    can_plant_flowers = can_plant_flowers(flowerbed, n)
+
+    ! Print the output to the standard output
+    write(*,*) can_plant_flowers
+end program main
+
+! Function to check if flowers can be planted
+function can_plant_flowers(flowerbed, n) result(can_plant)
+    ! Declare the input variables
+    integer, dimension(:), allocatable :: flowerbed
+    integer :: n
+
+    ! Declare the output variable
+    logical :: can_plant
+
+    ! Declare the temporary variables
+    integer :: i, j, count
+
+    ! Initialize the output variable
+    can_plant = .true.
+
+    ! Check if the input array is valid
+    if (size(flowerbed) == 0) then
+        return
+    end if
+
+    ! Initialize the count of adjacent flowers
+    count = 0
+
+    ! Loop through the array and check if flowers can be planted
+    do i = 1, size(flowerbed) - 1
+        ! Check if the current plot is empty
+        if (flowerbed(i) == 0) then
+            ! Check if the previous plot is not empty
+            if (flowerbed(i - 1) == 1) then
+                ! Increment the count of adjacent flowers
+                count = count + 1
+            end if
+
+            ! Check if the next plot is not empty
+            if (flowerbed(i + 1) == 1) then
+                ! Increment the count of adjacent flowers
+                count = count + 1
+            end if
+
+            ! Check if the count of adjacent flowers exceeds the input parameter
+            if (count > n) then
+                ! Set the output variable to false
+                can_plant = .false.
+
+                ! Exit the loop
+                exit
+            end if
+        end if
+    end do
+
+    ! Return the output variable
+    return
+end function can_plant_flowers
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:12:
+
+   15 | program main
+      |            1
+Error: Unexpected PROGRAM statement at (1)
+temp.f95:25:16:
+
+   25 | end program main
+      |                1
+Error: Syntax error in END PROGRAM statement at (1)
+temp.f95:30:51:
+
+   30 |     integer, dimension(:), allocatable :: flowerbed
+      |                                                   1
+Error: Symbol ‘flowerbed’ at (1) already has basic type of INTEGER
+temp.f95:31:16:
+
+   31 |     integer :: n
+      |                1
+Error: Symbol ‘n’ at (1) already has basic type of INTEGER
+temp.f95:34:24:
+
+   34 |     logical :: can_plant
+      |                        1
+Error: Unexpected data declaration statement at (1)
+temp.f95:37:16:
+
+   37 |     integer :: i, j, count
+      |                1
+Error: Symbol ‘i’ at (1) already has basic type of INTEGER
+temp.f95:79:3:
+
+   79 | end function can_plant_flowers
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def canPlaceFlowers(flowerbed, n):
+    count = 0
+    for i in range(len(flowerbed)):
+        if flowerbed[i] == 0 and (i == 0 or flowerbed[i - 1] == 0) and (i == len(flowerbed) - 1 or flowerbed[i + 1] == 0):
+            flowerbed[i] = 1
+            count += 1
+        if count &gt;= n:
+            return True
+    return count &gt;= n
+</code></pre>
+<pre><code>1. Initialize a variable `count` to keep track of the number of flowers planted.
+</code></pre>
+<ol>
+<li>Iterate through the flowerbed with a variable <code>i</code>.</li>
+<li>Check the possibility of planting flowers at the current index:</li>
+<li>If <code>flowerbed[i]</code> is already 0,</li>
+<li><code>i</code> is 0 (first plot) or the plot before the current plot is empty,</li>
+<li><code>i</code> is the last plot or the plot after the current plot is empty.</li>
+<li>If all these conditions are met, plant a flower at the current plot by setting <code>flowerbed[i]</code> to 1 and increment the count.</li>
+<li>If the count is equal to or greater than <code>n</code>, return true.</li>
+<li>After iterating through the entire array, if the count is still equal to or greater than <code>n</code>, return true; otherwise, return false.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool canPlaceFlowers(vector&lt;int&gt;&amp; flowerbed, int n) {
+    int count = 0;
+    for(int i = 0; i &lt; flowerbed.size(); i++) {
+        if(flowerbed[i] == 0 &amp;&amp; (i == 0 || flowerbed[i - 1] == 0) &amp;&amp; (i == flowerbed.size() - 1 || flowerbed[i + 1] == 0)) {
+            flowerbed[i] = 1;
+            count++;
+        }
+        if(count &gt;= n) return true;
+    }
+    return count &gt;= n;
+}
+</code></pre>
+<pre><code>1. Initialize a variable `count` to keep track of the number of flowers planted.
+</code></pre>
+<ol>
+<li>Iterate through the flowerbed with a variable <code>i</code>.</li>
+<li>Check the possibility of planting flowers at the current index:</li>
+<li>If <code>flowerbed[i]</code> is already 0,</li>
+<li><code>i</code> is 0 (first plot) or the plot before the current plot is empty,</li>
+<li><code>i</code> is the last plot or the plot after the current plot is empty.</li>
+<li>If all these conditions are met, plant a flower at the current plot by setting <code>flowerbed[i]</code> to 1 and increment the count.</li>
+<li>If the count is equal to or greater than <code>n</code>, return true.</li>
+<li>After iterating through the entire array, if the count is still equal to or greater than <code>n</code>, return true; otherwise, return false.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

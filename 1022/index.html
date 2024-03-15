@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Sum of Root To Leaf Binary Numbers</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1021/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1025/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given the <code>root</code> of a binary tree where each node has a value <code>0</code> or <code>1</code>. Each root-to-leaf path represents a binary number starting with the most significant bit.</p>
+<ul>
+<li>For example, if the path is <code>0 -&gt; 1 -&gt; 1 -&gt; 0 -&gt; 1</code>, then this could represent <code>01101</code> in binary, which is <code>13</code>.</li>
+</ul>
+<p>For all leaves in the tree, consider the numbers represented by the path from the root to that leaf. Return <em>the sum of these numbers</em>.</p>
+<p>The test cases are generated so that the answer fits in a <strong>32-bits</strong> integer.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [1,0,1,0,1,0,1]
+<strong>Output:</strong> 22
+<strong>Explanation:</strong> (100) + (101) + (110) + (111) = 4 + 5 + 6 + 7 = 22</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [0]
+<strong>Output:</strong> 0</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[1, 1000]</code>.</li>
+<li><code>Node.val</code> is <code>0</code> or <code>1</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/sum-of-root-to-leaf-binary-numbers/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: n = 8
+    type :: Node
+        integer :: val
+        class(Node), pointer :: left, right
+    end type
+    type(Node), target :: root
+    integer :: i, j
+    real(kind=DP) :: x
+
+    ! Examples
+    call solve([1,0,1,0,1,0,1], x)
+    write (unit=error_unit, fmt='(A,F0.2)') 'Example 1: ', x
+    call solve([0], x)
+    write (unit=error_unit, fmt='(A,F0.2)') 'Example 2: ', x
+
+contains
+
+    subroutine solve(root, x)
+        type(Node), intent(in) :: root
+        real(kind=DP), intent(out) :: x
+
+        x = 0.0_DP
+        do i = 1, n
+            if (associated(root%left)) then
+                call solve(root%left, x)
+            end if
+            x = x + real(root%val, kind=DP) * 2.0_DP**(n - i)
+            if (associated(root%right)) then
+                call solve(root%right, x)
+            end if
+        end do
+    end subroutine solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:28:40:
+
+   28 |                 call solve(root%left, x)
+      |                                        1
+Error: SUBROUTINE ‘solve’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:32:41:
+
+   32 |                 call solve(root%right, x)
+      |                                         1
+Error: SUBROUTINE ‘solve’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:14:34:
+
+   14 |     call solve([1,0,1,0,1,0,1], x)
+      |                                  1
+Error: Type mismatch in argument ‘root’ at (1); passed INTEGER(4) to TYPE(node)
+temp.f95:16:22:
+
+   16 |     call solve([0], x)
+      |                      1
+Error: Type mismatch in argument ‘root’ at (1); passed INTEGER(4) to TYPE(node)
+temp.f95:26:19:
+
+   26 |         do i = 1, n
+      |                   1
+   27 |             if (associated(root%left)) then
+   28 |                 call solve(root%left, x)
+      |                                        2
+Error: Index variable ‘i’ redefined at (1) in procedure ‘solve’ called from within DO loop at (2)
+temp.f95:26:19:
+
+   26 |         do i = 1, n
+      |                   1
+......
+   32 |                 call solve(root%right, x)
+      |                                         2
+Error: Index variable ‘i’ redefined at (1) in procedure ‘solve’ called from within DO loop at (2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module BinaryTree
+
+    implicit none
+
+    type :: Node
+        integer :: val
+        type(Node), pointer :: left
+        type(Node), pointer :: right
+    end type Node
+
+    interface
+        function sum_path_values(root) result(sum)
+            type(Node), pointer :: root
+            integer :: sum
+        end function sum_path_values
+    end interface
+
+contains
+
+    function sum_path_values_helper(root, current_sum) result(sum)
+        type(Node), pointer :: root
+        integer :: current_sum
+        integer :: sum
+
+        if (.not. associated(root)) then
+            sum = 0
+        else
+            current_sum = current_sum * 2 + root%val
+            sum = sum_path_values_helper(root%left, current_sum) + &
+                  sum_path_values_helper(root%right, current_sum)
+        end if
+
+        sum = sum + current_sum
+
+    end function sum_path_values_helper
+
+    function sum_path_values(root) result(sum)
+        type(Node), pointer :: root
+        integer :: sum
+
+        sum = sum_path_values_helper(root, 0)
+
+    end function sum_path_values
+
+end module BinaryTree
+
+program main
+    use BinaryTree
+    implicit none
+
+    type(Node), pointer :: root
+    integer :: sum
+
+    ! Example 1
+    root => Node(val=1, left => Node(val=0, left => Node(val=1, left => Node(val=0, left => Node(val=1, left => Node(val=0, left => Node(val=1, left => null()), right => null())), right => null())), right => null())
+    sum = sum_path_values(root)
+    write (*,*) "Example 1:", sum
+
+    ! Example 2
+    root => Node(val=0, left => null(), right => null())
+    sum = sum_path_values(root)
+    write (*,*) "Example 2:", sum
+
+    ! Example 3
+    root => Node(val=1, left => Node(val=0, left => Node(val=1, left => Node(val=0, left => Node(val=1, left => Node(val=0, left => Node(val=1, left => null()), right => null())), right => null())), right => null())
+    sum = sum_path_values(root)
+    write (*,*) "Example 3:", sum
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:13:23:
+
+   13 |             type(Node), pointer :: root
+      |                       1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:37:29:
+
+   12 |         function sum_path_values(root) result(sum)
+      |        2                     
+......
+   37 |     function sum_path_values(root) result(sum)
+      |                             1
+Error: Procedure ‘sum_path_values’ at (1) is already defined at (2)
+temp.f95:38:35:
+
+   38 |         type(Node), pointer :: root
+      |                                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:39:22:
+
+   39 |         integer :: sum
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:41:45:
+
+   41 |         sum = sum_path_values_helper(root, 0)
+      |                                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:43:7:
+
+   43 |     end function sum_path_values
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:40:
+
+   30 |                   sum_path_values_helper(root%right, current_sum)
+      |                                        1
+Error: Function ‘sum_path_values_helper’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:48:9:
+
+   48 |     use BinaryTree
+      |         1
+Fatal Error: Cannot open module file ‘binarytree.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def uniquePathsIII(grid):
+    x, y, empty = 0, 0, 1
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == 1:
+                x, y = i, j
+            elif grid[i][j] == 0:
+                empty += 1
+    return dfs(grid, x, y, empty)
+
+def dfs(grid, x, y, empty):
+    if x &lt; 0 or x &gt;= len(grid) or y &lt; 0 or y &gt;= len(grid[0]) or grid[x][y] == -1:
+        return 0
+    if grid[x][y] == 2:
+        return 1 if empty == -1 else 0
+    grid[x][y] = -1
+    paths = dfs(grid, x + 1, y, empty - 1) + dfs(grid, x - 1, y, empty - 1) + dfs(grid, x, y + 1, empty - 1) + dfs(grid, x, y - 1, empty - 1)
+    grid[x][y] = 0
+    return paths
+</code></pre>
+<p>The algorithm uses a depth-first search (DFS) to explore all possible paths from the starting square to the ending square while keeping track of the number of non-obstacle squares it has visited. If a path reaches the ending square and has visited all non-obstacle squares exactly once, it counts as a valid path. The algorithm returns the total number of valid paths it finds. It starts by iterating over the grid to find the starting position and count the number of non-obstacle squares. Then it performs the DFS, backtracking when necessary by marking visited squares with -1 and unvisiting them once they have been explored.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int dfs(vector&lt;vector&lt;int&gt;&gt;&amp; grid, int x, int y, int empty) {
+    if (x &lt; 0 || x &gt;= grid.size() || y &lt; 0 || y &gt;= grid[0].size() || grid[x][y] == -1) {
+        return 0;
+    }
+    if (grid[x][y] == 2) {
+        return empty == -1 ? 1 : 0;
+    }
+    grid[x][y] = -1;
+    int paths = dfs(grid, x + 1, y, empty - 1) + dfs(grid, x - 1, y, empty - 1) + dfs(grid, x, y + 1, empty - 1) + dfs(grid, x, y - 1, empty - 1);
+    grid[x][y] = 0;
+    return paths;
+}
+
+int uniquePathsIII(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    int x = 0, y = 0, empty = 1;
+    for (int i = 0; i &lt; grid.size(); ++i) {
+        for (int j = 0; j &lt; grid[0].size(); ++j) {
+            if (grid[i][j] == 1) {
+                x = i, y = j;
+            } else if (grid[i][j] == 0) {
+                empty++;
+            }
+        }
+    }
+    return dfs(grid, x, y, empty);
+}
+</code></pre>
+<p>The algorithm uses a depth-first search (DFS) to explore all possible paths from the starting square to the ending square while keeping track of the number of non-obstacle squares it has visited. If a path reaches the ending square and has visited all non-obstacle squares exactly once, it counts as a valid path. The algorithm returns the total number of valid paths it finds. It starts by iterating over the grid to find the starting position and count the number of non-obstacle squares. Then it performs the DFS, backtracking when necessary by marking visited squares with -1 and unvisiting them once they have been explored.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

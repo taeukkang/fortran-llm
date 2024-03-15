@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Check if an Array Is Consecutive</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2224/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2231/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code>, return <code>true</code> <em>if</em> <code>nums</code> <em>is <strong>consecutive</strong>, otherwise return</em> <code>false</code><em>.</em></p>
+<p>An array is <strong>consecutive</strong> if it contains every number in the range <code>[x, x + n - 1]</code> (<strong>inclusive</strong>), where <code>x</code> is the minimum number in the array and <code>n</code> is the length of the array.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,3,4,2]
+<strong>Output:</strong> true
+<strong>Explanation:</strong>
+The minimum value is 1 and the length of nums is 4.
+All of the values in the range [x, x + n - 1] = [1, 1 + 4 - 1] = [1, 4] = (1, 2, 3, 4) occur in nums.
+Therefore, nums is consecutive.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,3]
+<strong>Output:</strong> false
+<strong>Explanation:</strong>
+The minimum value is 1 and the length of nums is 2.
+The value 2 in the range [x, x + n - 1] = [1, 1 + 2 - 1], = [1, 2] = (1, 2) does not occur in nums.
+Therefore, nums is not consecutive.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [3,5,4]
+<strong>Output:</strong> true
+<strong>Explanation:</strong>
+The minimum value is 3 and the length of nums is 3.
+All of the values in the range [x, x + n - 1] = [3, 3 + 3 - 1] = [3, 5] = (3, 4, 5) occur in nums.
+Therefore, nums is consecutive.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 105</code></li>
+<li><code>0 &lt;= nums[i] &lt;= 105</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/check-if-an-array-is-consecutive/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, dimension(n) :: nums
+    logical :: result
+
+    ! Example 1
+    nums = [1, 3, 4, 2]
+    result = is_consecutive(nums)
+    write (*, '(A, L1)') 'Example 1: ', result
+
+    ! Example 2
+    nums = [1, 3]
+    result = is_consecutive(nums)
+    write (*, '(A, L1)') 'Example 2: ', result
+
+    ! Example 3
+    nums = [3, 5, 4]
+    result = is_consecutive(nums)
+    write (*, '(A, L1)') 'Example 3: ', result
+
+contains
+
+    function is_consecutive(nums) result(result)
+        implicit none
+        integer, dimension(:), intent(in) :: nums
+        logical :: result
+        integer :: x, n
+
+        x = minval(nums)
+        n = size(nums)
+
+        result = all([x, x + n - 1] == nums)
+    end function is_consecutive
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:14:4:
+
+   14 |     nums = [1, 3]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (4 and 2)
+temp.f95:19:4:
+
+   19 |     nums = [3, 5, 4]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (4 and 3)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module is_consecutive
+
+implicit none
+
+contains
+
+function is_consecutive(nums) result(is_consecutive)
+
+integer, intent(in) :: nums(:)
+logical :: is_consecutive
+
+! Variables
+integer :: x, n, i
+
+! Initialize variables
+x = minval(nums)
+n = size(nums)
+is_consecutive = .true.
+
+! Check if all values in the range [x, x + n - 1] occur in nums
+do i = x, x + n - 1
+    if (.not. any(nums == i)) then
+        is_consecutive = .false.
+        exit
+    end if
+end do
+
+end function is_consecutive
+
+end module is_consecutive
+
+program test_is_consecutive
+
+use is_consecutive, only : is_consecutive
+implicit none
+
+! Test case 1:
+print *, is_consecutive([1, 3, 4, 2])
+! Expected output:
+! .true.
+
+! Test case 2:
+print *, is_consecutive([1, 3])
+! Expected output:
+! .false.
+
+! Test case 3:
+print *, is_consecutive([3, 5, 4])
+! Expected output:
+! .true.
+
+end program test_is_consecutive
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:23:
+
+    7 | function is_consecutive(nums) result(is_consecutive)
+      |                       1
+Error: MODULE attribute of ‘is_consecutive’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:30:
+
+    9 | integer, intent(in) :: nums(:)
+      |                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:25:
+
+   10 | logical :: is_consecutive
+      |                         1
+Error: Symbol ‘is_consecutive’ at (1) has already been host associated
+temp.f95:13:18:
+
+   13 | integer :: x, n, i
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:16:16:
+
+   16 | x = minval(nums)
+      |                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:14:
+
+   17 | n = size(nums)
+      |              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:18:15:
+
+   18 | is_consecutive = .true.
+      |               1
+Error: Symbol ‘is_consecutive’ at (1) has already been host associated
+temp.f95:21:19:
+
+   21 | do i = x, x + n - 1
+      |                   1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:22:34:
+
+   22 |     if (.not. any(nums == i)) then
+      |                                  1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:23:23:
+
+   23 |         is_consecutive = .false.
+      |                       1
+Error: Symbol ‘is_consecutive’ at (1) has already been host associated
+temp.f95:24:12:
+
+   24 |         exit
+      |            1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:25:7:
+
+   25 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:3:
+
+   26 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:3:
+
+   28 | end function is_consecutive
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:41:
+
+   34 | use is_consecutive, only : is_consecutive
+      |                                         1
+Error: The name ‘is_consecutive’ at (1) has already been used as an external module name
+temp.f95:38:8:
+
+    1 | module is_consecutive
+      |                     2
+......
+   38 | print *, is_consecutive([1, 3, 4, 2])
+      |        1
+Error: Global name ‘is_consecutive’ at (1) is already being used as a MODULE at (2)
+temp.f95:38:23:
+
+   38 | print *, is_consecutive([1, 3, 4, 2])
+      |                       1
+Warning: Interface mismatch in global procedure ‘is_consecutive’ at (1): 'is_consecutive' is not a function
+temp.f95:38:8:
+
+   38 | print *, is_consecutive([1, 3, 4, 2])
+      |        1
+Error: Function ‘is_consecutive’ at (1) has no IMPLICIT type
+temp.f95:43:8:
+
+    1 | module is_consecutive
+      |                     2
+......
+   43 | print *, is_consecutive([1, 3])
+      |        1
+Error: Global name ‘is_consecutive’ at (1) is already being used as a MODULE at (2)
+temp.f95:38:23:
+
+   38 | print *, is_consecutive([1, 3, 4, 2])
+      |                       1
+Warning: Interface mismatch in global procedure ‘is_consecutive’ at (1): 'is_consecutive' is not a function
+temp.f95:43:8:
+
+   43 | print *, is_consecutive([1, 3])
+      |        1
+Error: Function ‘is_consecutive’ at (1) has no IMPLICIT type
+temp.f95:48:8:
+
+    1 | module is_consecutive
+      |                     2
+......
+   48 | print *, is_consecutive([3, 5, 4])
+      |        1
+Error: Global name ‘is_consecutive’ at (1) is already being used as a MODULE at (2)
+temp.f95:38:23:
+
+   38 | print *, is_consecutive([1, 3, 4, 2])
+      |                       1
+Warning: Interface mismatch in global procedure ‘is_consecutive’ at (1): 'is_consecutive' is not a function
+temp.f95:48:8:
+
+   48 | print *, is_consecutive([3, 5, 4])
+      |        1
+Error: Function ‘is_consecutive’ at (1) has no IMPLICIT type
+temp.f95:38:8:
+
+   38 | print *, is_consecutive([1, 3, 4, 2])
+      |        1
+Error: More actual than formal arguments in procedure call at (1)
+temp.f95:43:8:
+
+   43 | print *, is_consecutive([1, 3])
+      |        1
+Error: More actual than formal arguments in procedure call at (1)
+temp.f95:48:8:
+
+   48 | print *, is_consecutive([3, 5, 4])
+      |        1
+Error: More actual than formal arguments in procedure call at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from bisect import bisect_left
+
+def maxFruits(fruits, startPos, k):
+    n = len(fruits)
+    left, right = [0] * (n + 1), [0] * (n + 1)
+    j = 0
+
+    for i in range(n):
+        while j &lt; n and fruits[j][0] - fruits[i][0] &lt;= k:
+            right[i + 1] += fruits[j][1]
+            j += 1
+        right[i + 1] += right[i]
+        if j &lt; n and fruits[j][0] - startPos &lt;= k:
+            right[0] += fruits[j][1]
+            j += 1
+
+    j = n - 1
+    for i in range(n - 1, -1, -1):
+        while j &gt;= 0 and fruits[j][0] - fruits[i][0] &lt;= k:
+            left[i] += fruits[j][1]
+            j -= 1
+        left[i] += left[i + 1]
+
+    ans = 0
+    for i in range(n):
+        rest = max(0, k - abs(fruits[i][0] - startPos))
+        idx = bisect_left(fruits, [fruits[i][0] + rest, 0])
+        ans = max(ans, left[i] + right[idx])
+
+    return ans
+</code></pre>
+<pre><code>1. Create left and right arrays of size n+1 filled with zeros, to store the cumulative fruits at each position.
+</code></pre>
+<ol>
+<li>Initialize a cursor j with value 0.</li>
+<li>Iterate the fruits array and populate the right array with total fruits in the range of k units.</li>
+<li>Then populate the left array with the remaining fruits by iterating the array in reverse order.</li>
+<li>Initialize an answer variable, ans, to 0.</li>
+<li>Iterate the fruits array again, calculating the remaining steps after reaching a position and using a binary search technique (in each language) to find the index of the next fruit that can be reached. Update ans with the maximum sum of fruit harvest.</li>
+<li>Finally, return ans as the solution.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int maxFruits(vector&lt;vector&lt;int&gt;&gt;&amp; fruits, int startPos, int k) {
+    int n = fruits.size();
+    vector&lt;int&gt; left(n + 1, 0), right(n + 1, 0);
+    int j = 0;
+
+    for (int i = 0; i &lt; n; i++) {
+        while (j &lt; n &amp;&amp; fruits[j][0] - fruits[i][0] &lt;= k) {
+            right[i + 1] += fruits[j][1];
+            j++;
+        }
+        right[i + 1] += right[i];
+        if (j &lt; n &amp;&amp; fruits[j][0] - startPos &lt;= k) {
+            right[0] += fruits[j][1];
+            j++;
+        }
+    }
+
+    j = n - 1;
+    for (int i = n - 1; i &gt;= 0; i--) {
+        while (j &gt;= 0 &amp;&amp; fruits[j][0] - fruits[i][0] &lt;= k) {
+            left[i] += fruits[j][1];
+            j--;
+        }
+        left[i] += left[i + 1];
+    }
+
+    int ans = 0;
+    for (int i = 0; i &lt; n; i++) {
+        int rest = max(0, k - abs(fruits[i][0] - startPos));
+        int idx = upper_bound(fruits.begin(), fruits.end(), vector&lt;int&gt;{fruits[i][0] + rest, 0}) - fruits.begin();
+        ans = max(ans, left[i] + right[idx]);
+    }
+    return ans;
+}
+</code></pre>
+<pre><code>1. Create left and right arrays of size n+1 filled with zeros, to store the cumulative fruits at each position.
+</code></pre>
+<ol>
+<li>Initialize a cursor j with value 0.</li>
+<li>Iterate the fruits array and populate the right array with total fruits in the range of k units.</li>
+<li>Then populate the left array with the remaining fruits by iterating the array in reverse order.</li>
+<li>Initialize an answer variable, ans, to 0.</li>
+<li>Iterate the fruits array again, calculating the remaining steps after reaching a position and using a binary search technique (in each language) to find the index of the next fruit that can be reached. Update ans with the maximum sum of fruit harvest.</li>
+<li>Finally, return ans as the solution.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

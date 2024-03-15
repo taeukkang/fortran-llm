@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Binary Tree Inorder Traversal</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/88/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/100/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of a binary tree, return <em>the inorder traversal of its nodes' values</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [1,null,2,3]
+<strong>Output:</strong> [1,3,2]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = []
+<strong>Output:</strong> []</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> root = [1]
+<strong>Output:</strong> [1]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[0, 100]</code>.</li>
+<li><code>-100 &lt;= Node.val &lt;= 100</code></li>
+</ul>
+<p><strong>Follow up:</strong> Recursive solution is trivial, could you do it iteratively?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/binary-tree-inorder-traversal/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: n = 3
+    type(tree_node), allocatable :: roots(:)[:]
+    integer :: i
+
+    allocate(roots(n)[*])
+
+    ! Example 1
+    allocate(roots(1)[1])
+    allocate(roots(1)[1]%left, source=tree_node(-1))
+    allocate(roots(1)[1]%right, source=tree_node(2))
+    call print_inorder(roots(1)[1])
+    deallocate(roots(1)[1])
+
+    ! Example 2
+    allocate(roots(1)[1])
+    allocate(roots(1)[1]%left, source=tree_node(-1))
+    allocate(roots(1)[1]%right, source=tree_node(-1))
+    call print_inorder(roots(1)[1])
+    deallocate(roots(1)[1])
+
+    ! Example 3
+    allocate(roots(1)[1])
+    allocate(roots(1)[1]%left, source=tree_node(1))
+    allocate(roots(1)[1]%right, source=tree_node(2))
+    call print_inorder(roots(1)[1])
+    deallocate(roots(1)[1])
+
+contains
+
+    subroutine print_inorder(root)
+        type(tree_node), intent(in) :: root
+        if (associated(root%left)) then
+            call print_inorder(root%left)
+        end if
+        write (unit=error_unit, fmt='(*(g0,1x))') root%value
+        if (associated(root%right)) then
+            call print_inorder(root%right)
+        end if
+    end subroutine print_inorder
+
+end program main
+
+type :: tree_node
+    real(kind=DP) :: value
+    class(tree_node), pointer :: left => null()
+    class(tree_node), pointer :: right => null()
+end type tree_node</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:20:
+
+    5 |     type(tree_node), allocatable :: roots(:)[:]
+      |                    1
+Error: Derived type ‘tree_node’ at (1) is being used before it is defined
+temp.f95:8:13:
+
+    8 |     allocate(roots(n)[*])
+      |             1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:11:13:
+
+   11 |     allocate(roots(1)[1])
+      |             1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:12:13:
+
+   12 |     allocate(roots(1)[1]%left, source=tree_node(-1))
+      |             1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:13:13:
+
+   13 |     allocate(roots(1)[1]%right, source=tree_node(2))
+      |             1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:14:32:
+
+   14 |     call print_inorder(roots(1)[1])
+      |                                1
+Error: Coarray designator at (1) but ‘roots’ is not a coarray
+temp.f95:15:21:
+
+   15 |     deallocate(roots(1)[1])
+      |                     1
+Error: Allocate-object at (1) is not a nonprocedure pointer nor an allocatable variable
+temp.f95:18:13:
+
+   18 |     allocate(roots(1)[1])
+      |             1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:19:13:
+
+   19 |     allocate(roots(1)[1]%left, source=tree_node(-1))
+      |             1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:20:13:
+
+   20 |     allocate(roots(1)[1]%right, source=tree_node(-1))
+      |             1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:21:32:
+
+   21 |     call print_inorder(roots(1)[1])
+      |                                1
+Error: Coarray designator at (1) but ‘roots’ is not a coarray
+temp.f95:22:21:
+
+   22 |     deallocate(roots(1)[1])
+      |                     1
+Error: Allocate-object at (1) is not a nonprocedure pointer nor an allocatable variable
+temp.f95:25:13:
+
+   25 |     allocate(roots(1)[1])
+      |             1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:26:13:
+
+   26 |     allocate(roots(1)[1]%left, source=tree_node(1))
+      |             1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:27:13:
+
+   27 |     allocate(roots(1)[1]%right, source=tree_node(2))
+      |             1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:28:32:
+
+   28 |     call print_inorder(roots(1)[1])
+      |                                1
+Error: Coarray designator at (1) but ‘roots’ is not a coarray
+temp.f95:29:21:
+
+   29 |     deallocate(roots(1)[1])
+      |                     1
+Error: Allocate-object at (1) is not a nonprocedure pointer nor an allocatable variable
+temp.f95:34:24:
+
+   34 |         type(tree_node), intent(in) :: root
+      |                        1
+Error: Derived type ‘tree_node’ at (1) is being used before it is defined
+temp.f95:35:29:
+
+   35 |         if (associated(root%left)) then
+      |                             1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:36:37:
+
+   36 |             call print_inorder(root%left)
+      |                                     1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:37:11:
+
+   37 |         end if
+      |           1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:38:56:
+
+   38 |         write (unit=error_unit, fmt='(*(g0,1x))') root%value
+      |                                                        1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:39:29:
+
+   39 |         if (associated(root%right)) then
+      |                             1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:40:37:
+
+   40 |             call print_inorder(root%right)
+      |                                     1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:41:11:
+
+   41 |         end if
+      |           1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:1:12:
+
+    1 | program main
+      |            1
+......
+   46 | type :: tree_node
+      |                 2
+Error: Two main PROGRAMs at (1) and (2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module binary_tree_inorder_traversal
+implicit none
+private
+public :: inorder_traversal
+
+contains
+
+function inorder_traversal(root) result(values)
+    type(node), pointer, intent(in) :: root
+    integer, allocatable :: values(:)
+
+    integer :: i, n
+    type(node), pointer :: current
+
+    ! Find the number of nodes in the tree
+    n = 0
+    current => root
+    do while (associated(current))
+        n = n + 1
+        current => current%left
+    end do
+
+    ! Allocate an array to store the values
+    allocate(values(n))
+
+    ! Perform the inorder traversal
+    i = 1
+    current => root
+    do while (associated(current))
+        if (associated(current%left)) then
+            current => current%left
+            do while (associated(current))
+                values(i) = current%val
+                i = i + 1
+                current => current%right
+            end do
+        end if
+        values(i) = current%val
+        i = i + 1
+        current => current%right
+    end do
+
+end function inorder_traversal
+
+type node
+    integer :: val
+    type(node), pointer :: left
+    type(node), pointer :: right
+end type node
+
+end module binary_tree_inorder_traversal
+
+program test
+use binary_tree_inorder_traversal
+implicit none
+
+type(node), pointer :: root
+integer, allocatable :: values(:)
+
+! Example 1
+root => node(1, null(), null())
+root%left => node(2, null(), null())
+root%right => node(3, null(), null())
+values = inorder_traversal(root)
+write (*,*) values
+
+! Example 2
+root => null()
+values = inorder_traversal(root)
+write (*,*) values
+
+! Example 3
+root => node(1, null(), null())
+values = inorder_traversal(root)
+write (*,*) values
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:15:
+
+    9 |     type(node), pointer, intent(in) :: root
+      |               1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:13:15:
+
+   13 |     type(node), pointer :: current
+      |               1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:20:28:
+
+   20 |         current => current%left
+      |                            1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:30:32:
+
+   30 |         if (associated(current%left)) then
+      |                                1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:31:32:
+
+   31 |             current => current%left
+      |                                1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:33:37:
+
+   33 |                 values(i) = current%val
+      |                                     1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:35:36:
+
+   35 |                 current => current%right
+      |                                    1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:37:11:
+
+   37 |         end if
+      |           1
+Error: Expecting END DO statement at (1)
+temp.f95:38:29:
+
+   38 |         values(i) = current%val
+      |                             1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:40:28:
+
+   40 |         current => current%right
+      |                            1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:45:9:
+
+   45 | type node
+      |         1
+Error: Unexpected derived type declaration statement in CONTAINS section at (1)
+temp.f95:46:18:
+
+   46 |     integer :: val
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:47:15:
+
+   47 |     type(node), pointer :: left
+      |               1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:48:15:
+
+   48 |     type(node), pointer :: right
+      |               1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:49:3:
+
+   49 | end type node
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:8:31:
+
+    8 | function inorder_traversal(root) result(values)
+      |                               1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:17:11:
+
+   17 |     current => root
+      |           1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:54:5:
+
+   54 | use binary_tree_inorder_traversal
+      |     1
+Fatal Error: Cannot open module file ‘binary_tree_inorder_traversal.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def inorderTraversalHelper(root, result):
+    if not root:
+        return
+    inorderTraversalHelper(root.left, result)
+    result.append(root.val)
+    inorderTraversalHelper(root.right, result)
+
+def inorderTraversal(root):
+    result = []
+    inorderTraversalHelper(root, result)
+    return result
+</code></pre>
+<p>The algorithm simply performs an inorder traversal on the given binary tree. An inorder traversal goes as follows: </p>
+<ol>
+<li>Traverse the left subtree, and call the function recursively for the left child.</li>
+<li>Visit the root.</li>
+<li>Traverse the right subtree, and call the function recursively for the right child.</li>
+</ol>
+<p>This process is implemented by defining a helper function (<code>inorderTraversalHelper</code>) that takes a node and a <code>result</code> list (or vector in C++), and appends the node's value to the <code>result</code> list according to the inorder traversal order. The main <code>inorderTraversal</code> function initializes the result list and calls the helper function with the root of the tree. At the end, <code>inorderTraversal</code> returns the result list containing the values of the nodes in inorder traversal order.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include&lt;vector&gt;
+using namespace std;
+
+class TreeNode {
+public:
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+};
+
+void inorderTraversalHelper(TreeNode* root, vector&lt;int&gt;&amp; result) {
+    if (!root) return;
+    inorderTraversalHelper(root-&gt;left, result);
+    result.push_back(root-&gt;val);
+    inorderTraversalHelper(root-&gt;right, result);
+}
+
+vector&lt;int&gt; inorderTraversal(TreeNode* root){
+    vector&lt;int&gt; result;
+    inorderTraversalHelper(root, result);
+    return result;
+}
+</code></pre>
+<p>The algorithm simply performs an inorder traversal on the given binary tree. An inorder traversal goes as follows: </p>
+<ol>
+<li>Traverse the left subtree, and call the function recursively for the left child.</li>
+<li>Visit the root.</li>
+<li>Traverse the right subtree, and call the function recursively for the right child.</li>
+</ol>
+<p>This process is implemented by defining a helper function (<code>inorderTraversalHelper</code>) that takes a node and a <code>result</code> list (or vector in C++), and appends the node's value to the <code>result</code> list according to the inorder traversal order. The main <code>inorderTraversal</code> function initializes the result list and calls the helper function with the root of the tree. At the end, <code>inorderTraversal</code> returns the result list containing the values of the nodes in inorder traversal order.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

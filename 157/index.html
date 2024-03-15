@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Read N Characters Given Read4</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/145/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/160/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a <code>file</code> and assume that you can only read the file using a given method <code>read4</code>, implement a method to read <code>n</code> characters.</p>
+<p><strong>Method read4:</strong></p>
+<p>The API <code>read4</code> reads <strong>four consecutive characters</strong> from <code>file</code>, then writes those characters into the buffer array <code>buf4</code>.</p>
+<p>The return value is the number of actual characters read.</p>
+<p>Note that <code>read4()</code> has its own file pointer, much like <code>FILE *fp</code> in C.</p>
+<p><strong>Definition of read4:</strong></p>
+<pre><code>Parameter:  char\[\] buf4
+Returns:    int
+</code></pre>
+<p>buf4[] is a destination, not a source. The results from read4 will be copied to buf4[].</p>
+<p>Below is a high-level example of how <code>read4</code> works:</p>
+<p>File file( "abcde <code>"); // File is  "</code>abcde <code>", initially file pointer (fp) points to 'a' char[] buf4 = new char[4]; // Create buffer with enough space to store characters read4(buf4); // read4 returns 4. Now buf4 =  "abcd ", fp points to 'e' read4(buf4); // read4 returns 1. Now buf4 =  "e ", fp points to end of file read4(buf4); // read4 returns 0. Now buf4 =  " ", fp points to end of file</code></p>
+<p><strong>Method read:</strong></p>
+<p>By using the <code>read4</code> method, implement the method read that reads <code>n</code> characters from <code>file</code> and store it in the buffer array <code>buf</code>. Consider that you cannot manipulate <code>file</code> directly.</p>
+<p>The return value is the number of actual characters read.</p>
+<p><strong>Definition of read:</strong></p>
+<pre><code>Parameters: char\[\] buf, int n
+Returns:    int
+</code></pre>
+<p>buf[] is a destination, not a source. You will need to write the results to buf[].</p>
+<p><strong>Note:</strong></p>
+<ul>
+<li>Consider that you cannot manipulate the file directly. The file is only accessible for <code>read4</code> but not for <code>read</code>.</li>
+<li>The <code>read</code> function will only be called once for each test case.</li>
+<li>You may assume the destination buffer array, <code>buf</code>, is guaranteed to have enough space for storing <code>n</code> characters.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> file =  "abc ", n = 4
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> After calling your read method, buf should contain  "abc ". We read a total of 3 characters from the file, so return 3.
+Note that  "abc " is the file's content, not buf. buf is the destination buffer that you will have to write the results to.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> file =  "abcde ", n = 5
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> After calling your read method, buf should contain  "abcde ". We read a total of 5 characters from the file, so return 5.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> file =  "abcdABCD1234 ", n = 12
+<strong>Output:</strong> 12
+<strong>Explanation:</strong> After calling your read method, buf should contain  "abcdABCD1234 ". We read a total of 12 characters from the file, so return 12.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= file.length &lt;= 500</code></li>
+<li><code>file</code> consist of English letters and digits.</li>
+<li><code>1 &lt;= n &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/read-n-characters-given-read4/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+
+    implicit none
+
+    integer :: n, i, j
+    character(len=4) :: buf4
+    character(len=1000) :: file
+    character(len=1000), allocatable :: buf(:)
+
+    ! Read n characters from file and store it in buf
+    call read(file, n, buf)
+
+    ! Print the contents of buf
+    do i = 1, size(buf)
+        print *, buf(i)
+    end do
+
+contains
+
+    subroutine read4(buf4)
+        implicit none
+        character(len=4), intent(out) :: buf4
+        integer :: i
+
+        ! Your code here
+        buf4 = "abcd"
+    end subroutine read4
+
+    function read(file, n, buf) result(num_chars_read)
+        implicit none
+        character(len=*), intent(in) :: file
+        integer, intent(in) :: n
+        character(len=*), intent(out) :: buf
+        integer :: num_chars_read
+
+        ! Your code here
+        num_chars_read = 0
+    end function read
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:29:54:
+
+   29 |     function read(file, n, buf) result(num_chars_read)
+      |                                                      1
+Error: FUNCTION attribute conflicts with SUBROUTINE attribute in ‘read’ at (1)
+temp.f95:30:21:
+
+   30 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:31:44:
+
+   31 |         character(len=*), intent(in) :: file
+      |                                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:32:32:
+
+   32 |         integer, intent(in) :: n
+      |                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:33:44:
+
+   33 |         character(len=*), intent(out) :: buf
+      |                                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:34:33:
+
+   34 |         integer :: num_chars_read
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:37:26:
+
+   37 |         num_chars_read = 0
+      |                          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:38:7:
+
+   38 |     end function read
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: n, i, j, k, l, m, read4_return
+character(len=4) :: buf4
+character(len=1000) :: file
+character(len=1000) :: buf
+
+! Read the value of n
+read(*,*) n
+
+! Initialize variables
+i = 1
+j = 1
+k = 1
+l = 1
+m = 1
+
+! Read the contents of the file
+do while (i <= n)
+    ! Read 4 characters from the file
+    read4_return = read4(buf4)
+
+    ! Check if the end of the file has been reached
+    if (read4_return == 0) then
+        exit
+    end if
+
+    ! Copy the 4 characters to the buffer
+    do while (j <= read4_return)
+        buf(k:k) = buf4(j:j)
+        k = k + 1
+        j = j + 1
+    end do
+
+    ! Increment the file pointer
+    i = i + 4
+end do
+
+! Print the contents of the buffer
+write(*,*) buf(1:k-1)
+
+end
+
+! Read4 method
+function read4(buf4) result(read4_return)
+
+! Declare variables
+integer :: i, j, k, l, m, read4_return
+character(len=4) :: buf4
+
+! Initialize variables
+i = 1
+j = 1
+k = 1
+l = 1
+m = 1
+
+! Read 4 characters from the file
+read4_return = read(l:l)
+
+! Check if the end of the file has been reached
+if (read4_return == 0) then
+    exit
+end if
+
+! Copy the 4 characters to the buffer
+do while (j <= read4_return)
+    buf4(k:k) = read4_return
+    k = k + 1
+    j = j + 1
+end do
+
+! Increment the file pointer
+l = l + 1
+
+end function read4
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:58:22:
+
+   58 | read4_return = read(l:l)
+      |                      1
+Error: Syntax error in argument list at (1)
+temp.f95:62:8:
+
+   62 |     exit
+      |        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:67:16:
+
+   67 |     buf4(k:k) = read4_return
+      |                1
+Error: Cannot convert INTEGER(4) to CHARACTER(0) at (1)
+temp.f95:20:24:
+
+   20 |     read4_return = read4(buf4)
+      |                        1
+Error: Return type mismatch of function ‘read4’ at (1) (REAL(4)/INTEGER(4))
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def read4(buf4: List[str]) -&gt; int:
+    pass
+
+def read(buf: List[str], n: int) -&gt; int:
+    total_read = 0
+    buf4 = [''] * 4
+
+    while total_read &lt; n:
+        read4_count = read4(buf4)
+        for i in range(read4_count):
+            if total_read &lt; n:
+                buf[total_read] = buf4[i]
+                total_read += 1
+            else:
+                break
+        if read4_count &lt; 4:
+            break
+
+    return total_read
+</code></pre>
+<p>The algorithm relies on the read4 function provided, which reads 4 characters at a time. We read and store these characters in a buffer (<code>buf4</code>) and then transfer them one by one into the destination buffer (<code>buf</code>) until we reach the desired number of characters (<code>n</code>). We repeat this process until we have read <code>n</code> characters or reached the end of the <code>file</code>. If we reach the end of the file, the read4 function will return less than 4 characters, which is detected and used to break the loop.</p>
+<p>In each language, we declare a buffer <code>buf4</code> of length 4 to store the characters read using the read4 function. We keep track of the total characters read (<code>totalRead</code>) and iterate through the characters in <code>buf4</code>, transferring them one by one to the destination buffer <code>buf</code>. We make sure not to exceed the requested number of characters <code>n</code>.</p>
+<p>Once we reach the end of the file, the read4 function will return less than 4 characters. If this happens, we break the loop and return the total number of characters read, which is stored in <code>totalRead</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int read4(char *buf4);
+
+int read(char *buf, int n) {
+    int totalRead = 0;
+    char buf4[4];
+
+    while (totalRead &lt; n) {
+        int read4Count = read4(buf4);
+        for (int i = 0; i &lt; read4Count &amp;&amp; totalRead &lt; n; ++i) {
+            buf[totalRead++] = buf4[i];
+        }
+        if (read4Count &lt; 4) break;
+    }
+
+    return totalRead;
+}
+</code></pre>
+<p>The algorithm relies on the read4 function provided, which reads 4 characters at a time. We read and store these characters in a buffer (<code>buf4</code>) and then transfer them one by one into the destination buffer (<code>buf</code>) until we reach the desired number of characters (<code>n</code>). We repeat this process until we have read <code>n</code> characters or reached the end of the <code>file</code>. If we reach the end of the file, the read4 function will return less than 4 characters, which is detected and used to break the loop.</p>
+<p>In each language, we declare a buffer <code>buf4</code> of length 4 to store the characters read using the read4 function. We keep track of the total characters read (<code>totalRead</code>) and iterate through the characters in <code>buf4</code>, transferring them one by one to the destination buffer <code>buf</code>. We make sure not to exceed the requested number of characters <code>n</code>.</p>
+<p>Once we reach the end of the file, the read4 function will return less than 4 characters. If this happens, we break the loop and return the total number of characters read, which is stored in <code>totalRead</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

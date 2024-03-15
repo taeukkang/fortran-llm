@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Logger Rate Limiter</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/350/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/367/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Design a logger system that receives a stream of messages along with their timestamps. Each <strong>unique</strong> message should only be printed <strong>at most every 10 seconds</strong> (i.e. a message printed at timestamp <code>t</code> will prevent other identical messages from being printed until timestamp <code>t + 10</code>).</p>
+<p>All messages will come in chronological order. Several messages may arrive at the same timestamp.</p>
+<p>Implement the <code>Logger</code> class:</p>
+<ul>
+<li><code>Logger()</code> Initializes the <code>logger</code> object.</li>
+<li><code>bool shouldPrintMessage(int timestamp, string message)</code> Returns <code>true</code> if the <code>message</code> should be printed in the given <code>timestamp</code>, otherwise returns <code>false</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input</strong>
+[ "Logger ",  "shouldPrintMessage ",  "shouldPrintMessage ",  "shouldPrintMessage ",  "shouldPrintMessage ",  "shouldPrintMessage ",  "shouldPrintMessage "]
+[[], [1,  "foo "], [2,  "bar "], [3,  "foo "], [8,  "bar "], [10,  "foo "], [11,  "foo "]]
+<strong>Output</strong>
+[null, true, true, false, false, false, true]</p>
+<p><strong>Explanation</strong>
+Logger logger = new Logger();
+logger.shouldPrintMessage(1,  "foo ");  // return true, next allowed timestamp for  "foo " is 1 + 10 = 11
+logger.shouldPrintMessage(2,  "bar ");  // return true, next allowed timestamp for  "bar " is 2 + 10 = 12
+logger.shouldPrintMessage(3,  "foo ");  // 3 &lt; 11, return false
+logger.shouldPrintMessage(8,  "bar ");  // 8 &lt; 12, return false
+logger.shouldPrintMessage(10,  "foo "); // 10 &lt; 11, return false
+logger.shouldPrintMessage(11,  "foo "); // 11 &gt;= 11, return true, next allowed timestamp for  "foo " is 11 + 10 = 21</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= timestamp &lt;= 109</code></li>
+<li>Every <code>timestamp</code> will be passed in non-decreasing order (chronological order).</li>
+<li><code>1 &lt;= message.length &lt;= 30</code></li>
+<li>At most <code>104</code> calls will be made to <code>shouldPrintMessage</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/logger-rate-limiter/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use Logger_mod
+    implicit none
+
+    type(Logger) :: logger
+    integer :: i
+    character(len=30) :: message
+    integer :: timestamp
+
+    ! Example 1
+    call logger%shouldPrintMessage(1, "foo ")
+    call logger%shouldPrintMessage(2, "bar ")
+    call logger%shouldPrintMessage(3, "foo ")
+    call logger%shouldPrintMessage(8, "bar ")
+    call logger%shouldPrintMessage(10, "foo ")
+    call logger%shouldPrintMessage(11, "foo ")
+
+    ! Example 2
+    do i = 1, 5
+        call logger%shouldPrintMessage(i, "bar ")
+    end do
+
+    ! Example 3
+    do i = 1, 5
+        call logger%shouldPrintMessage(i, "foo ")
+    end do
+
+    ! Example 4
+    do i = 1, 5
+        call logger%shouldPrintMessage(i, "bar ")
+    end do
+
+    ! Example 5
+    do i = 1, 5
+        call logger%shouldPrintMessage(i, "foo ")
+    end do
+
+contains
+
+subroutine print_result(result)
+    logical, intent(in) :: result
+    write(*, '(L1)') result
+end subroutine print_result
+
+end program main
+
+module Logger_mod
+    implicit none
+
+    private
+    public :: Logger
+
+    type :: Logger
+        private
+        integer :: last_printed_timestamp = -1
+        character(len=30), allocatable :: last_printed_message(:)
+    contains
+        procedure :: shouldPrintMessage
+    end type Logger
+
+contains
+
+logical function shouldPrintMessage(self, timestamp, message) result(should_print)
+    class(Logger), intent(inout) :: self
+    integer, intent(in) :: timestamp
+    character(len=*), intent(in) :: message
+    integer :: i
+
+    should_print = .false.
+
+    if (timestamp > self%last_printed_timestamp + 10) then
+        self%last_printed_timestamp = timestamp
+        allocate(self%last_printed_message(1))
+        self%last_printed_message(1) = message
+        should_print = .true.
+    else
+        do i = 1, size(self%last_printed_message)
+            if (self%last_printed_message(i) == message) then
+                exit
+            end if
+        end do
+
+        if (i > size(self%last_printed_message)) then
+            self%last_printed_message = [self%last_printed_message, message]
+            should_print = .true.
+        end if
+    end if
+
+end function shouldPrintMessage
+
+end module Logger_mod</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:2:9:
+
+    2 |     use Logger_mod
+      |         1
+Fatal Error: Cannot open module file ‘logger_mod.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module Logger
+    implicit none
+
+    type :: Logger
+        integer :: lastTimestamp = 0
+        character(len=30) :: lastMessage = ""
+    contains
+        procedure :: shouldPrintMessage
+    end type Logger
+
+contains
+
+    function shouldPrintMessage(self, timestamp, message) result(shouldPrint)
+        class(Logger), intent(inout) :: self
+        integer, intent(in) :: timestamp
+        character(len=*), intent(in) :: message
+        logical :: shouldPrint
+
+        if (timestamp < self%lastTimestamp) then
+            shouldPrint = .false.
+        else if (timestamp == self%lastTimestamp .and. message == self%lastMessage) then
+            shouldPrint = .false.
+        else
+            self%lastTimestamp = timestamp
+            self%lastMessage = message
+            shouldPrint = .true.
+        end if
+    end function shouldPrintMessage
+end module Logger
+
+program main
+    use Logger
+    implicit none
+
+    type(Logger) :: logger
+    integer :: timestamp, i
+    character(len=30) :: message
+
+    ! Examples
+    call logger%shouldPrintMessage(1, "foo")
+    call logger%shouldPrintMessage(2, "bar")
+    call logger%shouldPrintMessage(3, "foo")
+    call logger%shouldPrintMessage(8, "bar")
+    call logger%shouldPrintMessage(10, "foo")
+    call logger%shouldPrintMessage(11, "foo")
+
+    ! Test cases
+    do i = 1, 10
+        timestamp = i * 10
+        message = "message " // char(ichar('0') + i)
+        call logger%shouldPrintMessage(timestamp, message)
+    end do
+
+    ! Print the results
+    do i = 1, 10
+        write (*,*) logger%shouldPrintMessage(i * 10, "message " // char(ichar('0') + i))
+    end do
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:18:
+
+    4 |     type :: Logger
+      |                  1
+Error: MODULE attribute of ‘logger’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:7:
+
+    9 |     end type Logger
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:11:8:
+
+   11 | contains
+      |        1
+Error: Unexpected CONTAINS statement in CONTAINS section at (1)
+temp.f95:14:22:
+
+    1 | module Logger
+      |             2         
+......
+   14 |         class(Logger), intent(inout) :: self
+      |                      1
+Error: Type name ‘logger’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:19:30:
+
+   19 |         if (timestamp < self%lastTimestamp) then
+      |                              1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:21:36:
+
+   21 |         else if (timestamp == self%lastTimestamp .and. message == self%lastMessage) then
+      |                                    1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:23:12:
+
+   23 |         else
+      |            1
+Error: Unexpected ELSE statement at (1)
+temp.f95:24:18:
+
+   24 |             self%lastTimestamp = timestamp
+      |                  1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:25:18:
+
+   25 |             self%lastMessage = message
+      |                  1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:27:11:
+
+   27 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:13:36:
+
+   13 |     function shouldPrintMessage(self, timestamp, message) result(shouldPrint)
+      |                                    1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:32:9:
+
+   32 |     use Logger
+      |         1
+Fatal Error: Cannot open module file ‘logger.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class Logger:
+    def __init__(self):
+        self.message_timestamps = {}
+
+    def shouldPrintMessage(self, timestamp: int, message: str) -&gt; bool:
+        if message not in self.message_timestamps or timestamp - self.message_timestamps[message] &gt;= 10:
+            self.message_timestamps[message] = timestamp
+            return True
+        return False
+</code></pre>
+<p>The algorithm initializes an empty map to store message timestamps. The <code>shouldPrintMessage</code> function takes input parameters <code>timestamp</code> and <code>message</code>. It checks if the message is in the map or not. If the message is not in the map or the difference between the given timestamp and the message's timestamp is greater than or equal to 10, it updates the message's timestamp in the map with the given timestamp, and the function returns <code>true</code>. If the difference is less than 10, the function returns <code>false</code>. This ensures that messages will only be printed at most every 10 seconds.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;unordered_map&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Logger {
+public:
+    unordered_map&lt;string, int&gt; message_timestamps;
+
+    Logger() {
+    }
+
+    bool shouldPrintMessage(int timestamp, string message) {
+        if (!message_timestamps.count(message) || timestamp - message_timestamps[message] &gt;= 10) {
+            message_timestamps[message] = timestamp;
+            return true;
+        }
+        return false;
+    }
+};
+</code></pre>
+<p>The algorithm initializes an empty map to store message timestamps. The <code>shouldPrintMessage</code> function takes input parameters <code>timestamp</code> and <code>message</code>. It checks if the message is in the map or not. If the message is not in the map or the difference between the given timestamp and the message's timestamp is greater than or equal to 10, it updates the message's timestamp in the map with the given timestamp, and the function returns <code>true</code>. If the difference is less than 10, the function returns <code>false</code>. This ensures that messages will only be printed at most every 10 seconds.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

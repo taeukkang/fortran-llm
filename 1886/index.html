@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Determine Whether Matrix Can Be Obtained By Rotation</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1880/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1893/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two <code>n x n</code> binary matrices <code>mat</code> and <code>target</code>, return <code>true</code> <em>if it is possible to make</em> <code>mat</code> <em>equal to</em> <code>target</code> <em>by <strong>rotating</strong></em> <code>mat</code> <em>in <strong>90-degree increments</strong>, or</em> <code>false</code> <em>otherwise.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> mat = [[0,1],[1,0]], target = [[1,0],[0,1]]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> We can rotate mat 90 degrees clockwise to make mat equal target.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> mat = [[0,1],[1,1]], target = [[1,0],[0,1]]
+<strong>Output:</strong> false
+<strong>Explanation:</strong> It is impossible to make mat equal to target by rotating mat.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> mat = [[0,0,0],[0,1,0],[1,1,1]], target = [[1,1,1],[0,1,0],[0,0,0]]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> We can rotate mat 90 degrees clockwise two times to make mat equal target.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == mat.length == target.length</code></li>
+<li><code>n == mat[i].length == target[i].length</code></li>
+<li><code>1 &lt;= n &lt;= 10</code></li>
+<li><code>mat[i][j]</code> and <code>target[i][j]</code> are either <code>0</code> or <code>1</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/determine-whether-matrix-can-be-obtained-by-rotation/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 2
+    logical, dimension(n, n) :: mat, target, result
+
+    ! Example 1
+    mat(:, :) = reshape([0, 1, 1, 0], shape(mat))
+    target(:, :) = reshape([1, 0, 0, 1], shape(target))
+    write(*, '(L1)') solve(mat, target)
+
+    ! Example 2
+    mat(:, :) = reshape([0, 1, 1, 0], shape(mat))
+    target(:, :) = reshape([1, 0, 0, 1], shape(target))
+    write(*, '(L1)') solve(mat, target)
+
+    ! Example 3
+    mat(:, :) = reshape([0, 0, 0, 0, 0, 0, 1, 1, 1], shape(mat))
+    target(:, :) = reshape([1, 1, 1, 0, 0, 0, 0, 1, 0], shape(target))
+    write(*, '(L1)') solve(mat, target)
+
+contains
+
+    function solve(mat, target) result(res)
+        implicit none
+        logical, intent(in) :: mat(:, :), target(:, :)
+        logical :: res
+
+        integer :: i, j, k, l
+        logical, dimension(size(mat, 1), size(mat, 2)) :: temp
+
+        res = .false.
+
+        do i = 1, size(mat, 1) - 1
+            do j = 1, size(mat, 2) - 1
+                if (mat(i, j) /= target(i, j)) then
+                    cycle
+                end if
+
+                do k = 1, 3
+                    temp = mat
+                    call rotate(temp, k)
+
+                    if (all(temp == target)) then
+                        res = .true.
+                        exit
+                    end if
+                end do
+
+                if (res) then
+                    exit
+                end if
+            end do
+
+            if (res) then
+                exit
+            end if
+        end do
+
+    contains
+
+        subroutine rotate(arr, dir)
+            implicit none
+            logical, intent(inout) :: arr(:, :)
+            integer, intent(in) :: dir
+
+            integer :: i, j
+            logical, allocatable :: temp(:, :)
+
+            allocate(temp(size(arr, 1), size(arr, 2)))
+
+            select case (dir)
+            case (1)
+                do i = 1, size(arr, 1)
+                    do j = 1, size(arr, 2)
+                        temp(i, j) = arr(i, size(arr, 2) - j + 1)
+                    end do
+                end do
+            case (2)
+                do i = 1, size(arr, 1)
+                    do j = 1, size(arr, 2)
+                        temp(i, j) = arr(size(arr, 1) - i + 1, j)
+                    end do
+                end do
+            case (3)
+                do i = 1, size(arr, 1)
+                    do j = 1, size(arr, 2)
+                        temp(i, j) = arr(size(arr, 1) - j + 1, size(arr, 2) - i + 1)
+                    end do
+                end do
+            end select
+
+            arr(:, :) = temp(:, :)
+
+        end subroutine rotate
+
+    end function solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:60:12:
+
+   60 |     contains
+      |            1
+Error: CONTAINS statement at (1) is already in a contained program unit
+temp.f95:63:25:
+
+   63 |             implicit none
+      |                         1
+Error: Duplicate IMPLICIT NONE statement at (1)
+temp.f95:64:47:
+
+   64 |             logical, intent(inout) :: arr(:, :)
+      |                                               1
+Error: Unexpected data declaration statement at (1)
+temp.f95:65:38:
+
+   65 |             integer, intent(in) :: dir
+      |                                      1
+Error: Unexpected data declaration statement at (1)
+temp.f95:67:24:
+
+   67 |             integer :: i, j
+      |                        1
+Error: Symbol ‘i’ at (1) already has basic type of INTEGER
+temp.f95:68:40:
+
+   68 |             logical, allocatable :: temp(:, :)
+      |                                        1
+Error: Symbol ‘temp’ at (1) already has basic type of LOGICAL
+temp.f95:93:16:
+
+   93 |             arr(:, :) = temp(:, :)
+      |                1
+Error: ‘arr’ at (1) is not a variable
+temp.f95:95:11:
+
+   95 |         end subroutine rotate
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:72:28:
+
+   72 |             select case (dir)
+      |                            1
+Error: Symbol ‘dir’ at (1) has no IMPLICIT type
+temp.f95:36:20:
+
+   36 |                 if (mat(i, j) /= target(i, j)) then
+      |                    1
+Error: Logicals at (1) must be compared with .neqv. instead of /=
+temp.f95:44:28:
+
+   44 |                     if (all(temp == target)) then
+      |                            1
+Error: Logicals at (1) must be compared with .eqv. instead of ==
+temp.f95:70:34:
+
+   70 |             allocate(temp(size(arr, 1), size(arr, 2)))
+      |                                  1
+Error: Symbol ‘arr’ at (1) has no IMPLICIT type
+temp.f95:72:25:
+
+   72 |             select case (dir)
+      |                         1
+Error: Argument of SELECT statement at (1) cannot be UNKNOWN
+temp.f95:8:16:
+
+    8 |     mat(:, :) = reshape([0, 1, 1, 0], shape(mat))
+      |                1
+Warning: Extension: Conversion from INTEGER(4) to LOGICAL(4) at (1)
+temp.f95:9:19:
+
+    9 |     target(:, :) = reshape([1, 0, 0, 1], shape(target))
+      |                   1
+Warning: Extension: Conversion from INTEGER(4) to LOGICAL(4) at (1)
+temp.f95:13:16:
+
+   13 |     mat(:, :) = reshape([0, 1, 1, 0], shape(mat))
+      |                1
+Warning: Extension: Conversion from INTEGER(4) to LOGICAL(4) at (1)
+temp.f95:14:19:
+
+   14 |     target(:, :) = reshape([1, 0, 0, 1], shape(target))
+      |                   1
+Warning: Extension: Conversion from INTEGER(4) to LOGICAL(4) at (1)
+temp.f95:18:16:
+
+   18 |     mat(:, :) = reshape([0, 0, 0, 0, 0, 0, 1, 1, 1], shape(mat))
+      |                1
+Warning: Extension: Conversion from INTEGER(4) to LOGICAL(4) at (1)
+temp.f95:19:19:
+
+   19 |     target(:, :) = reshape([1, 1, 1, 0, 0, 0, 0, 1, 0], shape(target))
+      |                   1
+Warning: Extension: Conversion from INTEGER(4) to LOGICAL(4) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: n, i, j, k
+logical :: equal
+
+! Read input
+read(*,*) n
+
+! Initialize matrices
+integer, dimension(n,n) :: mat, target
+do i = 1, n
+    read(*,*) (mat(i,j), j = 1, n)
+end do
+do i = 1, n
+    read(*,*) (target(i,j), j = 1, n)
+end do
+
+! Check if matrices are equal
+equal = .true.
+do i = 1, n
+    do j = 1, n
+        if (mat(i,j) .neq. target(i,j)) then
+            equal = .false.
+            exit
+        end if
+    end do
+    if (.not. equal) exit
+end do
+
+! If matrices are equal, output "true" and exit
+if (equal) then
+    write(*,*) "true"
+    stop
+end if
+
+! Otherwise, check if it is possible to make the matrices equal by rotating mat
+! in 90-degree increments
+equal = .true.
+do k = 1, 4
+    do i = 1, n
+        do j = 1, n
+            if (mat(i,j) .neq. target(n-j+1,i)) then
+                equal = .false.
+                exit
+            end if
+        end do
+        if (.not. equal) exit
+    end do
+    if (equal) then
+        write(*,*) "true"
+        stop
+    end if
+end do
+
+! If it is not possible to make the matrices equal by rotating mat, output "false"
+write(*,*) "false"
+
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:31:
+
+    9 | integer, dimension(n,n) :: mat, target
+      |                               1
+Error: Explicit shaped array with nonconstant bounds at (1)
+temp.f95:11:14:
+
+   11 |     read(*,*) (mat(i,j), j = 1, n)
+      |              1
+Error: Expecting variable in READ statement at (1)
+temp.f95:14:14:
+
+   14 |     read(*,*) (target(i,j), j = 1, n)
+      |              1
+Error: Expecting variable in READ statement at (1)
+temp.f95:21:26:
+
+   21 |         if (mat(i,j) .neq. target(i,j)) then
+      |                          1
+Error: Unknown operator ‘neq’ at (1)
+temp.f95:41:30:
+
+   41 |             if (mat(i,j) .neq. target(n-j+1,i)) then
+      |                              1
+Error: Unknown operator ‘neq’ at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">import heapq
+
+def minimumSize(nums, maxOperations):
+    pq = [-num for num in nums] # Negative numbers to simulate max heap
+    heapq.heapify(pq)
+    while maxOperations &gt; 0:
+        maxBalls = -heapq.heappop(pq)
+        heapq.heappush(pq, -maxBalls // 2)
+        heapq.heappush(pq, -(maxBalls - (maxBalls // 2)))
+        maxOperations -= 1
+    return -pq[0]
+</code></pre>
+<p>The algorithm is based on using a priority queue (max heap) to store the number of balls in each bag. In each operation, we remove the largest (or maximum) number of balls from the queue, divide this number by 2, and push both divided parts back into the queue. This operation is performed for given <code>maxOperations</code> times, and then we return the maximum number of balls in the bag (i.e., the top of the max heap). </p>
+<p>Since the priority queue maintains the order of elements, prioritizing the maximum number of balls, we can efficiently divide the balls in the largest bag in each operation, eventually minimizing the penalty after <code>maxOperations</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;queue&gt;
+#include &lt;vector&gt;
+
+int minimumSize(std::vector&lt;int&gt;&amp; nums, int maxOperations) {
+    std::priority_queue&lt;int&gt; pq(nums.begin(), nums.end());
+    while (maxOperations &gt; 0) {
+        int maxBalls = pq.top();
+        pq.pop();
+        pq.push(maxBalls / 2);
+        pq.push(maxBalls - (maxBalls / 2));
+        maxOperations--;
+    }
+    return pq.top();
+}
+</code></pre>
+<p>The algorithm is based on using a priority queue (max heap) to store the number of balls in each bag. In each operation, we remove the largest (or maximum) number of balls from the queue, divide this number by 2, and push both divided parts back into the queue. This operation is performed for given <code>maxOperations</code> times, and then we return the maximum number of balls in the bag (i.e., the top of the max heap). </p>
+<p>Since the priority queue maintains the order of elements, prioritizing the maximum number of balls, we can efficiently divide the balls in the largest bag in each operation, eventually minimizing the penalty after <code>maxOperations</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

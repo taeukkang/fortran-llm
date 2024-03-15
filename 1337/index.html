@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>The K Weakest Rows in a Matrix</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1332/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1342/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an <code>m x n</code> binary matrix <code>mat</code> of <code>1</code>'s (representing soldiers) and <code>0</code>'s (representing civilians). The soldiers are positioned <strong>in front</strong> of the civilians. That is, all the <code>1</code>'s will appear to the <strong>left</strong> of all the <code>0</code>'s in each row.</p>
+<p>A row <code>i</code> is <strong>weaker</strong> than a row <code>j</code> if one of the following is true:</p>
+<ul>
+<li>The number of soldiers in row <code>i</code> is less than the number of soldiers in row <code>j</code>.</li>
+<li>Both rows have the same number of soldiers and <code>i &lt; j</code>.</li>
+</ul>
+<p>Return <em>the indices of the</em> <code>k</code> <em><strong>weakest</strong> rows in the matrix ordered from weakest to strongest</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> mat = 
+[[1,1,0,0,0],
+ [1,1,1,1,0],
+ [1,0,0,0,0],
+ [1,1,0,0,0],
+ [1,1,1,1,1]], 
+k = 3
+<strong>Output:</strong> [2,0,3]
+<strong>Explanation:</strong> 
+The number of soldiers in each row is: 
+- Row 0: 2 
+- Row 1: 4 
+- Row 2: 1 
+- Row 3: 2 
+- Row 4: 5 
+The rows ordered from weakest to strongest are [2,0,3,1,4].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> mat = 
+[[1,0,0,0],
+ [1,1,1,1],
+ [1,0,0,0],
+ [1,0,0,0]], 
+k = 2
+<strong>Output:</strong> [0,2]
+<strong>Explanation:</strong> 
+The number of soldiers in each row is: 
+- Row 0: 1 
+- Row 1: 4 
+- Row 2: 1 
+- Row 3: 1 
+The rows ordered from weakest to strongest are [0,2,3,1].</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>m == mat.length</code></li>
+<li><code>n == mat[i].length</code></li>
+<li><code>2 &lt;= n, m &lt;= 100</code></li>
+<li><code>1 &lt;= k &lt;= m</code></li>
+<li><code>matrix[i][j]</code> is either 0 or 1.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/the-k-weakest-rows-in-a-matrix/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: m = 5, n = 5
+    integer, dimension(m, n) :: mat
+    integer :: i, j, k
+    integer, dimension(:), allocatable :: weakest_rows
+
+    ! Example 1
+    mat = reshape([1, 1, 0, 0, 0, &
+                    1, 1, 1, 1, 0, &
+                    1, 0, 0, 0, 0, &
+                    1, 1, 0, 0, 0, &
+                    1, 1, 1, 1, 1], shape(mat))
+    k = 3
+    call solve(mat, k, weakest_rows)
+    write (*, '(*(I0, 1X))') weakest_rows
+
+    ! Example 2
+    mat = reshape([1, 0, 0, 0, &
+                    1, 1, 1, 1, &
+                    1, 0, 0, 0, &
+                    1, 0, 0, 0], shape(mat))
+    k = 2
+    call solve(mat, k, weakest_rows)
+    write (*, '(*(I0, 1X))') weakest_rows
+
+contains
+
+    subroutine solve(mat, k, weakest_rows)
+        implicit none
+        integer, intent(in) :: m, n, k
+        integer, dimension(m, n), intent(in) :: mat
+        integer, dimension(:), allocatable, intent(out) :: weakest_rows
+        integer :: i, j, num_soldiers, min_num_soldiers, min_row_index
+
+        allocate(weakest_rows(k))
+
+        do i = 1, m
+            num_soldiers = count(mat(i, :) == 1)
+            if (i == 1 .or. num_soldiers < min_num_soldiers) then
+                min_num_soldiers = num_soldiers
+                min_row_index = i
+            end if
+        end do
+
+        weakest_rows(1) = min_row_index
+        do i = 2, k
+            min_row_index = 1
+            min_num_soldiers = mat(1, :)
+            do j = 2, m
+                if ((mat(j, :) < min_num_soldiers) .or. &
+                    (mat(j, :) == min_num_soldiers .and. j < min_row_index)) then
+                    min_num_soldiers = mat(j, :)
+                    min_row_index = j
+                end if
+            end do
+            weakest_rows(i) = min_row_index
+        end do
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:33:27:
+
+   33 |         integer, dimension(m, n), intent(in) :: mat
+      |                           1
+Error: Variable ‘m’ cannot appear in the expression at (1)
+temp.f95:32:32:
+
+   32 |         integer, intent(in) :: m, n, k
+      |                                1
+Error: Symbol at (1) is not a DUMMY variable
+temp.f95:33:29:
+
+   33 |         integer, dimension(m, n), intent(in) :: mat
+      |                             1
+Error: Variable ‘n’ cannot appear in the expression at (1)
+temp.f95:32:35:
+
+   32 |         integer, intent(in) :: m, n, k
+      |                                   1
+Error: Symbol at (1) is not a DUMMY variable
+temp.f95:50:12:
+
+   50 |             min_num_soldiers = mat(1, :)
+      |            1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:52:55:
+
+   52 |                 if ((mat(j, :) < min_num_soldiers) .or. &
+      |                                                       1
+Error: IF clause at (1) requires a scalar LOGICAL expression
+temp.f95:54:20:
+
+   54 |                     min_num_soldiers = mat(j, :)
+      |                    1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:20:18:
+
+   20 |     mat = reshape([1, 0, 0, 0, &
+      |                  1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module weakest_rows
+  implicit none
+contains
+  subroutine solve(mat, m, n, k, indices)
+    integer, intent(in) :: m, n, k
+    integer, intent(in) :: mat(m, n)
+    integer, intent(out) :: indices(k)
+    ! Local variables
+    integer :: i, j, count, weakest_row
+    integer :: soldiers(m), civilians(m)
+
+    ! Initialize variables
+    count = 0
+    weakest_row = 1
+
+    ! Count the number of soldiers and civilians in each row
+    do i = 1, m
+      soldiers(i) = 0
+      civilians(i) = 0
+      do j = 1, n
+        if (mat(i, j) == 1) then
+          soldiers(i) = soldiers(i) + 1
+        else
+          civilians(i) = civilians(i) + 1
+        end if
+      end do
+    end do
+
+    ! Find the weakest rows
+    do i = 1, m
+      if (soldiers(i) < k .or. (soldiers(i) == k .and. i < weakest_row)) then
+        count = count + 1
+        indices(count) = i
+        if (count == k) exit
+      end if
+    end do
+
+    ! If there are less than k weakest rows, add the remaining rows
+    if (count < k) then
+      do i = weakest_row, m
+        if (soldiers(i) < k .or. (soldiers(i) == k .and. i < weakest_row)) then
+          count = count + 1
+          indices(count) = i
+          if (count == k) exit
+        end if
+      end do
+    end if
+  end subroutine solve
+end module weakest_rows
+
+program main
+  use weakest_rows
+  implicit none
+  integer, parameter :: m = 5, n = 5, k = 3
+  integer :: mat(m, n)
+  integer :: indices(k)
+
+  ! Example 1
+  mat = reshape((/1, 1, 0, 0, 0, &
+                  1, 1, 1, 1, 0, &
+                  1, 0, 0, 0, 0, &
+                  1, 1, 0, 0, 0, &
+                  1, 1, 1, 1, 1/), shape(mat))
+  call solve(mat, m, n, k, indices)
+  write (*, *) indices
+
+  ! Example 2
+  mat = reshape((/1, 0, 0, 0, &
+                  1, 1, 1, 1, &
+                  1, 0, 0, 0, &
+                  1, 0, 0, 0/), shape(mat))
+  call solve(mat, m, n, k, indices)
+  write (*, *) indices
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:68:16:
+
+   68 |   mat = reshape((/1, 0, 0, 0, &
+      |                1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from typing import List
+
+def kWeakestRows(mat: List[List[int]], k: int) -&gt; List[int]:
+    soldiers_count = [(sum(row), idx) for idx, row in enumerate(mat)]
+    soldiers_count.sort()
+    return [x[1] for x in soldiers_count[:k]]
+</code></pre>
+<ol>
+<li>Count the number of soldiers in each row, and store the count along with the index of the row in a list.</li>
+<li>Sort the list of pairs by the count of soldiers, and if there is a tie, use the index in ascending order.</li>
+<li>Return the indices of the first k elements of the sorted list.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+vector&lt;int&gt; kWeakestRows(vector&lt;vector&lt;int&gt;&gt;&amp; mat, int k) {
+    vector&lt;pair&lt;int, int&gt;&gt; soldiersCount;
+
+    for (int i = 0; i &lt; mat.size(); ++i) {
+        int cnt = count(mat[i].begin(), mat[i].end(), 1);
+        soldiersCount.push_back({cnt, i});
+    }
+
+    sort(soldiersCount.begin(), soldiersCount.end());
+    vector&lt;int&gt; result(k);
+    for (int i = 0; i &lt; k; ++i) {
+        result[i] = soldiersCount[i].second;
+    }
+    return result;
+}
+</code></pre>
+<ol>
+<li>Count the number of soldiers in each row, and store the count along with the index of the row in a list.</li>
+<li>Sort the list of pairs by the count of soldiers, and if there is a tie, use the index in ascending order.</li>
+<li>Return the indices of the first k elements of the sorted list.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

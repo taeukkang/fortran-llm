@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Path Sum</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/111/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/118/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of a binary tree and an integer <code>targetSum</code>, return <code>true</code> if the tree has a <strong>root-to-leaf</strong> path such that adding up all the values along the path equals <code>targetSum</code>.</p>
+<p>A <strong>leaf</strong> is a node with no children.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The root-to-leaf path with the target sum is shown.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [1,2,3], targetSum = 5
+<strong>Output:</strong> false
+<strong>Explanation:</strong> There two root-to-leaf paths in the tree:
+(1 --&gt; 2): The sum is 3.
+(1 --&gt; 3): The sum is 4.
+There is no root-to-leaf path with sum = 5.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> root = [], targetSum = 0
+<strong>Output:</strong> false
+<strong>Explanation:</strong> Since the tree is empty, there are no root-to-leaf paths.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[0, 5000]</code>.</li>
+<li><code>-1000 &lt;= Node.val &lt;= 1000</code></li>
+<li><code>-1000 &lt;= targetSum &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/path-sum/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, iostat_end, DP => REAL64
+    implicit none
+    integer, parameter :: unit_in = 10, unit_out = 20
+    character(len=256) :: filename
+    type :: TreeNode
+        real(kind=DP), pointer :: val => null()
+        class(TreeNode), pointer :: left => null(), right => null()
+    end type TreeNode
+    type(TreeNode), pointer :: root
+    integer :: status, iostatus
+    logical :: exists
+    real(kind=DP) :: targetSum
+
+    ! read input from file
+    write (unit=unit_out, fmt='(A)') 'Enter filename:'
+    read (unit=unit_in, fmt='(A)', iostat=status, iomsg=filename)
+    inquire (file=filename, exist=exists)
+    if (.not. exists) then
+        write (unit=error_unit, fmt='(2A)') 'error: ', trim(filename), ' does not exist'
+        stop 1
+    end if
+    open (newunit=unit_in, file=filename, status='old', action='read', &
+          iostat=iostatus, iomsg=filename)
+    if (iostatus /= 0) then
+        write (unit=error_unit, fmt='(2A)') 'error: ', trim(filename), ' could not be opened for reading'
+        stop 2
+    end if
+    read (unit=unit_in, fmt=*, iostat=status) root, targetSum
+    close (unit=unit_in)
+
+    ! solve problem
+    if (solve(root, targetSum)) then
+        write (unit=unit_out, fmt='(L1)') .true.
+    else
+        write (unit=unit_out, fmt='(L1)') .false.
+    end if
+
+contains
+
+    function solve(node, targetSum) result(hasPath)
+        class(TreeNode), intent(in) :: node
+        real(kind=DP), value :: targetSum
+        logical :: hasPath
+
+        if (associated(node%left)) then
+            hasPath = solve(node%left, targetSum - node%val)
+        else
+            hasPath = .false.
+        end if
+        if (hasPath) return
+
+        if (associated(node%right)) then
+            hasPath = solve(node%right, targetSum - node%val)
+        else
+            hasPath = .false.
+        end if
+        if (hasPath) return
+
+        if (abs(targetSum - node%val) < 1.0D-6) then
+            hasPath = .true.
+        else
+            hasPath = .false.
+        end if
+    end function solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:47:22:
+
+   47 |             hasPath = solve(node%left, targetSum - node%val)
+      |                      1
+Error: Function ‘solve’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:54:22:
+
+   54 |             hasPath = solve(node%right, targetSum - node%val)
+      |                      1
+Error: Function ‘solve’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:23:18:
+
+   23 |     open (newunit=unit_in, file=filename, status='old', action='read', &
+      |                  1
+Error: Named constant ‘unit_in’ in variable definition context (NEWUNIT tag) at (1)
+temp.f95:29:50:
+
+   29 |     read (unit=unit_in, fmt=*, iostat=status) root, targetSum
+      |                                                  1
+Error: Data transfer element at (1) cannot have POINTER components unless it is processed by a defined input/output procedure
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module binary_tree
+
+    implicit none
+
+    type :: node
+        integer :: val
+        type(node), pointer :: left
+        type(node), pointer :: right
+    end type node
+
+    interface
+        function has_root_to_leaf_path(root, target_sum) result(has_path)
+            implicit none
+            type(node), pointer, intent(in) :: root
+            integer, intent(in) :: target_sum
+            logical :: has_path
+        end function has_root_to_leaf_path
+    end interface
+
+end module binary_tree
+
+program binary_tree_path_sum
+
+    use binary_tree
+
+    implicit none
+
+    type(node), pointer :: root
+    integer :: target_sum
+    logical :: has_path
+
+    ! Example 1
+    root => null()
+    allocate(node :: root)
+    root%val = 5
+    allocate(node :: root%left)
+    root%left%val = 4
+    allocate(node :: root%right)
+    root%right%val = 8
+    allocate(node :: root%left%left)
+    root%left%left%val = 11
+    allocate(node :: root%right%left)
+    root%right%left%val = 13
+    allocate(node :: root%right%right)
+    root%right%right%val = 4
+    allocate(node :: root%right%right%left)
+    root%right%right%left%val = 7
+    allocate(node :: root%right%right%right)
+    root%right%right%right%val = 2
+    allocate(node :: root%right%right%right%left)
+    root%right%right%right%left%val = 1
+    target_sum = 22
+    has_path = has_root_to_leaf_path(root, target_sum)
+    if (has_path) then
+        write (*,*) "True"
+    else
+        write (*,*) "False"
+    end if
+
+    ! Example 2
+    root => null()
+    allocate(node :: root)
+    root%val = 1
+    allocate(node :: root%left)
+    root%left%val = 2
+    allocate(node :: root%right)
+    root%right%val = 3
+    target_sum = 5
+    has_path = has_root_to_leaf_path(root, target_sum)
+    if (has_path) then
+        write (*,*) "True"
+    else
+        write (*,*) "False"
+    end if
+
+    ! Example 3
+    root => null()
+    target_sum = 0
+    has_path = has_root_to_leaf_path(root, target_sum)
+    if (has_path) then
+        write (*,*) "True"
+    else
+        write (*,*) "False"
+    end if
+
+contains
+
+    function has_root_to_leaf_path(root, target_sum) result(has_path)
+        implicit none
+        type(node), pointer, intent(in) :: root
+        integer, intent(in) :: target_sum
+        logical :: has_path
+        integer :: current_sum
+        if (associated(root)) then
+            current_sum = root%val
+            if (root%left == null() .and. root%right == null()) then
+                if (current_sum == target_sum) then
+                    has_path = .true.
+                else
+                    has_path = .false.
+                end if
+            else
+                has_path = has_root_to_leaf_path(root%left, target_sum - current_sum) .or. &
+                           has_root_to_leaf_path(root%right, target_sum - current_sum)
+            end if
+        else
+            has_path = .false.
+        end if
+    end function has_root_to_leaf_path
+
+end program binary_tree_path_sum
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:14:23:
+
+   14 |             type(node), pointer, intent(in) :: root
+      |                       1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:12:43:
+
+   12 |         function has_root_to_leaf_path(root, target_sum) result(has_path)
+      |                                           1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:24:9:
+
+   24 |     use binary_tree
+      |         1
+Fatal Error: Cannot open module file ‘binary_tree.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def hasPathSum(root, targetSum):
+    if root is None:
+        return False
+    if root.left is None and root.right is None:
+        return targetSum - root.val == 0
+    return hasPathSum(root.left, targetSum - root.val) or hasPathSum(root.right, targetSum - root.val)
+</code></pre>
+<p>The algorithm starts at the root of the tree and performs a depth-first search. If the root is null, the function returns false as there is no path for the empty tree. If the root is a leaf node, the function checks if the targetSum is equal to the value of the root node.</p>
+<p>Then for non-leaf nodes, it checks if there exists a root-to-leaf path in the left or right subtree by recursively calling the function on the child nodes. The targetSum is updated by subtracting the value of the current node i.e., <code>targetSum - root.val</code>.</p>
+<p>This process continues until a leaf node satisfying the targetSum is found, or all the paths have been explored and there's no match.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+};
+
+bool hasPathSum(TreeNode* root, int targetSum) {
+    if (!root) return false;
+    if (!root-&gt;left &amp;&amp; !root-&gt;right) return targetSum - root-&gt;val == 0;
+    return hasPathSum(root-&gt;left, targetSum - root-&gt;val) || hasPathSum(root-&gt;right, targetSum - root-&gt;val);
+}
+</code></pre>
+<p>The algorithm starts at the root of the tree and performs a depth-first search. If the root is null, the function returns false as there is no path for the empty tree. If the root is a leaf node, the function checks if the targetSum is equal to the value of the root node.</p>
+<p>Then for non-leaf nodes, it checks if there exists a root-to-leaf path in the left or right subtree by recursively calling the function on the child nodes. The targetSum is updated by subtracting the value of the current node i.e., <code>targetSum - root.val</code>.</p>
+<p>This process continues until a leaf node satisfying the targetSum is found, or all the paths have been explored and there's no match.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

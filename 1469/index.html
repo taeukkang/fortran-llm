@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find All The Lonely Nodes</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1464/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1470/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>In a binary tree, a <strong>lonely</strong> node is a node that is the only child of its parent node. The root of the tree is not lonely because it does not have a parent node.</p>
+<p>Given the <code>root</code> of a binary tree, return <em>an array containing the values of all lonely nodes</em> in the tree. Return the list <strong>in any order</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [1,2,3,null,4]
+<strong>Output:</strong> [4]
+<strong>Explanation:</strong> Light blue node is the only lonely node.
+Node 1 is the root and is not lonely.
+Nodes 2 and 3 have the same parent and are not lonely.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [7,1,4,6,null,5,3,null,null,null,null,null,2]
+<strong>Output:</strong> [6,2]
+<strong>Explanation:</strong> Light blue nodes are lonely nodes.
+Please remember that order doesn't matter, [2,6] is also an acceptable answer.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> root = [11,99,88,77,null,null,66,55,null,null,44,33,null,null,22]
+<strong>Output:</strong> [77,55,33,66,44,22]
+<strong>Explanation:</strong> Nodes 99 and 88 share the same parent. Node 11 is the root.
+All other nodes are lonely.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the <code>tree</code> is in the range <code>[1, 1000].</code></li>
+<li><code>1 &lt;= Node.val &lt;= 106</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-all-the-lonely-nodes/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program lonely_nodes
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: unit_out = 6
+    type :: node
+        real(kind=DP) :: val
+        class(node), pointer :: left => null(), right => null()
+    end type
+    type(node), pointer :: root
+    integer :: i
+    character(len=*), parameter :: fmt = '(*(g0,:," ",:," ",:))'
+
+    call get_examples(root)
+    do i = 1, size(root%left)
+        if (associated(root%left(i)%left)) then
+            write (unit=unit_out, fmt=fmt) root%val, &
+                root%left(i)%val, root%left(i)%left%val
+        else
+            write (unit=unit_out, fmt=fmt) root%val, &
+                root%left(i)%val, "None"
+        end if
+    end do
+    deallocate (root)
+
+contains
+
+    subroutine get_examples(root)
+        implicit none
+        type(node), pointer :: root
+        allocate (root)
+        root%val = 1.0_DP
+        allocate (root%left(2))
+        root%left(1)%val = 2.0_DP
+        allocate (root%left(2)%left)
+        root%left(2)%left%val = 3.0_DP
+        allocate (root%right)
+        root%right%val = 4.0_DP
+    end subroutine get_examples
+
+end program lonely_nodes</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:33:
+
+   15 |         if (associated(root%left(i)%left)) then
+      |                                 1
+Error: Syntax error in argument list at (1)
+temp.f95:17:26:
+
+   17 |                 root%left(i)%val, root%left(i)%left%val
+      |                          1
+Error: Syntax error in WRITE statement at (1)
+temp.f95:18:12:
+
+   18 |         else
+      |            1
+Error: Unexpected ELSE statement at (1)
+temp.f95:20:26:
+
+   20 |                 root%left(i)%val, "None"
+      |                          1
+Error: Syntax error in WRITE statement at (1)
+temp.f95:21:11:
+
+   21 |         end if
+      |           1
+Error: Expecting END DO statement at (1)
+temp.f95:32:28:
+
+   32 |         allocate (root%left(2))
+      |                            1
+Error: Shape specification for allocatable scalar at (1)
+temp.f95:34:28:
+
+   34 |         allocate (root%left(2)%left)
+      |                            1
+Error: Shape specification for allocatable scalar at (1)
+temp.f95:14:19:
+
+   14 |     do i = 1, size(root%left)
+      |                   1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module lonely_nodes
+
+implicit none
+
+contains
+
+function get_lonely_nodes(root) result(lonely_nodes)
+
+! Return an array containing the values of all lonely nodes in the tree
+
+type(node), pointer :: root
+integer, allocatable :: lonely_nodes(:)
+
+! Initialize the array to store the lonely nodes
+allocate(lonely_nodes(0))
+
+! Traverse the tree and mark the lonely nodes
+call traverse(root, lonely_nodes)
+
+end function get_lonely_nodes
+
+subroutine traverse(node, lonely_nodes)
+
+! Traverse the tree and mark the lonely nodes
+
+type(node), pointer :: node
+integer, allocatable :: lonely_nodes(:)
+
+! Base case: If the node is null, return
+if (.not. associated(node)) return
+
+! If the node is a lonely node, add its value to the array
+if (node%is_lonely()) then
+lonely_nodes = lonely_nodes + [node%val]
+end if
+
+! Recursively traverse the left and right subtrees
+call traverse(node%left, lonely_nodes)
+call traverse(node%right, lonely_nodes)
+
+end subroutine traverse
+
+end module lonely_nodes
+
+program test
+
+use lonely_nodes
+implicit none
+
+! Test case 1:
+type(node), pointer :: root
+allocate(root)
+root%val = 1
+root%left => null()
+root%right => null()
+write(*,*) get_lonely_nodes(root)
+
+! Test case 2:
+deallocate(root)
+allocate(root)
+root%val = 7
+root%left => null()
+root%right => null()
+root%left => new_node(1)
+root%right => new_node(2)
+write(*,*) get_lonely_nodes(root)
+
+! Test case 3:
+deallocate(root)
+allocate(root)
+root%val = 11
+root%left => null()
+root%right => null()
+root%left => new_node(99)
+root%right => new_node(88)
+root%left%left => new_node(77)
+root%left%right => new_node(66)
+root%right%left => new_node(55)
+root%right%right => new_node(44)
+root%left%left%left => new_node(33)
+root%left%left%right => new_node(22)
+write(*,*) get_lonely_nodes(root)
+
+contains
+
+type(node), pointer function new_node(val)
+
+! Create a new node with the given value
+
+integer, intent(in) :: val
+type(node), pointer :: new_node
+
+allocate(new_node)
+new_node%val = val
+new_node%left => null()
+new_node%right => null()
+
+end function new_node
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:11:11:
+
+   11 | type(node), pointer :: root
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:26:11:
+
+   26 | type(node), pointer :: node
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:33:10:
+
+   33 | if (node%is_lonely()) then
+      |          1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:34:37:
+
+   34 | lonely_nodes = lonely_nodes + [node%val]
+      |                                     1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:35:3:
+
+   35 | end if
+      |   1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:38:20:
+
+   38 | call traverse(node%left, lonely_nodes)
+      |                    1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:39:20:
+
+   39 | call traverse(node%right, lonely_nodes)
+      |                    1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:7:30:
+
+    7 | function get_lonely_nodes(root) result(lonely_nodes)
+      |                              1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:22:24:
+
+   22 | subroutine traverse(node, lonely_nodes)
+      |                        1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:47:5:
+
+   47 | use lonely_nodes
+      |     1
+Fatal Error: Cannot open module file ‘lonely_nodes.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_steps(s, t):
+    count_s = [0] * 26
+    count_t = [0] * 26
+    steps = 0
+
+    for c in s:
+        count_s[ord(c) - ord('a')] += 1
+    for c in t:
+        count_t[ord(c) - ord('a')] += 1
+
+    for i in range(26):
+        steps += abs(count_s[i] - count_t[i])
+
+    return steps // 2
+</code></pre>
+<ol>
+<li>Initialize two frequency count arrays <code>countS</code> and <code>countT</code> of size 26 (to represent the English alphabet) and fill it with zeros.</li>
+<li>Loop through the string <code>s</code> and increment the count of each character in <code>countS</code>.</li>
+<li>Loop through the string <code>t</code> and increment the count of each character in <code>countT</code>.</li>
+<li>Loop through the frequency arrays from 0 to 25, calculate the absolute difference of the count of each character in <code>countS</code> and <code>countT</code>, and add the differences to a variable <code>steps</code>.</li>
+<li>Return half of the <code>steps</code> since the question asks for the minimum number of steps to make <code>t</code> an anagram of <code>s</code>. All differences in characters count are double-accounted when calculating the absolute difference (e.g., one less of a character in <code>t</code> also counts as one more of the same character in <code>s</code>).</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+int minSteps(string s, string t) {
+    vector&lt;int&gt; countS(26, 0);
+    vector&lt;int&gt; countT(26, 0);
+    int steps = 0;
+
+    for (char c : s) countS[c - 'a']++;
+    for (char c : t) countT[c - 'a']++;
+
+    for (int i = 0; i &lt; 26; i++) {
+        steps += abs(countS[i] - countT[i]);
+    }
+
+    return steps / 2;
+}
+</code></pre>
+<ol>
+<li>Initialize two frequency count arrays <code>countS</code> and <code>countT</code> of size 26 (to represent the English alphabet) and fill it with zeros.</li>
+<li>Loop through the string <code>s</code> and increment the count of each character in <code>countS</code>.</li>
+<li>Loop through the string <code>t</code> and increment the count of each character in <code>countT</code>.</li>
+<li>Loop through the frequency arrays from 0 to 25, calculate the absolute difference of the count of each character in <code>countS</code> and <code>countT</code>, and add the differences to a variable <code>steps</code>.</li>
+<li>Return half of the <code>steps</code> since the question asks for the minimum number of steps to make <code>t</code> an anagram of <code>s</code>. All differences in characters count are double-accounted when calculating the absolute difference (e.g., one less of a character in <code>t</code> also counts as one more of the same character in <code>s</code>).</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

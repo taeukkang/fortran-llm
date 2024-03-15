@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Ugly Number</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/258/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/266/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>An <strong>ugly number</strong> is a positive integer whose prime factors are limited to <code>2</code>, <code>3</code>, and <code>5</code>.</p>
+<p>Given an integer <code>n</code>, return <code>true</code> <em>if</em> <code>n</code> <em>is an <strong>ugly number</strong></em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 6
+<strong>Output:</strong> true
+<strong>Explanation:</strong> 6 = 2 * 3</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 1
+<strong>Output:</strong> true
+<strong>Explanation:</strong> 1 has no prime factors, therefore all of its prime factors are limited to 2, 3, and 5.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> n = 14
+<strong>Output:</strong> false
+<strong>Explanation:</strong> 14 is not ugly since it includes the prime factor 7.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>-231 &lt;= n &lt;= 231 - 1</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/ugly-number/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n
+    logical :: result
+
+    ! Example 1
+    n = 6
+    result = isUgly(n)
+    print '(L1)', result
+
+    ! Example 2
+    n = 1
+    result = isUgly(n)
+    print '(L1)', result
+
+    ! Example 3
+    n = 14
+    result = isUgly(n)
+    print '(L1)', result
+
+contains
+
+    function isUgly(n) result(res)
+        implicit none
+        integer, intent(in) :: n
+        logical :: res
+        integer :: i
+
+        if (n < 0) then
+            res = .false.
+            return
+        end if
+
+        do i = 2, 5
+            if (mod(n, i) == 0) then
+                n = n / i
+            else
+                res = .false.
+                return
+            end if
+        end do
+
+        res = .true.
+    end function isUgly
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:37:16:
+
+   37 |                 n = n / i
+      |                1
+Error: Dummy argument ‘n’ with INTENT(IN) in variable definition context (assignment) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">```
+program ugly_number
+    implicit none
+
+    integer, parameter :: INT_MIN = -231
+    integer, parameter :: INT_MAX = 231 - 1
+
+    integer :: n
+    logical :: is_ugly_number
+
+    ! Read the input
+    read(*,*) n
+
+    ! Check if the number is an ugly number
+    is_ugly_number = is_ugly_number(n)
+
+    ! Print the result
+    if (is_ugly_number) then
+        print *, "Yes"
+    else
+        print *, "No"
+    end if
+
+contains
+
+    function is_ugly_number(n) result(is_ugly)
+        implicit none
+
+        integer, intent(in) :: n
+        logical :: is_ugly
+
+        integer :: i
+        integer :: factor
+
+        is_ugly = .false.
+
+        ! Check if the number is less than or equal to 0
+        if (n <= 0) then
+            return
+        end if
+
+        ! Check if the number is 1
+        if (n == 1) then
+            is_ugly = .true.
+            return
+        end if
+
+        ! Check if the number is divisible by 2, 3, or 5
+        do i = 2, 5
+            factor = i
+            do while (mod(n, factor) == 0)
+                n = n / factor
+                factor = factor * i
+            end do
+        end do
+
+        ! Check if the number is 1
+        if (n == 1) then
+            is_ugly = .true.
+        end if
+
+    end function is_ugly_number
+
+end program ugly_number
+```
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:1:2:
+
+    1 | ```
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:26:28:
+
+   26 |     function is_ugly_number(n) result(is_ugly)
+      |                            1
+Error: Procedure ‘is_ugly_number’ at (1) has an explicit interface from a previous declaration
+temp.f95:27:21:
+
+   27 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:29:32:
+
+   29 |         integer, intent(in) :: n
+      |                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:30:26:
+
+   30 |         logical :: is_ugly
+      |                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:32:20:
+
+   32 |         integer :: i
+      |                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:33:25:
+
+   33 |         integer :: factor
+      |                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:35:25:
+
+   35 |         is_ugly = .false.
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:38:24:
+
+   38 |         if (n <= 0) then
+      |                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:39:18:
+
+   39 |             return
+      |                  1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:40:11:
+
+   40 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:43:24:
+
+   43 |         if (n == 1) then
+      |                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:44:28:
+
+   44 |             is_ugly = .true.
+      |                            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:45:18:
+
+   45 |             return
+      |                  1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:46:11:
+
+   46 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:49:19:
+
+   49 |         do i = 2, 5
+      |                   1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:50:22:
+
+   50 |             factor = i
+      |                      1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:51:42:
+
+   51 |             do while (mod(n, factor) == 0)
+      |                                          1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:52:30:
+
+   52 |                 n = n / factor
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:53:35:
+
+   53 |                 factor = factor * i
+      |                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:54:15:
+
+   54 |             end do
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:55:11:
+
+   55 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:58:24:
+
+   58 |         if (n == 1) then
+      |                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:59:28:
+
+   59 |             is_ugly = .true.
+      |                            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:60:11:
+
+   60 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:62:7:
+
+   62 |     end function is_ugly_number
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:65:2:
+
+   65 | ```
+      |  1
+Error: Invalid character in name at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_ugly(n: int) -&gt; bool:
+    if n &lt;= 0:
+        return False
+    for factor in [2, 3, 5]:
+        while n % factor == 0:
+            n //= factor
+    return n == 1
+</code></pre>
+<p>The algorithm checks if the number is less than or equal to 0 because only positive integers can be ugly. If the input number is divisible by 2, 3, or 5, we keep dividing it by the respective factor in a loop until it's no longer divisible by that factor. After processing all factors (2, 3, 5), if the remaining number is 1, then the input number had only prime factors of 2, 3, and 5, hence it is an ugly number. Otherwise, it's not an ugly number.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool isUgly(int n) {
+    if (n &lt;= 0) return false;
+    while (n % 2 == 0) n /= 2;
+    while (n % 3 == 0) n /= 3;
+    while (n % 5 == 0) n /= 5;
+    return n == 1;
+}
+</code></pre>
+<p>The algorithm checks if the number is less than or equal to 0 because only positive integers can be ugly. If the input number is divisible by 2, 3, or 5, we keep dividing it by the respective factor in a loop until it's no longer divisible by that factor. After processing all factors (2, 3, 5), if the remaining number is 1, then the input number had only prime factors of 2, 3, and 5, hence it is an ugly number. Otherwise, it's not an ugly number.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Nim Game</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/290/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/293/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are playing the following Nim Game with your friend:</p>
+<ul>
+<li>Initially, there is a heap of stones on the table.</li>
+<li>You and your friend will alternate taking turns, and <strong>you go first</strong>.</li>
+<li>On each turn, the person whose turn it is will remove 1 to 3 stones from the heap.</li>
+<li>The one who removes the last stone is the winner.</li>
+</ul>
+<p>Given <code>n</code>, the number of stones in the heap, return <code>true</code> <em>if you can win the game assuming both you and your friend play optimally, otherwise return</em> <code>false</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 4
+<strong>Output:</strong> false
+<strong>Explanation:</strong> These are the possible outcomes:
+1. You remove 1 stone. Your friend removes 3 stones, including the last stone. Your friend wins.
+2. You remove 2 stones. Your friend removes 2 stones, including the last stone. Your friend wins.
+3. You remove 3 stones. Your friend removes the last stone. Your friend wins.
+In all outcomes, your friend wins.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 1
+<strong>Output:</strong> true</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> n = 2
+<strong>Output:</strong> true</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 231 - 1</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/nim-game/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program nim_game
+    implicit none
+
+    integer :: n, i, j, k
+    logical :: can_win
+
+    ! Examples
+    n = 4
+    write (*, '(L1)') can_win(n)
+    n = 1
+    write (*, '(L1)') can_win(n)
+    n = 2
+    write (*, '(L1)') can_win(n)
+
+contains
+
+    function can_win(n) result(can_win_)
+        implicit none
+        integer, intent(in) :: n
+        logical :: can_win_
+
+        if (n == 1) then
+            can_win_ = .true.
+        else if (n == 2) then
+            can_win_ = .true.
+        else if (mod(n, 4) == 0) then
+            can_win_ = .false.
+        else
+            do i = 1, n-1
+                do j = 1, min(i+1, n-i)
+                    do k = 1, min(j+1, n-j)
+                        if (.not. can_win(n-k)) then
+                            can_win_ = .true.
+                            return
+                        end if
+                    end do
+                end do
+            end do
+            can_win_ = .false.
+        end if
+    end function can_win
+
+end program nim_game</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:17:21:
+
+   17 |     function can_win(n) result(can_win_)
+      |                     1
+Error: Procedure ‘can_win’ at (1) has an explicit interface from a previous declaration
+temp.f95:18:21:
+
+   18 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:19:32:
+
+   19 |         integer, intent(in) :: n
+      |                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:20:27:
+
+   20 |         logical :: can_win_
+      |                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:22:24:
+
+   22 |         if (n == 1) then
+      |                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:23:29:
+
+   23 |             can_win_ = .true.
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:29:
+
+   24 |         else if (n == 2) then
+      |                             1
+Error: Unexpected ELSE IF statement in CONTAINS section at (1)
+temp.f95:25:29:
+
+   25 |             can_win_ = .true.
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:37:
+
+   26 |         else if (mod(n, 4) == 0) then
+      |                                     1
+Error: Unexpected ELSE IF statement in CONTAINS section at (1)
+temp.f95:27:30:
+
+   27 |             can_win_ = .false.
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:28:12:
+
+   28 |         else
+      |            1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:29:25:
+
+   29 |             do i = 1, n-1
+      |                         1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:30:39:
+
+   30 |                 do j = 1, min(i+1, n-i)
+      |                                       1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:31:43:
+
+   31 |                     do k = 1, min(j+1, n-j)
+      |                                           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:32:52:
+
+   32 |                         if (.not. can_win(n-k)) then
+      |                                                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:33:45:
+
+   33 |                             can_win_ = .true.
+      |                                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:34:34:
+
+   34 |                             return
+      |                                  1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:35:27:
+
+   35 |                         end if
+      |                           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:36:23:
+
+   36 |                     end do
+      |                       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:37:19:
+
+   37 |                 end do
+      |                   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:38:15:
+
+   38 |             end do
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:39:30:
+
+   39 |             can_win_ = .false.
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:40:11:
+
+   40 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:41:7:
+
+   41 |     end function can_win
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!-------------------------------------------------------------------------------
+! This is a solution for the Nim Game problem.
+!
+! The problem is to determine if you can win the game if you and your friend
+! play optimally.
+!
+! The solution is based on the observation that if you can remove 1 to 3 stones
+! on your turn, your friend will not be able to remove the last stone, so you
+! will always win.
+!
+! The program takes an integer input n, the number of stones in the heap, and
+! returns true if you can win the game, and false otherwise.
+!
+! The program has a valid main entry point and runs with all provided examples.
+!-------------------------------------------------------------------------------
+
+program nim_game
+    implicit none
+
+    integer :: n, i
+    logical :: can_win
+
+    ! Read the input
+    read(*,*) n
+
+    ! Check if you can win
+    can_win = .false.
+    do i = 1, 3
+        if (mod(n, i) == 0) then
+            can_win = .true.
+            exit
+        end if
+    end do
+
+    ! Output the result
+    if (can_win) then
+        write(*,*) "You can win the game."
+    else
+        write(*,*) "You cannot win the game."
+    end if
+
+end program nim_game
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 24 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x78055dc4b960 in ???
+#1  0x78055dc4c4d9 in ???
+#2  0x78055dea017b in ???
+#3  0x78055de99684 in ???
+#4  0x78055de9a2aa in ???
+#5  0x57ccf6b78209 in MAIN__
+#6  0x57ccf6b78365 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def canWinNim(n):
+    return n % 4 != 0
+</code></pre>
+<p>In the Nim game, the optimal strategy is to make the other player take the last stone. The game is won by the player who can force the opponent to take the last stone. If the current number of stones is divisible by 4, the next player can always make the other player take the last stone. Therefore, whenever the current number of stones is divisible by 4, the player will lose. If the number of stones is not divisible by 4, the player can make the next player play with a number of stones divisible by 4, thus making the next player lose.</p>
+<p>In the code, we simply check if the number of stones <code>n</code> is not divisible by 4 (<code>n % 4 != 0</code>), and if it is, then the player can win the game.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool canWinNim(int n) {
+    return n % 4 != 0;
+}
+</code></pre>
+<p>In the Nim game, the optimal strategy is to make the other player take the last stone. The game is won by the player who can force the opponent to take the last stone. If the current number of stones is divisible by 4, the next player can always make the other player take the last stone. Therefore, whenever the current number of stones is divisible by 4, the player will lose. If the number of stones is not divisible by 4, the player can make the next player play with a number of stones divisible by 4, thus making the next player lose.</p>
+<p>In the code, we simply check if the number of stones <code>n</code> is not divisible by 4 (<code>n % 4 != 0</code>), and if it is, then the player can win the game.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

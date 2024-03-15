@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Sum of Four Digit Number After Splitting Digits</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2154/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2164/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>positive</strong> integer <code>num</code> consisting of exactly four digits. Split <code>num</code> into two new integers <code>new1</code> and <code>new2</code> by using the <strong>digits</strong> found in <code>num</code>. <strong>Leading zeros</strong> are allowed in <code>new1</code> and <code>new2</code>, and <strong>all</strong> the digits found in <code>num</code> must be used.</p>
+<ul>
+<li>For example, given <code>num = 2932</code>, you have the following digits: two <code>2</code>'s, one <code>9</code> and one <code>3</code>. Some of the possible pairs <code>[new1, new2]</code> are <code>[22, 93]</code>, <code>[23, 92]</code>, <code>[223, 9]</code> and <code>[2, 329]</code>.</li>
+</ul>
+<p>Return <em>the <strong>minimum</strong> possible sum of</em> <code>new1</code> <em>and</em> <code>new2</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num = 2932
+<strong>Output:</strong> 52
+<strong>Explanation:</strong> Some possible pairs [new1, new2] are [29, 23], [223, 9], etc.
+The minimum sum can be obtained by the pair [29, 23]: 29 + 23 = 52.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num = 4009
+<strong>Output:</strong> 13
+<strong>Explanation:</strong> Some possible pairs [new1, new2] are [0, 49], [490, 0], etc. 
+The minimum sum can be obtained by the pair [4, 9]: 4 + 9 = 13.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1000 &lt;= num &lt;= 9999</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-sum-of-four-digit-number-after-splitting-digits/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: num, new1, new2, min_sum
+
+    ! Examples
+    num = 2932
+    call solve(num, new1, new2, min_sum)
+    write (*, '(A, I0, A, I0, A, I0)') 'Example 1: ', &
+        num, ' -> ', new1, ' + ', new2, ' = ', min_sum
+
+    num = 4009
+    call solve(num, new1, new2, min_sum)
+    write (*, '(A, I0, A, I0, A, I0)') 'Example 2: ', &
+        num, ' -> ', new1, ' + ', new2, ' = ', min_sum
+
+contains
+
+    subroutine solve(num, new1, new2, min_sum)
+        implicit none
+        integer, intent(in) :: num
+        integer, intent(out) :: new1, new2, min_sum
+
+        integer :: i, j, k, l
+        integer :: digit1, digit2, digit3, digit4
+        logical :: found
+
+        found = .false.
+        min_sum = huge(min_sum)
+
+        do i = 1, 9
+            digit1 = mod(num, 10)
+            if (digit1 == 0) then
+                cycle
+            end if
+            num = num / 10
+
+            do j = 1, 9
+                digit2 = mod(num, 10)
+                if (digit2 == 0) then
+                    cycle
+                end if
+                num = num / 10
+
+                do k = 1, 9
+                    digit3 = mod(num, 10)
+                    if (digit3 == 0) then
+                        cycle
+                    end if
+                    num = num / 10
+
+                    do l = 1, 9
+                        digit4 = mod(num, 10)
+                        if (digit4 == 0) then
+                            cycle
+                        end if
+                        num = num / 10
+
+                        if (i == digit1 .or. j == digit2 .or. k == digit3 .or. l == digit4) then
+                            found = .true.
+                            exit
+                        end if
+
+                    end do
+
+                    if (found) then
+                        exit
+                    end if
+
+                end do
+
+                if (found) then
+                    exit
+                end if
+
+            end do
+
+            if (found) then
+                exit
+            end if
+
+        end do
+
+        if (.not. found) then
+            stop "No solution"
+        end if
+
+        new1 = i * 1000 + j * 100 + k * 10 + l
+        new2 = digit1 * 1000 + digit2 * 100 + digit3 * 10 + digit4
+        min_sum = min(min_sum, new1 + new2)
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:36:12:
+
+   36 |             num = num / 10
+      |            1
+Error: Dummy argument ‘num’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:43:16:
+
+   43 |                 num = num / 10
+      |                1
+Error: Dummy argument ‘num’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:50:20:
+
+   50 |                     num = num / 10
+      |                    1
+Error: Dummy argument ‘num’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:57:24:
+
+   57 |                         num = num / 10
+      |                        1
+Error: Dummy argument ‘num’ with INTENT(IN) in variable definition context (assignment) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!--------------------------------------------------------------------------------
+! This is a Fortran implementation of the problem statement.
+!
+! The program takes a positive integer num consisting of exactly four digits
+! as input. It splits num into two new integers new1 and new2 by using the
+! digits found in num. Leading zeros are allowed in new1 and new2, and all the
+! digits found in num must be used.
+!
+! The program returns the minimum possible sum of new1 and new2.
+!
+! Example 1:
+! Input: num = 2932
+! Output: 52
+! Explanation: Some possible pairs [new1, new2] are [29, 23], [223, 9], etc.
+! The minimum sum can be obtained by the pair [29, 23]: 29 + 23 = 52.
+!
+! Example 2:
+! Input: num = 4009
+! Output: 13
+! Explanation: Some possible pairs [new1, new2] are [0, 49], [490, 0], etc.
+! The minimum sum can be obtained by the pair [4, 9]: 4 + 9 = 13.
+!
+! Constraints:
+! 1000 <= num <= 9999
+!--------------------------------------------------------------------------------
+
+program min_sum_of_new1_and_new2
+    implicit none
+
+    integer :: num, new1, new2, i, j, k, l, min_sum
+    character(len=4) :: num_str
+
+    ! Read the input number
+    read(*,*) num
+
+    ! Convert the input number to a string
+    write(num_str,*) num
+
+    ! Initialize the minimum sum to a large value
+    min_sum = huge(min_sum)
+
+    ! Iterate over all possible pairs of new1 and new2
+    do i = 0, 9
+        do j = 0, 9
+            do k = 0, 9
+                do l = 0, 9
+                    ! Check if the current pair satisfies the constraints
+                    if (i*1000 + j*100 + k*10 + l == num) then
+                        ! Calculate the sum of new1 and new2
+                        new1 = i*1000 + j*100 + k*10 + l
+                        new2 = i*1000 + j*100 + k*10 + l
+                        min_sum = min(min_sum, new1 + new2)
+                    end if
+                end do
+            end do
+        end do
+    end do
+
+    ! Print the minimum sum
+    write(*,*) min_sum
+
+end program min_sum_of_new1_and_new2
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 34 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x78bc1c2f5960 in ???
+#1  0x78bc1c2f64d9 in ???
+#2  0x78bc1c54a17b in ???
+#3  0x78bc1c543684 in ???
+#4  0x78bc1c5442aa in ???
+#5  0x5be57cc07209 in MAIN__
+#6  0x5be57cc07464 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_operations(grid, x):
+    min_element = min(min(row) for row in grid)
+    min_ops = float('inf')
+
+    base = min_element
+    while True:
+        operations = 0
+        impossible = False
+        for row in grid:
+            if impossible:
+                break
+            for cell in row:
+                diff = abs(cell - base)
+                if diff % x != 0:
+                    impossible = True
+                    break
+                operations += diff // x
+        if impossible:
+            break
+        min_ops = min(min_ops, operations)
+        base -= 1
+
+    return -1 if min_ops == float('inf') else min_ops
+</code></pre>
+<ul>
+<li>Find the minimum element in the grid</li>
+<li>Initialize the minimum operations to <code>inf</code></li>
+<li>Start with <code>base</code> equal to the minimum element, and decrement by 1 for each iteration</li>
+<li>For each possible <code>base</code>, iterate over every element in the grid and calculate the absolute difference between the current element and <code>base</code></li>
+<li>If the difference can't be evenly divided by <code>x</code>, mark it as impossible and break the loop</li>
+<li>Otherwise, add the number of operations required (difference / x) to obtain a uni-value grid</li>
+<li>Update the minimum operations with the minimum of the current minimum and the calculated operations</li>
+<li>Return -1 if the minimum operations remain <code>inf</code>, otherwise return the minimum operations found</li>
+</ul>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;climits&gt;
+#include &lt;cmath&gt;
+
+int min_operations(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; grid, int x) {
+    int min_elem = INT_MAX;
+    for (const auto&amp; row : grid) {
+        for (int cell : row) {
+            min_elem = std::min(min_elem, cell);
+        }
+    }
+
+    int min_operations = INT_MAX;
+    for (int base = min_elem;; --base) {
+        int operations = 0;
+        bool impossible = false;
+        for (const auto&amp; row : grid) {
+            if (impossible) break;
+            for (int cell : row) {
+                int diff = std::abs(cell - base);
+                if (diff % x != 0) {
+                    impossible = true;
+                    break;
+                }
+                operations += diff / x;
+            }
+        }
+        if (impossible) break;
+        min_operations = std::min(min_operations, operations);
+    }
+
+    return min_operations == INT_MAX ? -1 : min_operations;
+}
+</code></pre>
+<ul>
+<li>Find the minimum element in the grid</li>
+<li>Initialize the minimum operations to <code>inf</code></li>
+<li>Start with <code>base</code> equal to the minimum element, and decrement by 1 for each iteration</li>
+<li>For each possible <code>base</code>, iterate over every element in the grid and calculate the absolute difference between the current element and <code>base</code></li>
+<li>If the difference can't be evenly divided by <code>x</code>, mark it as impossible and break the loop</li>
+<li>Otherwise, add the number of operations required (difference / x) to obtain a uni-value grid</li>
+<li>Update the minimum operations with the minimum of the current minimum and the calculated operations</li>
+<li>Return -1 if the minimum operations remain <code>inf</code>, otherwise return the minimum operations found</li>
+</ul>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

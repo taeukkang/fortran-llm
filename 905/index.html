@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Sort Array By Parity</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/897/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/908/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code>, move all the even integers at the beginning of the array followed by all the odd integers.</p>
+<p>Return <em><strong>any array</strong> that satisfies this condition</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [3,1,2,4]
+<strong>Output:</strong> [2,4,3,1]
+<strong>Explanation:</strong> The outputs [4,2,3,1], [2,4,1,3], and [4,2,1,3] would also be accepted.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [0]
+<strong>Output:</strong> [0]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 5000</code></li>
+<li><code>0 &lt;= nums[i] &lt;= 5000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/sort-array-by-parity/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, dimension(n) :: nums
+    integer, dimension(n) :: result
+
+    nums = [3, 1, 2, 4]
+    write (*, '(*(g0))') 'Example 1:'
+    write (*, '(*(g0))') 'Input:', nums
+    call move_even_odd(nums, result)
+    write (*, '(*(g0))') 'Output:', result
+    write (*, *)
+
+    nums = [0]
+    write (*, '(*(g0))') 'Example 2:'
+    write (*, '(*(g0))') 'Input:', nums
+    call move_even_odd(nums, result)
+    write (*, '(*(g0))') 'Output:', result
+    write (*, *)
+
+contains
+
+    subroutine move_even_odd(nums, result)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer, intent(out) :: result(:)
+
+        integer :: i, j
+
+        do i = 1, size(nums)
+            if (mod(nums(i), 2) == 0) then
+                result(j) = nums(i)
+                j = j + 1
+            end if
+        end do
+
+        do i = 1, size(nums)
+            if (mod(nums(i), 2) /= 0) then
+                result(j) = nums(i)
+                j = j + 1
+            end if
+        end do
+    end subroutine move_even_odd
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:4:
+
+   15 |     nums = [0]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (4 and 1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program even_odd
+      implicit none
+
+      integer, parameter :: int32 = selected_int_kind(9)
+
+      integer :: i, n, nums(5000), temp(5000)
+
+      ! Read the number of elements in the array
+      read(*,*) n
+
+      ! Read the elements of the array
+      do i = 1, n
+        read(*,*) nums(i)
+      end do
+
+      ! Initialize the temporary array
+      temp = 0
+
+      ! Move the even integers to the beginning of the array
+      do i = 1, n
+        if (mod(nums(i), 2) == 0) then
+          temp(i) = nums(i)
+        end if
+      end do
+
+      ! Move the odd integers to the end of the array
+      do i = 1, n
+        if (mod(nums(i), 2) /= 0) then
+          temp(i + n/2) = nums(i)
+        end if
+      end do
+
+      ! Output the sorted array
+      do i = 1, n
+        write(*,*) temp(i)
+      end do
+
+      end program even_odd
+
+This script uses the `selected_int_kind` function to specify the kind of integer to use, which is 32 bits in this case. It then declares two arrays, `nums` and `temp`, to store the input and output values respectively. The `n` variable is used to store the number of elements in the array.
+
+The script reads the number of elements in the array and the elements of the array from stdin, and then initializes the `temp` array with 0s. It then loops through the `nums` array and moves the even integers to the beginning of the `temp` array, and the odd integers to the end of the `temp` array. Finally, it outputs the sorted array to stdout.
+
+Note that this script assumes that the input array is sorted in ascending order. If the input array is not sorted, you will need to sort it before moving the even and odd integers to their respective positions in the output array.
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:40:132:
+
+   40 | This script uses the `selected_int_kind` function to specify the kind of integer to use, which is 32 bits in this case. It then declares two arrays, `nums` and `temp`, to store the input and output values respectively. The `n` variable is used to store the number of elements in the array.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:42:132:
+
+   42 | The script reads the number of elements in the array and the elements of the array from stdin, and then initializes the `temp` array with 0s. It then loops through the `nums` array and moves the even integers to the beginning of the `temp` array, and the odd integers to the end of the `temp` array. Finally, it outputs the sorted array to stdout.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:44:132:
+
+   44 | Note that this script assumes that the input array is sorted in ascending order. If the input array is not sorted, you will need to sort it before moving the even and odd integers to their respective positions in the output array.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def lenLongestFibSubseq(arr):
+    index = {x: i for i, x in enumerate(arr)}
+
+    longest = dict()
+    ans = 0
+
+    for k, z in enumerate(arr):
+        for j, y in enumerate(arr[:k]):
+            i = index.get(z - y, None)
+            if i is not None and i &lt; j:
+                longest[j, k] = longest.get((i, j), 1) + 1
+                ans = max(ans, longest[j, k] + 1)
+
+    return ans if ans &gt;= 3 else 0
+</code></pre>
+<p>The algorithm first creates an index map/dictionary to store the element and its corresponding index in the given array arr. Then, it initializes an empty map/dictionary for the longest Fibonacci-like subsequence and initializes an answer variable to store the length of the longest subsequence.</p>
+<p>The algorithm then iterates through the array arr using two nested loops. In each iteration, it tries to find whether a Fibonacci-like subsequence can be formed from the given elements. If such a subsequence is found, it updates the length of the longest Fibonacci-like subsequence found so far.</p>
+<p>The algorithm checks if the answer is greater than or equal to 3 (minimum length for a Fibonacci-like sequence), then it returns the answer; otherwise, it returns 0, indicating that no Fibonacci-like subsequence was found.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;unordered_map&gt;
+#include &lt;vector&gt;
+
+int lenLongestFibSubseq(std::vector&lt;int&gt;&amp; arr) {
+    int n = arr.size();
+    std::unordered_map&lt;int, int&gt; index;
+    for (int i = 0; i &lt; n; ++i)
+        index[arr[i]] = i;
+
+    std::unordered_map&lt;int, int&gt; longest;
+    int ans = 0;
+
+    for (int k = 0; k &lt; n; ++k)
+        for (int j = 0; j &lt; k; ++j) {
+            int i = index.find(arr[k] - arr[j]) == index.end() ? -1 : index[arr[k] - arr[j]];
+            if (i &gt;= 0 &amp;&amp; i &lt; j) {
+                longest[j * n + k] = longest.find(i * n + j) == longest.end() ? 2 : longest[i * n + j] + 1;
+                ans = std::max(ans, longest[j * n + k] + 1);
+            }
+        }
+
+    return ans &gt;= 3 ? ans : 0;
+}
+</code></pre>
+<p>The algorithm first creates an index map/dictionary to store the element and its corresponding index in the given array arr. Then, it initializes an empty map/dictionary for the longest Fibonacci-like subsequence and initializes an answer variable to store the length of the longest subsequence.</p>
+<p>The algorithm then iterates through the array arr using two nested loops. In each iteration, it tries to find whether a Fibonacci-like subsequence can be formed from the given elements. If such a subsequence is found, it updates the length of the longest Fibonacci-like subsequence found so far.</p>
+<p>The algorithm checks if the answer is greater than or equal to 3 (minimum length for a Fibonacci-like sequence), then it returns the answer; otherwise, it returns 0, indicating that no Fibonacci-like subsequence was found.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

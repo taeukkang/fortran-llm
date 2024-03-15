@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find Nearest Point That Has the Same X or Y Coordinate</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1773/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1784/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given two integers, <code>x</code> and <code>y</code>, which represent your current location on a Cartesian grid: <code>(x, y)</code>. You are also given an array <code>points</code> where each <code>points[i] = [ai, bi]</code> represents that a point exists at <code>(ai, bi)</code>. A point is <strong>valid</strong> if it shares the same x-coordinate or the same y-coordinate as your location.</p>
+<p>Return <em>the index <strong>(0-indexed)</strong> of the <strong>valid</strong> point with the smallest <strong>Manhattan distance</strong> from your current location</em>. If there are multiple, return <em>the valid point with the <strong>smallest</strong> index</em>. If there are no valid points, return <code>-1</code>.</p>
+<p>The <strong>Manhattan distance</strong> between two points <code>(x1, y1)</code> and <code>(x2, y2)</code> is <code>abs(x1 - x2) + abs(y1 - y2)</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> x = 3, y = 4, points = [[1,2],[3,1],[2,4],[2,3],[4,4]]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> Of all the points, only [3,1], [2,4] and [4,4] are valid. Of the valid points, [2,4] and [4,4] have the smallest Manhattan distance from your current location, with a distance of 1. [2,4] has the smallest index, so return 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> x = 3, y = 4, points = [[3,4]]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> The answer is allowed to be on the same location as your current location.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> x = 3, y = 4, points = [[2,3]]
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> There are no valid points.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= points.length &lt;= 104</code></li>
+<li><code>points[i].length == 2</code></li>
+<li><code>1 &lt;= x, y, ai, bi &lt;= 104</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-nearest-point-that-has-the-same-x-or-y-coordinate/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: x, y, i, n, ans
+    integer, dimension(:, :), allocatable :: points
+
+    read(*, *) x, y, n
+    allocate(points(n, 2))
+    do i = 1, n
+        read(*, *) points(i, :)
+    end do
+
+    ans = solve(x, y, points)
+    write(*, '(I0)') ans
+
+contains
+
+    function solve(x, y, points) result(ans)
+        implicit none
+        integer, intent(in) :: x, y, points(:, :)
+        integer :: i, j, k, m, n, ans
+        logical :: found
+
+        ans = -1
+        found = .false.
+        do i = 1, size(points, 1)
+            if (points(i, 1) == x .or. points(i, 2) == y) then
+                found = .true.
+                exit
+            end if
+        end do
+        if (.not. found) return
+
+        ans = i - 1
+        do j = 1, size(points, 1)
+            if (j /= i) then
+                m = abs(points(i, 1) - points(j, 1))
+                n = abs(points(i, 2) - points(j, 2))
+                if (m + n < ans) then
+                    ans = m + n
+                end if
+            end if
+        end do
+
+    end function solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 7 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x787a8f164960 in ???
+#1  0x787a8f1654d9 in ???
+#2  0x787a8f3b917b in ???
+#3  0x787a8f3b2684 in ???
+#4  0x787a8f3b32aa in ???
+#5  0x5d3fe72635f8 in MAIN__
+#6  0x5d3fe7263a06 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module FindClosestValidPoint
+    implicit none
+
+contains
+
+    function find_closest_valid_point(x, y, points) result(closest_point)
+        implicit none
+        integer, intent(in) :: x, y, points(:, :)
+        integer :: closest_point
+        integer :: i, j, d1, d2, min_d, min_i
+
+        ! Initialize closest point to -1
+        closest_point = -1
+
+        ! Loop through all points
+        do i = 1, size(points, 1)
+            ! Check if point is valid
+            if (points(i, 1) == x .or. points(i, 2) == y) then
+                ! Calculate Manhattan distance
+                d1 = abs(x - points(i, 1))
+                d2 = abs(y - points(i, 2))
+                min_d = min(d1, d2)
+
+                ! If this is the first valid point or the current minimum distance is greater than the current distance
+                if (closest_point == -1 .or. min_d < min_d) then
+                    ! Update closest point and minimum distance
+                    closest_point = i
+                    min_d = min_d
+                end if
+            end if
+        end do
+
+        ! Return closest point
+        closest_point = closest_point
+    end function find_closest_valid_point
+end module FindClosestValidPoint
+
+program test_find_closest_valid_point
+    use FindClosestValidPoint
+    implicit none
+    integer :: x, y, points(3, 2)
+    integer :: closest_point
+
+    ! Test case 1:
+    x = 3
+    y = 4
+    points = reshape([1, 2, 3, 1, 2, 4, 2, 3, 4, 4], [3, 2])
+    closest_point = find_closest_valid_point(x, y, points)
+    write (*, *) "Closest point for (", x, ", ", y, ") is: ", closest_point
+
+    ! Test case 2:
+    x = 3
+    y = 4
+    points = reshape([3, 4], [1, 2])
+    closest_point = find_closest_valid_point(x, y, points)
+    write (*, *) "Closest point for (", x, ", ", y, ") is: ", closest_point
+
+    ! Test case 3:
+    x = 3
+    y = 4
+    points = reshape([2, 3], [1, 2])
+    closest_point = find_closest_valid_point(x, y, points)
+    write (*, *) "Closest point for (", x, ", ", y, ") is: ", closest_point
+end program test_find_closest_valid_point
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:54:4:
+
+   54 |     points = reshape([3, 4], [1, 2])
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (3 and 1)
+temp.f95:61:4:
+
+   61 |     points = reshape([2, 3], [1, 2])
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (3 and 1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def nearestValidPoint(x: int, y: int, points: List[List[int]]) -&gt; int:
+    min_distance = float(&quot;inf&quot;)
+    index = -1
+    for i, point in enumerate(points):
+        if x == point[0] or y == point[1]:
+            distance = abs(x - point[0]) + abs(y - point[1])
+            if distance &lt; min_distance:
+                min_distance = distance
+                index = i
+    return index
+</code></pre>
+<p>Iterate through each point in the <code>points</code> array, checking if its x or y coordinate is the same as the input x or y coordinate, making the point a valid point. If the point is valid, calculate the Manhattan distance between the input point and the current point. If the calculated distance is smaller than the current minimum distance, update the minimum distance and store the index of the current point. After iterating through all points, return the index of the point with the smallest Manhattan distance. If no point is valid, return -1.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int nearestValidPoint(int x, int y, vector&lt;vector&lt;int&gt;&gt;&amp; points) {
+    int min_distance = INT_MAX, index = -1;
+    for (int i = 0; i &lt; points.size(); i++) {
+        if (x == points[i][0] || y == points[i][1]) {
+            int distance = abs(x - points[i][0]) + abs(y - points[i][1]);
+            if (distance &lt; min_distance) {
+                min_distance = distance;
+                index = i;
+            }
+        }
+    }
+    return index;
+}
+</code></pre>
+<p>Iterate through each point in the <code>points</code> array, checking if its x or y coordinate is the same as the input x or y coordinate, making the point a valid point. If the point is valid, calculate the Manhattan distance between the input point and the current point. If the calculated distance is smaller than the current minimum distance, update the minimum distance and store the index of the current point. After iterating through all points, return the index of the point with the smallest Manhattan distance. If no point is valid, return -1.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

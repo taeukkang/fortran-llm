@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Strobogrammatic Number</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/243/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/252/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string <code>num</code> which represents an integer, return <code>true</code> <em>if</em> <code>num</code> <em>is a <strong>strobogrammatic number</strong></em>.</p>
+<p>A <strong>strobogrammatic number</strong> is a number that looks the same when rotated <code>180</code> degrees (looked at upside down).</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num =  "69 "
+<strong>Output:</strong> true</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num =  "88 "
+<strong>Output:</strong> true</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> num =  "962 "
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= num.length &lt;= 50</code></li>
+<li><code>num</code> consists of only digits.</li>
+<li><code>num</code> does not contain any leading zeros except for zero itself.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/strobogrammatic-number/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=50) :: num
+    logical :: strobogrammatic
+
+    ! Example 1
+    num = "69"
+    write(*,*) strobogrammatic(num), "Expected: True"
+
+    ! Example 2
+    num = "88"
+    write(*,*) strobogrammatic(num), "Expected: True"
+
+    ! Example 3
+    num = "962"
+    write(*,*) strobogrammatic(num), "Expected: False"
+
+contains
+
+    function strobogrammatic(num) result(res)
+        implicit none
+        character(len=*), intent(in) :: num
+        logical :: res
+
+        if (num == "") then
+            res = .false.
+            return
+        end if
+
+        if (num(1:1) /= num(len(num):len_trim(num))) then
+            res = .false.
+            return
+        end if
+
+        res = strobogrammatic(num(2:len(num)-1))
+
+    end function strobogrammatic
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:21:29:
+
+   21 |     function strobogrammatic(num) result(res)
+      |                             1
+Error: Procedure ‘strobogrammatic’ at (1) has an explicit interface from a previous declaration
+temp.f95:22:21:
+
+   22 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:23:43:
+
+   23 |         character(len=*), intent(in) :: num
+      |                                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:24:22:
+
+   24 |         logical :: res
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:26:27:
+
+   26 |         if (num == "") then
+      |                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:27:25:
+
+   27 |             res = .false.
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:28:18:
+
+   28 |             return
+      |                  1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:29:11:
+
+   29 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:31:57:
+
+   31 |         if (num(1:1) /= num(len(num):len_trim(num))) then
+      |                                                         1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:32:25:
+
+   32 |             res = .false.
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:33:18:
+
+   33 |             return
+      |                  1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:34:11:
+
+   34 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:36:48:
+
+   36 |         res = strobogrammatic(num(2:len(num)-1))
+      |                                                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:38:7:
+
+   38 |     end function strobogrammatic
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program strobogrammaticNumber
+      implicit none
+
+      integer :: i, j, k, n
+      character(len=50) :: num
+      logical :: isStrobogrammatic
+
+      ! Read input
+      read(*,*) num
+
+      ! Check if num is a strobogrammatic number
+      isStrobogrammatic = .true.
+      do i = 1, n/2
+         if (num(i:i) /= num(n-i+1:n-i)) then
+            isStrobogrammatic = .false.
+            exit
+         end if
+      end do
+
+      ! Output result
+      if (isStrobogrammatic) then
+         write(*,*) "True"
+      else
+         write(*,*) "False"
+      end if
+
+      end program strobogrammaticNumber
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 9 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x78df65d40960 in ???
+#1  0x78df65d414d9 in ???
+#2  0x78df65f9517b in ???
+#3  0x78df65f8e684 in ???
+#4  0x78df65f8f2aa in ???
+#5  0x56dfb7ffd21a in MAIN__
+#6  0x56dfb7ffd3ba in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def isStrobogrammatic(num: str) -&gt; bool:
+    lookup = {'0': '0', '1': '1', '6': '9', '8': '8', '9': '6'}
+    left, right = 0, len(num) - 1
+    while left &lt;= right:
+        if num[left] not in lookup or lookup[num[left]] != num[right]:
+            return False
+        left += 1
+        right -= 1
+    return True
+</code></pre>
+<p>The algorithm uses a while loop and a dictionary (lookup) to check if the given string is strobogrammatic. The main idea is to iterate through the string with two pointers, <code>left</code> and <code>right</code>. The <code>left</code> pointer starts at the beginning of the string and <code>right</code> starts at the end.</p>
+<p>For each step of the while loop:
+1. Check if the character at the <code>left</code> pointer is in the <code>lookup</code> dictionary, if not, return false.
+2. Check if the mapped (rotated) character of the character at the <code>left</code> pointer matches the character at the <code>right</code> pointer, if not, return false.
+3. Increment <code>left</code> pointer and decrement <code>right</code> pointer.</p>
+<p>If the loop finishes iterating through the string without returning false, then return true as the string is strobogrammatic.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool isStrobogrammatic(string num) {
+    unordered_map&lt;char, char&gt; lookup {{'0', '0'}, {'1', '1'}, {'6', '9'}, {'8', '8'}, {'9', '6'}};
+    int left = 0, right = num.size() - 1;
+    while(left &lt;= right) {
+        if(lookup[num[left]] != num[right]) return false;
+        left++;
+        right--;
+    }
+    return true;
+}
+</code></pre>
+<p>The algorithm uses a while loop and a dictionary (lookup) to check if the given string is strobogrammatic. The main idea is to iterate through the string with two pointers, <code>left</code> and <code>right</code>. The <code>left</code> pointer starts at the beginning of the string and <code>right</code> starts at the end.</p>
+<p>For each step of the while loop:
+1. Check if the character at the <code>left</code> pointer is in the <code>lookup</code> dictionary, if not, return false.
+2. Check if the mapped (rotated) character of the character at the <code>left</code> pointer matches the character at the <code>right</code> pointer, if not, return false.
+3. Increment <code>left</code> pointer and decrement <code>right</code> pointer.</p>
+<p>If the loop finishes iterating through the string without returning false, then return true as the string is strobogrammatic.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Number of Students Doing Homework at a Given Time</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1446/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1455/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two integer arrays <code>startTime</code> and <code>endTime</code> and given an integer <code>queryTime</code>.</p>
+<p>The <code>ith</code> student started doing their homework at the time <code>startTime[i]</code> and finished it at time <code>endTime[i]</code>.</p>
+<p>Return <em>the number of students</em> doing their homework at time <code>queryTime</code>. More formally, return the number of students where <code>queryTime</code> lays in the interval <code>[startTime[i], endTime[i]]</code> inclusive.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> startTime = [1,2,3], endTime = [3,2,7], queryTime = 4
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> We have 3 students where:
+The first student started doing homework at time 1 and finished at time 3 and wasn't doing anything at time 4.
+The second student started doing homework at time 2 and finished at time 2 and also wasn't doing anything at time 4.
+The third student started doing homework at time 3 and finished at time 7 and was the only student doing homework at time 4.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> startTime = [4], endTime = [4], queryTime = 4
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> The only student was doing their homework at the queryTime.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>startTime.length == endTime.length</code></li>
+<li><code>1 &lt;= startTime.length &lt;= 100</code></li>
+<li><code>1 &lt;= startTime[i] &lt;= endTime[i] &lt;= 1000</code></li>
+<li><code>1 &lt;= queryTime &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/number-of-students-doing-homework-at-a-given-time/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 3
+    integer, dimension(n) :: startTime = [1, 2, 3]
+    integer, dimension(n) :: endTime = [3, 2, 7]
+    integer :: queryTime = 4
+    integer :: i
+
+    do i = 1, n
+        if (queryTime >= startTime(i) .and. queryTime <= endTime(i)) then
+            print '(I0)', i
+        end if
+    end do
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>3
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module homework
+    implicit none
+
+contains
+
+    function countStudents(startTime, endTime, queryTime) result(count)
+        integer, intent(in) :: startTime(:), endTime(:), queryTime
+        integer :: count
+
+        count = countStudentsRecursive(startTime, endTime, queryTime, 1, size(startTime))
+    end function countStudents
+
+    recursive function countStudentsRecursive(startTime, endTime, queryTime, startIndex, endIndex) result(count)
+        integer, intent(in) :: startTime(:), endTime(:), queryTime, startIndex, endIndex
+        integer :: count
+
+        if (startIndex > endIndex) then
+            count = 0
+        elseif (queryTime < startTime(startIndex)) then
+            count = countStudentsRecursive(startTime, endTime, queryTime, startIndex + 1, endIndex)
+        elseif (queryTime > endTime(endIndex)) then
+            count = countStudentsRecursive(startTime, endTime, queryTime, startIndex, endIndex - 1)
+        else
+            count = countStudentsRecursive(startTime, endTime, queryTime, startIndex + 1, endIndex - 1) + 1
+        endif
+    end function countStudentsRecursive
+end module homework
+
+program test
+    use homework
+    implicit none
+
+    integer, parameter :: startTime(3) = [1, 2, 3]
+    integer, parameter :: endTime(3) = [3, 2, 7]
+    integer, parameter :: queryTime = 4
+    integer :: count
+
+    count = countStudents(startTime, endTime, queryTime)
+    write (*, '(A, I0)') 'The number of students doing their homework at time ', queryTime, ' is ', count
+
+    count = countStudents(startTime, endTime, 4)
+    write (*, '(A, I0)') 'The number of students doing their homework at time ', 4, ' is ', count
+
+    count = countStudents(startTime, endTime, 10)
+    write (*, '(A, I0)') 'The number of students doing their homework at time ', 10, ' is ', count
+end program test
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>The number of students doing their homework at time 4
+ is 1
+The number of students doing their homework at time 4
+ is 1
+The number of students doing their homework at time 10
+ is 0
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def removeLeafNodes(root, target):
+    if not root:
+        return None
+    root.left = removeLeafNodes(root.left, target)
+    root.right = removeLeafNodes(root.right, target)
+    if not root.left and not root.right and root.val == target:
+        return None
+    return root
+</code></pre>
+<pre><code>We traverse the binary tree using a depth-first search (DFS) approach. We use a recursion to visit left and right children of each node.
+</code></pre>
+<ol>
+<li>If the root node is null, return null.</li>
+<li>Call <code>removeLeafNodes</code> recursively and update left and right children.</li>
+<li>After updating children, check if the current node is a leaf node (i.e., both children are null) and its value equals the target. If so, delete it (return null); otherwise, return the current node.</li>
+<li>Repeat this process until deleted leaf nodes can no longer create new leaf nodes with the target value.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">TreeNode* removeLeafNodes(TreeNode* root, int target) {
+    if (!root) return nullptr;
+    root-&gt;left = removeLeafNodes(root-&gt;left, target);
+    root-&gt;right = removeLeafNodes(root-&gt;right, target);
+    if (!root-&gt;left &amp;&amp; !root-&gt;right &amp;&amp; root-&gt;val == target) {
+        return nullptr;
+    }
+    return root;
+}
+</code></pre>
+<pre><code>We traverse the binary tree using a depth-first search (DFS) approach. We use a recursion to visit left and right children of each node.
+</code></pre>
+<ol>
+<li>If the root node is null, return null.</li>
+<li>Call <code>removeLeafNodes</code> recursively and update left and right children.</li>
+<li>After updating children, check if the current node is a leaf node (i.e., both children are null) and its value equals the target. If so, delete it (return null); otherwise, return the current node.</li>
+<li>Repeat this process until deleted leaf nodes can no longer create new leaf nodes with the target value.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Hours of Training to Win a Competition</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2379/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2389/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are entering a competition, and are given two <strong>positive</strong> integers <code>initialEnergy</code> and <code>initialExperience</code> denoting your initial energy and initial experience respectively.</p>
+<p>You are also given two <strong>0-indexed</strong> integer arrays <code>energy</code> and <code>experience</code>, both of length <code>n</code>.</p>
+<p>You will face <code>n</code> opponents <strong>in order</strong>. The energy and experience of the <code>ith</code> opponent is denoted by <code>energy[i]</code> and <code>experience[i]</code> respectively. When you face an opponent, you need to have both <strong>strictly</strong> greater experience and energy to defeat them and move to the next opponent if available.</p>
+<p>Defeating the <code>ith</code> opponent <strong>increases</strong> your experience by <code>experience[i]</code>, but <strong>decreases</strong> your energy by <code>energy[i]</code>.</p>
+<p>Before starting the competition, you can train for some number of hours. After each hour of training, you can <strong>either</strong> choose to increase your initial experience by one, or increase your initial energy by one.</p>
+<p>Return <em>the <strong>minimum</strong> number of training hours required to defeat all</em> <code>n</code> <em>opponents</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> initialEnergy = 5, initialExperience = 3, energy = [1,4,3,2], experience = [2,6,3,1]
+<strong>Output:</strong> 8
+<strong>Explanation:</strong> You can increase your energy to 11 after 6 hours of training, and your experience to 5 after 2 hours of training.
+You face the opponents in the following order:
+- You have more energy and experience than the 0th opponent so you win.
+  Your energy becomes 11 - 1 = 10, and your experience becomes 5 + 2 = 7.
+- You have more energy and experience than the 1st opponent so you win.
+  Your energy becomes 10 - 4 = 6, and your experience becomes 7 + 6 = 13.
+- You have more energy and experience than the 2nd opponent so you win.
+  Your energy becomes 6 - 3 = 3, and your experience becomes 13 + 3 = 16.
+- You have more energy and experience than the 3rd opponent so you win.
+  Your energy becomes 3 - 2 = 1, and your experience becomes 16 + 1 = 17.
+You did a total of 6 + 2 = 8 hours of training before the competition, so we return 8.
+It can be proven that no smaller answer exists.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> initialEnergy = 2, initialExperience = 4, energy = [1], experience = [3]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> You do not need any additional energy or experience to win the competition, so we return 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == energy.length == experience.length</code></li>
+<li><code>1 &lt;= n &lt;= 100</code></li>
+<li><code>1 &lt;= initialEnergy, initialExperience, energy[i], experience[i] &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-hours-of-training-to-win-a-competition/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: initialEnergy, initialExperience, energy(100), experience(100)
+    integer :: i, j, n, totalHours, minHours
+
+    read(*,*) initialEnergy
+    read(*,*) initialExperience
+    read(*,*) n
+    do i = 1, n
+        read(*,*) energy(i)
+        read(*,*) experience(i)
+    end do
+
+    ! Initialize variables
+    totalHours = 0
+    minHours = 1000000
+
+    ! Loop over all opponents
+    do i = 1, n
+        ! Check if current opponent can be defeated
+        if (initialEnergy > energy(i) .and. initialExperience > experience(i)) then
+            ! Update initial energy and experience
+            initialEnergy = initialEnergy - energy(i)
+            initialExperience = initialExperience + experience(i)
+            ! Increment total hours
+            totalHours = totalHours + 1
+        else
+            ! Exit loop if current opponent cannot be defeated
+            exit
+        end if
+    end do
+
+    ! Check if all opponents can be defeated
+    if (totalHours < minHours) then
+        minHours = totalHours
+    end if
+
+    ! Print result
+    write (*,*) minHours
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 7 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7a3ef21a9960 in ???
+#1  0x7a3ef21aa4d9 in ???
+#2  0x7a3ef23fe17b in ???
+#3  0x7a3ef23f7684 in ???
+#4  0x7a3ef23f82aa in ???
+#5  0x593602af620d in MAIN__
+#6  0x593602af6584 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program minTrainingHours
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, parameter :: initialEnergy = 5
+    integer, parameter :: initialExperience = 3
+    integer, parameter :: energy(n) = [1, 4, 3, 2]
+    integer, parameter :: experience(n) = [2, 6, 3, 1]
+
+    integer :: i, j, totalHours, trainingHours
+    integer :: currentEnergy, currentExperience
+
+    ! Initialize variables
+    currentEnergy = initialEnergy
+    currentExperience = initialExperience
+    totalHours = 0
+
+    ! Loop through each opponent
+    do i = 1, n
+        ! Check if current energy and experience are greater than the opponent's
+        if (currentEnergy > energy(i) .and. currentExperience > experience(i)) then
+            ! Defeat the opponent
+            currentEnergy = currentEnergy - energy(i)
+            currentExperience = currentExperience + experience(i)
+            totalHours = totalHours + 1
+        else
+            ! Not enough energy or experience to defeat the opponent
+            exit
+        end if
+    end do
+
+    ! Check if all opponents were defeated
+    if (i == n + 1) then
+        ! Return the total hours of training
+        trainingHours = totalHours
+    else
+        ! Not all opponents were defeated
+        trainingHours = -1
+    end if
+
+    ! Print the output
+    write (*,*) trainingHours
+
+end program minTrainingHours
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>          -1
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_training_hours(initial_energy, initial_experience, energy, experience):
+    n = len(energy)
+    ans = int(1e9)
+    for exp_gain in range(initial_energy + initial_experience + 1):
+        training_hours = exp_gain
+        energy_left = initial_energy - exp_gain
+        curr_experience = initial_experience + exp_gain
+
+        for i in range(n):
+            while curr_experience &lt;= experience[i] or energy_left &lt;= energy[i]:
+                energy_left -= 1
+                training_hours += 1
+            energy_left -= energy[i]
+            curr_experience += experience[i]
+        ans = min(ans, training_hours)
+    return ans
+</code></pre>
+<p>The main idea of the algorithm is to try all possible distributions of gained experience and energy from training hours. For each possible distribution of experience gain (i.e., each number of hours spent on gaining experience), we calculate the corresponding number of hours spent on gaining energy (since we only have two attributes to improve). Then, for each distribution, we simulate the competition and keep track of the minimum number of training hours required.</p>
+<p>For each iteration, we simulate the competition by going through each opponent in order. When facing an opponent, if our current experience and energy level are not enough to defeat them (i.e., strictly greater than the opponent's experience and energy level), we spend more hours training on energy by decrementing the amount of energy left and incrementing the training hours.</p>
+<p>After simulating the competition for each possible experience gain, we return the minimum training hours needed to defeat all opponents.</p>
+<p>The time complexity of the algorithm is <code>O(n^2)</code> as we first iterate through all possible distributions with a maximum number of <code>n</code>, and then for each distribution, we iterate through all the opponents, which is also <code>n</code>. Space complexity is <code>O(1)</code> as we only use constant extra space for storing variables.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+
+int minTrainingHours(int initialEnergy, int initialExperience, std::vector&lt;int&gt;&amp; energy, std::vector&lt;int&gt;&amp; experience) {
+    int n = energy.size();
+    int ans = 1e9;
+    for (int expGain = 0; expGain &lt;= initialEnergy + initialExperience; ++expGain) {
+        int trainingHours = expGain;
+        int energyLeft = initialEnergy - expGain;
+        int currExperience = initialExperience + expGain;
+
+        for (int i = 0; i &lt; n; ++i) {
+            while (currExperience &lt;= experience[i] || energyLeft &lt;= energy[i]) {
+                energyLeft--;
+                trainingHours++;
+            }
+            energyLeft -= energy[i];
+            currExperience += experience[i];
+        }
+        ans = std::min(ans, trainingHours);
+    }
+    return ans;
+}
+</code></pre>
+<p>The main idea of the algorithm is to try all possible distributions of gained experience and energy from training hours. For each possible distribution of experience gain (i.e., each number of hours spent on gaining experience), we calculate the corresponding number of hours spent on gaining energy (since we only have two attributes to improve). Then, for each distribution, we simulate the competition and keep track of the minimum number of training hours required.</p>
+<p>For each iteration, we simulate the competition by going through each opponent in order. When facing an opponent, if our current experience and energy level are not enough to defeat them (i.e., strictly greater than the opponent's experience and energy level), we spend more hours training on energy by decrementing the amount of energy left and incrementing the training hours.</p>
+<p>After simulating the competition for each possible experience gain, we return the minimum training hours needed to defeat all opponents.</p>
+<p>The time complexity of the algorithm is <code>O(n^2)</code> as we first iterate through all possible distributions with a maximum number of <code>n</code>, and then for each distribution, we iterate through all the opponents, which is also <code>n</code>. Space complexity is <code>O(1)</code> as we only use constant extra space for storing variables.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

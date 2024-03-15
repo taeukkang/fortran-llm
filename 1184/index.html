@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Distance Between Bus Stops</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1180/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1185/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A bus has <code>n</code> stops numbered from <code>0</code> to <code>n - 1</code> that form a circle. We know the distance between all pairs of neighboring stops where <code>distance[i]</code> is the distance between the stops number <code>i</code> and <code>(i + 1) % n</code>.</p>
+<p>The bus goes along both directions i.e. clockwise and counterclockwise.</p>
+<p>Return the shortest distance between the given <code>start</code> and <code>destination</code> stops.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> distance = [1,2,3,4], start = 0, destination = 1
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> Distance between 0 and 1 is 1 or 9, minimum is 1.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> distance = [1,2,3,4], start = 0, destination = 2
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> Distance between 0 and 2 is 3 or 7, minimum is 3.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> distance = [1,2,3,4], start = 0, destination = 3
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> Distance between 0 and 3 is 6 or 4, minimum is 4.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 10^4</code></li>
+<li><code>distance.length == n</code></li>
+<li><code>0 &lt;= start, destination &lt; n</code></li>
+<li><code>0 &lt;= distance[i] &lt;= 10^4</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/distance-between-bus-stops/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n, start, destination, distance(10000), min_dist
+    character(len=100) :: input_string
+
+    ! read input
+    read(*, '(I5)') n
+    do i = 1, n
+        read(*, '(I5)') distance(i)
+    end do
+    read(*, '(I5)') start
+    read(*, '(I5)') destination
+
+    ! solve problem
+    min_dist = solve(n, distance, start, destination)
+
+    ! print output
+    write (*, '(I5)') min_dist
+
+contains
+
+    function solve(n, distance, start, destination) result(min_dist)
+        implicit none
+        integer, intent(in) :: n, start, destination
+        integer, intent(in) :: distance(n)
+        integer :: i, j, k, l, min_dist
+
+        ! initialize variables
+        min_dist = huge(1_8)
+
+        ! loop over all possible combinations of start and destination
+        do i = 0, n - 1
+            do j = 0, n - 1
+                if (i /= j) then
+                    k = modulo(j + 1, n)
+                    l = modulo(k + 1, n)
+
+                    ! check if current combination is valid
+                    if ((i == start .and. j == destination) .or. &
+                        (i == destination .and. j == start)) then
+                        ! calculate distance
+                        min_dist = min(min_dist, distance(i) + distance(j) + distance(k) + distance(l))
+                    end if
+                end if
+            end do
+        end do
+
+        ! return solution
+        min_dist = min_dist / 2
+    end function solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:8:
+
+    9 |     do i = 1, n
+      |        1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:30:19:
+
+   30 |         min_dist = huge(1_8)
+      |                   1
+Error: Arithmetic overflow converting INTEGER(8) to INTEGER(4) at (1). This check can be disabled with the option ‘-fno-range-check’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module shortest_distance
+implicit none
+private
+public :: shortest_distance
+
+contains
+
+function shortest_distance(distance, start, destination) result(shortest)
+integer, intent(in) :: distance(:), start, destination
+integer :: shortest
+
+! Local variables
+integer :: i, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z
+integer :: dp(size(distance))
+
+! Initialize dp array
+dp = 0
+
+! Base case
+dp(start) = 0
+
+! Dynamic programming
+do i = 1, size(distance)
+    do j = 1, size(distance)
+        if (i == j) then
+            dp(i) = 0
+        else
+            dp(j) = min(dp(j), dp(i) + distance(j))
+        end if
+    end do
+end do
+
+! Find the shortest distance
+shortest = dp(destination)
+
+end function shortest_distance
+end module
+
+program main
+use shortest_distance
+implicit none
+
+! Test cases
+integer, parameter :: n = 4
+integer, parameter :: distance(n) = [1, 2, 3, 4]
+integer :: start, destination
+integer :: shortest
+
+! Test case 1
+start = 0
+destination = 1
+shortest = shortest_distance(distance, start, destination)
+write (*,*) "Shortest distance between 0 and 1: ", shortest
+
+! Test case 2
+start = 0
+destination = 2
+shortest = shortest_distance(distance, start, destination)
+write (*,*) "Shortest distance between 0 and 2: ", shortest
+
+! Test case 3
+start = 0
+destination = 3
+shortest = shortest_distance(distance, start, destination)
+write (*,*) "Shortest distance between 0 and 3: ", shortest
+
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:27:
+
+    4 | public :: shortest_distance
+      |                           1
+Error: PUBLIC attribute applied to MODULE shortest_distance at (1)
+temp.f95:8:26:
+
+    8 | function shortest_distance(distance, start, destination) result(shortest)
+      |                          1
+Error: MODULE attribute of ‘shortest_distance’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:54:
+
+    9 | integer, intent(in) :: distance(:), start, destination
+      |                                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:19:
+
+   10 | integer :: shortest
+      |                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:60:
+
+   13 | integer :: i, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z
+      |                                                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:19:
+
+   14 | integer :: dp(size(distance))
+      |                   1
+Error: Symbol ‘distance’ is used before it is typed at (1)
+temp.f95:17:6:
+
+   17 | dp = 0
+      |      1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:13:
+
+   20 | dp(start) = 0
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:24:
+
+   23 | do i = 1, size(distance)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:24:28:
+
+   24 |     do j = 1, size(distance)
+      |                            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:25:24:
+
+   25 |         if (i == j) then
+      |                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:26:21:
+
+   26 |             dp(i) = 0
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:27:12:
+
+   27 |         else
+      |            1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:28:51:
+
+   28 |             dp(j) = min(dp(j), dp(i) + distance(j))
+      |                                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:29:11:
+
+   29 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:7:
+
+   30 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:31:3:
+
+   31 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:26:
+
+   34 | shortest = dp(destination)
+      |                          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:36:3:
+
+   36 | end function shortest_distance
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:40:5:
+
+   40 | use shortest_distance
+      |     1
+Fatal Error: Cannot open module file ‘shortest_distance.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def carPooling(trips, capacity):
+    stops = [0] * 1001
+    for num, start, end in trips:
+        stops[start] += num
+        stops[end] -= num
+    for i in stops:
+        capacity -= i
+        if capacity &lt; 0:
+            return False
+    return True
+</code></pre>
+<ol>
+<li>Create an array <code>stops</code> of size 1001 (as locations are from 0 to 1000), initialized with zeros.</li>
+<li>Iterate through the <code>trips</code> array, and for each trip, add <code>numPassengers</code> to the <code>from</code> index and subtract <code>numPassengers</code> from the <code>to</code> index in the <code>stops</code> array. This will represent the number of passengers to pick up (positive value) or drop off (negative value) at each location.</li>
+<li>Iterate through the <code>stops</code> array, and for each location, update the <code>capacity</code> by subtracting the number of passengers at that location. If the capacity becomes negative at any point, return <code>false</code>.</li>
+<li>If we have iterated through all the locations in the <code>stops</code> array without the capacity becoming negative, return <code>true</code>. This means it's possible to pick up and drop off all passengers for all the given trips.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+bool carPooling(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; trips, int capacity) {
+    std::vector&lt;int&gt; stops(1001, 0);
+    for (const std::vector&lt;int&gt;&amp; t : trips) {
+        stops[t[1]] += t[0];
+        stops[t[2]] -= t[0];
+    }
+    for (int i = 0; i &lt; stops.size(); ++i) {
+        capacity -= stops[i];
+        if (capacity &lt; 0) {
+            return false;
+        }
+    }
+    return true;
+}
+</code></pre>
+<ol>
+<li>Create an array <code>stops</code> of size 1001 (as locations are from 0 to 1000), initialized with zeros.</li>
+<li>Iterate through the <code>trips</code> array, and for each trip, add <code>numPassengers</code> to the <code>from</code> index and subtract <code>numPassengers</code> from the <code>to</code> index in the <code>stops</code> array. This will represent the number of passengers to pick up (positive value) or drop off (negative value) at each location.</li>
+<li>Iterate through the <code>stops</code> array, and for each location, update the <code>capacity</code> by subtracting the number of passengers at that location. If the capacity becomes negative at any point, return <code>false</code>.</li>
+<li>If we have iterated through all the locations in the <code>stops</code> array without the capacity becoming negative, return <code>true</code>. This means it's possible to pick up and drop off all passengers for all the given trips.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count Common Words With One Occurrence</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2078/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2089/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two string arrays <code>words1</code> and <code>words2</code>, return <em>the number of strings that appear <strong>exactly once</strong> in <strong>each</strong> of the two arrays.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> words1 = [ "leetcode ", "is ", "amazing ", "as ", "is "], words2 = [ "amazing ", "leetcode ", "is "]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong>
+-  "leetcode " appears exactly once in each of the two arrays. We count this string.
+-  "amazing " appears exactly once in each of the two arrays. We count this string.
+-  "is " appears in each of the two arrays, but there are 2 occurrences of it in words1. We do not count this string.
+-  "as " appears once in words1, but does not appear in words2. We do not count this string.
+Thus, there are 2 strings that appear exactly once in each of the two arrays.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> words1 = [ "b ", "bb ", "bbb "], words2 = [ "a ", "aa ", "aaa "]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There are no strings that appear in each of the two arrays.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> words1 = [ "a ", "ab "], words2 = [ "a ", "a ", "a ", "ab "]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> The only string that appears exactly once in each of the two arrays is  "ab ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= words1.length, words2.length &lt;= 1000</code></li>
+<li><code>1 &lt;= words1[i].length, words2[j].length &lt;= 30</code></li>
+<li><code>words1[i]</code> and <code>words2[j]</code> consists only of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-common-words-with-one-occurrence/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, n, m
+    character(len=30), allocatable :: words1(:)
+    character(len=30), allocatable :: words2(:)
+    integer, allocatable :: counts(:)
+
+    call get_command_argument(1, value=n)
+    allocate(words1(n))
+    call get_command_argument(2, value=m)
+    allocate(words2(m))
+
+    do i = 1, n
+        call get_command_argument(i+2, value=words1(i))
+    end do
+
+    do j = 1, m
+        call get_command_argument(j+n+2, value=words2(j))
+    end do
+
+    allocate(counts(size(words1)))
+
+    counts = 0
+
+    do i = 1, size(words1)
+        do j = 1, size(words2)
+            if (words1(i) == words2(j)) then
+                counts(i) = counts(i) + 1
+            end if
+        end do
+    end do
+
+    print '(I0)', sum(counts == 1)
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:39:
+
+    9 |     call get_command_argument(1, value=n)
+      |                                       1
+Error: In call to ‘get_command_argument’ at (1), type mismatch in argument ‘value’; pass ‘INTEGER(4)’ to ‘CHARACTER(*)’
+temp.f95:11:39:
+
+   11 |     call get_command_argument(2, value=m)
+      |                                       1
+Error: In call to ‘get_command_argument’ at (1), type mismatch in argument ‘value’; pass ‘INTEGER(4)’ to ‘CHARACTER(*)’
+temp.f95:34:22:
+
+   34 |     print '(I0)', sum(counts == 1)
+      |                      1
+Error: ‘array’ argument of ‘sum’ intrinsic at (1) must have a numeric type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program count_common_words
+      implicit none
+
+      integer :: i, j, n, m, count
+      character(len=30) :: words1(1000), words2(1000)
+
+      ! Read the number of words in each array
+      read(*,*) n
+      read(*,*) m
+
+      ! Read the words in each array
+      do i = 1, n
+         read(*,*) words1(i)
+      end do
+
+      do j = 1, m
+         read(*,*) words2(j)
+      end do
+
+      ! Initialize the count to 0
+      count = 0
+
+      ! Check if each word in words1 appears in words2 exactly once
+      do i = 1, n
+         do j = 1, m
+            if (words1(i) == words2(j)) then
+               count = count + 1
+               exit
+            end if
+         end do
+      end do
+
+      ! Print the final count
+      write(*,*) count
+
+      end program count_common_words
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 8 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x78097bbb6960 in ???
+#1  0x78097bbb74d9 in ???
+#2  0x78097be0b17b in ???
+#3  0x78097be04684 in ???
+#4  0x78097be052aa in ???
+#5  0x5b944393e22c in MAIN__
+#6  0x5b944393e542 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def rearrangeArray(nums):
+    nums.sort()
+    for i in range(1, len(nums) - 1, 2):
+        nums[i], nums[i + 1] = nums[i + 1], nums[i]
+    return nums
+</code></pre>
+<p>The algorithm first sorts the array. Then, we swap every two adjacent elements starting from the first index until the end of the array. By doing this, we can ensure that no element will be equal to the average of its neighbors, as the elements are distinct integers and the property described in the problem cannot hold after swapping.</p>
+<p>For example, let's take the following array:</p>
+<pre><code>3 1 5 9 7
+</code></pre>
+<p>Sort the array:</p>
+<pre><code>1 3 5 7 9
+</code></pre>
+<p>Swap every two adjacent elements starting from the first index:</p>
+<pre><code>1 5 3 9 7
+</code></pre>
+<p>Now we can observe that no element in the array is equal to the average of its neighbors.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+std::vector&lt;int&gt; rearrangeArray(std::vector&lt;int&gt;&amp; nums) {
+    std::sort(nums.begin(), nums.end());
+    for (int i = 1; i &lt; nums.size() - 1; i += 2) {
+        std::swap(nums[i], nums[i + 1]);
+    }
+    return nums;
+}
+</code></pre>
+<p>The algorithm first sorts the array. Then, we swap every two adjacent elements starting from the first index until the end of the array. By doing this, we can ensure that no element will be equal to the average of its neighbors, as the elements are distinct integers and the property described in the problem cannot hold after swapping.</p>
+<p>For example, let's take the following array:</p>
+<pre><code>3 1 5 9 7
+</code></pre>
+<p>Sort the array:</p>
+<pre><code>1 3 5 7 9
+</code></pre>
+<p>Swap every two adjacent elements starting from the first index:</p>
+<pre><code>1 5 3 9 7
+</code></pre>
+<p>Now we can observe that no element in the array is equal to the average of its neighbors.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Counting Bits</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/326/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/342/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer <code>n</code>, return <em>an array</em> <code>ans</code> <em>of length</em> <code>n + 1</code> <em>such that for each</em> <code>i</code> (<code>0 &lt;= i &lt;= n</code>)<em>,</em> <code>ans[i]</code> <em>is the <strong>number of</strong></em> <code>1</code><em><strong>'s</strong> in the binary representation of</em> <code>i</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 2
+<strong>Output:</strong> [0,1,1]
+<strong>Explanation:</strong>
+0 --&gt; 0
+1 --&gt; 1
+2 --&gt; 10</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 5
+<strong>Output:</strong> [0,1,1,2,1,2]
+<strong>Explanation:</strong>
+0 --&gt; 0
+1 --&gt; 1
+2 --&gt; 10
+3 --&gt; 11
+4 --&gt; 100
+5 --&gt; 101</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= n &lt;= 105</code></li>
+</ul>
+<p><strong>Follow up:</strong></p>
+<ul>
+<li>It is very easy to come up with a solution with a runtime of <code>O(n log n)</code>. Can you do it in linear time <code>O(n)</code> and possibly in a single pass?</li>
+<li>Can you do it without using any built-in function (i.e., like <code>__builtin_popcount</code> in C++)?</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/counting-bits/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n, ans(n+1)
+
+    ! Example 1
+    n = 2
+    call solve(n, ans)
+    write(*,*) "Example 1:"
+    write(*,*) "n = ", n
+    write(*,*) "ans = ", ans
+
+    ! Example 2
+    n = 5
+    call solve(n, ans)
+    write(*,*) "Example 2:"
+    write(*,*) "n = ", n
+    write(*,*) "ans = ", ans
+
+contains
+
+    subroutine solve(n, ans)
+        implicit none
+        integer, intent(in) :: n
+        integer, intent(out) :: ans(n+1)
+
+        integer :: i
+
+        do i=0, n
+            ans(i+1) = count_ones(i)
+        end do
+
+    end subroutine solve
+
+end program main
+
+function count_ones(n) result(num_ones)
+    implicit none
+    integer, value :: n
+    integer :: num_ones
+
+    integer :: mask
+
+    mask = 1
+    do while (mask <= n)
+        if (mod(n, mask) == 0) then
+            num_ones = num_ones + 1
+        end if
+        mask = mask * 2
+    end do
+
+end function count_ones</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:26:
+
+    4 |     integer :: n, ans(n+1)
+      |                          1
+Error: Explicit shaped array with nonconstant bounds at (1)
+temp.f95:8:21:
+
+    8 |     call solve(n, ans)
+      |                     1
+Error: Symbol ‘ans’ at (1) has no IMPLICIT type
+temp.f95:7:5:
+
+    7 |     n = 2
+      |     1
+Error: Symbol ‘n’ at (1) has no IMPLICIT type
+temp.f95:30:33:
+
+   30 |             ans(i+1) = count_ones(i)
+      |                                 1
+Error: Return type mismatch of function ‘count_ones’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:30:23:
+
+   30 |             ans(i+1) = count_ones(i)
+      |                       1
+Error: Function ‘count_ones’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module binary_ones
+implicit none
+private
+public :: binary_ones_array
+
+contains
+
+function binary_ones_array(n) result(ans)
+integer, intent(in) :: n
+integer :: i, j, ans(n+1)
+
+do i = 0, n
+    ans(i) = 0
+end do
+
+do i = 1, n
+    do j = 1, i
+        ans(i) = ans(i) + mod(i, 2)
+    end do
+end do
+
+end function binary_ones_array
+
+end module binary_ones
+
+program test_binary_ones
+use binary_ones
+implicit none
+integer :: n, i
+integer, allocatable :: ans(:)
+
+n = 2
+ans = binary_ones_array(n)
+write (*,*) ans
+
+n = 5
+ans = binary_ones_array(n)
+write (*,*) ans
+
+n = 10
+ans = binary_ones_array(n)
+write (*,*) ans
+
+end program test_binary_ones
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>           1           0           0
+           1           0           3           0           5           0
+           1           0           3           0           5           0           7           0           9           0           0
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def countBits(n):
+    ans = [0] * (n + 1)
+    for i in range(1, n + 1):
+        ans[i] = ans[i &amp; (i - 1)] + 1
+    return ans
+</code></pre>
+<p>The algorithm leverages a key observation: <code>(i &amp; (i - 1))</code> has the same binary representation as <code>i</code>, but with the least significant <code>1</code> bit removed. This leads to a fast and efficient way to count the number of <code>1</code> bits in the binary representation of each number in the range <code>[0, n]</code>.</p>
+<p>For each number <code>i</code> in the range <code>[1, n]</code>, we calculate <code>ans[i]</code> based on <code>ans[i &amp; (i - 1)]</code>. Since <code>ans[i &amp; (i - 1)]</code> is the count of <code>1</code> bits in the binary representation of <code>(i &amp; (i - 1))</code>, adding <code>1</code> to that count will give us the count of <code>1</code> bits in the binary representation of <code>i</code>.</p>
+<p>The algorithm iterates through the range <code>[1, n]</code> and fills the output array <code>ans</code> accordingly. The final array <code>ans</code> contains the count of <code>1</code> bits in the binary representation of each number in the range <code>[0, n]</code>.</p>
+<p>The time complexity of this algorithm is O(n) as it iterates through the range <code>[1, n]</code> only once, and the space complexity is O(n + 1) since it creates an array of length <code>n + 1</code> to store the results.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+using namespace std;
+
+vector&lt;int&gt; countBits(int n) {
+    vector&lt;int&gt; ans(n + 1, 0);
+    for (int i = 1; i &lt;= n; ++i) {
+        ans[i] = ans[i &amp; (i - 1)] + 1;
+    }
+    return ans;
+}
+</code></pre>
+<p>The algorithm leverages a key observation: <code>(i &amp; (i - 1))</code> has the same binary representation as <code>i</code>, but with the least significant <code>1</code> bit removed. This leads to a fast and efficient way to count the number of <code>1</code> bits in the binary representation of each number in the range <code>[0, n]</code>.</p>
+<p>For each number <code>i</code> in the range <code>[1, n]</code>, we calculate <code>ans[i]</code> based on <code>ans[i &amp; (i - 1)]</code>. Since <code>ans[i &amp; (i - 1)]</code> is the count of <code>1</code> bits in the binary representation of <code>(i &amp; (i - 1))</code>, adding <code>1</code> to that count will give us the count of <code>1</code> bits in the binary representation of <code>i</code>.</p>
+<p>The algorithm iterates through the range <code>[1, n]</code> and fills the output array <code>ans</code> accordingly. The final array <code>ans</code> contains the count of <code>1</code> bits in the binary representation of each number in the range <code>[0, n]</code>.</p>
+<p>The time complexity of this algorithm is O(n) as it iterates through the range <code>[1, n]</code> only once, and the space complexity is O(n + 1) since it creates an array of length <code>n + 1</code> to store the results.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

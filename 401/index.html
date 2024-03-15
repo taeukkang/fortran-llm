@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Binary Watch</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/392/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/404/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A binary watch has 4 LEDs on the top to represent the hours (0-11), and 6 LEDs on the bottom to represent the minutes (0-59). Each LED represents a zero or one, with the least significant bit on the right.</p>
+<ul>
+<li>For example, the below binary watch reads <code>"4:51 "</code>.</li>
+</ul>
+<p>Given an integer <code>turnedOn</code> which represents the number of LEDs that are currently on (ignoring the PM), return <em>all possible times the watch could represent</em>. You may return the answer in <strong>any order</strong>.</p>
+<p>The hour must not contain a leading zero.</p>
+<ul>
+<li>For example, <code>"01:00 "</code> is not valid. It should be <code>"1:00 "</code>.</li>
+</ul>
+<p>The minute must be consist of two digits and may contain a leading zero.</p>
+<ul>
+<li>For example, <code>"10:2 "</code> is not valid. It should be <code>"10:02 "</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> turnedOn = 1
+<strong>Output:</strong> ["0:01","0:02","0:04","0:08","0:16","0:32","1:00","2:00","4:00","8:00"]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> turnedOn = 9
+<strong>Output:</strong> []</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= turnedOn &lt;= 10</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/binary-watch/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+    integer :: turnedOn
+    character(len=5) :: time
+    character(len=10) :: times(10)
+
+    ! Examples from the problem statement
+    turnedOn = 1
+    call solve(turnedOn, times)
+    write (*, '(A)') times
+
+    turnedOn = 9
+    call solve(turnedOn, times)
+    write (*, '(A)') times
+
+contains
+
+subroutine solve(turnedOn, times)
+    implicit none
+    integer, intent(in) :: turnedOn
+    character(len=5), intent(out) :: times(:)
+
+    integer :: h, m
+
+    do i = 0, 11
+        do j = 0, 59
+            if (i == 0 .and. j < 10) then
+                cycle
+            end if
+            if (i > 0 .and. j < 10) then
+                cycle
+            end if
+            if (mod(i * 10 + j, turnedOn) /= 0) then
+                cycle
+            end if
+            h = i
+            m = j
+            if (h < 10) then
+                write (time, '(I1, ":", I2)') h, m
+            else
+                write (time, '(I2, ":", I2)') h, m
+            end if
+            times(i * 6 + j + 1) = time
+        end do
+    end do
+end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>invalid start byte</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module binary_watch
+
+implicit none
+
+contains
+
+function get_times(turned_on) result(times)
+
+integer, intent(in) :: turned_on
+type(time_t) :: times(0:59)
+
+integer :: hour, minute
+
+do hour = 0, 11
+do minute = 0, 59
+
+if (get_bit(hour, turned_on) .and. get_bit(minute, turned_on)) then
+
+times(minute)%hour = hour
+times(minute)%minute = minute
+
+end if
+
+end do
+end do
+
+end function get_times
+
+function get_bit(n, i) result(bit)
+
+integer, intent(in) :: n, i
+logical :: bit
+
+bit = mod(n, 2**i) >= 2**(i-1)
+
+end function get_bit
+
+end module binary_watch
+
+program main
+
+use binary_watch
+
+implicit none
+
+integer :: i, turned_on
+type(time_t) :: times(0:59)
+
+turned_on = 1
+times = get_times(turned_on)
+
+do i = 1, size(times)
+
+write (*,*) times(i)%hour, ":", times(i)%minute
+
+end do
+
+turned_on = 9
+times = get_times(turned_on)
+
+if (size(times) == 0) then
+
+write (*,*) "No times found"
+
+else
+
+do i = 1, size(times)
+
+write (*,*) times(i)%hour, ":", times(i)%minute
+
+end do
+
+end if
+
+end program main
+
+type time_t
+
+integer :: hour, minute
+
+end type time_t
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:10:13:
+
+   10 | type(time_t) :: times(0:59)
+      |             1
+Error: Derived type ‘time_t’ at (1) is being used before it is defined
+temp.f95:7:43:
+
+    7 | function get_times(turned_on) result(times)
+      |                                           1
+Error: Function result ‘times’ at (1) has no IMPLICIT type
+temp.f95:42:5:
+
+   42 | use binary_watch
+      |     1
+Fatal Error: Cannot open module file ‘binary_watch.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def readBinaryWatch(turnedOn: int):
+    def count_bits(n):
+        return bin(n).count('1')
+
+    times = []
+    for h in range(12):
+        for m in range(60):
+            if count_bits(h) + count_bits(m) == turnedOn:
+                times.append(f&quot;{h}:{m:02d}&quot;)
+    return times
+</code></pre>
+<p>The algorithm consists of enumerating all possible hour values (0-11) and minute values (0-59), and checking the number of bits set in both. We have a helper function <code>count_bits</code> (or named similarly) in each language to count the number of bits set in the binary representation of a given value. The function either uses the built-in bit counting function (__builtin_popcount in C++, Integer.bitCount in Java), or in Python and JavaScript, we convert the numbers to binary strings and count the number of '1's. </p>
+<p>For each pair (h, m), if the total number of turned-on LEDs is equal to the given integer <code>turnedOn</code>, we add the corresponding formatted string to the result list. In the end, we return the list of all possible times.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+using namespace std;
+
+vector&lt;string&gt; readBinaryWatch(int turnedOn) {
+    vector&lt;string&gt; times;
+    for (int h = 0; h &lt; 12; h++) {
+        for (int m = 0; m &lt; 60; m++) {
+            if (__builtin_popcount(h) + __builtin_popcount(m) == turnedOn) {
+                times.push_back(to_string(h) + (m &lt; 10 ? &quot;:0&quot; : &quot;:&quot;) + to_string(m));
+            }
+        }
+    }
+    return times;
+}
+</code></pre>
+<p>The algorithm consists of enumerating all possible hour values (0-11) and minute values (0-59), and checking the number of bits set in both. We have a helper function <code>count_bits</code> (or named similarly) in each language to count the number of bits set in the binary representation of a given value. The function either uses the built-in bit counting function (__builtin_popcount in C++, Integer.bitCount in Java), or in Python and JavaScript, we convert the numbers to binary strings and count the number of '1's. </p>
+<p>For each pair (h, m), if the total number of turned-on LEDs is equal to the given integer <code>turnedOn</code>, we add the corresponding formatted string to the result list. In the end, we return the list of all possible times.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

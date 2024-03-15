@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>XOR Operation in an Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1480/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1491/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer <code>n</code> and an integer <code>start</code>.</p>
+<p>Define an array <code>nums</code> where <code>nums[i] = start + 2 * i</code> (<strong>0-indexed</strong>) and <code>n == nums.length</code>.</p>
+<p>Return <em>the bitwise XOR of all elements of</em> <code>nums</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 5, start = 0
+<strong>Output:</strong> 8
+<strong>Explanation:</strong> Array nums is equal to [0, 2, 4, 6, 8] where (0 ^ 2 ^ 4 ^ 6 ^ 8) = 8.
+Where  "^ " corresponds to bitwise XOR operator.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 4, start = 3
+<strong>Output:</strong> 8
+<strong>Explanation:</strong> Array nums is equal to [3, 5, 7, 9] where (3 ^ 5 ^ 7 ^ 9) = 8.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 1000</code></li>
+<li><code>0 &lt;= start &lt;= 1000</code></li>
+<li><code>n == nums.length</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/xor-operation-in-an-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n, start, i
+    integer, dimension(n) :: nums
+
+    do i = 1, n
+        nums(i) = start + 2 * (i - 1)
+    end do
+
+    print '(I0)', sum(nums)
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:33:
+
+    5 |     integer, dimension(n) :: nums
+      |                                 1
+Error: Explicit shaped array with nonconstant bounds at (1)
+temp.f95:8:8:
+
+    8 |         nums(i) = start + 2 * (i - 1)
+      |        1
+Error: Function ‘nums’ at (1) has no IMPLICIT type
+temp.f95:8:12:
+
+    8 |         nums(i) = start + 2 * (i - 1)
+      |            1
+Error: Symbol ‘nums’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program xor_operation
+      implicit none
+
+      integer :: n, start, i, nums(n)
+
+      read(*,*) n
+      read(*,*) start
+
+      do i = 1, n
+        nums(i) = start + 2 * i
+      end do
+
+      do i = 1, n - 1
+        nums(i) = nums(i) ^ nums(i + 1)
+      end do
+
+      write(*,*) nums(1)
+
+      end program xor_operation
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:37:
+
+    4 |       integer :: n, start, i, nums(n)
+      |                                     1
+Error: Explicit shaped array with nonconstant bounds at (1)
+temp.f95:14:13:
+
+   14 |         nums(i) = nums(i) ^ nums(i + 1)
+      |             1
+Error: ‘nums’ at (1) is not a variable
+temp.f95:9:10:
+
+    9 |       do i = 1, n
+      |          1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:6:17:
+
+    6 |       read(*,*) n
+      |                 1
+Error: Symbol ‘n’ at (1) has no IMPLICIT type
+temp.f95:7:21:
+
+    7 |       read(*,*) start
+      |                     1
+Error: Symbol ‘start’ at (1) has no IMPLICIT type
+temp.f95:17:16:
+
+   17 |       write(*,*) nums(1)
+      |                1
+Error: Function ‘nums’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def findTheDistanceValue(arr1, arr2, d):
+    count = 0
+    for i in arr1:
+        valid = True
+        for j in arr2:
+            if abs(i - j) &lt;= d:
+                valid = False
+                break
+        if valid:
+            count += 1
+    return count
+</code></pre>
+<p>The algorithm starts by initializing a variable <code>count</code> to store the number of elements obeying the given constraints. For every element <code>arr1[i]</code>, iterate through every element <code>arr2[j]</code>. Check if <code>|arr1[i] - arr2[j]| &lt;= d</code>. If this condition is true, the current element <code>arr1[i]</code> is not valid, so set <code>valid</code> to false and break out of the inner loop. If the entire inner loop is exhausted and all elements <code>arr2[j]</code> did not meet this condition, the current <code>arr1[i]</code> is valid and increments the count. Return the count at the end.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int findTheDistanceValue(vector&lt;int&gt;&amp; arr1, vector&lt;int&gt;&amp; arr2, int d) {
+    int count = 0;
+    for (int i = 0; i &lt; arr1.size(); i++) {
+        bool valid = true;
+        for (int j = 0; j &lt; arr2.size(); j++) {
+            if (abs(arr1[i] - arr2[j]) &lt;= d) {
+                valid = false;
+                break;
+            }
+        }
+        if (valid) count++;
+    }
+    return count;
+}
+</code></pre>
+<p>The algorithm starts by initializing a variable <code>count</code> to store the number of elements obeying the given constraints. For every element <code>arr1[i]</code>, iterate through every element <code>arr2[j]</code>. Check if <code>|arr1[i] - arr2[j]| &lt;= d</code>. If this condition is true, the current element <code>arr1[i]</code> is not valid, so set <code>valid</code> to false and break out of the inner loop. If the entire inner loop is exhausted and all elements <code>arr2[j]</code> did not meet this condition, the current <code>arr1[i]</code> is valid and increments the count. Return the count at the end.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

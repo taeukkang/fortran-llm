@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Reverse Linked List</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/205/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/217/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>head</code> of a singly linked list, reverse the list, and return <em>the reversed list</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> head = [1,2,3,4,5]
+<strong>Output:</strong> [5,4,3,2,1]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> head = [1,2]
+<strong>Output:</strong> [2,1]</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> head = []
+<strong>Output:</strong> []</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the list is the range <code>[0, 5000]</code>.</li>
+<li><code>-5000 &lt;= Node.val &lt;= 5000</code></li>
+</ul>
+<p><strong>Follow up:</strong> A linked list can be reversed either iteratively or recursively. Could you implement both?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/reverse-linked-list/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    type :: node
+        integer(kind=DP) :: val
+        type(node), pointer :: next => null()
+    end type
+    type(node), pointer :: head => null(), current => null()
+    integer :: i
+
+    ! Example 1
+    allocate(head)
+    head%val = 1
+    allocate(current, source=head)
+    do i = 2, 5
+        allocate(current%next)
+        current%next%val = i
+        current => current%next
+    end do
+    call print_list(head)
+    call reverse_list(head)
+    call print_list(head)
+    deallocate(head)
+
+    ! Example 2
+    allocate(head)
+    head%val = 1
+    allocate(current, source=head)
+    do i = 2, 2
+        allocate(current%next)
+        current%next%val = i
+        current => current%next
+    end do
+    call print_list(head)
+    call reverse_list(head)
+    call print_list(head)
+    deallocate(head)
+
+    ! Example 3
+    allocate(head)
+    call print_list(head)
+    call reverse_list(head)
+    call print_list(head)
+    deallocate(head)
+
+contains
+
+    subroutine print_list(head)
+        type(node), pointer :: head
+        type(node), pointer :: current
+
+        write (unit=error_unit, fmt='(*(I0, 1X))') 'List:'
+        current => head
+        do while (associated(current))
+            write (unit=error_unit, fmt='(I0, 1X)') current%val
+            current => current%next
+        end do
+        write (unit=error_unit, fmt='()')
+    end subroutine
+
+    recursive subroutine reverse_list(head)
+        type(node), pointer :: head
+        type(node), pointer :: current, previous
+
+        if (.not. associated(head)) then
+            return
+        end if
+
+        current => head
+        previous => null()
+        do while (associated(current%next))
+            previous => current
+            current => current%next
+        end do
+        current%next => previous
+        head => current
+    end subroutine
+
+end program</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 52 of file temp.f95
+Fortran runtime error: Expected INTEGER for item 1 in formatted transfer, got CHARACTER
+(*(I0, 1X))
+   ^
+
+Error termination. Backtrace:
+#0  0x7c7f1dc0d960 in ???
+#1  0x7c7f1dc0e4d9 in ???
+#2  0x7c7f1de53ec3 in ???
+#3  0x7c7f1de610e2 in ???
+#4  0x7c7f1de646d1 in ???
+#5  0x7c7f1de64e05 in ???
+#6  0x5655a389c7c1 in print_list.1
+#7  0x5655a389c3cf in MAIN__
+#8  0x5655a389c918 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module reverse_list
+
+implicit none
+
+type :: list_node
+    integer :: val
+    type(list_node), pointer :: next => null()
+end type
+
+contains
+
+recursive subroutine reverse_list_recursive(head)
+    type(list_node), pointer :: head
+    type(list_node), pointer :: current
+
+    if (.not. associated(head)) then
+        return
+    end if
+
+    current => head
+    call reverse_list_recursive(current%next)
+    write (*,*) current%val
+    current%next => null()
+end subroutine
+
+subroutine reverse_list_iterative(head)
+    type(list_node), pointer :: head
+    type(list_node), pointer :: current
+    type(list_node), pointer :: previous
+
+    if (.not. associated(head)) then
+        return
+    end if
+
+    current => head
+    previous => null()
+
+    do while (associated(current))
+        if (.not. associated(current%next)) then
+            head => current
+        end if
+        previous => current
+        current => current%next
+    end do
+
+    do while (associated(previous))
+        write (*,*) previous%val
+        previous => previous%next
+    end do
+end subroutine
+
+end module
+
+program main
+    use reverse_list
+    implicit none
+
+    ! Example 1
+    type(list_node), pointer :: head
+    type(list_node), pointer :: current
+
+    allocate(head)
+    head%val = 1
+    allocate(head%next)
+    head%next%val = 2
+    allocate(head%next%next)
+    head%next%next%val = 3
+    allocate(head%next%next%next)
+    head%next%next%next%val = 4
+    allocate(head%next%next%next%next)
+    head%next%next%next%next%val = 5
+
+    call reverse_list_recursive(head)
+    call reverse_list_iterative(head)
+
+    ! Example 2
+    deallocate(head)
+    allocate(head)
+    head%val = 1
+    allocate(head%next)
+    head%next%val = 2
+
+    call reverse_list_recursive(head)
+    call reverse_list_iterative(head)
+
+    ! Example 3
+    deallocate(head)
+
+    call reverse_list_recursive(head)
+    call reverse_list_iterative(head)
+
+end program
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>           5
+           4
+           3
+           2
+           1
+           1
+           2
+           1
+           1
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def reverse_list(head):
+    prev = None
+    current = head
+    while current is not None:
+        next = current.next
+        current.next = prev
+        prev = current
+        current = next
+    return prev
+</code></pre>
+<p>The algorithm for reversing a singly linked list involves maintaining three pointers: <code>prev</code>, <code>current</code>, and <code>next</code>. 
+1. Initialize <code>prev</code> to null and <code>current</code> to the head of the linked list.
+2. Iterate through the linked list until <code>current</code> becomes null.
+3. In each iteration, set <code>next</code> to be the next node of <code>current</code>.
+4. Point the <code>next</code> of <code>current</code> to <code>prev</code>.
+5. Move <code>prev</code> one step forward by setting it to <code>current</code>.
+6. Finally, move <code>current</code> one step forward by setting it to <code>next</code>.
+7. The reversed linked list is obtained when <code>current</code> becomes null, and <code>prev</code> will be the head of the new reversed list.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">class ListNode {
+public:
+    int val;
+    ListNode *next;
+};
+
+ListNode* reverseList(ListNode* head) {
+    ListNode* prev = nullptr;
+    ListNode* current = head;
+    ListNode* next = nullptr;
+    while (current != nullptr) {
+        next = current-&gt;next;
+        current-&gt;next = prev;
+        prev = current;
+        current = next;
+    }
+    return prev;
+}
+</code></pre>
+<p>The algorithm for reversing a singly linked list involves maintaining three pointers: <code>prev</code>, <code>current</code>, and <code>next</code>. 
+1. Initialize <code>prev</code> to null and <code>current</code> to the head of the linked list.
+2. Iterate through the linked list until <code>current</code> becomes null.
+3. In each iteration, set <code>next</code> to be the next node of <code>current</code>.
+4. Point the <code>next</code> of <code>current</code> to <code>prev</code>.
+5. Move <code>prev</code> one step forward by setting it to <code>current</code>.
+6. Finally, move <code>current</code> one step forward by setting it to <code>next</code>.
+7. The reversed linked list is obtained when <code>current</code> becomes null, and <code>prev</code> will be the head of the new reversed list.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

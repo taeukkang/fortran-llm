@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Delete N Nodes After M Nodes of a Linked List</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1470/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1475/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given the <code>head</code> of a linked list and two integers <code>m</code> and <code>n</code>.</p>
+<p>Traverse the linked list and remove some nodes in the following way:</p>
+<ul>
+<li>Start with the head as the current node.</li>
+<li>Keep the first <code>m</code> nodes starting with the current node.</li>
+<li>Remove the next <code>n</code> nodes</li>
+<li>Keep repeating steps 2 and 3 until you reach the end of the list.</li>
+</ul>
+<p>Return <em>the head of the modified list after removing the mentioned nodes</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> head = [1,2,3,4,5,6,7,8,9,10,11,12,13], m = 2, n = 3
+<strong>Output:</strong> [1,2,6,7,11,12]
+<strong>Explanation:</strong> Keep the first (m = 2) nodes starting from the head of the linked List  (1 -&gt;2) show in black nodes.
+Delete the next (n = 3) nodes (3 -&gt; 4 -&gt; 5) show in read nodes.
+Continue with the same procedure until reaching the tail of the Linked List.
+Head of the linked list after removing nodes is returned.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> head = [1,2,3,4,5,6,7,8,9,10,11], m = 1, n = 3
+<strong>Output:</strong> [1,5,9]
+<strong>Explanation:</strong> Head of linked list after removing nodes is returned.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the list is in the range <code>[1, 104]</code>.</li>
+<li><code>1 &lt;= Node.val &lt;= 106</code></li>
+<li><code>1 &lt;= m, n &lt;= 1000</code></li>
+</ul>
+<p><strong>Follow up:</strong> Could you solve this problem by modifying the list in-place?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/delete-n-nodes-after-m-nodes-of-a-linked-list/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: n = 1000
+    type :: node
+        real(kind=DP), allocatable :: val(:)
+        class(node), pointer :: next => null()
+    end type node
+    type(node), pointer :: head, curr, prev
+    integer :: i, j, k, m, n
+    logical :: success
+
+    ! Examples
+    call test_example1()
+    call test_example2()
+
+contains
+
+    subroutine test_example1()
+        implicit none
+        type(node), pointer :: head, curr
+        integer :: i
+        real(kind=DP), allocatable :: vals(:)
+
+        allocate(head)
+        head%val = [1._DP, 2._DP, 3._DP, 4._DP, 5._DP, 6._DP, 7._DP, &
+                    8._DP, 9._DP, 10._DP, 11._DP, 12._DP, 13._DP]
+        head%next => null()
+
+        do i = 1, size(head%val)
+            if (associated(head%next)) then
+                allocate(head%next)
+                head => head%next
+            else
+                exit
+            end if
+        end do
+
+        call traverse_and_remove(head, 2, 3)
+
+        write(*,*) "Example 1:"
+        write(*,*) "Input: ", head%val
+        write(*,*) "Output: ", head%val
+        write(*,*) ""
+    end subroutine test_example1
+
+    subroutine test_example2()
+        implicit none
+        type(node), pointer :: head, curr
+        integer :: i
+        real(kind=DP), allocatable :: vals(:)
+
+        allocate(head)
+        head%val = [1._DP, 2._DP, 3._DP, 4._DP, 5._DP, 6._DP, 7._DP, &
+                    8._DP, 9._DP, 10._DP, 11._DP]
+        head%next => null()
+
+        do i = 1, size(head%val)
+            if (associated(head%next)) then
+                allocate(head%next)
+                head => head%next
+            else
+                exit
+            end if
+        end do
+
+        call traverse_and_remove(head, 1, 3)
+
+        write(*,*) "Example 2:"
+        write(*,*) "Input: ", head%val
+        write(*,*) "Output: ", head%val
+        write(*,*) ""
+    end subroutine test_example2
+
+    function traverse_and_remove(head, m, n) result(new_head)
+        implicit none
+        type(node), pointer, intent(inout) :: head
+        integer, value :: m, n
+        type(node), pointer :: new_head, curr, prev
+        integer :: i
+
+        new_head => head
+        curr => head
+        do i = 1, m
+            if (.not. associated(curr%next)) exit
+            curr => curr%next
+        end do
+
+        do while (associated(curr%next))
+            prev => curr
+            curr => curr%next
+            deallocate(prev%next)
+            do i = 1, n
+                if (.not. associated(curr%next)) exit
+                curr => curr%next
+            end do
+        end do
+
+        return
+    end function traverse_and_remove
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:10:28:
+
+   10 |     integer :: i, j, k, m, n
+      |                            1
+Error: Symbol ‘n’ at (1) already has basic type of INTEGER
+temp.f95:75:4:
+
+   67 |         call traverse_and_remove(head, 1, 3)
+      |                                            2
+......
+   75 |     function traverse_and_remove(head, m, n) result(new_head)
+      |    1
+Error: ‘traverse_and_remove’ at (1) has a type, which is not consistent with the CALL at (2)
+temp.f95:75:4:
+
+   39 |         call traverse_and_remove(head, 2, 3)
+      |                                            2
+......
+   75 |     function traverse_and_remove(head, m, n) result(new_head)
+      |    1
+Error: ‘traverse_and_remove’ at (1) has a type, which is not consistent with the CALL at (2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module linked_list
+
+! Define the node structure
+type node
+    integer :: val
+    type(node), pointer :: next => null()
+end type
+
+contains
+
+! Function to remove nodes from the linked list
+function remove_nodes(head, m, n) result(new_head)
+    type(node), pointer :: head, current, new_head
+    integer :: m, n
+
+    ! Initialize the new head to null
+    new_head => null()
+
+    ! If the head is null, return null
+    if (associated(head)) then
+        ! Set the current node to the head
+        current => head
+
+        ! Loop until the current node is null
+        do while (associated(current))
+            ! If the current node is the first m nodes, set the new head
+            if (current == head .and. m > 0) then
+                new_head => current
+            end if
+
+            ! If the current node is the first m nodes, set the new head
+            if (m > 0) then
+                m = m - 1
+            else
+                ! If the current node is not the first m nodes, remove the next n nodes
+                do i = 1, n
+                    if (associated(current%next)) then
+                        current => current%next
+                    else
+                        exit
+                    end if
+                end do
+            end if
+
+            ! Set the current node to the next node
+            current => current%next
+        end do
+    end if
+
+    ! Return the new head
+    remove_nodes = new_head
+end function
+
+end module
+
+program test_linked_list
+    use linked_list
+    implicit none
+
+    ! Declare the variables
+    type(node), pointer :: head, current
+    integer :: m, n
+
+    ! Create the linked list
+    head => null()
+    current => head
+    do i = 1, 13
+        if (associated(current)) then
+            allocate(current%next)
+            current => current%next
+        else
+            allocate(head)
+            current => head
+        end if
+        current%val = i
+    end do
+
+    ! Test the function with the first example
+    m = 2
+    n = 3
+    head => remove_nodes(head, m, n)
+    do while (associated(head))
+        write (*,*) head%val
+        head => head%next
+    end do
+
+    ! Test the function with the second example
+    m = 1
+    n = 3
+    head => remove_nodes(head, m, n)
+    do while (associated(head))
+        write (*,*) head%val
+        head => head%next
+    end do
+
+    ! Test the function with the third example
+    m = 2
+    n = 3
+    head => remove_nodes(head, m, n)
+    do while (associated(head))
+        write (*,*) head%val
+        head => head%next
+    end do
+
+    ! Test the function with the fourth example
+    m = 1
+    n = 3
+    head => remove_nodes(head, m, n)
+    do while (associated(head))
+        write (*,*) head%val
+        head => head%next
+    end do
+
+    ! Test the function with the fifth example
+    m = 2
+    n = 3
+    head => remove_nodes(head, m, n)
+    do while (associated(head))
+        write (*,*) head%val
+        head => head%next
+    end do
+
+    ! Test the function with the sixth example
+    m = 1
+    n = 3
+    head => remove_nodes(head, m, n)
+    do while (associated(head))
+        write (*,*) head%val
+        head => head%next
+    end do
+
+    ! Test the function with the seventh example
+    m = 2
+    n = 3
+    head => remove_nodes(head, m, n)
+    do while (associated(head))
+        write (*,*) head%val
+        head => head%next
+    end do
+
+    ! Test the function with the eighth example
+    m = 1
+    n = 3
+    head => remove_nodes(head, m, n)
+    do while (associated(head))
+        write (*,*) head%
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:51:17:
+
+   51 |     remove_nodes = new_head
+      |                 1
+Error: ‘remove_nodes’ at (1) is not a variable
+temp.f95:27:16:
+
+   27 |             if (current == head .and. m > 0) then
+      |                1
+Error: Operands of comparison operator ‘==’ at (1) are TYPE(node)/TYPE(node)
+temp.f95:57:9:
+
+   57 |     use linked_list
+      |         1
+Fatal Error: Cannot open module file ‘linked_list.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+
+def longestZigZag(root: TreeNode) -&gt; int:
+    maxLen = [0]
+
+    def longestZigZagUtil(root, left):
+        if not root:
+            return -1
+
+        leftZig = longestZigZagUtil(root.left, True)
+        rightZig = longestZigZagUtil(root.right, False)
+
+        maxLen[0] = max(maxLen[0], max(leftZig, rightZig) + 1)
+        return rightZig + 1 if left else leftZig + 1
+
+    longestZigZagUtil(root, True)
+    longestZigZagUtil(root, False)
+    return maxLen[0]
+</code></pre>
+<pre><code>The algorithm is a recursive depth-first search on the binary tree. The `longestZigZagUtil` function is called with two arguments: a tree node, and a boolean value indicating if the zigzag direction is left (`True`) or right (`False`).
+</code></pre>
+<p>For each recursive call, we calculate the zigzag lengths of the left and right child nodes by calling the utility function with <code>left</code> as <code>True</code> and <code>False</code>, respectively. We update the maximum zigzag length by comparing the current maximum length with the sum of the maximum lengths of the left and right child nodes, plus one.</p>
+<p>The base case is when <code>root</code> is <code>null</code> (Python: <code>None</code>, Java: <code>null</code>, JavaScript: <code>null</code>), in which case we return -1 as the zigzag length.</p>
+<p>Finally, we call the utility function for both left (<code>True</code>) and right (<code>False</code>) directions to find the maximum length and return it.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+int longestZigZagUtil(TreeNode* root, bool left, int&amp; maxLen) {
+    if (!root)
+        return -1;
+
+    int leftZig = longestZigZagUtil(root-&gt;left, true, maxLen);
+    int rightZig = longestZigZagUtil(root-&gt;right, false, maxLen);
+
+    maxLen = max(maxLen, max(leftZig, rightZig) + 1);
+    return left ? rightZig + 1 : leftZig + 1;
+}
+
+int longestZigZag(TreeNode* root) {
+    int maxLen = 0;
+    longestZigZagUtil(root, true, maxLen);
+    longestZigZagUtil(root, false, maxLen);
+    return maxLen;
+}
+</code></pre>
+<pre><code>The algorithm is a recursive depth-first search on the binary tree. The `longestZigZagUtil` function is called with two arguments: a tree node, and a boolean value indicating if the zigzag direction is left (`True`) or right (`False`).
+</code></pre>
+<p>For each recursive call, we calculate the zigzag lengths of the left and right child nodes by calling the utility function with <code>left</code> as <code>True</code> and <code>False</code>, respectively. We update the maximum zigzag length by comparing the current maximum length with the sum of the maximum lengths of the left and right child nodes, plus one.</p>
+<p>The base case is when <code>root</code> is <code>null</code> (Python: <code>None</code>, Java: <code>null</code>, JavaScript: <code>null</code>), in which case we return -1 as the zigzag length.</p>
+<p>Finally, we call the utility function for both left (<code>True</code>) and right (<code>False</code>) directions to find the maximum length and return it.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

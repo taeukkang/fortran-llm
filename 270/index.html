@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Closest Binary Search Tree Value</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/268/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/278/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of a binary search tree and a <code>target</code> value, return <em>the value in the BST that is closest to the</em> <code>target</code>. If there are multiple answers, print the smallest.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [4,2,5,1,3], target = 3.714286
+<strong>Output:</strong> 4</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [1], target = 4.428571
+<strong>Output:</strong> 1</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[1, 104]</code>.</li>
+<li><code>0 &lt;= Node.val &lt;= 109</code></li>
+<li><code>-109 &lt;= target &lt;= 109</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/closest-binary-search-tree-value/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, iostat_end, DP => REAL64
+    implicit none
+    integer, parameter :: unit_in = 10, unit_out = 20
+    type :: node_type
+        real(kind=DP) :: val
+        class(node_type), pointer :: left => null(), right => null()
+    end type node_type
+    type (node_type), pointer :: root
+    real(kind=DP) :: target
+    character(len=*), parameter :: fmt = '(A,F10.5)'
+    integer :: ios
+
+    call get_root(root)
+    read (unit=unit_in, fmt='(F10.5)', iostat=ios) target
+    if (ios /= 0 .and. ios /= iostat_end) then
+        write (unit=error_unit, fmt='("error reading input: ", A)') trim(adjustl(str(ios)))
+        stop 1
+    end if
+    if (ios == iostat_end) then
+        ! No more input, exit
+        stop 0
+    end if
+
+    call solve(root, target)
+
+contains
+
+    subroutine get_root(root)
+        type (node_type), pointer :: root
+        real(kind=DP) :: val
+        integer :: ios
+
+        do
+            read (unit=unit_in, fmt='(F10.5)', iostat=ios) val
+            if (ios /= 0 .and. ios /= iostat_end) then
+                write (unit=error_unit, fmt='("error reading input: ", A)') trim(adjustl(str(ios)))
+                stop 1
+            end if
+            if (ios == iostat_end) then
+                ! No more input, exit
+                exit
+            end if
+            allocate (root)
+            root%val = val
+            call get_left(root%left)
+            call get_right(root%right)
+        end do
+    end subroutine get_root
+
+    subroutine get_left(left)
+        type (node_type), pointer :: left
+        real(kind=DP) :: val
+        integer :: ios
+
+        do
+            read (unit=unit_in, fmt='(F10.5)', iostat=ios) val
+            if (ios /= 0 .and. ios /= iostat_end) then
+                write (unit=error_unit, fmt='("error reading input: ", A)') trim(adjustl(str(ios)))
+                stop 1
+            end if
+            if (ios == iostat_end) then
+                ! No more input, exit
+                exit
+            end if
+            allocate (left)
+            left%val = val
+            call get_left(left%left)
+            call get_right(left%right)
+        end do
+    end subroutine get_left
+
+    subroutine get_right(right)
+        type (node_type), pointer :: right
+        real(kind=DP) :: val
+        integer :: ios
+
+        do
+            read (unit=unit_in, fmt='(F10.5)', iostat=ios) val
+            if (ios /= 0 .and. ios /= iostat_end) then
+                write (unit=error_unit, fmt='("error reading input: ", A)') trim(adjustl(str(ios)))
+                stop 1
+            end if
+            if (ios == iostat_end) then
+                ! No more input, exit
+                exit
+            end if
+            allocate (right)
+            right%val = val
+            call get_left(right%left)
+            call get_right(right%right)
+        end do
+    end subroutine get_right
+
+    subroutine solve(root, target)
+        type (node_type), pointer :: root
+        real(kind=DP), intent(in) :: target
+        real(kind=DP) :: diff, min_diff
+        type (node_type), pointer :: current
+
+        current => root
+        min_diff = huge(min_diff)
+        do while (associated(current))
+            diff = abs(current%val - target)
+            if (diff < min_</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:105:27:
+
+  105 |             if (diff < min_
+      |                           1
+Error: Missing ‘)’ in statement at or before (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module BinarySearchTree
+
+    implicit none
+
+    type :: Node
+        integer :: val
+        type(Node), pointer :: left
+        type(Node), pointer :: right
+    end type Node
+
+    interface
+        function closestValue(root, target) result(closest)
+            type(Node), pointer, intent(in) :: root
+            real(kind=8), intent(in) :: target
+            integer :: closest
+        end function closestValue
+    end interface
+
+contains
+
+    function closestValue(root, target) result(closest)
+        type(Node), pointer, intent(in) :: root
+        real(kind=8), intent(in) :: target
+        integer :: closest
+        real(kind=8) :: diff
+
+        if (associated(root)) then
+            closest = root%val
+            diff = abs(real(root%val, kind=8) - target)
+
+            if (target < real(root%val, kind=8)) then
+                closest = closestValue(root%left, target)
+                if (abs(real(closest, kind=8) - target) < diff) then
+                    diff = abs(real(closest, kind=8) - target)
+                end if
+            else
+                closest = closestValue(root%right, target)
+                if (abs(real(closest, kind=8) - target) < diff) then
+                    diff = abs(real(closest, kind=8) - target)
+                end if
+            end if
+        end if
+    end function closestValue
+
+end module BinarySearchTree
+
+program main
+    use BinarySearchTree
+    implicit none
+    type(Node), pointer :: root
+    integer :: target
+    integer :: closest
+
+    ! Example 1
+    root => Node(val=4, left => Node(val=2), right => Node(val=5))
+    target = 3.714286
+    closest = closestValue(root, target)
+    write (*,*) closest
+
+    ! Example 2
+    root => Node(val=1)
+    target = 4.428571
+    closest = closestValue(root, target)
+    write (*,*) closest
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:13:23:
+
+   13 |             type(Node), pointer, intent(in) :: root
+      |                       1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:21:26:
+
+   12 |         function closestValue(root, target) result(closest)
+      |        2                  
+......
+   21 |     function closestValue(root, target) result(closest)
+      |                          1
+Error: Procedure ‘closestvalue’ at (1) is already defined at (2)
+temp.f95:22:47:
+
+   22 |         type(Node), pointer, intent(in) :: root
+      |                                               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:23:42:
+
+   23 |         real(kind=8), intent(in) :: target
+      |                                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:24:26:
+
+   24 |         integer :: closest
+      |                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:25:28:
+
+   25 |         real(kind=8) :: diff
+      |                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:27:34:
+
+   27 |         if (associated(root)) then
+      |                                  1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:28:28:
+
+   28 |             closest = root%val
+      |                            1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:29:34:
+
+   29 |             diff = abs(real(root%val, kind=8) - target)
+      |                                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:31:36:
+
+   31 |             if (target < real(root%val, kind=8)) then
+      |                                    1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:32:45:
+
+   32 |                 closest = closestValue(root%left, target)
+      |                                             1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:33:68:
+
+   33 |                 if (abs(real(closest, kind=8) - target) < diff) then
+      |                                                                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:34:62:
+
+   34 |                     diff = abs(real(closest, kind=8) - target)
+      |                                                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:35:19:
+
+   35 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:36:16:
+
+   36 |             else
+      |                1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:37:45:
+
+   37 |                 closest = closestValue(root%right, target)
+      |                                             1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:38:68:
+
+   38 |                 if (abs(real(closest, kind=8) - target) < diff) then
+      |                                                                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:39:62:
+
+   39 |                     diff = abs(real(closest, kind=8) - target)
+      |                                                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:40:19:
+
+   40 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:41:15:
+
+   41 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:42:11:
+
+   42 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:43:7:
+
+   43 |     end function closestValue
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:48:9:
+
+   48 |     use BinarySearchTree
+      |         1
+Fatal Error: Cannot open module file ‘binarysearchtree.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class Solution:
+    def closestValue(self, root: TreeNode, target: float) -&gt; int:
+        closest = root.val
+        while root:
+            if abs(target - closest) &gt; abs(target - root.val):
+                closest = root.val
+            root = root.left if target &lt; root.val else root.right
+        return closest
+</code></pre>
+<p>The algorithm uses a while loop to traverse the binary search tree. During the iteration, we continuously update the closest variable with the current node's value if the current node's value is closer to the target than the previous closest value. The algorithm follows the binary search tree's property, taking the left branch if the target is less than the current node's value and the right branch if the target is greater than the current node's value. On reaching a null node, the algorithm terminates and returns the closest value found.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">class Solution {
+public:
+    int closestValue(TreeNode* root, double target) {
+        int closest = root-&gt;val;
+        while (root != nullptr) {
+            if (abs(target - closest) &gt; abs(target - root-&gt;val)) {
+                closest = root-&gt;val;
+            }
+            root = target &lt; root-&gt;val ? root-&gt;left : root-&gt;right;
+        }
+        return closest;
+    }
+};
+</code></pre>
+<p>The algorithm uses a while loop to traverse the binary search tree. During the iteration, we continuously update the closest variable with the current node's value if the current node's value is closer to the target than the previous closest value. The algorithm follows the binary search tree's property, taking the left branch if the target is less than the current node's value and the right branch if the target is greater than the current node's value. On reaching a null node, the algorithm terminates and returns the closest value found.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find First Palindromic String in the Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2103/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2114/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of strings <code>words</code>, return <em>the first <strong>palindromic</strong> string in the array</em>. If there is no such string, return <em>an <strong>empty string</strong></em> <code>" "</code>.</p>
+<p>A string is <strong>palindromic</strong> if it reads the same forward and backward.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> words = [ "abc ", "car ", "ada ", "racecar ", "cool "]
+<strong>Output:</strong>  "ada "
+<strong>Explanation:</strong> The first string that is palindromic is  "ada ".
+Note that  "racecar " is also palindromic, but it is not the first.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> words = [ "notapalindrome ", "racecar "]
+<strong>Output:</strong>  "racecar "
+<strong>Explanation:</strong> The first and only string that is palindromic is  "racecar ".</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> words = [ "def ", "ghi "]
+<strong>Output:</strong>  " "
+<strong>Explanation:</strong> There are no palindromic strings, so the empty string is returned.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= words.length &lt;= 100</code></li>
+<li><code>1 &lt;= words[i].length &lt;= 100</code></li>
+<li><code>words[i]</code> consists only of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-first-palindromic-string-in-the-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: words(:)
+    integer :: i
+
+    words = ["abc ", "car ", "ada ", "racecar ", "cool "]
+    do i = 1, size(words)
+        write(*,*) 'First palindromic string in ', words(i), ' is ', get_first_palindromic_string(words(i))
+    end do
+
+    words = ["notapalindrome ", "racecar "]
+    do i = 1, size(words)
+        write(*,*) 'First palindromic string in ', words(i), ' is ', get_first_palindromic_string(words(i))
+    end do
+
+    words = ["def ", "ghi "]
+    do i = 1, size(words)
+        write(*,*) 'First palindromic string in ', words(i), ' is ', get_first_palindromic_string(words(i))
+    end do
+
+contains
+
+    function get_first_palindromic_string(str) result(palindromic_str)
+        implicit none
+        character(len=*), intent(in) :: str
+        character(len=:), allocatable :: palindromic_str
+        logical :: is_palindromic
+
+        is_palindromic = .false.
+        palindromic_str = ""
+
+        ! Check if the input string is palindromic
+        if (str == reverse_string(str)) then
+            is_palindromic = .true.
+            palindromic_str = str
+        end if
+
+        if (.not. is_palindromic) then
+            palindromic_str = ""
+        end if
+
+    end function get_first_palindromic_string
+
+    function reverse_string(str) result(reversed_str)
+        implicit none
+        character(len=*), intent(in) :: str
+        character(len=:), allocatable :: reversed_str
+
+        reversed_str = ""
+
+        do while (len_trim(str) > 0)
+            reversed_str = trim(adjustl(str(len_trim(str):1))) // trim(adjustl(reversed_str))
+            str = str(:len_trim(str)-1)
+        end do
+
+    end function reverse_string
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:54:12:
+
+   54 |             str = str(:len_trim(str)-1)
+      |            1
+Error: Dummy argument ‘str’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:7:36:
+
+    7 |     words = ["abc ", "car ", "ada ", "racecar ", "cool "]
+      |                                    1
+Error: Different CHARACTER lengths (4/8) in array constructor at (1)
+temp.f95:12:31:
+
+   12 |     words = ["notapalindrome ", "racecar "]
+      |                               1
+Error: Different CHARACTER lengths (15/8) in array constructor at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program first_palindromic_string
+      implicit none
+
+      integer :: i, j
+      character(len=100) :: words(100)
+      character(len=100) :: palindrome
+
+      ! Read the input
+      read(*,*) words
+
+      ! Initialize the palindrome to an empty string
+      palindrome = " "
+
+      ! Check if any of the words is palindromic
+      do i = 1, size(words)
+         do j = 1, size(words(i))
+            if (words(i)(j:j) == words(i)(size(words(i))-j+1:size(words(i))-j+1)) then
+               palindrome = words(i)
+               exit
+            end if
+         end do
+      end do
+
+      ! Print the palindrome
+      write(*,*) palindrome
+
+      end program first_palindromic_string
+
+This program uses a nested loop to check each word in the input array to see if it is palindromic. If a palindromic word is found, the program sets the `palindrome` variable to that word and exits the loop. If no palindromic word is found, the program sets `palindrome` to an empty string and exits the loop. Finally, the program prints the `palindrome` variable to stdout.
+
+Note that this program assumes that the input array is a 2D array of strings, and that the strings are all of the same length. If the input array is a 1D array of strings, or if the strings are of different lengths, the program will need to be modified accordingly.
+
+Also note that this program uses the `size` function to get the length of the input array, and the `len` function to get the length of each string in the array. These functions are available in Fortran 90 and later, and are used to avoid hardcoding the length of the input array or the strings.
+
+This program can be run with the following examples:
+
+*   `words = ["abc ", "car ", "ada ", "racecar ", "cool "]`
+*   `words = ["notapalindrome ", "racecar "]`
+*   `words = ["def ", "ghi "]`
+
+The output for each example is the first palindromic string in the input array, or an empty string if no palindromic string is found.
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:29:132:
+
+   29 | This program uses a nested loop to check each word in the input array to see if it is palindromic. If a palindromic word is found, the program sets the `palindrome` variable to that word and exits the loop. If no palindromic word is found, the program sets `palindrome` to an empty string and exits the loop. Finally, the program prints the `palindrome` variable to stdout.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:31:132:
+
+   31 | Note that this program assumes that the input array is a 2D array of strings, and that the strings are all of the same length. If the input array is a 1D array of strings, or if the strings are of different lengths, the program will need to be modified accordingly.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:33:132:
+
+   33 | Also note that this program uses the `size` function to get the length of the input array, and the `len` function to get the length of each string in the array. These functions are available in Fortran 90 and later, and are used to avoid hardcoding the length of the input array or the strings.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:37:2:
+
+   37 | *   `words = ["abc ", "car ", "ada ", "racecar ", "cool "]`
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:38:2:
+
+   38 | *   `words = ["notapalindrome ", "racecar "]`
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:39:2:
+
+   39 | *   `words = ["def ", "ghi "]`
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:41:132:
+
+   41 | The output for each example is the first palindromic string in the input array, or an empty string if no palindromic string is found.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:17:47:
+
+   17 |             if (words(i)(j:j) == words(i)(size(words(i))-j+1:size(words(i))-j+1)) then
+      |                                               1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+temp.f95:17:47:
+
+   17 |             if (words(i)(j:j) == words(i)(size(words(i))-j+1:size(words(i))-j+1)) then
+      |                                               1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+temp.f95:16:24:
+
+   16 |          do j = 1, size(words(i))
+      |                        1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minimizeTheDifference(mat, target):
+    m, n = len(mat), len(mat[0])
+    dp, new_dp = [1] + [0] * 4900, [0] * 4901
+    for i in range(m):
+        for j in range(n):
+            for k in range(4900 - mat[i][j] + 1):
+                new_dp[k + mat[i][j]] |= dp[k]
+        dp, new_dp = new_dp, [0] * 4901
+    for i in range(4901):
+        if dp[i]:
+            return abs(target - i)
+    return float('inf')
+</code></pre>
+<p>The given problem is a variation of the subset sum problem. Instead of checking all combinations using backtracking, we can use dynamic programming to optimize it. We use an array <code>dp</code> of size 4901 to store whether a sum value is possible or not. </p>
+<ol>
+<li>Initialize the <code>dp</code> array with 0, except <code>dp[0] = 1</code>, which means sum 0 is possible.</li>
+<li>For each row in the matrix, we create a temporary <code>new_dp</code> array and loop through all columns.</li>
+<li>For each column, iterate through the <code>dp</code> array, and if <code>dp[k] = 1</code>, set <code>new_dp[k + mat[i][j]] = 1</code>. It means the sum <code>k + mat[i][j]</code> is possible based on the current <code>dp</code>.</li>
+<li>Swap <code>dp</code> and <code>new_dp</code> arrays for the next iteration.</li>
+<li>After iterating through all rows, go through <code>dp</code>, if <code>dp[i] = 1</code>, return the absolute difference between i and the target.</li>
+<li>If we didn't find a possible sum, return the maximum possible absolute difference.</li>
+</ol>
+<p>The algorithm's time complexity is O(m * n * 4900) and space complexity is O(4901).</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;climits&gt;
+using namespace std;
+
+int minimizeTheDifference(vector&lt;vector&lt;int&gt;&gt;&amp; mat, int target) {
+    int m = mat.size(), n = mat[0].size();
+    vector&lt;int&gt; dp(4901, 0), new_dp(4901, 0);
+    dp[0] = 1;
+    for (int i = 0; i &lt; m; ++i) {
+        fill(new_dp.begin(), new_dp.end(), 0);
+        for (int j = 0; j &lt; n; ++j) {
+            for (int k = 0; k + mat[i][j] &lt; 4901; ++k) {
+                new_dp[k + mat[i][j]] |= dp[k];
+            }
+        }
+        dp.swap(new_dp);
+    }
+    for (int i = 0; i &lt; 4901; ++i) {
+        if (dp[i]) return abs(target - i);
+    }
+    return INT_MAX;
+}
+</code></pre>
+<p>The given problem is a variation of the subset sum problem. Instead of checking all combinations using backtracking, we can use dynamic programming to optimize it. We use an array <code>dp</code> of size 4901 to store whether a sum value is possible or not. </p>
+<ol>
+<li>Initialize the <code>dp</code> array with 0, except <code>dp[0] = 1</code>, which means sum 0 is possible.</li>
+<li>For each row in the matrix, we create a temporary <code>new_dp</code> array and loop through all columns.</li>
+<li>For each column, iterate through the <code>dp</code> array, and if <code>dp[k] = 1</code>, set <code>new_dp[k + mat[i][j]] = 1</code>. It means the sum <code>k + mat[i][j]</code> is possible based on the current <code>dp</code>.</li>
+<li>Swap <code>dp</code> and <code>new_dp</code> arrays for the next iteration.</li>
+<li>After iterating through all rows, go through <code>dp</code>, if <code>dp[i] = 1</code>, return the absolute difference between i and the target.</li>
+<li>If we didn't find a possible sum, return the maximum possible absolute difference.</li>
+</ol>
+<p>The algorithm's time complexity is O(m * n * 4900) and space complexity is O(4901).</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

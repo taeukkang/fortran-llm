@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Remove Duplicates from Sorted List</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/70/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/88/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>head</code> of a sorted linked list, <em>delete all duplicates such that each element appears only once</em>. Return <em>the linked list <strong>sorted</strong> as well</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> head = [1,1,2]
+<strong>Output:</strong> [1,2]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> head = [1,1,2,3,3]
+<strong>Output:</strong> [1,2,3]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the list is in the range <code>[0, 300]</code>.</li>
+<li><code>-100 &lt;= Node.val &lt;= 100</code></li>
+<li>The list is guaranteed to be <strong>sorted</strong> in ascending order.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/remove-duplicates-from-sorted-list/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! This program solves the problem of deleting all duplicates from a sorted linked list
+    ! so that each element appears only once.
+    implicit none
+
+    type :: node_t
+        integer :: val
+        type(node_t), pointer :: next => null()
+    end type
+
+    type(node_t), target :: head
+    type(node_t), pointer :: curr, prev
+
+    ! Example 1
+    call init_list(head)
+    call append(head, 1)
+    call append(head, 1)
+    call append(head, 2)
+    print '(A)', 'Example 1:'
+    call delete_duplicates(head)
+    call print_list(head)
+
+    ! Example 2
+    call init_list(head)
+    call append(head, 1)
+    call append(head, 1)
+    call append(head, 2)
+    call append(head, 3)
+    call append(head, 3)
+    print '(A)', 'Example 2:'
+    call delete_duplicates(head)
+    call print_list(head)
+
+contains
+
+    subroutine init_list(head)
+        ! Initialize an empty linked list
+        type(node_t), intent(out) :: head
+
+        nullify(head%next)
+    end subroutine
+
+    subroutine append(head, val)
+        ! Append a new node with value `val` to the end of the linked list
+        type(node_t), intent(inout) :: head
+        integer, intent(in) :: val
+        type(node_t), pointer :: new_node
+
+        allocate(new_node)
+        new_node%val = val
+        new_node%next => null()
+
+        if (associated(head%next)) then
+            ! There are already some nodes in the list
+            curr => head
+            do while (associated(curr%next))
+                curr => curr%next
+            end do
+            curr%next => new_node
+        else
+            ! This is the first node in the list
+            head%next => new_node
+        end if
+    end subroutine
+
+    subroutine delete_duplicates(head)
+        ! Delete all duplicates from the linked list
+        type(node_t), intent(inout) :: head
+        type(node_t), pointer :: curr, prev
+
+        curr => head
+        prev => null()
+
+        do while (associated(curr%next))
+            if (curr%val == curr%next%val) then
+                ! Found a duplicate, delete it
+                prev%next => curr%next
+                deallocate(curr)
+                curr => prev
+            else
+                ! No duplicate found, move on to the next node
+                prev => curr
+                curr => curr%next
+            end if
+        end do
+    end subroutine
+
+    subroutine print_list(head)
+        ! Print the linked list to stdout
+        type(node_t), intent(in) :: head
+        type(node_t), pointer :: curr
+
+        curr => head
+        do while (associated(curr%next))
+            write (*, '(I0)') curr%val
+            curr => curr%next
+        end do
+        write (*, '(I0)') curr%val
+    end subroutine
+
+end program</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:93:16:
+
+   93 |         curr => head
+      |                1
+Error: Pointer assignment target is neither TARGET nor POINTER at (1)
+temp.f95:71:16:
+
+   71 |         curr => head
+      |                1
+Error: Pointer assignment target is neither TARGET nor POINTER at (1)
+temp.f95:55:20:
+
+   55 |             curr => head
+      |                    1
+Error: Pointer assignment target is neither TARGET nor POINTER at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module linked_list
+
+type :: node
+    integer :: val
+    type(node), pointer :: next => null()
+end type
+
+interface
+    pure function delete_duplicates(head) result(new_head)
+        type(node), pointer, intent(in) :: head
+        type(node), pointer :: new_head
+    end function
+end interface
+
+contains
+
+pure function delete_duplicates(head) result(new_head)
+    type(node), pointer, intent(in) :: head
+    type(node), pointer :: current, new_head
+
+    ! Edge case: empty list
+    if (.not. associated(head)) then
+        nullify(new_head)
+        return
+    end if
+
+    ! Create a new list with only unique elements
+    current => head
+    allocate(new_head, source=current)
+    current => current%next
+    do while (associated(current))
+        if (current%val /= new_head%val) then
+            allocate(new_head%next, source=current)
+            new_head => new_head%next
+        end if
+        current => current%next
+    end do
+
+    ! Sort the list
+    call sort_list(new_head)
+
+end function
+
+subroutine sort_list(head)
+    type(node), pointer, intent(inout) :: head
+    type(node), pointer :: current, next
+
+    current => head
+    do while (associated(current))
+        next => current%next
+        do while (associated(next))
+            if (current%val > next%val) then
+                call swap(current, next)
+            end if
+            next => next%next
+        end do
+        current => current%next
+    end do
+
+end subroutine
+
+subroutine swap(a, b)
+    type(node), pointer, intent(inout) :: a, b
+    type(node), pointer :: temp
+
+    temp => a
+    a => b
+    b => temp
+
+end subroutine
+
+end module
+
+program main
+    use linked_list
+    implicit none
+
+    type(node), pointer :: head, current
+    integer :: i
+
+    ! Create a linked list with duplicates
+    allocate(head)
+    head%val = 1
+    current => head
+    do i = 2, 5
+        allocate(current%next)
+        current => current%next
+        current%val = i
+    end do
+    current%next => head
+
+    ! Print the original list
+    write (*,*) "Original list:"
+    current => head
+    do while (associated(current))
+        write (*,*) current%val
+        current => current%next
+    end do
+
+    ! Delete duplicates
+    head => delete_duplicates(head)
+
+    ! Print the sorted list
+    write (*,*) "Sorted list:"
+    current => head
+    do while (associated(current))
+        write (*,*) current%val
+        current => current%next
+    end do
+
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:10:19:
+
+   10 |         type(node), pointer, intent(in) :: head
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:11:19:
+
+   11 |         type(node), pointer :: new_head
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:17:32:
+
+    9 |     pure function delete_duplicates(head) result(new_head)
+      |    2                            
+......
+   17 | pure function delete_duplicates(head) result(new_head)
+      |                                1
+Error: Procedure ‘delete_duplicates’ at (1) is already defined at (2)
+temp.f95:18:43:
+
+   18 |     type(node), pointer, intent(in) :: head
+      |                                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:19:44:
+
+   19 |     type(node), pointer :: current, new_head
+      |                                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:22:36:
+
+   22 |     if (.not. associated(head)) then
+      |                                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:23:25:
+
+   23 |         nullify(new_head)
+      |                         1
+Error: Unexpected NULLIFY statement in CONTAINS section at (1)
+temp.f95:24:14:
+
+   24 |         return
+      |              1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:25:7:
+
+   25 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:19:
+
+   28 |     current => head
+      |                   1
+Error: Unexpected pointer assignment statement in CONTAINS section at (1)
+temp.f95:29:13:
+
+   29 |     allocate(new_head, source=current)
+      |             1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:30:24:
+
+   30 |     current => current%next
+      |                        1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:31:34:
+
+   31 |     do while (associated(current))
+      |                                  1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:32:21:
+
+   32 |         if (current%val /= new_head%val) then
+      |                     1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:33:31:
+
+   33 |             allocate(new_head%next, source=current)
+      |                               1
+Error: Symbol ‘new_head’ at (1) has no IMPLICIT type
+temp.f95:34:34:
+
+   34 |             new_head => new_head%next
+      |                                  1
+Error: Symbol ‘new_head’ at (1) has no IMPLICIT type
+temp.f95:35:11:
+
+   35 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:36:28:
+
+   36 |         current => current%next
+      |                            1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:37:7:
+
+   37 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:40:28:
+
+   40 |     call sort_list(new_head)
+      |                            1
+Error: Unexpected CALL statement in CONTAINS section at (1)
+temp.f95:42:3:
+
+   42 | end function
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:9:40:
+
+    9 |     pure function delete_duplicates(head) result(new_head)
+      |                                        1
+Error: Argument ‘head’ of pure function ‘delete_duplicates’ at (1) must be INTENT(IN) or VALUE
+temp.f95:9:40:
+
+    9 |     pure function delete_duplicates(head) result(new_head)
+      |                                        1
+Error: Argument ‘head’ of pure function ‘delete_duplicates’ at (1) must be INTENT(IN) or VALUE
+temp.f95:75:9:
+
+   75 |     use linked_list
+      |         1
+Fatal Error: Cannot open module file ‘linked_list.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def delete_duplicates(head):
+    current = head
+    while current and current.next:
+        if current.next.val == current.val:
+            current.next = current.next.next
+        else:
+            current = current.next
+    return head
+</code></pre>
+<p>The algorithm to delete all duplicates in a sorted linked list simply iterates through the list and compares the value of the current node with the value of the next. If both values are the same, it means that there is a duplicate, so the current node's "next" pointer is updated to point to the node after the duplicate. If the values are different, the algorithm continues iterating to the next node. The process continues until reaching the end of the list. Since the linked list is already sorted, this algorithm guarantees that duplicates will appear consecutively, allowing for their removal in linear time.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">struct ListNode {
+    int val;
+    ListNode* next;
+    ListNode(int x) : val(x), next(nullptr) {}
+};
+
+ListNode* deleteDuplicates(ListNode* head) {
+    ListNode* current = head;
+    while (current &amp;&amp; current-&gt;next) {
+        if (current-&gt;next-&gt;val == current-&gt;val) {
+            ListNode* temp = current-&gt;next;
+            current-&gt;next = temp-&gt;next;
+            delete temp;
+        } else {
+            current = current-&gt;next;
+        }
+    }
+    return head;
+}
+</code></pre>
+<p>The algorithm to delete all duplicates in a sorted linked list simply iterates through the list and compares the value of the current node with the value of the next. If both values are the same, it means that there is a duplicate, so the current node's "next" pointer is updated to point to the node after the duplicate. If the values are different, the algorithm continues iterating to the next node. The process continues until reaching the end of the list. Since the linked list is already sorted, this algorithm guarantees that duplicates will appear consecutively, allowing for their removal in linear time.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

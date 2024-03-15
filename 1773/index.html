@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count Items Matching a Rule</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1768/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1779/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an array <code>items</code>, where each <code>items[i] = [typei, colori, namei]</code> describes the type, color, and name of the <code>ith</code> item. You are also given a rule represented by two strings, <code>ruleKey</code> and <code>ruleValue</code>.</p>
+<p>The <code>ith</code> item is said to match the rule if <strong>one</strong> of the following is true:</p>
+<ul>
+<li><code>ruleKey == "type "</code> and <code>ruleValue == typei</code>.</li>
+<li><code>ruleKey == "color "</code> and <code>ruleValue == colori</code>.</li>
+<li><code>ruleKey == "name "</code> and <code>ruleValue == namei</code>.</li>
+</ul>
+<p>Return <em>the number of items that match the given rule</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> items = [[ "phone ", "blue ", "pixel "],[ "computer ", "silver ", "lenovo "],[ "phone ", "gold ", "iphone "]], ruleKey =  "color ", ruleValue =  "silver "
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> There is only one item matching the given rule, which is [ "computer ", "silver ", "lenovo "].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> items = [[ "phone ", "blue ", "pixel "],[ "computer ", "silver ", "phone "],[ "phone ", "gold ", "iphone "]], ruleKey =  "type ", ruleValue =  "phone "
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> There are only two items matching the given rule, which are [ "phone ", "blue ", "pixel "] and [ "phone ", "gold ", "iphone "]. Note that the item [ "computer ", "silver ", "phone "] does not match.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= items.length &lt;= 104</code></li>
+<li><code>1 &lt;= typei.length, colori.length, namei.length, ruleValue.length &lt;= 10</code></li>
+<li><code>ruleKey</code> is equal to either <code>"type "</code>, <code>"color "</code>, or <code>"name "</code>.</li>
+<li>All strings consist only of lowercase letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-items-matching-a-rule/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, n, m
+    character(len=10) :: ruleKey, ruleValue
+    character(len=10), allocatable :: items(:, :)
+    integer :: numMatchingItems
+
+    ! read input
+    read(*,*) n
+    allocate(items(n,3))
+    do i = 1, n
+        read(*,*) items(i,:)
+    end do
+    read(*,*) ruleKey
+    read(*,*) ruleValue
+
+    ! solve problem
+    numMatchingItems = countMatchingItems(items, ruleKey, ruleValue)
+
+    ! print output
+    write(*,*) numMatchingItems
+
+contains
+
+    function countMatchingItems(items, ruleKey, ruleValue) result(numMatchingItems)
+        implicit none
+        integer :: i, j, n, m
+        character(len=10), intent(in) :: ruleKey, ruleValue
+        character(len=10), allocatable :: items(:, :)
+        integer :: numMatchingItems
+
+        n = size(items, 1)
+        m = size(items, 2)
+        numMatchingItems = 0
+        do i = 1, n
+            do j = 1, m
+                if (ruleKey == "type " .and. ruleValue == items(i,j)) then
+                    numMatchingItems = numMatchingItems + 1
+                    exit
+                else if (ruleKey == "color " .and. ruleValue == items(i,j)) then
+                    numMatchingItems = numMatchingItems + 1
+                    exit
+                else if (ruleKey == "name " .and. ruleValue == items(i,j)) then
+                    numMatchingItems = numMatchingItems + 1
+                    exit
+                end if
+            end do
+        end do
+    end function countMatchingItems
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 10 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7fa986313960 in ???
+#1  0x7fa9863144d9 in ???
+#2  0x7fa98656817b in ???
+#3  0x7fa986561684 in ???
+#4  0x7fa9865622aa in ???
+#5  0x5c582dd6c54b in MAIN__
+#6  0x5c582dd6c9ff in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program count_matching_items
+      implicit none
+
+      integer, parameter :: MAX_ITEMS = 100000
+      integer, parameter :: MAX_RULE_VALUE_LENGTH = 10
+
+      character(len=10) :: items(MAX_ITEMS, 3)
+      character(len=10) :: ruleKey
+      character(len=MAX_RULE_VALUE_LENGTH) :: ruleValue
+
+      integer :: numItems, numMatchingItems
+      integer :: i
+
+      read(*,*) numItems
+
+      do i = 1, numItems
+        read(*,*) items(i, 1), items(i, 2), items(i, 3)
+      end do
+
+      read(*,*) ruleKey, ruleValue
+
+      numMatchingItems = 0
+      do i = 1, numItems
+        if (ruleKey == "type " .and. items(i, 1) == ruleValue) then
+          numMatchingItems = numMatchingItems + 1
+        else if (ruleKey == "color " .and. items(i, 2) == ruleValue) then
+          numMatchingItems = numMatchingItems + 1
+        else if (ruleKey == "name " .and. items(i, 3) == ruleValue) then
+          numMatchingItems = numMatchingItems + 1
+        end if
+      end do
+
+      write(*,*) numMatchingItems
+
+      end program count_matching_items
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 14 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7f924f6c8960 in ???
+#1  0x7f924f6c94d9 in ???
+#2  0x7f924f91d17b in ???
+#3  0x7f924f916684 in ???
+#4  0x7f924f9172aa in ???
+#5  0x5b96eb71a23c in MAIN__
+#6  0x5b96eb71a62e in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def countMatches(items, ruleKey, ruleValue):
+    count = 0
+    index = {&quot;type&quot;: 0, &quot;color&quot;: 1, &quot;name&quot;: 2}[ruleKey]
+    for item in items:
+        if item[index] == ruleValue:
+            count += 1
+    return count
+</code></pre>
+<p>The algorithm first finds the index of the attribute to be compared based on the <code>ruleKey</code>. Then, it iterates over the <code>items</code> array and compares the attribute at the calculated index with <code>ruleValue</code>. If there is a match, it increments a <code>count</code> variable. Finally, it returns the <code>count</code> representing the number of items matching the given rule.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int countMatches(vector&lt;vector&lt;string&gt;&gt;&amp; items, string ruleKey, string ruleValue) {
+    int count = 0;
+    int index = (ruleKey == &quot;type&quot; ? 0 : (ruleKey == &quot;color&quot; ? 1 : 2));
+    for (const auto&amp; item : items) {
+        if (item[index] == ruleValue)
+            count++;
+    }
+    return count;
+}
+</code></pre>
+<p>The algorithm first finds the index of the attribute to be compared based on the <code>ruleKey</code>. Then, it iterates over the <code>items</code> array and compares the attribute at the calculated index with <code>ruleValue</code>. If there is a match, it increments a <code>count</code> variable. Finally, it returns the <code>count</code> representing the number of items matching the given rule.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

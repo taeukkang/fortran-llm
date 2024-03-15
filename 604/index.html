@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Design Compressed String Iterator</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/599/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/605/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Design and implement a data structure for a compressed string iterator. The given compressed string will be in the form of each letter followed by a positive integer representing the number of this letter existing in the original uncompressed string.</p>
+<p>Implement the StringIterator class:</p>
+<ul>
+<li><code>next()</code> Returns <strong>the next character</strong> if the original string still has uncompressed characters, otherwise returns a <strong>white space</strong>.</li>
+<li><code>hasNext()</code> Returns true if there is any letter needs to be uncompressed in the original string, otherwise returns <code>false</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input</strong>
+[ "StringIterator ",  "next ",  "next ",  "next ",  "next ",  "next ",  "next ",  "hasNext ",  "next ",  "hasNext "]
+[[ "L1e2t1C1o1d1e1 "], [], [], [], [], [], [], [], [], []]
+<strong>Output</strong>
+[null,  "L ",  "e ",  "e ",  "t ",  "C ",  "o ", true,  "d ", true]</p>
+<p><strong>Explanation</strong>
+StringIterator stringIterator = new StringIterator( "L1e2t1C1o1d1e1 ");
+stringIterator.next(); // return  "L "
+stringIterator.next(); // return  "e "
+stringIterator.next(); // return  "e "
+stringIterator.next(); // return  "t "
+stringIterator.next(); // return  "C "
+stringIterator.next(); // return  "o "
+stringIterator.hasNext(); // return True
+stringIterator.next(); // return  "d "
+stringIterator.hasNext(); // return True</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= compressedString.length &lt;= 1000</code></li>
+<li><code>compressedString</code> consists of lower-case an upper-case English letters and digits.</li>
+<li>The number of a single character repetitions in <code>compressedString</code> is in the range <code>[1, 10^9]</code></li>
+<li>At most <code>100</code> calls will be made to <code>next</code> and <code>hasNext</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/design-compressed-string-iterator/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use StringIterator_mod
+    implicit none
+
+    type(StringIterator) :: stringIterator
+    character(len=:), allocatable :: nextChar
+    logical :: hasNext
+
+    ! Examples
+    call stringIterator%init("L1e2t1C1o1d1e1")
+    do while (stringIterator%hasNext())
+        nextChar = stringIterator%next()
+        write (*, "(A)", advance="no") trim(nextChar)
+    end do
+    write (*, *)
+
+    call stringIterator%init("")
+    do while (stringIterator%hasNext())
+        nextChar = stringIterator%next()
+        write (*, "(A)", advance="no") trim(nextChar)
+    end do
+    write (*, *)
+
+contains
+
+    subroutine init(this, compressedString)
+        class(StringIterator), intent(inout) :: this
+        character(len=*), intent(in) :: compressedString
+
+        this%compressedString = compressedString
+        this%index = 1
+    end subroutine init
+
+    function next(this) result(res)
+        class(StringIterator), intent(inout) :: this
+        character(len=1), allocatable :: res
+
+        if (this%index > len(this%compressedString)) then
+            res = ' '
+        else
+            read (this%compressedString(this%index:), fmt='(A)', iostat=ioStatus) res
+            this%index = this%index + len(res) + 1
+        end if
+    end function next
+
+    function hasNext(this) result(res)
+        class(StringIterator), intent(inout) :: this
+        logical :: res
+
+        res = this%index <= len(this%compressedString)
+    end function hasNext
+end program main
+
+module StringIterator_mod
+    implicit none
+
+    private
+    public :: StringIterator
+
+    type :: StringIterator
+        character(len=:), allocatable :: compressedString
+        integer :: index
+    contains
+        procedure :: init => init
+        procedure :: next => next
+        procedure :: hasNext => hasNext
+    end type StringIterator
+
+contains
+
+    subroutine init(this, compressedString)
+        class(StringIterator), intent(inout) :: this
+        character(len=*), intent(in) :: compressedString
+
+        this%compressedString = compressedString
+        this%index = 1
+    end subroutine init
+
+    function next(this) result(res)
+        class(StringIterator), intent(inout) :: this
+        character(len=1), allocatable :: res
+
+        if (this%index > len(this%compressedString)) then
+            res = ' '
+        else
+            read (this%compressedString(this%index:), fmt='(A)', iostat=ioStatus) res
+            this%index = this%index + len(res) + 1
+        end if
+    end function next
+
+    function hasNext(this) result(res)
+        class(StringIterator), intent(inout) :: this
+        logical :: res
+
+        res = this%index <= len(this%compressedString)
+    end function hasNext
+end module StringIterator_mod</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:2:9:
+
+    2 |     use StringIterator_mod
+      |         1
+Fatal Error: Cannot open module file ‘stringiterator_mod.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare the data structure for the compressed string iterator
+type StringIterator
+    ! Private variables
+    integer :: index = 1
+    character(len=1) :: current_char = ' '
+    character(len=1) :: next_char = ' '
+    integer :: count = 0
+    logical :: has_next = .false.
+
+    ! Private methods
+    contains
+        ! Advance the iterator to the next character
+        subroutine advance()
+            integer :: i
+
+            ! If the current character is not a space, increment the count
+            if (current_char /= ' ') then
+                count = count + 1
+            end if
+
+            ! If the count is greater than 0, decrement the count
+            if (count > 0) then
+                count = count - 1
+            end if
+
+            ! If the count is 0, advance to the next character
+            if (count == 0) then
+                index = index + 1
+                if (index <= len(compressed_string)) then
+                    current_char = compressed_string(index:index)
+                    count = 1
+                else
+                    current_char = ' '
+                end if
+            end if
+        end subroutine advance
+
+        ! Check if there are any more characters to be uncompressed
+        function has_next() result(has_next)
+            logical :: has_next
+
+            ! If the current character is not a space, or the count is greater than 0,
+            ! then there are still characters to be uncompressed
+            if (current_char /= ' ' .or. count > 0) then
+                has_next = .true.
+            else
+                has_next = .false.
+            end if
+        end function has_next
+
+        ! Return the next character
+        function next() result(next_char)
+            character(len=1) :: next_char
+
+            ! If there are still characters to be uncompressed, advance the iterator
+            if (has_next()) then
+                call advance()
+            end if
+
+            ! Return the next character
+            next_char = current_char
+        end function next
+end type StringIterator
+
+! Declare the main program
+program main
+    ! Declare the variables
+    type(StringIterator) :: string_iterator
+    character(len=1) :: next_char
+    logical :: has_next
+
+    ! Create a new string iterator
+    string_iterator = StringIterator(compressed_string="L1e2t1C1o1d1e1 ")
+
+    ! Loop until there are no more characters to be uncompressed
+    do while (string_iterator%has_next())
+        ! Get the next character
+        next_char = string_iterator%next()
+
+        ! Print the next character
+        write (*,*) next_char
+    end do
+end program main
+
+! Declare the compressed string
+character(len=1), parameter :: compressed_string = "L1e2t1C1o1d1e1 "
+
+! Declare the main entry point
+entry main
+
+! Call the main program
+call main
+
+! End of file
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:13:9:
+
+   13 |         subroutine advance()
+      |         1
+Error: Unclassifiable statement at (1)
+temp.f95:14:24:
+
+   14 |             integer :: i
+      |                        1
+Error: Components in TYPE at (1) must precede CONTAINS
+temp.f95:17:41:
+
+   17 |             if (current_char /= ' ') then
+      |                                         1
+Error: Unexpected block IF statement at (1)
+temp.f95:18:33:
+
+   18 |                 count = count + 1
+      |                                 1
+Error: Unexpected assignment statement at (1)
+temp.f95:19:15:
+
+   19 |             end if
+      |               1
+Error: Expecting END TYPE statement at (1)
+temp.f95:22:31:
+
+   22 |             if (count > 0) then
+      |                               1
+Error: Unexpected block IF statement at (1)
+temp.f95:23:33:
+
+   23 |                 count = count - 1
+      |                                 1
+Error: Unexpected assignment statement at (1)
+temp.f95:24:15:
+
+   24 |             end if
+      |               1
+Error: Expecting END TYPE statement at (1)
+temp.f95:27:32:
+
+   27 |             if (count == 0) then
+      |                                1
+Error: Unexpected block IF statement at (1)
+temp.f95:28:33:
+
+   28 |                 index = index + 1
+      |                                 1
+Error: Unexpected assignment statement at (1)
+temp.f95:29:57:
+
+   29 |                 if (index <= len(compressed_string)) then
+      |                                                         1
+Error: Unexpected block IF statement at (1)
+temp.f95:30:59:
+
+   30 |                     current_char = compressed_string(index:index)
+      |                                                           1
+Error: Syntax error in argument list at (1)
+temp.f95:31:29:
+
+   31 |                     count = 1
+      |                             1
+Error: Unexpected assignment statement at (1)
+temp.f95:32:20:
+
+   32 |                 else
+      |                    1
+Error: Unexpected ELSE statement at (1)
+temp.f95:33:38:
+
+   33 |                     current_char = ' '
+      |                                      1
+Error: Unexpected assignment statement at (1)
+temp.f95:34:19:
+
+   34 |                 end if
+      |                   1
+Error: Expecting END TYPE statement at (1)
+temp.f95:35:15:
+
+   35 |             end if
+      |               1
+Error: Expecting END TYPE statement at (1)
+temp.f95:36:11:
+
+   36 |         end subroutine advance
+      |           1
+Error: Expecting END TYPE statement at (1)
+temp.f95:40:31:
+
+   40 |             logical :: has_next
+      |                               1
+Error: Components in TYPE at (1) must precede CONTAINS
+temp.f95:44:56:
+
+   44 |             if (current_char /= ' ' .or. count > 0) then
+      |                                                        1
+Error: Unexpected block IF statement at (1)
+temp.f95:45:33:
+
+   45 |                 has_next = .true.
+      |                                 1
+Error: Unexpected assignment statement at (1)
+temp.f95:46:16:
+
+   46 |             else
+      |                1
+Error: Unexpected ELSE statement at (1)
+temp.f95:47:34:
+
+   47 |                 has_next = .false.
+      |                                  1
+Error: Unexpected assignment statement at (1)
+temp.f95:48:15:
+
+   48 |             end if
+      |               1
+Error: Expecting END TYPE statement at (1)
+temp.f95:49:11:
+
+   49 |         end function has_next
+      |           1
+Error: Expecting END TYPE statement at (1)
+temp.f95:53:41:
+
+   53 |             character(len=1) :: next_char
+      |                                         1
+Error: Components in TYPE at (1) must precede CONTAINS
+temp.f95:56:32:
+
+   56 |             if (has_next()) then
+      |                                1
+Error: Unexpected block IF statement at (1)
+temp.f95:57:30:
+
+   57 |                 call advance()
+      |                              1
+Error: Unexpected CALL statement at (1)
+temp.f95:58:15:
+
+   58 |             end if
+      |               1
+Error: Expecting END TYPE statement at (1)
+temp.f95:61:36:
+
+   61 |             next_char = current_char
+      |                                    1
+Error: Unexpected assignment statement at (1)
+temp.f95:62:11:
+
+   62 |         end function next
+      |           1
+Error: Expecting END TYPE statement at (1)
+temp.f95:66:12:
+
+   66 | program main
+      |            1
+Error: Unexpected PROGRAM statement at (1)
+temp.f95:68:43:
+
+   68 |     type(StringIterator) :: string_iterator
+      |                                           1
+Error: Unexpected data declaration statement at (1)
+temp.f95:69:33:
+
+   69 |     character(len=1) :: next_char
+      |                                 1
+Error: Unexpected data declaration statement at (1)
+temp.f95:70:23:
+
+   70 |     logical :: has_next
+      |                       1
+Error: Unexpected data declaration statement at (1)
+temp.f95:76:31:
+
+   76 |     do while (string_iterator%has_next())
+      |                               1
+Error: Symbol ‘string_iterator’ at (1) has no IMPLICIT type
+temp.f95:78:37:
+
+   78 |         next_char = string_iterator%next()
+      |                                     1
+Error: Symbol ‘string_iterator’ at (1) has no IMPLICIT type
+temp.f95:82:7:
+
+   82 |     end do
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:83:16:
+
+   83 | end program main
+      |                1
+Error: Expected label ‘stringiterator’ for END PROGRAM statement at (1)
+temp.f95:86:68:
+
+   86 | character(len=1), parameter :: compressed_string = "L1e2t1C1o1d1e1 "
+      |                                                                    1
+Error: Unexpected data declaration statement at (1)
+temp.f95:89:10:
+
+   89 | entry main
+      |          1
+Error: ENTRY statement at (1) cannot appear within a PROGRAM
+temp.f95:73:23:
+
+   73 |     string_iterator = StringIterator(compressed_string="L1e2t1C1o1d1e1 ")
+      |                       1
+Error: ‘compressed_string’ at (1) is not a member of the ‘stringiterator’ structure
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class StringIterator:
+    def __init__(self, compressedString: str):
+        self.s = compressedString
+        self.i = 0
+        self.count = 0
+        self.ch = &quot; &quot;
+
+    def next(self) -&gt; str:
+        if not self.hasNext():
+            return &quot; &quot;
+        if self.count == 0:
+            self.ch = self.s[self.i]
+            self.i += 1
+            while self.i &lt; len(self.s) and self.s[self.i].isdigit():
+                self.count = self.count * 10 + int(self.s[self.i])
+                self.i += 1
+        self.count -= 1
+        return self.ch
+
+    def hasNext(self) -&gt; bool:
+        return self.i &lt; len(self.s) or self.count != 0
+</code></pre>
+<pre><code>The main idea of the algorithm is to iterate through the compressed string, extracting each character and its associated count of repetitions. Each extracted character is stored in 'ch' and its count of repetitions is stored in 'count'. The 'next()' function checks if there are still letters to uncompress - if there aren't, it returns a white space. The 'next()' function also checks if the current count of repetitions for the character 'ch' is 0 - if it is, it extracts the next character from the compressed string until it encounters a digit, then extracts the whole count value. The 'hasNext()' function checks if there are any more characters in the compressed string or if the count of repetitions is not 0, meaning there are still characters to be uncompressed.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+class StringIterator {
+public:
+    StringIterator(const std::string&amp; compressedString) {
+        s = compressedString;
+        i = 0;
+        count = 0;
+        ch = ' ';
+    }
+    char next() {
+        if(!hasNext()) return ' ';
+        if(count == 0) {
+            ch = s[i++];
+            while(i &lt; s.size() &amp;&amp; isdigit(s[i])) {
+                count = count * 10 + (s[i++] - '0');
+            }
+        }
+        count--;
+        return ch;
+    }
+    bool hasNext() {
+        return i &lt; s.size() || count != 0;
+    }
+private:
+    std::string s;
+    int i;
+    int count;
+    char ch;
+};
+</code></pre>
+<pre><code>The main idea of the algorithm is to iterate through the compressed string, extracting each character and its associated count of repetitions. Each extracted character is stored in 'ch' and its count of repetitions is stored in 'count'. The 'next()' function checks if there are still letters to uncompress - if there aren't, it returns a white space. The 'next()' function also checks if the current count of repetitions for the character 'ch' is 0 - if it is, it extracts the next character from the compressed string until it encounters a digit, then extracts the whole count value. The 'hasNext()' function checks if there are any more characters in the compressed string or if the count of repetitions is not 0, meaning there are still characters to be uncompressed.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Maximum Score After Splitting a String</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1417/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1426/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string <code>s</code> of zeros and ones, <em>return the maximum score after splitting the string into two <strong>non-empty</strong> substrings</em> (i.e. <strong>left</strong> substring and <strong>right</strong> substring).</p>
+<p>The score after splitting a string is the number of <strong>zeros</strong> in the <strong>left</strong> substring plus the number of <strong>ones</strong> in the <strong>right</strong> substring.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "011101 "
+<strong>Output:</strong> 5 
+<strong>Explanation:</strong> 
+All possible ways of splitting s into two non-empty substrings are:
+left =  "0 " and right =  "11101 ", score = 1 + 4 = 5 
+left =  "01 " and right =  "1101 ", score = 1 + 3 = 4 
+left =  "011 " and right =  "101 ", score = 1 + 2 = 3 
+left =  "0111 " and right =  "01 ", score = 1 + 1 = 2 
+left =  "01110 " and right =  "1 ", score = 2 + 1 = 3</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "00111 "
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> When left =  "00 " and right =  "111 ", we get the maximum score = 2 + 3 = 5</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "1111 "
+<strong>Output:</strong> 3</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= s.length &lt;= 500</code></li>
+<li>The string <code>s</code> consists of characters <code>'0'</code> and <code>'1'</code> only.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/maximum-score-after-splitting-a-string/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=500) :: s
+    integer :: i, j, n
+    integer :: max_score
+
+    ! read input
+    read(*,*) s
+
+    ! find the maximum score
+    max_score = -1
+    do i = 1, len(s)-1
+        do j = i+1, len(s)
+            if (s(i:j) /= '0' .and. s(i:j) /= '1') cycle
+            n = count(s(i:j) == '0') + count(s(i:j) == '1')
+            if (n > max_score) max_score = n
+        end do
+    end do
+
+    ! print output
+    write(*,*) max_score
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:16:45:
+
+   16 |             n = count(s(i:j) == '0') + count(s(i:j) == '1')
+      |                                             1
+Error: ‘mask’ argument of ‘count’ intrinsic at (1) must be a logical array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+character(len=500) :: s
+integer :: left, right, score
+
+! Read input
+read(*,*) s
+
+! Initialize variables
+left = 0
+right = 0
+score = 0
+
+! Loop through the string
+do i = 1, len(s)
+    if (s(i:i) == '0') then
+        left = left + 1
+    else
+        right = right + 1
+    end if
+end do
+
+! Calculate the score
+score = left + right
+
+! Print the result
+write(*,*) score
+
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:3:23:
+
+    3 | character(len=500) :: s
+      |                       1
+Error: Symbol ‘s’ at (1) already has basic type of INTEGER
+temp.f95:16:10:
+
+   16 |     if (s(i:i) == '0') then
+      |          1
+Error: Syntax error in IF-expression at (1)
+temp.f95:18:8:
+
+   18 |     else
+      |        1
+Error: Unexpected ELSE statement at (1)
+temp.f95:20:7:
+
+   20 |     end if
+      |       1
+Error: Expecting END DO statement at (1)
+temp.f95:15:14:
+
+   15 | do i = 1, len(s)
+      |              1
+Error: ‘string’ argument of ‘len’ intrinsic at (1) must be CHARACTER
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from collections import Counter
+
+def is_possible_divide(nums: List[int], k: int) -&gt; bool:
+    counts = Counter(nums)
+
+    for key in sorted(counts):
+        if counts[key] &gt; 0:
+            for i in range(k-1, -1, -1):
+                if counts[key+i] &lt; counts[key]:
+                    return False
+                counts[key+i] -= counts[key]
+
+    return True
+</code></pre>
+<ol>
+<li>Create a count map that counts the occurrences of each integer in the input array.</li>
+<li>Iterate through the keys in ascending order.</li>
+<li>For each key, if its value is greater than 0, try to find k-1 integers that are consecutive to the current integer.</li>
+<li>While iterating the keys, check if the occurrences of all consecutive integers are equal to or greater than the occurrences of the current integer. If not, return false as it isn't possible to divide the array into sets of k consecutive numbers. If everything passes through, return true.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;map&gt;
+
+bool isPossibleDivide(std::vector&lt;int&gt;&amp; nums, int k) {
+    std::map&lt;int, int&gt; counts;
+    for (int num : nums) counts[num]++;
+
+    for (auto it = counts.begin(); it != counts.end(); ++it) {
+        if (it-&gt;second &gt; 0) {
+            for (int i = k - 1; i &gt;= 0; --i) {
+                if ((counts[it-&gt;first + i] -= it-&gt;second) &lt; 0) return false;
+            }
+        }
+    }
+
+    return true;
+}
+</code></pre>
+<ol>
+<li>Create a count map that counts the occurrences of each integer in the input array.</li>
+<li>Iterate through the keys in ascending order.</li>
+<li>For each key, if its value is greater than 0, try to find k-1 integers that are consecutive to the current integer.</li>
+<li>While iterating the keys, check if the occurrences of all consecutive integers are equal to or greater than the occurrences of the current integer. If not, return false as it isn't possible to divide the array into sets of k consecutive numbers. If everything passes through, return true.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

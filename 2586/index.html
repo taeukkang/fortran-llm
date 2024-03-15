@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count the Number of Vowel Strings in Range</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2582/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2591/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>0-indexed</strong> array of string <code>words</code> and two integers <code>left</code> and <code>right</code>.</p>
+<p>A string is called a <strong>vowel string</strong> if it starts with a vowel character and ends with a vowel character where vowel characters are <code>'a'</code>, <code>'e'</code>, <code>'i'</code>, <code>'o'</code>, and <code>'u'</code>.</p>
+<p>Return <em>the number of vowel strings</em> <code>words[i]</code> <em>where</em> <code>i</code> <em>belongs to the inclusive range</em> <code>[left, right]</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> words = [ "are ", "amy ", "u "], left = 0, right = 2
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> 
+-  "are " is a vowel string because it starts with 'a' and ends with 'e'.
+-  "amy " is not a vowel string because it does not end with a vowel.
+-  "u " is a vowel string because it starts with 'u' and ends with 'u'.
+The number of vowel strings in the mentioned range is 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> words = [ "hey ", "aeo ", "mu ", "ooo ", "artro "], left = 1, right = 4
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> 
+-  "aeo " is a vowel string because it starts with 'a' and ends with 'o'.
+-  "mu " is not a vowel string because it does not start with a vowel.
+-  "ooo " is a vowel string because it starts with 'o' and ends with 'o'.
+-  "artro " is a vowel string because it starts with 'a' and ends with 'o'.
+The number of vowel strings in the mentioned range is 3.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= words.length &lt;= 1000</code></li>
+<li><code>1 &lt;= words[i].length &lt;= 10</code></li>
+<li><code>words[i]</code> consists of only lowercase English letters.</li>
+<li><code>0 &lt;= left &lt;= right &lt; words.length</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-the-number-of-vowel-strings-in-range/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, n
+    character(len=10) :: words(1000)
+    logical :: vowel
+
+    ! read input
+    read(*,*) n
+    do i = 1, n
+        read(*,*) words(i)
+    end do
+    read(*,*) i, j
+
+    ! solve problem
+    vowel = .false.
+    do while (i <= j)
+        if (words(i)(1:1) == 'a' .or. &
+            words(i)(1:1) == 'e' .or. &
+            words(i)(1:1) == 'i' .or. &
+            words(i)(1:1) == 'o' .or. &
+            words(i)(1:1) == 'u') then
+            vowel = .true.
+        else
+            vowel = .false.
+            exit
+        end if
+        if (words(i)(len_trim(words(i)):len_trim(words(i))) == &
+            words(i)(1:1)) then
+            vowel = .true.
+        else
+            vowel = .false.
+            exit
+        end if
+        i = i + 1
+    end do
+
+    ! print output
+    write(*,*) vowel
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 9 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x78d619485960 in ???
+#1  0x78d6194864d9 in ???
+#2  0x78d6196da17b in ???
+#3  0x78d6196d3684 in ???
+#4  0x78d6196d42aa in ???
+#5  0x5b5f2463222a in MAIN__
+#6  0x5b5f246325f9 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module vowel_strings
+
+implicit none
+
+contains
+
+integer function count_vowel_strings(words, left, right) result(count)
+
+! This function returns the number of vowel strings in the given array of strings.
+! A string is considered a vowel string if it starts and ends with a vowel.
+
+! Parameters
+integer, intent(in) :: left, right
+character(len=*), intent(in) :: words(:)
+
+! Variables
+integer :: i, j
+logical :: is_vowel
+
+! Initialize the count to 0
+count = 0
+
+! Iterate over the words in the range [left, right]
+do i = left, right
+
+    ! Check if the word starts and ends with a vowel
+    is_vowel = .false.
+    do j = 1, len(words(i))
+        if (words(i)(j:j) == 'a' .or. words(i)(j:j) == 'e' .or. &
+            words(i)(j:j) == 'i' .or. words(i)(j:j) == 'o' .or. &
+            words(i)(j:j) == 'u') then
+            is_vowel = .true.
+        else
+            exit
+        end if
+    end do
+
+    ! If the word is a vowel string, increment the count
+    if (is_vowel) then
+        count = count + 1
+    end if
+
+end do
+
+end function count_vowel_strings
+
+end module vowel_strings
+
+! Test the function with some examples
+program test_vowel_strings
+
+use vowel_strings
+
+implicit none
+
+! Examples from the problem statement
+print *, count_vowel_strings(["are ", "amy ", "u "], 0, 2)
+print *, count_vowel_strings(["hey ", "aeo ", "mu ", "ooo ", "artro "], 1, 4)
+
+! Additional examples
+print *, count_vowel_strings(["a", "e", "i", "o", "u"], 0, 4)
+print *, count_vowel_strings(["a", "e", "i", "o", "u"], 1, 3)
+print *, count_vowel_strings(["a", "e", "i", "o", "u"], 2, 2)
+
+end program test_vowel_strings
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:57:45:
+
+   57 | print *, count_vowel_strings(["are ", "amy ", "u "], 0, 2)
+      |                                             1
+Error: Different CHARACTER lengths (4/2) in array constructor at (1)
+temp.f95:58:45:
+
+   58 | print *, count_vowel_strings(["hey ", "aeo ", "mu ", "ooo ", "artro "], 1, 4)
+      |                                             1
+Error: Different CHARACTER lengths (4/3) in array constructor at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_vowel(c):
+  return c in 'aeiou'
+
+def count_vowel_strings(words, left, right):
+  count = 0
+  for i in range(left, right + 1):
+    if is_vowel(words[i][0]) and is_vowel(words[i][-1]):
+      count += 1
+  return count
+</code></pre>
+<p>We define <code>is_vowel</code> function that checks whether a given character is a vowel or not. In our <code>count_vowel_strings</code> function, we iterate over the range <code>[left, right]</code> and check if the first and last characters of the word at position <code>i</code> are vowels. If both are vowels, we increment the <code>count</code>. Finally, we return <code>count</code> as the result.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;vector&gt;
+
+bool is_vowel(char c) {
+  return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+}
+
+int count_vowel_strings(std::vector&lt;std::string&gt;&amp; words, int left, int right) {
+  int count = 0;
+  for (int i = left; i &lt;= right; i++) {
+    if (is_vowel(words[i][0]) &amp;&amp; is_vowel(words[i][words[i].length() - 1])) {
+      count++;
+    }
+  }
+  return count;
+}
+</code></pre>
+<p>We define <code>is_vowel</code> function that checks whether a given character is a vowel or not. In our <code>count_vowel_strings</code> function, we iterate over the range <code>[left, right]</code> and check if the first and last characters of the word at position <code>i</code> are vowels. If both are vowels, we increment the <code>count</code>. Finally, we return <code>count</code> as the result.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

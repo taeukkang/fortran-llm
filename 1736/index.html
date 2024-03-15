@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Latest Time by Replacing Hidden Digits</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1732/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1742/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>time</code> in the form of <code>hh:mm</code>, where some of the digits in the string are hidden (represented by <code>?</code>).</p>
+<p>The valid times are those inclusively between <code>00:00</code> and <code>23:59</code>.</p>
+<p>Return <em>the latest valid time you can get from</em> <code>time</code> <em>by replacing the hidden</em> <em>digits</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> time =  "2?:?0 "
+<strong>Output:</strong>  "23:50 "
+<strong>Explanation:</strong> The latest hour beginning with the digit '2' is 23 and the latest minute ending with the digit '0' is 50.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> time =  "0?:3? "
+<strong>Output:</strong>  "09:39 "</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> time =  "1?:22 "
+<strong>Output:</strong>  "19:22 "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>time</code> is in the format <code>hh:mm</code>.</li>
+<li>It is guaranteed that you can produce a valid time from the given string.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/latest-time-by-replacing-hidden-digits/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=8) :: time
+    integer :: hh, mm
+
+    time = "2?:?0"
+    call solve(time, hh, mm)
+    write (*, "(A, I2, A, I2)") "Latest valid time from ", time, " is ", hh, ":", mm
+
+    time = "0?:3?"
+    call solve(time, hh, mm)
+    write (*, "(A, I2, A, I2)") "Latest valid time from ", time, " is ", hh, ":", mm
+
+    time = "1?:22"
+    call solve(time, hh, mm)
+    write (*, "(A, I2, A, I2)") "Latest valid time from ", time, " is ", hh, ":", mm
+
+contains
+
+    subroutine solve(time, hh, mm)
+        implicit none
+        character(len=*), intent(in) :: time
+        integer, intent(out) :: hh, mm
+
+        integer :: i, j
+        logical :: found
+
+        do i = 1, 2
+            if (time(i:i) == '?') then
+                do j = 0, 9
+                    if (j /= 0 .and. j /= 6) then
+                        time(i:i) = char(ichar('0') + j)
+                        found = .true.
+                        exit
+                    end if
+                end do
+                if (.not. found) then
+                    stop "No solution"
+                end if
+            end if
+        end do
+
+        read (time, "(I2, A, I2)") hh, ":", mm
+    end subroutine solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:44:39:
+
+   44 |         read (time, "(I2, A, I2)") hh, ":", mm
+      |                                       1
+Error: Expecting variable in READ statement at (1)
+temp.f95:33:24:
+
+   33 |                         time(i:i) = char(ichar('0') + j)
+      |                        1
+Error: Dummy argument ‘time’ with INTENT(IN) in variable definition context (assignment) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM main
+
+IMPLICIT NONE
+
+CHARACTER(len=8) :: time
+CHARACTER(len=2) :: hour
+CHARACTER(len=2) :: minute
+INTEGER :: h, m
+
+! Read input
+READ(*,*) time
+
+! Extract hour and minute
+hour = time(1:2)
+minute = time(4:5)
+
+! Convert to integers
+READ(hour,*) h
+READ(minute,*) m
+
+! Check if time is valid
+IF (h < 24 .AND. m < 60) THEN
+    ! Print latest valid time
+    WRITE(*,*) hour, minute
+ELSE
+    ! Print error message
+    WRITE(*,*) "Invalid time"
+END IF
+
+END PROGRAM main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 11 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7b69d0c80960 in ???
+#1  0x7b69d0c814d9 in ???
+#2  0x7b69d0ed517b in ???
+#3  0x7b69d0ece684 in ???
+#4  0x7b69d0ecf2aa in ???
+#5  0x55e19a109219 in MAIN__
+#6  0x55e19a10948c in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def maximumTime(time: str) -&gt; str:
+    time_list = list(time)
+    if time_list[0] == '?':
+        time_list[0] = '2' if time_list[1] &lt;= '3' or time_list[1] == '?' else '1'
+    if time_list[1] == '?':
+        time_list[1] = '3' if time_list[0] == '2' else '9'
+    if time_list[3] == '?':
+        time_list[3] = '5'
+    if time_list[4] == '?':
+        time_list[4] = '9'
+    return &quot;&quot;.join(time_list)
+</code></pre>
+<p>The algorithm uses the following steps:
+1. For each character in the input string, check if it's a "?".
+2. If the character is "?", assign a valid hour or minute value depending on its position in the string and other characters' values.
+- If the first "?" is at position 0, check if the character at position 1 is less than or equal to 3 or "?". If true, assign '2' else, assign '1' to position 0.
+- If the first "?" is at position 1, check if the character at position 0 is '2'. If true, assign '3' else, assign '9' to position 1.
+- If the first "?" is at position 3, assign '5' to it, any value between 00-59 is valid.
+- If the first "?" is at position 4, assign '9' to it, any value between 00-59 is valid.</p>
+<p>Finally, return the modified string.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+
+std::string maximumTime(std::string time) {
+    if (time[0] == '?') {
+        time[0] = (time[1] &lt;= '3' || time[1] == '?') ? '2' : '1';
+    }
+    if (time[1] == '?') {
+        time[1] = (time[0] == '2') ? '3' : '9';
+    }
+    if (time[3] == '?') {
+        time[3] = '5';
+    }
+    if (time[4] == '?') {
+        time[4] = '9';
+    }
+    return time;
+}
+</code></pre>
+<p>The algorithm uses the following steps:
+1. For each character in the input string, check if it's a "?".
+2. If the character is "?", assign a valid hour or minute value depending on its position in the string and other characters' values.
+- If the first "?" is at position 0, check if the character at position 1 is less than or equal to 3 or "?". If true, assign '2' else, assign '1' to position 0.
+- If the first "?" is at position 1, check if the character at position 0 is '2'. If true, assign '3' else, assign '9' to position 1.
+- If the first "?" is at position 3, assign '5' to it, any value between 00-59 is valid.
+- If the first "?" is at position 4, assign '9' to it, any value between 00-59 is valid.</p>
+<p>Finally, return the modified string.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

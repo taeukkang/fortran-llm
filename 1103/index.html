@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Distribute Candies to People</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1099/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1108/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>We distribute some number of <code>candies</code>, to a row of <strong><code>n = num_people</code></strong> people in the following way:</p>
+<p>We then give 1 candy to the first person, 2 candies to the second person, and so on until we give <code>n</code> candies to the last person.</p>
+<p>Then, we go back to the start of the row, giving <code>n + 1</code> candies to the first person, <code>n + 2</code> candies to the second person, and so on until we give <code>2 * n</code> candies to the last person.</p>
+<p>This process repeats (with us giving one more candy each time, and moving to the start of the row after we reach the end) until we run out of candies. The last person will receive all of our remaining candies (not necessarily one more than the previous gift).</p>
+<p>Return an array (of length <code>num_people</code> and sum <code>candies</code>) that represents the final distribution of candies.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> candies = 7, num_people = 4
+<strong>Output:</strong> [1,2,3,1]
+<strong>Explanation:</strong>
+On the first turn, ans[0] += 1, and the array is [1,0,0,0].
+On the second turn, ans[1] += 2, and the array is [1,2,0,0].
+On the third turn, ans[2] += 3, and the array is [1,2,3,0].
+On the fourth turn, ans[3] += 1 (because there is only one candy left), and the final array is [1,2,3,1].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> candies = 10, num_people = 3
+<strong>Output:</strong> [5,2,3]
+<strong>Explanation:</strong> 
+On the first turn, ans[0] += 1, and the array is [1,0,0].
+On the second turn, ans[1] += 2, and the array is [1,2,0].
+On the third turn, ans[2] += 3, and the array is [1,2,3].
+On the fourth turn, ans[0] += 4, and the final array is [5,2,3].</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>1 &lt;= candies &lt;= 10^9</li>
+<li>1 &lt;= num_people &lt;= 1000</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/distribute-candies-to-people/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+
+! This program solves the following problem:
+! We distribute some number of candies, to a row of n = num_people people in the following way:
+! We then give 1 candy to the first person, 2 candies to the second person, and so on until we give n candies to the last person.
+! Then, we go back to the start of the row, giving n + 1 candies to the first person, n + 2 candies to the second person, and so on until we give 2 * n candies to the last person.
+! This process repeats (with us giving one more candy each time, and moving to the start of the row after we reach the end) until we run out of candies. The last person will receive all of our remaining candies (not necessarily one more than the previous gift).
+! Return an array (of length num_people and sum candies) that represents the final distribution of candies.
+
+implicit none
+integer :: i, j, k, n, m, num_people, candies
+integer, dimension(:), allocatable :: ans
+
+! read input
+read(*,*) candies, num_people
+
+! allocate memory for the answer array
+allocate(ans(num_people))
+
+! initialize the answer array
+do i = 1, num_people
+    ans(i) = 0
+end do
+
+! solve the problem
+do while (candies > 0)
+    ! give candies to the first person
+    if (candies >= 1) then
+        ans(1) = ans(1) + 1
+        candies = candies - 1
+    end if
+    
+    ! move to the next person
+    i = 2
+    
+    ! give candies to the next person
+    do while (candies >= i .and. i <= num_people)
+        ans(i) = ans(i) + i
+        candies = candies - i
+        i = i + 1
+    end do
+    
+    ! move to the start of the row
+    i = 1
+    
+    ! give candies to the next person
+    do while (candies >= i .and. i <= num_people)
+        ans(i) = ans(i) + i
+        candies = candies - i
+        i = i + 1
+    end do
+end do
+
+! print the final distribution of candies
+do i = 1, num_people
+    write(*,'(I0)',advance='no') ans(i)
+end do
+write(*,*)
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 15 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7aa884d9d960 in ???
+#1  0x7aa884d9e4d9 in ???
+#2  0x7aa884ff217b in ???
+#3  0x7aa884feb684 in ???
+#4  0x7aa884fec2aa in ???
+#5  0x5a7c5b44d272 in MAIN__
+#6  0x5a7c5b44d68a in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module candy_distribution
+implicit none
+contains
+
+function distribute_candies(candies, num_people) result(ans)
+integer, intent(in) :: candies, num_people
+integer :: ans(num_people)
+integer :: i, j, k
+
+! Initialize the array with 0s
+ans = 0
+
+! Loop through the gifts
+do i = 1, num_people
+    ! Give out candies
+    do j = 1, i
+        ans(j) = ans(j) + 1
+    end do
+
+    ! Move to the start of the row
+    do k = 1, num_people - i
+        ans(k) = ans(k) + 1
+    end do
+end do
+
+! Handle the remaining candies
+do j = 1, num_people
+    ans(j) = ans(j) + mod(candies, num_people)
+end do
+
+end function distribute_candies
+
+end module candy_distribution
+
+program test_candy_distribution
+use candy_distribution
+implicit none
+integer :: candies, num_people, i
+integer :: ans(1000)
+
+! Test case 1
+candies = 7
+num_people = 4
+ans = distribute_candies(candies, num_people)
+write (*,*) ans
+
+! Test case 2
+candies = 10
+num_people = 3
+ans = distribute_candies(candies, num_people)
+write (*,*) ans
+
+! Test case 3
+candies = 15
+num_people = 5
+ans = distribute_candies(candies, num_people)
+write (*,*) ans
+
+! Test case 4
+candies = 100
+num_people = 10
+ans = distribute_candies(candies, num_people)
+write (*,*) ans
+
+! Test case 5
+candies = 1000
+num_people = 100
+ans = distribute_candies(candies, num_people)
+write (*,*) ans
+
+end program test_candy_distribution
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>          10           8           6           4 -1436508096       32615  1929582664       32767        4096           0 -1436745725       32615  -295673230        4095  1929582080       32767           3           0           0           0           0           0 -1436503784       32615           4       32767           0       32615      127720           0 -1439744847       32615 -1436748096       32615           3           0 -1443475392       32615           0           3          53           0     3802073           0          53           0     3802073           0           1           0       33188           0           0           0           0           0      125488           0        4096           0         248           0  1683963205           0           0           0  1683963205           0           0           0  1710341593           0   317984565           0           0           0           0           0 -1436690732       32615   487096157           0           0           0           0           0 -1436703581       32615          14           0           0           1           0           0           0       32615           1           0           0           1  1929582576       32767           0           0           1           0           0           1 -1436748096       32615           0           0           0           0 -1436503328       32615 -1436753376       32615           0           0          14           0           0           0 -1436753376       32615 -1436748096       32615  1929586368       32767           0           0         832           0  1179403647       65794           0           0     4063235           1           0           0          64           0      123632           0           0     3670080     4194315     1835037           1           4           0           0           0           0           0           0       11528           0       11528           0        4096           0           1           5       12288           0       12288           0       12288           0       92181           0       92181           0        4096           0           1           4      106496           0      106496           0      106496           0       12996           0       12996           0        4096           0           1           6      122312           0      126408           0      126408           0         992           0        1312           0        4096           0           2           6      122336           0      126432           0      126432           0         496           0         496           0           8           0           4           4         680           0         680           0         680           0          32           0          32           0           8           0           4           4         712           0         712           0         712           0          36           0          36           0           4           0  1685382483           4         680           0         680           0         680           0          32           0          32           0           8           0  1685382480           4      109292           0      109292           0      109292           0        1716           0        1716           0           4           0  1685382481           6           0           0           0           0           0           0           0           0           0           0          16           0  1685382482           4      122312           0      126408           0      126408           0         568           0         568           0           1           0           4          16           5     5590599 -1073741822           4           3           0           4          20           3     5590599   223257827   904447657 -1880255534  1277921490   202606410           0         131          21          16          10   402856979    16786436  1409319169   277350212  1929584144       32767  1929585280       32767           0           0 -1443466495       32615          16           0 -1436748048       32615           0           0  1929583664       32767 -1436666204       32615  1929584112       32767  1929583568       32767  1929583728       32767           6           0           0           0 -1436664948       32615 -1436503328       32615 -1436753232       32615 -1436750640       32615 -1436749344       32615 -1436748048       32615 -1436751936       32615 -1436505360       32615 -1436748048       32615   918552576      -72186 -1503264768   -19966787           4           0 -1436753232       32615   922746880      -72186 -1436699780       32615 -1436505360       32615 -1436744304       32615 -2051164689           0 -1436744344       32615 -1443481920       32615 -1436698647       32615          30           0 -1436743344       32615 -1436505360       32615  1929583848       32767  1929583844       32767           7           0 -1436743344       32615 -2051164689           0  1929583844       32767    35059415           0 -1436746384       32615 -1436505360       32615           0           0 -1441981030       32615 -1442083832       32615  1929584048       32767  1929584032       32767 -1436730244           0           1       32615           7           0  1929583776       32767 -1436730244       32615           1           0           0           0  1929583808       32767 -2051164689           0  1929584192       32767 -1441981030       32615 -1436751056       32615  1929584032       32767  1929584048       32767 -1436696047       32615           6           0 -1443481920       32615           1           0           0           0           1           0 -1436751936       32615 -1443481920       32615 -1436751936       32615           0           1 -1436751056       32615           0           0           0       32767           0           0           0       32767          -1           0           0           0 -1436743584       32615 -1436505360       32615  1929583744       32767  1929583744       32767           0           0           0           0           0           0           0       32615           0           0          10           0 -1436751936       32615 -1439899272       32615          -8          -1 -1443494080       32615 -1436503328       32615 -1436668047       32615           1           0           0           0 -1436743584       32615 -1436648080       32615 -1436751936       32615  1929585184       32767  1929585216       32767 -1436503328       32615          -8          -1 -1436656402       32615           0           0        4096           0 -1441483584       32615  1929585216       32767          31           0           0           0          15           0           0           0           0           0           0           0           0           0        8064       65535           0           0           0           0           0           0 -1436699780       32615 -1436751936       32615 -1442084144       32615   259378567           0 -1442084280       32615 -1443483120       32615 -1436698647       32615        2991           0 -1436699780       32615 -1436751936       32615 -1442084144       32615   466005475           0 -1442092536       32615 -1443483384       32615 -1436698647       32615         927           0 -1442011568       32615 -1436751936       32615  1929584680       32767  1929584676       32767 -1439761020       32615 -1442011568       32615   466005475           0  1929584676       32767     7281335           0 -1436746384       32615 -1442084144       32615           0           0 -1439783630       32615 -1439822392       32615  1929584880       32767  1929584864       32767 -1436699780           0           1       32615           7           0  2111285930           0 -1442094848       32615 -1443483384           0           0           0         349           0   466005475           0  1929585024       32767 -1439783630       32615 -1436752352       32615  1929584864       32767  1929584880       32767 -1436696047       32615           2           0 -1443483384       32615           1           0           0           0           1           0 -1436753232       32615 -1443483384       32615 -1436753232       32615  1929584932           1 -1436752352       32615           0           0           0           0           0       32615           0       32615          -1           0  1929585136       32767 -1442061896       32615 -1436751936       32615           1       32767           7           0 -1436752352       32615  1929585056       32767  1929585072           0           0           0           2           0         310           0 -1436753232       32615 -1436849720       32615  -701367600       21942  -701358704       21942 -1436508096       32615 -1436668047       32615           1           0           0           0 -1442061896       32615 -1441831904       32615           1           0  1929586032       32767  1929586096       32767  1929586376       32767  -701367600       21942 -1436656402       32615           1           0  -701358704       21942          31           0 -1439696288       32615           3           0 -1439891696       32615 -1436721088       32615 -1436505360       32615 -1436753232       32615 -1436848256       32615  1929586392       32767        8064       65535           0           0 -1436668047       32615           1           0          13           0 -1436751936       32615 -1439899208       32615  -701367600       21942  -701358704       21942 -1436508096       32615 -1436668047       32615           1           0           0           0 -1436743416       32615 -1436633504       32615           0           0  1929586240       32767           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423 -1439696288       32615   335544320           0 -1439696288       32615   335544320           0 -1441831648       32615    16777216           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0   268435456           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423        3480           0           0           0           2           0           0           0           0           0           0           0           0           0  1117521664   765394159           0           0  1117521664   765394159 -1439696288       32615 -1441831963       32615 -1439696288       32615    16777216           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0   268435456           0           0           0   268435456           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423        3480           0           0           0           2           0           0           0           0           0           0           0           0           0  1117521664   765394159           0           0           0   765394159           0           0  1117521664   765394159
+           6           4           2           4 -1436508096       32615  1929582664       32767        4096           0 -1436745725       32615  -295673230        4095  1929582080       32767           3           0           0           0           0           0 -1436503784       32615           4       32767           0       32615      127720           0 -1439744847       32615 -1436748096       32615           3           0 -1443475392       32615           0           3          53           0     3802073           0          53           0     3802073           0           1           0       33188           0           0           0           0           0      125488           0        4096           0         248           0  1683963205           0           0           0  1683963205           0           0           0  1710341593           0   317984565           0           0           0           0           0 -1436690732       32615   487096157           0           0           0           0           0 -1436703581       32615          14           0           0           1           0           0           0       32615           1           0           0           1  1929582576       32767           0           0           1           0           0           1 -1436748096       32615           0           0           0           0 -1436503328       32615 -1436753376       32615           0           0          14           0           0           0 -1436753376       32615 -1436748096       32615  1929586368       32767           0           0         832           0  1179403647       65794           0           0     4063235           1           0           0          64           0      123632           0           0     3670080     4194315     1835037           1           4           0           0           0           0           0           0       11528           0       11528           0        4096           0           1           5       12288           0       12288           0       12288           0       92181           0       92181           0        4096           0           1           4      106496           0      106496           0      106496           0       12996           0       12996           0        4096           0           1           6      122312           0      126408           0      126408           0         992           0        1312           0        4096           0           2           6      122336           0      126432           0      126432           0         496           0         496           0           8           0           4           4         680           0         680           0         680           0          32           0          32           0           8           0           4           4         712           0         712           0         712           0          36           0          36           0           4           0  1685382483           4         680           0         680           0         680           0          32           0          32           0           8           0  1685382480           4      109292           0      109292           0      109292           0        1716           0        1716           0           4           0  1685382481           6           0           0           0           0           0           0           0           0           0           0          16           0  1685382482           4      122312           0      126408           0      126408           0         568           0         568           0           1           0           4          16           5     5590599 -1073741822           4           3           0           4          20           3     5590599   223257827   904447657 -1880255534  1277921490   202606410           0         131          21          16          10   402856979    16786436  1409319169   277350212  1929584144       32767  1929585280       32767           0           0 -1443466495       32615          16           0 -1436748048       32615           0           0  1929583664       32767 -1436666204       32615  1929584112       32767  1929583568       32767  1929583728       32767           6           0           0           0 -1436664948       32615 -1436503328       32615 -1436753232       32615 -1436750640       32615 -1436749344       32615 -1436748048       32615 -1436751936       32615 -1436505360       32615 -1436748048       32615   918552576      -72186 -1503264768   -19966787           4           0 -1436753232       32615   922746880      -72186 -1436699780       32615 -1436505360       32615 -1436744304       32615 -2051164689           0 -1436744344       32615 -1443481920       32615 -1436698647       32615          30           0 -1436743344       32615 -1436505360       32615  1929583848       32767  1929583844       32767           7           0 -1436743344       32615 -2051164689           0  1929583844       32767    35059415           0 -1436746384       32615 -1436505360       32615           0           0 -1441981030       32615 -1442083832       32615  1929584048       32767  1929584032       32767 -1436730244           0           1       32615           7           0  1929583776       32767 -1436730244       32615           1           0           0           0  1929583808       32767 -2051164689           0  1929584192       32767 -1441981030       32615 -1436751056       32615  1929584032       32767  1929584048       32767 -1436696047       32615           6           0 -1443481920       32615           1           0           0           0           1           0 -1436751936       32615 -1443481920       32615 -1436751936       32615           0           1 -1436751056       32615           0           0           0       32767           0           0           0       32767          -1           0           0           0 -1436743584       32615 -1436505360       32615  1929583744       32767  1929583744       32767           0           0           0           0           0           0           0       32615           0           0          10           0 -1436751936       32615 -1439899272       32615          -8          -1 -1443494080       32615 -1436503328       32615 -1436668047       32615           1           0           0           0 -1436743584       32615 -1436648080       32615 -1436751936       32615  1929585184       32767  1929585216       32767 -1436503328       32615          -8          -1 -1436656402       32615           0           0        4096           0 -1441483584       32615  1929585216       32767          31           0           0           0          15           0           0           0           0           0           0           0           0           0        8064       65535           0           0           0           0           0           0 -1436699780       32615 -1436751936       32615 -1442084144       32615   259378567           0 -1442084280       32615 -1443483120       32615 -1436698647       32615        2991           0 -1436699780       32615 -1436751936       32615 -1442084144       32615   466005475           0 -1442092536       32615 -1443483384       32615 -1436698647       32615         927           0 -1442011568       32615 -1436751936       32615  1929584680       32767  1929584676       32767 -1439761020       32615 -1442011568       32615   466005475           0  1929584676       32767     7281335           0 -1436746384       32615 -1442084144       32615           0           0 -1439783630       32615 -1439822392       32615  1929584880       32767  1929584864       32767 -1436699780           0           1       32615           7           0  2111285930           0 -1442094848       32615 -1443483384           0           0           0         349           0   466005475           0  1929585024       32767 -1439783630       32615 -1436752352       32615  1929584864       32767  1929584880       32767 -1436696047       32615           2           0 -1443483384       32615           1           0           0           0           1           0 -1436753232       32615 -1443483384       32615 -1436753232       32615  1929584932           1 -1436752352       32615           0           0           0           0           0       32615           0       32615          -1           0  1929585136       32767 -1442061896       32615 -1436751936       32615           1       32767           7           0 -1436752352       32615  1929585056       32767  1929585072           0           0           0           2           0         310           0 -1436753232       32615 -1436849720       32615  -701367600       21942  -701358704       21942 -1436508096       32615 -1436668047       32615           1           0           0           0 -1442061896       32615 -1441831904       32615           1           0  1929586032       32767  1929586096       32767  1929586376       32767  -701367600       21942 -1436656402       32615           1           0  -701358704       21942          31           0 -1439696288       32615           3           0 -1439891696       32615 -1436721088       32615 -1436505360       32615 -1436753232       32615 -1436848256       32615  1929586392       32767        8064       65535           0           0 -1436668047       32615           1           0          13           0 -1436751936       32615 -1439899208       32615  -701367600       21942  -701358704       21942 -1436508096       32615 -1436668047       32615           1           0           0           0 -1436743416       32615 -1436633504       32615           0           0  1929586240       32767           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423 -1439696288       32615   335544320           0 -1439696288       32615   335544320           0 -1441831648       32615    16777216           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0   268435456           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423        3480           0           0           0           2           0           0           0           0           0           0           0           0           0  1117521664   765394159           0           0  1117521664   765394159 -1439696288       32615 -1441831963       32615 -1439696288       32615    16777216           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0   268435456           0           0           0   268435456           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423        3480           0           0           0           2           0           0           0           0           0           0           0           0           0  1117521664   765394159           0           0           0   765394159           0           0  1117521664   765394159
+           9           7           5           3           1       32615  1929582664       32767        4096           0 -1436745725       32615  -295673230        4095  1929582080       32767           3           0           0           0           0           0 -1436503784       32615           4       32767           0       32615      127720           0 -1439744847       32615 -1436748096       32615           3           0 -1443475392       32615           0           3          53           0     3802073           0          53           0     3802073           0           1           0       33188           0           0           0           0           0      125488           0        4096           0         248           0  1683963205           0           0           0  1683963205           0           0           0  1710341593           0   317984565           0           0           0           0           0 -1436690732       32615   487096157           0           0           0           0           0 -1436703581       32615          14           0           0           1           0           0           0       32615           1           0           0           1  1929582576       32767           0           0           1           0           0           1 -1436748096       32615           0           0           0           0 -1436503328       32615 -1436753376       32615           0           0          14           0           0           0 -1436753376       32615 -1436748096       32615  1929586368       32767           0           0         832           0  1179403647       65794           0           0     4063235           1           0           0          64           0      123632           0           0     3670080     4194315     1835037           1           4           0           0           0           0           0           0       11528           0       11528           0        4096           0           1           5       12288           0       12288           0       12288           0       92181           0       92181           0        4096           0           1           4      106496           0      106496           0      106496           0       12996           0       12996           0        4096           0           1           6      122312           0      126408           0      126408           0         992           0        1312           0        4096           0           2           6      122336           0      126432           0      126432           0         496           0         496           0           8           0           4           4         680           0         680           0         680           0          32           0          32           0           8           0           4           4         712           0         712           0         712           0          36           0          36           0           4           0  1685382483           4         680           0         680           0         680           0          32           0          32           0           8           0  1685382480           4      109292           0      109292           0      109292           0        1716           0        1716           0           4           0  1685382481           6           0           0           0           0           0           0           0           0           0           0          16           0  1685382482           4      122312           0      126408           0      126408           0         568           0         568           0           1           0           4          16           5     5590599 -1073741822           4           3           0           4          20           3     5590599   223257827   904447657 -1880255534  1277921490   202606410           0         131          21          16          10   402856979    16786436  1409319169   277350212  1929584144       32767  1929585280       32767           0           0 -1443466495       32615          16           0 -1436748048       32615           0           0  1929583664       32767 -1436666204       32615  1929584112       32767  1929583568       32767  1929583728       32767           6           0           0           0 -1436664948       32615 -1436503328       32615 -1436753232       32615 -1436750640       32615 -1436749344       32615 -1436748048       32615 -1436751936       32615 -1436505360       32615 -1436748048       32615   918552576      -72186 -1503264768   -19966787           4           0 -1436753232       32615   922746880      -72186 -1436699780       32615 -1436505360       32615 -1436744304       32615 -2051164689           0 -1436744344       32615 -1443481920       32615 -1436698647       32615          30           0 -1436743344       32615 -1436505360       32615  1929583848       32767  1929583844       32767           7           0 -1436743344       32615 -2051164689           0  1929583844       32767    35059415           0 -1436746384       32615 -1436505360       32615           0           0 -1441981030       32615 -1442083832       32615  1929584048       32767  1929584032       32767 -1436730244           0           1       32615           7           0  1929583776       32767 -1436730244       32615           1           0           0           0  1929583808       32767 -2051164689           0  1929584192       32767 -1441981030       32615 -1436751056       32615  1929584032       32767  1929584048       32767 -1436696047       32615           6           0 -1443481920       32615           1           0           0           0           1           0 -1436751936       32615 -1443481920       32615 -1436751936       32615           0           1 -1436751056       32615           0           0           0       32767           0           0           0       32767          -1           0           0           0 -1436743584       32615 -1436505360       32615  1929583744       32767  1929583744       32767           0           0           0           0           0           0           0       32615           0           0          10           0 -1436751936       32615 -1439899272       32615          -8          -1 -1443494080       32615 -1436503328       32615 -1436668047       32615           1           0           0           0 -1436743584       32615 -1436648080       32615 -1436751936       32615  1929585184       32767  1929585216       32767 -1436503328       32615          -8          -1 -1436656402       32615           0           0        4096           0 -1441483584       32615  1929585216       32767          31           0           0           0          15           0           0           0           0           0           0           0           0           0        8064       65535           0           0           0           0           0           0 -1436699780       32615 -1436751936       32615 -1442084144       32615   259378567           0 -1442084280       32615 -1443483120       32615 -1436698647       32615        2991           0 -1436699780       32615 -1436751936       32615 -1442084144       32615   466005475           0 -1442092536       32615 -1443483384       32615 -1436698647       32615         927           0 -1442011568       32615 -1436751936       32615  1929584680       32767  1929584676       32767 -1439761020       32615 -1442011568       32615   466005475           0  1929584676       32767     7281335           0 -1436746384       32615 -1442084144       32615           0           0 -1439783630       32615 -1439822392       32615  1929584880       32767  1929584864       32767 -1436699780           0           1       32615           7           0  2111285930           0 -1442094848       32615 -1443483384           0           0           0         349           0   466005475           0  1929585024       32767 -1439783630       32615 -1436752352       32615  1929584864       32767  1929584880       32767 -1436696047       32615           2           0 -1443483384       32615           1           0           0           0           1           0 -1436753232       32615 -1443483384       32615 -1436753232       32615  1929584932           1 -1436752352       32615           0           0           0           0           0       32615           0       32615          -1           0  1929585136       32767 -1442061896       32615 -1436751936       32615           1       32767           7           0 -1436752352       32615  1929585056       32767  1929585072           0           0           0           2           0         310           0 -1436753232       32615 -1436849720       32615  -701367600       21942  -701358704       21942 -1436508096       32615 -1436668047       32615           1           0           0           0 -1442061896       32615 -1441831904       32615           1           0  1929586032       32767  1929586096       32767  1929586376       32767  -701367600       21942 -1436656402       32615           1           0  -701358704       21942          31           0 -1439696288       32615           3           0 -1439891696       32615 -1436721088       32615 -1436505360       32615 -1436753232       32615 -1436848256       32615  1929586392       32767        8064       65535           0           0 -1436668047       32615           1           0          13           0 -1436751936       32615 -1439899208       32615  -701367600       21942  -701358704       21942 -1436508096       32615 -1436668047       32615           1           0           0           0 -1436743416       32615 -1436633504       32615           0           0  1929586240       32767           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423 -1439696288       32615   335544320           0 -1439696288       32615   335544320           0 -1441831648       32615    16777216           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0   268435456           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423        3480           0           0           0           2           0           0           0           0           0           0           0           0           0  1117521664   765394159           0           0  1117521664   765394159 -1439696288       32615 -1441831963       32615 -1439696288       32615    16777216           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0   268435456           0           0           0   268435456           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423        3480           0           0           0           2           0           0           0           0           0           0           0           0           0  1117521664   765394159           0           0           0   765394159           0           0  1117521664   765394159
+          19          17          15          13          11           9           7           5           3           1 -1436745725       32615  -295673230        4095  1929582080       32767           3           0           0           0           0           0 -1436503784       32615           4       32767           0       32615      127720           0 -1439744847       32615 -1436748096       32615           3           0 -1443475392       32615           0           3          53           0     3802073           0          53           0     3802073           0           1           0       33188           0           0           0           0           0      125488           0        4096           0         248           0  1683963205           0           0           0  1683963205           0           0           0  1710341593           0   317984565           0           0           0           0           0 -1436690732       32615   487096157           0           0           0           0           0 -1436703581       32615          14           0           0           1           0           0           0       32615           1           0           0           1  1929582576       32767           0           0           1           0           0           1 -1436748096       32615           0           0           0           0 -1436503328       32615 -1436753376       32615           0           0          14           0           0           0 -1436753376       32615 -1436748096       32615  1929586368       32767           0           0         832           0  1179403647       65794           0           0     4063235           1           0           0          64           0      123632           0           0     3670080     4194315     1835037           1           4           0           0           0           0           0           0       11528           0       11528           0        4096           0           1           5       12288           0       12288           0       12288           0       92181           0       92181           0        4096           0           1           4      106496           0      106496           0      106496           0       12996           0       12996           0        4096           0           1           6      122312           0      126408           0      126408           0         992           0        1312           0        4096           0           2           6      122336           0      126432           0      126432           0         496           0         496           0           8           0           4           4         680           0         680           0         680           0          32           0          32           0           8           0           4           4         712           0         712           0         712           0          36           0          36           0           4           0  1685382483           4         680           0         680           0         680           0          32           0          32           0           8           0  1685382480           4      109292           0      109292           0      109292           0        1716           0        1716           0           4           0  1685382481           6           0           0           0           0           0           0           0           0           0           0          16           0  1685382482           4      122312           0      126408           0      126408           0         568           0         568           0           1           0           4          16           5     5590599 -1073741822           4           3           0           4          20           3     5590599   223257827   904447657 -1880255534  1277921490   202606410           0         131          21          16          10   402856979    16786436  1409319169   277350212  1929584144       32767  1929585280       32767           0           0 -1443466495       32615          16           0 -1436748048       32615           0           0  1929583664       32767 -1436666204       32615  1929584112       32767  1929583568       32767  1929583728       32767           6           0           0           0 -1436664948       32615 -1436503328       32615 -1436753232       32615 -1436750640       32615 -1436749344       32615 -1436748048       32615 -1436751936       32615 -1436505360       32615 -1436748048       32615   918552576      -72186 -1503264768   -19966787           4           0 -1436753232       32615   922746880      -72186 -1436699780       32615 -1436505360       32615 -1436744304       32615 -2051164689           0 -1436744344       32615 -1443481920       32615 -1436698647       32615          30           0 -1436743344       32615 -1436505360       32615  1929583848       32767  1929583844       32767           7           0 -1436743344       32615 -2051164689           0  1929583844       32767    35059415           0 -1436746384       32615 -1436505360       32615           0           0 -1441981030       32615 -1442083832       32615  1929584048       32767  1929584032       32767 -1436730244           0           1       32615           7           0  1929583776       32767 -1436730244       32615           1           0           0           0  1929583808       32767 -2051164689           0  1929584192       32767 -1441981030       32615 -1436751056       32615  1929584032       32767  1929584048       32767 -1436696047       32615           6           0 -1443481920       32615           1           0           0           0           1           0 -1436751936       32615 -1443481920       32615 -1436751936       32615           0           1 -1436751056       32615           0           0           0       32767           0           0           0       32767          -1           0           0           0 -1436743584       32615 -1436505360       32615  1929583744       32767  1929583744       32767           0           0           0           0           0           0           0       32615           0           0          10           0 -1436751936       32615 -1439899272       32615          -8          -1 -1443494080       32615 -1436503328       32615 -1436668047       32615           1           0           0           0 -1436743584       32615 -1436648080       32615 -1436751936       32615  1929585184       32767  1929585216       32767 -1436503328       32615          -8          -1 -1436656402       32615           0           0        4096           0 -1441483584       32615  1929585216       32767          31           0           0           0          15           0           0           0           0           0           0           0           0           0        8064       65535           0           0           0           0           0           0 -1436699780       32615 -1436751936       32615 -1442084144       32615   259378567           0 -1442084280       32615 -1443483120       32615 -1436698647       32615        2991           0 -1436699780       32615 -1436751936       32615 -1442084144       32615   466005475           0 -1442092536       32615 -1443483384       32615 -1436698647       32615         927           0 -1442011568       32615 -1436751936       32615  1929584680       32767  1929584676       32767 -1439761020       32615 -1442011568       32615   466005475           0  1929584676       32767     7281335           0 -1436746384       32615 -1442084144       32615           0           0 -1439783630       32615 -1439822392       32615  1929584880       32767  1929584864       32767 -1436699780           0           1       32615           7           0  2111285930           0 -1442094848       32615 -1443483384           0           0           0         349           0   466005475           0  1929585024       32767 -1439783630       32615 -1436752352       32615  1929584864       32767  1929584880       32767 -1436696047       32615           2           0 -1443483384       32615           1           0           0           0           1           0 -1436753232       32615 -1443483384       32615 -1436753232       32615  1929584932           1 -1436752352       32615           0           0           0           0           0       32615           0       32615          -1           0  1929585136       32767 -1442061896       32615 -1436751936       32615           1       32767           7           0 -1436752352       32615  1929585056       32767  1929585072           0           0           0           2           0         310           0 -1436753232       32615 -1436849720       32615  -701367600       21942  -701358704       21942 -1436508096       32615 -1436668047       32615           1           0           0           0 -1442061896       32615 -1441831904       32615           1           0  1929586032       32767  1929586096       32767  1929586376       32767  -701367600       21942 -1436656402       32615           1           0  -701358704       21942          31           0 -1439696288       32615           3           0 -1439891696       32615 -1436721088       32615 -1436505360       32615 -1436753232       32615 -1436848256       32615  1929586392       32767        8064       65535           0           0 -1436668047       32615           1           0          13           0 -1436751936       32615 -1439899208       32615  -701367600       21942  -701358704       21942 -1436508096       32615 -1436668047       32615           1           0           0           0 -1436743416       32615 -1436633504       32615           0           0  1929586240       32767           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423 -1439696288       32615   335544320           0 -1439696288       32615   335544320           0 -1441831648       32615    16777216           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0   268435456           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423        3480           0           0           0           2           0           0           0           0           0           0           0           0           0  1117521664   765394159           0           0  1117521664   765394159 -1439696288       32615 -1441831963       32615 -1439696288       32615    16777216           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0   268435456           0           0           0   268435456           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423        3480           0           0           0           2           0           0           0           0           0           0           0           0           0  1117521664   765394159           0           0           0   765394159           0           0  1117521664   765394159
+         199         197         195         193         191         189         187         185         183         181         179         177         175         173         171         169         167         165         163         161         159         157         155         153         151         149         147         145         143         141         139         137         135         133         131         129         127         125         123         121         119         117         115         113         111         109         107         105         103         101          99          97          95          93          91          89          87          85          83          81          79          77          75          73          71          69          67          65          63          61          59          57          55          53          51          49          47          45          43          41          39          37          35          33          31          29          27          25          23          21          19          17          15          13          11           9           7           5           3           1  1929582576       32767           0           0           1           0           0           1 -1436748096       32615           0           0           0           0 -1436503328       32615 -1436753376       32615           0           0          14           0           0           0 -1436753376       32615 -1436748096       32615  1929586368       32767           0           0         832           0  1179403647       65794           0           0     4063235           1           0           0          64           0      123632           0           0     3670080     4194315     1835037           1           4           0           0           0           0           0           0       11528           0       11528           0        4096           0           1           5       12288           0       12288           0       12288           0       92181           0       92181           0        4096           0           1           4      106496           0      106496           0      106496           0       12996           0       12996           0        4096           0           1           6      122312           0      126408           0      126408           0         992           0        1312           0        4096           0           2           6      122336           0      126432           0      126432           0         496           0         496           0           8           0           4           4         680           0         680           0         680           0          32           0          32           0           8           0           4           4         712           0         712           0         712           0          36           0          36           0           4           0  1685382483           4         680           0         680           0         680           0          32           0          32           0           8           0  1685382480           4      109292           0      109292           0      109292           0        1716           0        1716           0           4           0  1685382481           6           0           0           0           0           0           0           0           0           0           0          16           0  1685382482           4      122312           0      126408           0      126408           0         568           0         568           0           1           0           4          16           5     5590599 -1073741822           4           3           0           4          20           3     5590599   223257827   904447657 -1880255534  1277921490   202606410           0         131          21          16          10   402856979    16786436  1409319169   277350212  1929584144       32767  1929585280       32767           0           0 -1443466495       32615          16           0 -1436748048       32615           0           0  1929583664       32767 -1436666204       32615  1929584112       32767  1929583568       32767  1929583728       32767           6           0           0           0 -1436664948       32615 -1436503328       32615 -1436753232       32615 -1436750640       32615 -1436749344       32615 -1436748048       32615 -1436751936       32615 -1436505360       32615 -1436748048       32615   918552576      -72186 -1503264768   -19966787           4           0 -1436753232       32615   922746880      -72186 -1436699780       32615 -1436505360       32615 -1436744304       32615 -2051164689           0 -1436744344       32615 -1443481920       32615 -1436698647       32615          30           0 -1436743344       32615 -1436505360       32615  1929583848       32767  1929583844       32767           7           0 -1436743344       32615 -2051164689           0  1929583844       32767    35059415           0 -1436746384       32615 -1436505360       32615           0           0 -1441981030       32615 -1442083832       32615  1929584048       32767  1929584032       32767 -1436730244           0           1       32615           7           0  1929583776       32767 -1436730244       32615           1           0           0           0  1929583808       32767 -2051164689           0  1929584192       32767 -1441981030       32615 -1436751056       32615  1929584032       32767  1929584048       32767 -1436696047       32615           6           0 -1443481920       32615           1           0           0           0           1           0 -1436751936       32615 -1443481920       32615 -1436751936       32615           0           1 -1436751056       32615           0           0           0       32767           0           0           0       32767          -1           0           0           0 -1436743584       32615 -1436505360       32615  1929583744       32767  1929583744       32767           0           0           0           0           0           0           0       32615           0           0          10           0 -1436751936       32615 -1439899272       32615          -8          -1 -1443494080       32615 -1436503328       32615 -1436668047       32615           1           0           0           0 -1436743584       32615 -1436648080       32615 -1436751936       32615  1929585184       32767  1929585216       32767 -1436503328       32615          -8          -1 -1436656402       32615           0           0        4096           0 -1441483584       32615  1929585216       32767          31           0           0           0          15           0           0           0           0           0           0           0           0           0        8064       65535           0           0           0           0           0           0 -1436699780       32615 -1436751936       32615 -1442084144       32615   259378567           0 -1442084280       32615 -1443483120       32615 -1436698647       32615        2991           0 -1436699780       32615 -1436751936       32615 -1442084144       32615   466005475           0 -1442092536       32615 -1443483384       32615 -1436698647       32615         927           0 -1442011568       32615 -1436751936       32615  1929584680       32767  1929584676       32767 -1439761020       32615 -1442011568       32615   466005475           0  1929584676       32767     7281335           0 -1436746384       32615 -1442084144       32615           0           0 -1439783630       32615 -1439822392       32615  1929584880       32767  1929584864       32767 -1436699780           0           1       32615           7           0  2111285930           0 -1442094848       32615 -1443483384           0           0           0         349           0   466005475           0  1929585024       32767 -1439783630       32615 -1436752352       32615  1929584864       32767  1929584880       32767 -1436696047       32615           2           0 -1443483384       32615           1           0           0           0           1           0 -1436753232       32615 -1443483384       32615 -1436753232       32615  1929584932           1 -1436752352       32615           0           0           0           0           0       32615           0       32615          -1           0  1929585136       32767 -1442061896       32615 -1436751936       32615           1       32767           7           0 -1436752352       32615  1929585056       32767  1929585072           0           0           0           2           0         310           0 -1436753232       32615 -1436849720       32615  -701367600       21942  -701358704       21942 -1436508096       32615 -1436668047       32615           1           0           0           0 -1442061896       32615 -1441831904       32615           1           0  1929586032       32767  1929586096       32767  1929586376       32767  -701367600       21942 -1436656402       32615           1           0  -701358704       21942          31           0 -1439696288       32615           3           0 -1439891696       32615 -1436721088       32615 -1436505360       32615 -1436753232       32615 -1436848256       32615  1929586392       32767        8064       65535           0           0 -1436668047       32615           1           0          13           0 -1436751936       32615 -1439899208       32615  -701367600       21942  -701358704       21942 -1436508096       32615 -1436668047       32615           1           0           0           0 -1436743416       32615 -1436633504       32615           0           0  1929586240       32767           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423 -1439696288       32615   335544320           0 -1439696288       32615   335544320           0 -1441831648       32615    16777216           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0   268435456           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423        3480           0           0           0           2           0           0           0           0           0           0           0           0           0  1117521664   765394159           0           0  1117521664   765394159 -1439696288       32615 -1441831963       32615 -1439696288       32615    16777216           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0   268435456           0           0           0   268435456           0           0           0           0           0           0           0           0           0           0           0           0           0           0           0         255         255   791621423   791621423   791621423   791621423        3480           0           0           0           2           0           0           0           0           0           0           0           0           0  1117521664   765394159           0           0           0   765394159           0           0  1117521664   765394159
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def distribute_candies(candies, num_people):
+    result = [0] * num_people
+    i = 0
+    count = 1
+
+    while candies &gt; 0:
+        result[i % num_people] += min(candies, count)
+        candies -= count
+        count += 1
+        i += 1
+
+    return result
+</code></pre>
+<pre><code>The algorithm proceeds as follows:
+</code></pre>
+<ol>
+<li>Initialize an array <code>result</code> of length <code>num_people</code> with 0's.</li>
+<li>Initialize two variables <code>i</code> and <code>count</code>, both with value 0. <code>i</code> will iterate through the people and <code>count</code> will store how many candies should be given at each step.</li>
+<li>Loop until there are no more <code>candies</code> left.<ol>
+<li>To distribute <code>candies</code> among people:<ul>
+<li>If the remaining <code>candies</code> are more than the current <code>count</code>, give <code>count</code> candies to the current person.</li>
+<li>If the remaining <code>candies</code> are less than or equal to the current <code>count</code>, give the remaining <code>candies</code> to the current person and stop the loop.</li>
+</ul>
+</li>
+<li>Update the remaining <code>candies</code> by subtracting the current <code>count</code>.</li>
+<li>Increment the current <code>count</code> and <code>i</code>.</li>
+</ol>
+</li>
+<li>After the loop, return the <code>result</code> array as the final distribution of candies.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+
+std::vector&lt;int&gt; distributeCandies(int candies, int num_people) {
+    std::vector&lt;int&gt; result(num_people, 0);
+    int i = 0, count = 1;
+
+    while (candies &gt; 0) {
+        result[i % num_people] += std::min(candies, count);
+        candies -= count;
+        count++;
+        i++;
+    }
+
+    return result;
+}
+</code></pre>
+<pre><code>The algorithm proceeds as follows:
+</code></pre>
+<ol>
+<li>Initialize an array <code>result</code> of length <code>num_people</code> with 0's.</li>
+<li>Initialize two variables <code>i</code> and <code>count</code>, both with value 0. <code>i</code> will iterate through the people and <code>count</code> will store how many candies should be given at each step.</li>
+<li>Loop until there are no more <code>candies</code> left.<ol>
+<li>To distribute <code>candies</code> among people:<ul>
+<li>If the remaining <code>candies</code> are more than the current <code>count</code>, give <code>count</code> candies to the current person.</li>
+<li>If the remaining <code>candies</code> are less than or equal to the current <code>count</code>, give the remaining <code>candies</code> to the current person and stop the loop.</li>
+</ul>
+</li>
+<li>Update the remaining <code>candies</code> by subtracting the current <code>count</code>.</li>
+<li>Increment the current <code>count</code> and <code>i</code>.</li>
+</ol>
+</li>
+<li>After the loop, return the <code>result</code> array as the final distribution of candies.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

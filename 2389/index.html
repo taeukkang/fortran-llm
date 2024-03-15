@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Longest Subsequence With Limited Sum</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2383/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2395/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer array <code>nums</code> of length <code>n</code>, and an integer array <code>queries</code> of length <code>m</code>.</p>
+<p>Return <em>an array</em> <code>answer</code> <em>of length</em> <code>m</code> <em>where</em> <code>answer[i]</code> <em>is the <strong>maximum</strong> size of a <strong>subsequence</strong> that you can take from</em> <code>nums</code> <em>such that the <strong>sum</strong> of its elements is less than or equal to</em> <code>queries[i]</code>.</p>
+<p>A <strong>subsequence</strong> is an array that can be derived from another array by deleting some or no elements without changing the order of the remaining elements.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [4,5,2,1], queries = [3,10,21]
+<strong>Output:</strong> [2,3,4]
+<strong>Explanation:</strong> We answer the queries as follows:
+- The subsequence [2,1] has a sum less than or equal to 3. It can be proven that 2 is the maximum size of such a subsequence, so answer[0] = 2.
+- The subsequence [4,5,1] has a sum less than or equal to 10. It can be proven that 3 is the maximum size of such a subsequence, so answer[1] = 3.
+- The subsequence [4,5,2,1] has a sum less than or equal to 21. It can be proven that 4 is the maximum size of such a subsequence, so answer[2] = 4.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [2,3,4,5], queries = [1]
+<strong>Output:</strong> [0]
+<strong>Explanation:</strong> The empty subsequence is the only subsequence that has a sum less than or equal to 1, so answer[0] = 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == nums.length</code></li>
+<li><code>m == queries.length</code></li>
+<li><code>1 &lt;= n, m &lt;= 1000</code></li>
+<li><code>1 &lt;= nums[i], queries[i] &lt;= 106</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/longest-subsequence-with-limited-sum/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4, m = 3
+    integer, dimension(n) :: nums = (/4, 5, 2, 1/)
+    integer, dimension(m) :: queries = (/3, 10, 21/)
+    integer, dimension(m) :: answer
+
+    call solve(nums, queries, answer)
+
+    write (*, '(A)') 'Answer:'
+    write (*, '(*(I0, 1X))') answer
+
+contains
+
+    subroutine solve(nums, queries, answer)
+        implicit none
+        integer, intent(in) :: nums(:), queries(:)
+        integer, intent(out) :: answer(:)
+
+        integer :: i, j, k, l, m, n, q
+        integer :: max_size
+        logical :: found
+
+        do i = 1, m
+            max_size = 0
+            found = .false.
+            do j = 1, n
+                if (nums(j) <= queries(i)) then
+                    do k = j + 1, n
+                        if (nums(k) <= queries(i)) then
+                            do l = k + 1, n
+                                if (nums(l) <= queries(i)) then
+                                    do m = l + 1, n
+                                        if (nums(m) <= queries(i)) then
+                                            if (max_size < 4) then
+                                                max_size = 4
+                                                found = .true.
+                                            end if
+                                        else
+                                            exit
+                                        end if
+                                    end do
+                                    if (found) exit
+                                end if
+                            end do
+                            if (found) exit
+                        end if
+                    end do
+                    if (found) exit
+                end if
+            end do
+            answer(i) = max_size
+        end do
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>
+Program received signal SIGSEGV: Segmentation fault - invalid memory reference.
+
+Backtrace for this error:
+#0  0x7d3415ce3960 in ???
+#1  0x7d3415ce2ac5 in ???
+#2  0x7d3415ad951f in ???
+#3  0x5bf0e0c67440 in solve.0
+#4  0x5bf0e0c6767e in MAIN__
+#5  0x5bf0e0c6782f in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module Main
+
+implicit none
+
+integer, parameter :: n = 4, m = 3
+integer, dimension(n) :: nums = [4, 5, 2, 1]
+integer, dimension(m) :: queries = [3, 10, 21]
+integer, dimension(m) :: answer
+
+contains
+
+subroutine solve(nums, queries, answer)
+    implicit none
+    integer, dimension(n), intent(in) :: nums
+    integer, dimension(m), intent(in) :: queries
+    integer, dimension(m), intent(out) :: answer
+
+    ! Local variables
+    integer :: i, j, k, l, sum, max_size
+    logical :: found
+
+    ! Initialize the answer array
+    answer = 0
+
+    ! Loop through each query
+    do i = 1, m
+        ! Initialize the maximum size of the subsequence
+        max_size = 0
+
+        ! Loop through each number in the array
+        do j = 1, n
+            ! Initialize the sum of the subsequence
+            sum = 0
+
+            ! Loop through each number in the subsequence
+            do k = j, n
+                ! Calculate the sum of the subsequence
+                sum = sum + nums(k)
+
+                ! Check if the sum is less than or equal to the query
+                if (sum <= queries(i)) then
+                    ! Update the maximum size of the subsequence
+                    max_size = max(max_size, k - j + 1)
+                else
+                    ! Break out of the inner loop
+                    exit
+                end if
+            end do
+        end do
+
+        ! Update the answer array
+        answer(i) = max_size
+    end do
+
+end subroutine solve
+
+end module Main
+
+program main
+    use Main
+    implicit none
+
+    ! Call the solve function
+    call solve(nums, queries, answer)
+
+    ! Print the answer array
+    write (*, "(4(i0, 1x))") answer
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:59:12:
+
+    1 | module Main
+      |           2 
+......
+   59 | program main
+      |            1
+Error: Global name ‘main’ at (1) is already being used as a MODULE at (2)
+temp.f95:60:9:
+
+   60 |     use Main
+      |         1
+Error: ‘main’ of module ‘main’, imported at (1), is also the name of the current program unit
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from bisect import bisect
+
+def maxSizeSubsequenceSumQueries(nums, queries):
+    nums.sort()
+    prefixSums = [0] * (len(nums) + 1)
+    for i, x in enumerate(nums):
+        prefixSums[i + 1] = prefixSums[i] + x
+
+    answer = []
+    for q in queries:
+        idx = bisect(prefixSums, q)
+        answer.append(idx - 1)
+
+    return answer
+</code></pre>
+<p>The algorithm sorts the <code>nums</code> array in ascending order, then calculates the prefix sums for easy sum checks. For each query, it finds the position for the query in the prefix sums array using binary search, and the index of that position minus one represents the maximum size of a subsequence whose sum is less than or equal to the query. It adds that value to the answer array.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;numeric&gt;
+
+std::vector&lt;int&gt; maxSizeSubsequenceSumQueries(std::vector&lt;int&gt;&amp; nums, std::vector&lt;int&gt;&amp; queries) {
+    std::sort(nums.begin(), nums.end());
+    std::vector&lt;int&gt; prefixSums(nums.size() + 1);
+    std::partial_sum(nums.begin(), nums.end(), prefixSums.begin() + 1);
+
+    std::vector&lt;int&gt; answer(queries.size());
+    for (int i = 0; i &lt; queries.size(); ++i) {
+        answer[i] = std::upper_bound(prefixSums.begin(), prefixSums.end(), queries[i]) - prefixSums.begin() - 1;
+    }
+
+    return answer;
+}
+</code></pre>
+<p>The algorithm sorts the <code>nums</code> array in ascending order, then calculates the prefix sums for easy sum checks. For each query, it finds the position for the query in the prefix sums array using binary search, and the index of that position minus one represents the maximum size of a subsequence whose sum is less than or equal to the query. It adds that value to the answer array.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

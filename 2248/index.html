@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Intersection of Multiple Arrays</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2243/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2255/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a 2D integer array <code>nums</code> where <code>nums[i]</code> is a non-empty array of <strong>distinct</strong> positive integers, return <em>the list of integers that are present in <strong>each array</strong> of</em> <code>nums</code> <em>sorted in <strong>ascending order</strong></em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [[<strong>3</strong>,1,2,<strong>4</strong>,5],[1,2,<strong>3</strong>,<strong>4</strong>],[<strong>3</strong>,<strong>4</strong>,5,6]]
+<strong>Output:</strong> [3,4]
+<strong>Explanation:</strong> 
+The only integers present in each of nums[0] = [<strong>3</strong>,1,2,<strong>4</strong>,5], nums[1] = [1,2,<strong>3</strong>,<strong>4</strong>], and nums[2] = [<strong>3</strong>,<strong>4</strong>,5,6] are 3 and 4, so we return [3,4].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [[1,2,3],[4,5,6]]
+<strong>Output:</strong> []
+<strong>Explanation:</strong> 
+There does not exist any integer present both in nums[0] and nums[1], so we return an empty list [].</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 1000</code></li>
+<li><code>1 &lt;= sum(nums[i].length) &lt;= 1000</code></li>
+<li><code>1 &lt;= nums[i][j] &lt;= 1000</code></li>
+<li>All the values of <code>nums[i]</code> are <strong>unique</strong>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/intersection-of-multiple-arrays/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 3
+    integer, dimension(n) :: nums(n) = reshape([3, 1, 2, 4, 5, 1, 2, 3, 4, 3, 4, 5, 6], shape(nums))
+    integer, allocatable :: result(:)
+
+    call solve(nums, result)
+
+    write (*, '(*(g0, :, ", "))') result
+
+contains
+
+    subroutine solve(nums, result)
+        implicit none
+        integer, intent(in) :: nums(:, :)
+        integer, allocatable, intent(out) :: result(:)
+        integer :: i, j, k
+        logical :: found
+
+        allocate(result(size(nums)))
+
+        do i = 1, size(nums)
+            found = .false.
+            do j = 1, size(nums)
+                if (all(nums(i) == nums(j))) then
+                    found = .true.
+                    exit
+                end if
+            end do
+            if (.not. found) then
+                k = k + 1
+                result(k) = nums(i)(1)
+            end if
+        end do
+
+        result = sort(result)
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:33:17:
+
+   33 |                 result(k) = nums(i)(1)
+      |                 1
+Error: Unclassifiable statement at (1)
+temp.f95:26:39:
+
+   26 |                 if (all(nums(i) == nums(j))) then
+      |                                       1
+Error: Rank mismatch in array reference at (1) (1/2)
+temp.f95:37:17:
+
+   37 |         result = sort(result)
+      |                 1
+Error: Function ‘sort’ at (1) has no IMPLICIT type
+temp.f95:8:15:
+
+    8 |     call solve(nums, result)
+      |               1
+Error: Rank mismatch in argument ‘nums’ at (1) (rank-2 and rank-1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+      implicit none
+
+      integer, parameter :: n = 3
+      integer, parameter :: m = 5
+      integer, parameter :: nums(n, m) = reshape((/ 3, 1, 2, 4, 5, 1, 2, 3, 4, 3, 4, 5, 6 /), shape(nums))
+
+      integer :: i, j
+      integer :: result(size(nums, 1))
+
+      result = solve(nums)
+
+      do i = 1, size(nums, 1)
+        write (*, '(A, I0, A)') 'nums(', i, ') = ', result(i)
+      end do
+
+      contains
+
+      function solve(nums) result(result)
+        integer, intent(in) :: nums(n, m)
+        integer :: result(size(nums, 1))
+
+        integer :: i, j
+        integer :: count(size(nums, 2))
+
+        count = 0
+
+        do i = 1, size(nums, 1)
+          do j = 1, size(nums, 2)
+            if (count(nums(i, j)) == 0) then
+              count(nums(i, j)) = 1
+            else
+              count(nums(i, j)) = count(nums(i, j)) + 1
+            end if
+          end do
+        end do
+
+        result = pack(count, count > 0)
+
+      end function solve
+
+      end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:49:
+
+    6 |       integer, parameter :: nums(n, m) = reshape((/ 3, 1, 2, 4, 5, 1, 2, 3, 4, 3, 4, 5, 6 /), shape(nums))
+      |                                                 1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+temp.f95:9:29:
+
+    9 |       integer :: result(size(nums, 1))
+      |                             1
+Error: Symbol ‘nums’ is used before it is typed at (1)
+temp.f95:14:59:
+
+   14 |         write (*, '(A, I0, A)') 'nums(', i, ') = ', result(i)
+      |                                                           1
+Error: Syntax error in WRITE statement at (1)
+temp.f95:11:25:
+
+   11 |       result = solve(nums)
+      |                         1
+Error: Symbol ‘nums’ at (1) has no IMPLICIT type
+temp.f95:11:12:
+
+   11 |       result = solve(nums)
+      |            1
+Error: Symbol ‘result’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_cost(cost):
+    cost.sort(reverse=True)
+    n = len(cost)
+    min_cost = 0
+
+    for i in range(0, n, 3):
+        min_cost += cost[i]
+        if i+1 &lt; n:
+            min_cost += cost[i+1]
+
+    return min_cost
+</code></pre>
+<p>The algorithm sorts all the candies in the array in descending order of cost, so that the most expensive candies are bought first. Then, it loops over the array, taking two candies at a time (the loop increments 3 positions each iteration) and adding their cost to the total <code>min_cost</code>. The choice of the third free candy will always be one of the two already chosen, so its cost is already included in <code>min_cost</code>. After iterating through the entire array, the function returns the minimum cost.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int minCost(std::vector&lt;int&gt;&amp; cost) {
+    std::sort(cost.begin(), cost.end(), std::greater&lt;&gt;());
+    int n = cost.size();
+
+    int min_cost = 0;
+
+    for(int i = 0; i &lt; n; i += 3) {
+        min_cost += cost[i];
+        if(i+1 &lt; n) min_cost += cost[i+1];
+    }
+
+    return min_cost;
+}
+</code></pre>
+<p>The algorithm sorts all the candies in the array in descending order of cost, so that the most expensive candies are bought first. Then, it loops over the array, taking two candies at a time (the loop increments 3 positions each iteration) and adding their cost to the total <code>min_cost</code>. The choice of the third free candy will always be one of the two already chosen, so its cost is already included in <code>min_cost</code>. After iterating through the entire array, the function returns the minimum cost.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

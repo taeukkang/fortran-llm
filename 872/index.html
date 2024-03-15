@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Leaf-Similar Trees</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/868/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/876/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Consider all the leaves of a binary tree, from left to right order, the values of those leaves form a <strong>leaf value sequence</strong><em>.</em></p>
+<p>For example, in the given tree above, the leaf value sequence is <code>(6, 7, 4, 9, 8)</code>.</p>
+<p>Two binary trees are considered <em>leaf-similar</em> if their leaf value sequence is the same.</p>
+<p>Return <code>true</code> if and only if the two given trees with head nodes <code>root1</code> and <code>root2</code> are leaf-similar.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root1 = [3,5,1,6,2,9,8,null,null,7,4], root2 = [3,5,1,6,7,4,2,null,null,null,null,null,null,9,8]
+<strong>Output:</strong> true</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root1 = [1,2,3], root2 = [1,3,2]
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in each tree will be in the range <code>[1, 200]</code>.</li>
+<li>Both of the given trees will have values in the range <code>[0, 200]</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/leaf-similar-trees/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    type :: TreeNode
+        integer :: val
+        type(TreeNode), pointer :: left => null(), right => null()
+    end type TreeNode
+
+    type (TreeNode), target :: root1, root2
+    logical :: result
+
+    call init_tree(root1)
+    call init_tree(root2)
+
+    result = leafSimilar(root1, root2)
+
+    print '(L1)', result
+
+contains
+
+    subroutine init_tree(root)
+        type (TreeNode), intent(out) :: root
+
+        allocate(root%left)
+        allocate(root%right)
+        root%val = 3
+        root%left%val = 5
+        root%right%val = 1
+        root%left%left%val = 6
+        root%right%left%val = 2
+        root%right%right%val = 9
+        root%right%left%left%val = 8
+        root%right%left%right%val = 7
+        root%right%right%left%val = 4
+    end subroutine init_tree
+
+end program main
+
+logical function leafSimilar(root1, root2) result(isLeafSimilar)
+    type (TreeNode), intent(in) :: root1, root2
+    type (TreeNode), pointer :: curr1, curr2
+    integer :: leafValueSequence(100)
+    integer :: i, j
+
+    ! Initialize the leaf value sequence array
+    do i = 1, size(leafValueSequence)
+        leafValueSequence(i) = -1
+    end do
+
+    ! Traverse both trees simultaneously and fill the leaf value sequence array
+    curr1 => root1
+    curr2 => root2
+    i = 1
+    do while (associated(curr1))
+        if (.not. associated(curr1%left)) then
+            leafValueSequence(i) = curr1%val
+            i = i + 1
+        end if
+        curr1 => curr1%left
+        if (.not. associated(curr2)) exit
+        curr2 => curr2%left
+    end do
+
+    ! Check if the leaf value sequences are equal
+    do i = 1, size(leafValueSequence)
+        if (leafValueSequence(i) /= curr2%val) return
+        curr2 => curr2%left
+    end do
+
+    isLeafSimilar = .true.
+
+end function leafSimilar</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:40:20:
+
+   40 |     type (TreeNode), intent(in) :: root1, root2
+      |                    1
+Error: Derived type ‘treenode’ at (1) is being used before it is defined
+temp.f95:41:20:
+
+   41 |     type (TreeNode), pointer :: curr1, curr2
+      |                    1
+Error: Derived type ‘treenode’ at (1) is being used before it is defined
+temp.f95:55:36:
+
+   55 |         if (.not. associated(curr1%left)) then
+      |                                    1
+Error: Symbol ‘curr1’ at (1) has no IMPLICIT type
+temp.f95:56:42:
+
+   56 |             leafValueSequence(i) = curr1%val
+      |                                          1
+Error: Symbol ‘curr1’ at (1) has no IMPLICIT type
+temp.f95:58:11:
+
+   58 |         end if
+      |           1
+Error: Expecting END DO statement at (1)
+temp.f95:59:24:
+
+   59 |         curr1 => curr1%left
+      |                        1
+Error: Symbol ‘curr1’ at (1) has no IMPLICIT type
+temp.f95:61:24:
+
+   61 |         curr2 => curr2%left
+      |                        1
+Error: Symbol ‘curr2’ at (1) has no IMPLICIT type
+temp.f95:66:43:
+
+   66 |         if (leafValueSequence(i) /= curr2%val) return
+      |                                           1
+Error: Symbol ‘curr2’ at (1) has no IMPLICIT type
+temp.f95:67:24:
+
+   67 |         curr2 => curr2%left
+      |                        1
+Error: Symbol ‘curr2’ at (1) has no IMPLICIT type
+temp.f95:51:4:
+
+   51 |     curr1 => root1
+      |    1
+Error: Non-POINTER in pointer association context (pointer assignment) at (1)
+temp.f95:51:13:
+
+   51 |     curr1 => root1
+      |             1
+Error: Pointer assignment target is neither TARGET nor POINTER at (1)
+temp.f95:52:4:
+
+   52 |     curr2 => root2
+      |    1
+Error: Non-POINTER in pointer association context (pointer assignment) at (1)
+temp.f95:52:13:
+
+   52 |     curr2 => root2
+      |             1
+Error: Pointer assignment target is neither TARGET nor POINTER at (1)
+temp.f95:60:29:
+
+   60 |         if (.not. associated(curr2)) exit
+      |                             1
+Error: ‘pointer’ argument of ‘associated’ intrinsic at (1) must be a POINTER
+temp.f95:54:25:
+
+   54 |     do while (associated(curr1))
+      |                         1
+Error: ‘pointer’ argument of ‘associated’ intrinsic at (1) must be a POINTER
+temp.f95:15:24:
+
+   15 |     result = leafSimilar(root1, root2)
+      |                        1
+Error: Return type mismatch of function ‘leafsimilar’ at (1) (UNKNOWN/LOGICAL(4))
+temp.f95:15:13:
+
+   15 |     result = leafSimilar(root1, root2)
+      |             1
+Error: Function ‘leafsimilar’ at (1) has no IMPLICIT type
+temp.f95:15:13:
+
+   15 |     result = leafSimilar(root1, root2)
+      |             1
+Error: Type mismatch in argument ‘root1’ at (1); passed TYPE(treenode) to REAL(4)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module leaf_similar_trees
+
+implicit none
+
+contains
+
+function is_leaf_similar(root1, root2) result(is_similar)
+
+! This function checks if two binary trees with head nodes root1 and root2 are leaf-similar.
+
+type(node), pointer, intent(in) :: root1, root2
+logical :: is_similar
+
+! Create a queue to store the nodes of the two trees
+type(node), pointer :: queue1(:), queue2(:)
+integer :: front1, back1, front2, back2
+
+! Initialize the queues and the front and back indices
+allocate(queue1(200), queue2(200))
+front1 = 1
+back1 = 0
+front2 = 1
+back2 = 0
+
+! Add the first nodes of the two trees to the queues
+if (associated(root1)) then
+    queue1(back1+1) => root1
+    back1 = back1 + 1
+end if
+if (associated(root2)) then
+    queue2(back2+1) => root2
+    back2 = back2 + 1
+end if
+
+! Loop until both queues are empty
+do while (front1 <= back1 .or. front2 <= back2)
+
+    ! Get the front nodes of the two trees
+    if (front1 <= back1) then
+        if (associated(queue1(front1)%left)) then
+            queue1(back1+1) => queue1(front1)%left
+            back1 = back1 + 1
+        end if
+        if (associated(queue1(front1)%right)) then
+            queue1(back1+1) => queue1(front1)%right
+            back1 = back1 + 1
+        end if
+        front1 = front1 + 1
+    end if
+    if (front2 <= back2) then
+        if (associated(queue2(front2)%left)) then
+            queue2(back2+1) => queue2(front2)%left
+            back2 = back2 + 1
+        end if
+        if (associated(queue2(front2)%right)) then
+            queue2(back2+1) => queue2(front2)%right
+            back2 = back2 + 1
+        end if
+        front2 = front2 + 1
+    end if
+
+    ! If the front nodes are not leaf nodes, add their children to the queues
+    if (associated(queue1(front1)%left) .or. associated(queue1(front1)%right)) then
+        if (associated(queue1(front1)%left)) then
+            queue1(back1+1) => queue1(front1)%left
+            back1 = back1 + 1
+        end if
+        if (associated(queue1(front1)%right)) then
+            queue1(back1+1) => queue1(front1)%right
+            back1 = back1 + 1
+        end if
+    end if
+    if (associated(queue2(front2)%left) .or. associated(queue2(front2)%right)) then
+        if (associated(queue2(front2)%left)) then
+            queue2(back2+1) => queue2(front2)%left
+            back2 = back2 + 1
+        end if
+        if (associated(queue2(front2)%right)) then
+            queue2(back2+1) => queue2(front2)%right
+            back2 = back2 + 1
+        end if
+    end if
+
+    ! If the front nodes are leaf nodes, check if their values are the same
+    if (associated(queue1(front1)%left) .and. associated(queue1(front1)%right)) then
+        if (queue1(front1)%val /= queue2(front2)%val) then
+            is_similar = .false.
+            return
+        end if
+        front1 = front1 + 1
+        front2 = front2 + 1
+    end if
+
+end do
+
+! If we reach this point, the two trees are leaf-similar
+is_similar = .true.
+
+end function is_leaf_similar
+
+type node
+    integer :: val
+    type(node), pointer :: left, right
+end type
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:11:11:
+
+   11 | type(node), pointer, intent(in) :: root1, root2
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:15:11:
+
+   15 | type(node), pointer :: queue1(:), queue2(:)
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:19:9:
+
+   19 | allocate(queue1(200), queue2(200))
+      |         1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:40:39:
+
+   40 |         if (associated(queue1(front1)%left)) then
+      |                                       1
+Error: Symbol ‘queue1’ at (1) has no IMPLICIT type
+temp.f95:44:39:
+
+   44 |         if (associated(queue1(front1)%right)) then
+      |                                       1
+Error: Symbol ‘queue1’ at (1) has no IMPLICIT type
+temp.f95:47:11:
+
+   47 |         end if
+      |           1
+Error: Expecting END DO statement at (1)
+temp.f95:49:7:
+
+   49 |     end if
+      |       1
+Error: Expecting END DO statement at (1)
+temp.f95:51:39:
+
+   51 |         if (associated(queue2(front2)%left)) then
+      |                                       1
+Error: Symbol ‘queue2’ at (1) has no IMPLICIT type
+temp.f95:55:39:
+
+   55 |         if (associated(queue2(front2)%right)) then
+      |                                       1
+Error: Symbol ‘queue2’ at (1) has no IMPLICIT type
+temp.f95:58:11:
+
+   58 |         end if
+      |           1
+Error: Expecting END DO statement at (1)
+temp.f95:60:7:
+
+   60 |     end if
+      |       1
+Error: Expecting END DO statement at (1)
+temp.f95:63:35:
+
+   63 |     if (associated(queue1(front1)%left) .or. associated(queue1(front1)%right)) then
+      |                                   1
+Error: Symbol ‘queue1’ at (1) has no IMPLICIT type
+temp.f95:64:39:
+
+   64 |         if (associated(queue1(front1)%left)) then
+      |                                       1
+Error: Symbol ‘queue1’ at (1) has no IMPLICIT type
+temp.f95:67:11:
+
+   67 |         end if
+      |           1
+Error: Expecting END DO statement at (1)
+temp.f95:68:39:
+
+   68 |         if (associated(queue1(front1)%right)) then
+      |                                       1
+Error: Symbol ‘queue1’ at (1) has no IMPLICIT type
+temp.f95:71:11:
+
+   71 |         end if
+      |           1
+Error: Expecting END DO statement at (1)
+temp.f95:72:7:
+
+   72 |     end if
+      |       1
+Error: Expecting END DO statement at (1)
+temp.f95:73:35:
+
+   73 |     if (associated(queue2(front2)%left) .or. associated(queue2(front2)%right)) then
+      |                                   1
+Error: Symbol ‘queue2’ at (1) has no IMPLICIT type
+temp.f95:74:39:
+
+   74 |         if (associated(queue2(front2)%left)) then
+      |                                       1
+Error: Symbol ‘queue2’ at (1) has no IMPLICIT type
+temp.f95:77:11:
+
+   77 |         end if
+      |           1
+Error: Expecting END DO statement at (1)
+temp.f95:78:39:
+
+   78 |         if (associated(queue2(front2)%right)) then
+      |                                       1
+Error: Symbol ‘queue2’ at (1) has no IMPLICIT type
+temp.f95:81:11:
+
+   81 |         end if
+      |           1
+Error: Expecting END DO statement at (1)
+temp.f95:82:7:
+
+   82 |     end if
+      |       1
+Error: Expecting END DO statement at (1)
+temp.f95:85:35:
+
+   85 |     if (associated(queue1(front1)%left) .and. associated(queue1(front1)%right)) then
+      |                                   1
+Error: Symbol ‘queue1’ at (1) has no IMPLICIT type
+temp.f95:86:28:
+
+   86 |         if (queue1(front1)%val /= queue2(front2)%val) then
+      |                            1
+Error: Symbol ‘queue1’ at (1) has no IMPLICIT type
+temp.f95:89:11:
+
+   89 |         end if
+      |           1
+Error: Expecting END DO statement at (1)
+temp.f95:92:7:
+
+   92 |     end if
+      |       1
+Error: Expecting END DO statement at (1)
+temp.f95:101:9:
+
+  101 | type node
+      |         1
+Error: Unexpected derived type declaration statement in CONTAINS section at (1)
+temp.f95:102:18:
+
+  102 |     integer :: val
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:103:15:
+
+  103 |     type(node), pointer :: left, right
+      |               1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:104:3:
+
+  104 | end type
+      |   1
+Error: Expecting END MODULE statement at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def splitIntoFibonacci(num):
+    ans = []
+    def backtrack(index, prev1, prev2):
+        if index == len(num):
+            return len(ans) &gt;= 3
+        curr = 0
+        for i in range(index, len(num)):
+            if i &gt; index and num[index] == '0':
+                break
+            curr = curr * 10 + ord(num[i]) - ord('0')
+            if curr &gt; 2**31 - 1:
+                break
+            if len(ans) &gt;= 2:
+                if curr &lt; prev1 + prev2:
+                    continue
+                elif curr &gt; prev1 + prev2:
+                    break
+            ans.append(curr)
+            if backtrack(i + 1, prev2, curr):
+                return True
+            ans.pop()
+        return False
+
+    backtrack(0, 0, 0)
+    return ans
+</code></pre>
+<p>The algorithm uses backtracking to solve the problem. It starts by iterating through the input string, parsing every possible length substring as numbers. The algorithm maintains a list, 'ans', to keep track of the Fibonacci-like sequence formed so far and also stores the previous 2 numbers in the sequence.</p>
+<p>The base case is when the entire string has been processed (i.e., index == string length) and the 'ans' list has at least 3 elements. In that case, we return true and stop further processing.</p>
+<p>While iterating through the string and parsing substrings, we perform the following steps:
+1. Skip the current substring if it has a leading zero but isn't just "0".
+2. If the current number is greater than the 32-bit integer limit, break because it can't be a valid Fibonacci number.
+3. If the list 'ans' has at least 2 elements, we check whether the sum of the previous 2 numbers is equal to the current number. If the sum is smaller, we continue to the next substring, whereas if the sum is larger, we break because any larger substring will lead to an invalid sequence.
+4. If the current number is a valid candidate, we add it to the 'ans' list.
+5. Perform backtracking on the next index with the updated values of previous numbers. If the backtracking returns true, exit early; otherwise, we remove the current number from the 'ans' list and continue with the next substring.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-c++">#include &lt;vector&gt;
+#include &lt;string&gt;
+
+std::vector&lt;int&gt; splitIntoFibonacci(std::string num) {
+    std::vector&lt;int&gt; ans;
+    backtrack(num, ans, 0, 0, 0);
+    return ans;
+}
+
+bool backtrack(std::string&amp; num, std::vector&lt;int&gt;&amp; ans, int index, int prev1, int prev2) {
+    if (index == num.size()) {
+        return ans.size() &gt;= 3;
+    }
+    long curr = 0;
+    for (int i = index; i &lt; num.size(); ++i) {
+        if (i &gt; index &amp;&amp; num[index] == '0') {
+            break;
+        }
+        curr = curr * 10 + num[i] - '0';
+        if (curr &gt; INT32_MAX) {
+            break;
+        }
+
+        if (ans.size() &gt;= 2) {
+            long sum = (long)prev1 + prev2;
+            if (curr &lt; sum) {
+                continue;
+            } else if (curr &gt; sum) {
+                break;
+            }
+        }
+
+        ans.push_back(curr);
+        if (backtrack(num, ans, i + 1, prev2, curr)) {
+            return true;
+        }
+        ans.pop_back();
+    }
+    return false;
+}
+</code></pre>
+<p>The algorithm uses backtracking to solve the problem. It starts by iterating through the input string, parsing every possible length substring as numbers. The algorithm maintains a list, 'ans', to keep track of the Fibonacci-like sequence formed so far and also stores the previous 2 numbers in the sequence.</p>
+<p>The base case is when the entire string has been processed (i.e., index == string length) and the 'ans' list has at least 3 elements. In that case, we return true and stop further processing.</p>
+<p>While iterating through the string and parsing substrings, we perform the following steps:
+1. Skip the current substring if it has a leading zero but isn't just "0".
+2. If the current number is greater than the 32-bit integer limit, break because it can't be a valid Fibonacci number.
+3. If the list 'ans' has at least 2 elements, we check whether the sum of the previous 2 numbers is equal to the current number. If the sum is smaller, we continue to the next substring, whereas if the sum is larger, we break because any larger substring will lead to an invalid sequence.
+4. If the current number is a valid candidate, we add it to the 'ans' list.
+5. Perform backtracking on the next index with the updated values of previous numbers. If the backtracking returns true, exit early; otherwise, we remove the current number from the 'ans' list and continue with the next substring.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

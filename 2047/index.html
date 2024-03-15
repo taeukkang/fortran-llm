@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Number of Valid Words in a Sentence</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2042/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2053/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A sentence consists of lowercase letters (<code>'a'</code> to <code>'z'</code>), digits (<code>'0'</code> to <code>'9'</code>), hyphens (<code>'-'</code>), punctuation marks (<code>'!'</code>, <code>'.'</code>, and <code>','</code>), and spaces (<code>' '</code>) only. Each sentence can be broken down into <strong>one or more tokens</strong> separated by one or more spaces <code>' '</code>.</p>
+<p>A token is a valid word if <strong>all three</strong> of the following are true:</p>
+<ul>
+<li>It only contains lowercase letters, hyphens, and/or punctuation (<strong>no</strong> digits).</li>
+<li>There is <strong>at most one</strong> hyphen <code>'-'</code>. If present, it <strong>must</strong> be surrounded by lowercase characters ( <code>"a-b "</code> is valid, but <code>"-ab "</code> and <code>"ab- "</code> are not valid).</li>
+<li>There is <strong>at most one</strong> punctuation mark. If present, it <strong>must</strong> be at the <strong>end</strong> of the token ( <code>"ab, "</code>, <code>"cd! "</code>, and <code>". "</code> are valid, but <code>"a!b "</code> and <code>"c., "</code> are not valid).</li>
+</ul>
+<p>Examples of valid words include <code>"a-b. "</code>, <code>"afad "</code>, <code>"ba-c "</code>, <code>"a! "</code>, and <code>"! "</code>.</p>
+<p>Given a string <code>sentence</code>, return <em>the <strong>number</strong> of valid words in</em> <code>sentence</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> sentence =  "cat and  dog "
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The valid words in the sentence are  "cat ",  "and ", and  "dog ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> sentence =  "!this  1-s b8d! "
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There are no valid words in the sentence.
+ "!this " is invalid because it starts with a punctuation mark.
+ "1-s " and  "b8d " are invalid because they contain digits.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> sentence =  "alice and  bob are playing stone-game10 "
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> The valid words in the sentence are  "alice ",  "and ",  "bob ",  "are ", and  "playing ".
+ "stone-game10 " is invalid because it contains digits.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= sentence.length &lt;= 1000</code></li>
+<li><code>sentence</code> only contains lowercase English letters, digits, <code>' '</code>, <code>'-'</code>, <code>'!'</code>, <code>'.'</code>, and <code>','</code>.</li>
+<li>There will be at least <code>1</code> token.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/number-of-valid-words-in-a-sentence/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: sentence
+    integer :: num_valid_words
+
+    ! Examples from the problem statement
+    allocate(character(len=4) :: sentence)
+    sentence = "cat and  dog "
+    print *, count_valid_words(sentence)
+    deallocate(sentence)
+
+    allocate(character(len=7) :: sentence)
+    sentence = "!this  1-s b8d! "
+    print *, count_valid_words(sentence)
+    deallocate(sentence)
+
+    allocate(character(len=16) :: sentence)
+    sentence = "alice and  bob are playing stone-game10 "
+    print *, count_valid_words(sentence)
+    deallocate(sentence)
+
+contains
+
+    function count_valid_words(sentence) result(num_valid_words)
+        implicit none
+        character(len=*), intent(in) :: sentence
+        integer :: i, j, k, num_valid_words
+
+        num_valid_words = 0
+        do i = 1, len_trim(sentence)
+            if (is_valid_word(sentence(i:))) then
+                num_valid_words = num_valid_words + 1
+            end if
+        end do
+
+    contains
+
+        logical function is_valid_word(word)
+            implicit none
+            character(len=*), intent(in) :: word
+            integer :: i, j
+
+            is_valid_word = .false.
+
+            ! Check if word contains only lowercase letters, hyphens, and/or punctuation
+            do i = 1, len_trim(word)
+                if (ichar(word(i:i)) < ichar('a') .or. &
+                    ichar(word(i:i)) > ichar('z') .and. &
+                    ichar(word(i:i)) < ichar('0') .or. &
+                    ichar(word(i:i)) > ichar('9') .and. &
+                    ichar(word(i:i)) /= ichar('-') .and. &
+                    ichar(word(i:i)) /= ichar('.') .and. &
+                    ichar(word(i:i)) /= ichar(',') .and. &
+                    ichar(word(i:i)) /= ichar('!')) then
+                    return
+                end if
+            end do
+
+            ! Check if there is at most one hyphen
+            i = index(word, '-')
+            if (i == 0) then
+                is_valid_word = .true.
+            else if (i == 1) then
+                is_valid_word = .true.
+            else if (i == len_trim(word)) then
+                is_valid_word = .true.
+            else
+                return
+            end if
+
+            ! Check if there is at most one punctuation mark
+            i = index(word, '.')
+            j = index(word, ',')
+            k = index(word, '!')
+            if (i == 0 .and. j == 0 .and. k == 0) then
+                is_valid_word = .true.
+            else if (i == len_trim(word) .and. j == 0 .and. k == 0) then
+                is_valid_word = .true.
+            else if (j == len_trim(word) .and. i == 0 .and. k == 0) then
+                is_valid_word = .true.
+            else if (k == len_trim(word) .and. i == 0 .and. j == 0) then
+                is_valid_word = .true.
+            else
+                return
+            end if
+
+        end function is_valid_word
+
+    end function count_valid_words
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:37:12:
+
+   37 |     contains
+      |            1
+Error: CONTAINS statement at (1) is already in a contained program unit
+temp.f95:39:25:
+
+   39 |         logical function is_valid_word(word)
+      |                         1
+Error: Syntax error in data declaration at (1)
+temp.f95:40:25:
+
+   40 |             implicit none
+      |                         1
+Error: Duplicate IMPLICIT NONE statement at (1)
+temp.f95:41:48:
+
+   41 |             character(len=*), intent(in) :: word
+      |                                                1
+Error: Unexpected data declaration statement at (1)
+temp.f95:42:24:
+
+   42 |             integer :: i, j
+      |                        1
+Error: Symbol ‘i’ at (1) already has basic type of INTEGER
+temp.f95:44:26:
+
+   44 |             is_valid_word = .false.
+      |                          1
+Error: ‘is_valid_word’ at (1) is not a variable
+temp.f95:48:33:
+
+   48 |                 if (ichar(word(i:i)) < ichar('a') .or. &
+      |                                 1
+Error: Syntax error in argument list at (1)
+temp.f95:57:19:
+
+   57 |                 end if
+      |                   1
+Error: Expecting END DO statement at (1)
+temp.f95:63:30:
+
+   63 |                 is_valid_word = .true.
+      |                              1
+Error: ‘is_valid_word’ at (1) is not a variable
+temp.f95:65:30:
+
+   65 |                 is_valid_word = .true.
+      |                              1
+Error: ‘is_valid_word’ at (1) is not a variable
+temp.f95:67:30:
+
+   67 |                 is_valid_word = .true.
+      |                              1
+Error: ‘is_valid_word’ at (1) is not a variable
+temp.f95:77:30:
+
+   77 |                 is_valid_word = .true.
+      |                              1
+Error: ‘is_valid_word’ at (1) is not a variable
+temp.f95:79:30:
+
+   79 |                 is_valid_word = .true.
+      |                              1
+Error: ‘is_valid_word’ at (1) is not a variable
+temp.f95:81:30:
+
+   81 |                 is_valid_word = .true.
+      |                              1
+Error: ‘is_valid_word’ at (1) is not a variable
+temp.f95:83:30:
+
+   83 |                 is_valid_word = .true.
+      |                              1
+Error: ‘is_valid_word’ at (1) is not a variable
+temp.f95:88:34:
+
+   88 |         end function is_valid_word
+      |                                  1
+Error: Expected label ‘count_valid_words’ for END FUNCTION statement at (1)
+temp.f95:47:35:
+
+   47 |             do i = 1, len_trim(word)
+      |                                   1
+Error: Symbol ‘word’ at (1) has no IMPLICIT type
+temp.f95:32:16:
+
+   32 |             if (is_valid_word(sentence(i:))) then
+      |                1
+Error: Function ‘is_valid_word’ at (1) has no IMPLICIT type; did you mean ‘count_valid_words’?
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module tokenize
+
+implicit none
+
+contains
+
+function tokenize_sentence(sentence) result(tokens)
+
+character(len=*), intent(in) :: sentence
+type(token_type) :: tokens(size(sentence))
+
+integer :: i, j, k
+
+! Initialize the tokens array
+tokens = token_type(size(sentence))
+
+! Loop through the characters in the sentence
+do i = 1, size(sentence)
+
+    ! If the current character is a space, move on to the next token
+    if (sentence(i:i) == ' ') then
+        cycle
+    end if
+
+    ! If the current character is a hyphen, check if it is surrounded by lowercase characters
+    if (sentence(i:i) == '-') then
+        if (i == 1 .or. i == size(sentence)) then
+            ! If the hyphen is at the beginning or end of the sentence, it is invalid
+            tokens(i)%valid = .false.
+            cycle
+        end if
+
+        ! Check if the character before the hyphen is lowercase
+        if (sentence(i-1:i-1) /= 'a' .and. sentence(i-1:i-1) /= 'b' .and. &
+            sentence(i-1:i-1) /= 'c' .and. sentence(i-1:i-1) /= 'd' .and. &
+            sentence(i-1:i-1) /= 'e' .and. sentence(i-1:i-1) /= 'f' .and. &
+            sentence(i-1:i-1) /= 'g' .and. sentence(i-1:i-1) /= 'h' .and. &
+            sentence(i-1:i-1) /= 'i' .and. sentence(i-1:i-1) /= 'j' .and. &
+            sentence(i-1:i-1) /= 'k' .and. sentence(i-1:i-1) /= 'l' .and. &
+            sentence(i-1:i-1) /= 'm' .and. sentence(i-1:i-1) /= 'n' .and. &
+            sentence(i-1:i-1) /= 'o' .and. sentence(i-1:i-1) /= 'p' .and. &
+            sentence(i-1:i-1) /= 'q' .and. sentence(i-1:i-1) /= 'r' .and. &
+            sentence(i-1:i-1) /= 's' .and. sentence(i-1:i-1) /= 't' .and. &
+            sentence(i-1:i-1) /= 'u' .and. sentence(i-1:i-1) /= 'v' .and. &
+            sentence(i-1:i-1) /= 'w' .and. sentence(i-1:i-1) /= 'x' .and. &
+            sentence(i-1:i-1) /= 'y' .and. sentence(i-1:i-1) /= 'z') then
+            ! If the character before the hyphen is not lowercase, the hyphen is invalid
+            tokens(i)%valid = .false.
+            cycle
+        end if
+
+        ! Check if the character after the hyphen is lowercase
+        if (sentence(i+1:i+1) /= 'a' .and. sentence(i+1:i+1) /= 'b' .and. &
+            sentence(i+1:i+1) /= 'c' .and. sentence(i+1:i+1) /= 'd' .and. &
+            sentence(i+1:i+1) /= 'e' .and. sentence(i+1:i+1) /= 'f' .and. &
+            sentence(i+1:i+1) /= 'g' .and. sentence(i+1:i+1) /= 'h' .and. &
+            sentence(i+1:i+1) /= 'i' .and. sentence(i+1:i+1) /= 'j' .and. &
+            sentence(i
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:10:17:
+
+   10 | type(token_type) :: tokens(size(sentence))
+      |                 1
+Error: Derived type ‘token_type’ at (1) is being used before it is defined
+temp.f95:7:51:
+
+    7 | function tokenize_sentence(sentence) result(tokens)
+      |                                                   1
+Error: Function result ‘tokens’ at (1) has no IMPLICIT type
+temp.f95:58:22:
+
+   58 |             sentence(i
+      |                      1
+Error: Missing ‘)’ in statement at or before (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def findPeakGrid(mat: List[List[int]]) -&gt; List[int]:
+    m, n = len(mat), len(mat[0])
+    l, r = 0, n - 1
+
+    while l &lt; r:
+        mid = (l + r) // 2
+        max_row = 0
+
+        for i in range(1, m):
+            if mat[i][mid] &gt; mat[max_row][mid]:
+                max_row = i
+
+        if mat[max_row][mid] &lt; mat[max_row][mid + 1]:
+            l = mid + 1
+        else:
+            r = mid
+
+    max_row = 0
+    for i in range(1, m):
+        if mat[i][l] &gt; mat[max_row][l]:
+            max_row = i
+
+    return [max_row, l]
+</code></pre>
+<p>The algorithm is a modification of the binary search algorithm. We start by finding the middle column <code>mid</code>. For this column, we find the row <code>max_row</code> with the maximum element. Then, we compare the maximum element with its right neighbor.</p>
+<p>If the right neighbor is greater, we know that there must be a peak element in the columns to the right, so we update <code>l = mid + 1</code>. Otherwise, we know that there must be a peak element in the columns to the left or at the current column, so we update <code>r = mid</code>.</p>
+<p>Repeat this process until <code>l == r</code>. At this point, the maximum element in the column <code>l</code> is a peak element. We find the row <code>max_row</code> with the maximum element in the column <code>l</code> and return its position <code>[max_row, l]</code>. </p>
+<p>Since we are using binary search, the time complexity of the algorithm is O(m log(n)) or O(n log(m)).</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+using namespace std;
+
+vector&lt;int&gt; findPeakGrid(vector&lt;vector&lt;int&gt;&gt;&amp; mat) {
+    int m = mat.size(), n = mat[0].size();
+    int l = 0, r = n - 1;
+
+    while (l &lt; r) {
+        int mid = (l + r) / 2;
+        int max_row = 0;
+
+        for (int i = 1; i &lt; m; i++) {
+            if (mat[i][mid] &gt; mat[max_row][mid]) {
+                max_row = i;
+            }
+        }
+
+        if (mat[max_row][mid] &lt; mat[max_row][mid + 1]) {
+            l = mid + 1;
+        } else {
+            r = mid;
+        }
+    }
+
+    int max_row = 0;
+    for (int i = 1; i &lt; m; i++) {
+        if (mat[i][l] &gt; mat[max_row][l]) {
+            max_row = i;
+        }
+    }
+
+    return {max_row, l};
+}
+</code></pre>
+<p>The algorithm is a modification of the binary search algorithm. We start by finding the middle column <code>mid</code>. For this column, we find the row <code>max_row</code> with the maximum element. Then, we compare the maximum element with its right neighbor.</p>
+<p>If the right neighbor is greater, we know that there must be a peak element in the columns to the right, so we update <code>l = mid + 1</code>. Otherwise, we know that there must be a peak element in the columns to the left or at the current column, so we update <code>r = mid</code>.</p>
+<p>Repeat this process until <code>l == r</code>. At this point, the maximum element in the column <code>l</code> is a peak element. We find the row <code>max_row</code> with the maximum element in the column <code>l</code> and return its position <code>[max_row, l]</code>. </p>
+<p>Since we are using binary search, the time complexity of the algorithm is O(m log(n)) or O(n log(m)).</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

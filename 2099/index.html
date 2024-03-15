@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find Subsequence of Length K With the Largest Sum</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2094/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2103/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer array <code>nums</code> and an integer <code>k</code>. You want to find a <strong>subsequence</strong> of <code>nums</code> of length <code>k</code> that has the <strong>largest</strong> sum.</p>
+<p>Return <em><strong>any</strong> such subsequence as an integer array of length</em> <code>k</code>.</p>
+<p>A <strong>subsequence</strong> is an array that can be derived from another array by deleting some or no elements without changing the order of the remaining elements.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [2,1,3,3], k = 2
+<strong>Output:</strong> [3,3]
+<strong>Explanation:</strong>
+The subsequence has the largest sum of 3 + 3 = 6.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [-1,-2,3,4], k = 3
+<strong>Output:</strong> [-1,3,4]
+<strong>Explanation:</strong> 
+The subsequence has the largest sum of -1 + 3 + 4 = 6.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [3,4,3,3], k = 2
+<strong>Output:</strong> [3,4]
+<strong>Explanation:</strong>
+The subsequence has the largest sum of 3 + 4 = 7. 
+Another possible subsequence is [4, 3].</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 1000</code></li>
+<li><code>-105 &lt;= nums[i] &lt;= 105</code></li>
+<li><code>1 &lt;= k &lt;= nums.length</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-subsequence-of-length-k-with-the-largest-sum/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: k = 2
+    integer, dimension(4) :: nums = [2, 1, 3, 3]
+    integer, dimension(k) :: result
+
+    call solve(nums, k, result)
+
+    write (*, '(A, I0, A, I0)') 'Result: ', result(1), ',', result(2)
+
+contains
+
+    subroutine solve(nums, k, result)
+        implicit none
+        integer, intent(in) :: nums(:), k
+        integer, intent(out) :: result(:)
+        integer :: i, j, max_sum
+        logical :: found
+
+        do i = 1, size(nums) - k + 1
+            max_sum = -huge(max_sum)
+            found = .false.
+            do j = i, i + k - 1
+                if (nums(j) > max_sum) then
+                    max_sum = nums(j)
+                    found = .true.
+                end if
+            end do
+            if (found) then
+                result = nums(i:i+k-1)
+                return
+            end if
+        end do
+    end subroutine solve
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Result: 2,1
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module largest_subsequence
+  implicit none
+contains
+  function largest_subsequence(nums, k) result(subsequence)
+    integer, intent(in) :: nums(:), k
+    integer :: subsequence(k)
+    ! Local variables
+    integer :: i, j, max_sum, current_sum
+    ! Initialize variables
+    max_sum = -1000000000
+    current_sum = 0
+    ! Loop through the array
+    do i = 1, size(nums) - k + 1
+      ! Calculate the sum of the current subsequence
+      current_sum = sum(nums(i:i+k-1))
+      ! Check if the sum is greater than the maximum sum
+      if (current_sum > max_sum) then
+        ! If it is, update the maximum sum and the subsequence
+        max_sum = current_sum
+        subsequence = nums(i:i+k-1)
+      end if
+    end do
+  end function largest_subsequence
+end module
+
+program largest_subsequence_test
+  use largest_subsequence
+  implicit none
+  integer, parameter :: nums(4) = [2,1,3,3]
+  integer, parameter :: k = 2
+  integer :: subsequence(k)
+  subsequence = largest_subsequence(nums, k)
+  write (*,*) subsequence
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:30:
+
+    4 |   function largest_subsequence(nums, k) result(subsequence)
+      |                              1
+Error: MODULE attribute of ‘largest_subsequence’ conflicts with PROCEDURE attribute at (1)
+temp.f95:5:37:
+
+    5 |     integer, intent(in) :: nums(:), k
+      |                                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:6:29:
+
+    6 |     integer :: subsequence(k)
+      |                             1
+Error: Explicit array shape at (1) must be constant of INTEGER type and not UNKNOWN type
+temp.f95:8:41:
+
+    8 |     integer :: i, j, max_sum, current_sum
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:25:
+
+   10 |     max_sum = -1000000000
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:11:19:
+
+   11 |     current_sum = 0
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:13:32:
+
+   13 |     do i = 1, size(nums) - k + 1
+      |                                1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:15:31:
+
+   15 |       current_sum = sum(nums(i:i+k-1))
+      |                               1
+Error: Syntax error in argument list at (1)
+temp.f95:17:37:
+
+   17 |       if (current_sum > max_sum) then
+      |                                     1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:19:29:
+
+   19 |         max_sum = current_sum
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:29:
+
+   20 |         subsequence = nums(i:i+k-1)
+      |                             1
+Error: Syntax error in argument list at (1)
+temp.f95:21:9:
+
+   21 |       end if
+      |         1
+Error: Expecting END MODULE statement at (1)
+temp.f95:22:7:
+
+   22 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:5:
+
+   23 |   end function largest_subsequence
+      |     1
+Error: Expecting END MODULE statement at (1)
+temp.f95:27:7:
+
+   27 |   use largest_subsequence
+      |       1
+Fatal Error: Cannot open module file ‘largest_subsequence.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def count_patterns_in_word(patterns, word):
+    count = 0
+    for pattern in patterns:
+        if pattern in word:
+            count += 1
+    return count
+</code></pre>
+<p>The algorithm iterates through each string in the given <code>patterns</code> array. In each iteration, it checks if the current pattern is a substring of the given <code>word</code>. If it is, it increases the count.</p>
+<p>For C++, we use the <code>find</code> method of the <code>std::string</code> class and compare the result to <code>std::string::npos</code> to check if the pattern is present.</p>
+<p>For Java, we use the <code>contains</code> method of the <code>String</code> class to check if the pattern is present.</p>
+<p>For Python, we use the <code>in</code> operator to check if the pattern is present in the word.</p>
+<p>For JavaScript, we use the <code>includes</code> method of the <code>String</code> class to check if the pattern is present.</p>
+<p>At the end of the loop, the function returns the count of the patterns that are substrings of the given word.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;vector&gt;
+
+int countPatternsInWord(const std::vector&lt;std::string&gt; &amp;patterns, const std::string &amp;word) {
+    int count = 0;
+    for (const std::string &amp;pattern : patterns) {
+        if (word.find(pattern) != std::string::npos) {
+            count++;
+        }
+    }
+    return count;
+}
+</code></pre>
+<p>The algorithm iterates through each string in the given <code>patterns</code> array. In each iteration, it checks if the current pattern is a substring of the given <code>word</code>. If it is, it increases the count.</p>
+<p>For C++, we use the <code>find</code> method of the <code>std::string</code> class and compare the result to <code>std::string::npos</code> to check if the pattern is present.</p>
+<p>For Java, we use the <code>contains</code> method of the <code>String</code> class to check if the pattern is present.</p>
+<p>For Python, we use the <code>in</code> operator to check if the pattern is present in the word.</p>
+<p>For JavaScript, we use the <code>includes</code> method of the <code>String</code> class to check if the pattern is present.</p>
+<p>At the end of the loop, the function returns the count of the patterns that are substrings of the given word.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Merge Two Binary Trees</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/606/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/628/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given two binary trees <code>root1</code> and <code>root2</code>.</p>
+<p>Imagine that when you put one of them to cover the other, some nodes of the two trees are overlapped while the others are not. You need to merge the two trees into a new binary tree. The merge rule is that if two nodes overlap, then sum node values up as the new value of the merged node. Otherwise, the NOT null node will be used as the node of the new tree.</p>
+<p>Return <em>the merged tree</em>.</p>
+<p><strong>Note:</strong> The merging process must start from the root nodes of both trees.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root1 = [1,3,2,5], root2 = [2,1,3,null,4,null,7]
+<strong>Output:</strong> [3,4,5,5,4,null,7]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root1 = [1], root2 = [1,2]
+<strong>Output:</strong> [2,2]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in both trees is in the range <code>[0, 2000]</code>.</li>
+<li><code>-104 &lt;= Node.val &lt;= 104</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/merge-two-binary-trees/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, iostat_end, DP => REAL64
+    implicit none
+    integer, parameter :: unit_in = 10, unit_out = 20
+    type :: node
+        real(kind=DP) :: val
+        class(*), pointer :: left => null(), right => null()
+    end type
+    type(node), pointer :: root1, root2, new_root
+    character(len=200) :: buffer
+    integer :: stat
+
+    ! Read input
+    open(newunit=unit_in, file="input.txt", status="old", action="read", &
+         access="sequential", form="formatted", iomsg=buffer, iostat=stat)
+    if (stat /= 0) then
+        write(error_unit, "(A, ': ', A)") "main", buffer
+        stop 1
+    end if
+    read(unit=unit_in, fmt=*) root1
+    read(unit=unit_in, fmt=*) root2
+    close(unit=unit_in)
+
+    ! Solve problem
+    new_root => merge_trees(root1, root2)
+
+    ! Print output
+    open(newunit=unit_out, file="output.txt", status="replace", action="write", &
+         access="sequential", form="formatted")
+    call print_tree(new_root, unit=unit_out)
+    close(unit=unit_out)
+
+contains
+
+    function merge_trees(root1, root2) result(new_root)
+        class(node), pointer :: root1, root2, new_root
+        type(node), pointer :: current
+
+        allocate(current)
+        current%val = root1%val + root2%val
+        if (associated(root1%left)) then
+            if (associated(root2%left)) then
+                current%left => merge_trees(root1%left, root2%left)
+            else
+                current%left => root1%left
+            end if
+        else if (associated(root2%left)) then
+            current%left => root2%left
+        end if
+        if (associated(root1%right)) then
+            if (associated(root2%right)) then
+                current%right => merge_trees(root1%right, root2%right)
+            else
+                current%right => root1%right
+            end if
+        else if (associated(root2%right)) then
+            current%right => root2%right
+        end if
+        new_root => current
+    end function
+
+    subroutine print_tree(root, unit)
+        class(node), pointer :: root
+        integer, intent(in) :: unit
+        character(len=200) :: buffer
+
+        if (.not. associated(root)) then
+            return
+        end if
+        write(unit=unit, fmt="(F8.2)") root%val
+        if (associated(root%left)) then
+            write(unit=unit, fmt="('(', F8.2)") root%left%val
+            call print_tree(root%left, unit=unit)
+            write(unit=unit, fmt="(')')")
+        end if
+        if (associated(root%right)) then
+            write(unit=unit, fmt="('(', F8.2)") root%right%val
+            call print_tree(root%right, unit=unit)
+            write(unit=unit, fmt="(')')")
+        end if
+    end subroutine
+
+end program</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:72:61:
+
+   72 |             write(unit=unit, fmt="('(', F8.2)") root%left%val
+      |                                                             1
+Error: ‘val’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:77:62:
+
+   77 |             write(unit=unit, fmt="('(', F8.2)") root%right%val
+      |                                                              1
+Error: ‘val’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:73:49:
+
+   73 |             call print_tree(root%left, unit=unit)
+      |                                                 1
+Error: SUBROUTINE ‘print_tree’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:73:49:
+
+   73 |             call print_tree(root%left, unit=unit)
+      |                                                 1
+Error: Type mismatch in argument ‘root’ at (1); passed CLASS(*) to CLASS(node)
+temp.f95:78:50:
+
+   78 |             call print_tree(root%right, unit=unit)
+      |                                                  1
+Error: SUBROUTINE ‘print_tree’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:78:50:
+
+   78 |             call print_tree(root%right, unit=unit)
+      |                                                  1
+Error: Type mismatch in argument ‘root’ at (1); passed CLASS(*) to CLASS(node)
+temp.f95:43:32:
+
+   43 |                 current%left => merge_trees(root1%left, root2%left)
+      |                                1
+Error: Type mismatch in argument ‘root1’ at (1); passed CLASS(*) to CLASS(node)
+temp.f95:43:32:
+
+   43 |                 current%left => merge_trees(root1%left, root2%left)
+      |                                1
+Error: Function ‘merge_trees’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:52:33:
+
+   52 |                 current%right => merge_trees(root1%right, root2%right)
+      |                                 1
+Error: Type mismatch in argument ‘root1’ at (1); passed CLASS(*) to CLASS(node)
+temp.f95:52:33:
+
+   52 |                 current%right => merge_trees(root1%right, root2%right)
+      |                                 1
+Error: Function ‘merge_trees’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:14:17:
+
+   14 |     open(newunit=unit_in, file="input.txt", status="old", action="read", &
+      |                 1
+Error: Named constant ‘unit_in’ in variable definition context (NEWUNIT tag) at (1)
+temp.f95:20:35:
+
+   20 |     read(unit=unit_in, fmt=*) root1
+      |                                   1
+Error: Data transfer element at (1) cannot have POINTER components unless it is processed by a defined input/output procedure
+temp.f95:21:35:
+
+   21 |     read(unit=unit_in, fmt=*) root2
+      |                                   1
+Error: Data transfer element at (1) cannot have POINTER components unless it is processed by a defined input/output procedure
+temp.f95:25:28:
+
+   25 |     new_root => merge_trees(root1, root2)
+      |                            1
+Error: Actual argument to ‘root1’ at (1) must be polymorphic
+temp.f95:28:17:
+
+   28 |     open(newunit=unit_out, file="output.txt", status="replace", action="write", &
+      |                 1
+Error: Named constant ‘unit_out’ in variable definition context (NEWUNIT tag) at (1)
+temp.f95:30:20:
+
+   30 |     call print_tree(new_root, unit=unit_out)
+      |                    1
+Error: Actual argument to ‘root’ at (1) must be polymorphic
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module BinaryTree
+
+    type :: Node
+        integer :: val
+        type(Node), pointer :: left, right
+    end type
+
+    interface Node
+        module procedure create_node
+    end interface
+
+contains
+
+    function create_node(val) result(node)
+        integer, intent(in) :: val
+        type(Node) :: node
+
+        allocate(node)
+        node%val = val
+        node%left => null()
+        node%right => null()
+    end function
+
+end module
+
+program main
+    use BinaryTree
+    implicit none
+
+    type(Node), pointer :: root1, root2, new_root
+    integer :: val1, val2
+
+    ! Example 1
+    root1 => create_node(1)
+    root1%left => create_node(3)
+    root1%right => create_node(2)
+    root1%left%left => create_node(5)
+
+    root2 => create_node(2)
+    root2%left => create_node(1)
+    root2%right => create_node(3)
+    root2%left%right => create_node(4)
+    root2%right%left => create_node(7)
+
+    new_root => merge_trees(root1, root2)
+
+    write (*,*) "Example 1:"
+    call print_tree(new_root)
+
+    ! Example 2
+    root1 => create_node(1)
+
+    root2 => create_node(1)
+    root2%left => create_node(2)
+
+    new_root => merge_trees(root1, root2)
+
+    write (*,*) "Example 2:"
+    call print_tree(new_root)
+
+contains
+
+    function merge_trees(root1, root2) result(new_root)
+        type(Node), pointer, intent(in) :: root1, root2
+        type(Node), pointer :: new_root
+        integer :: val1, val2
+
+        if (associated(root1, root2)) then
+            ! Both roots are null, return null
+            nullify(new_root)
+        else if (.not. associated(root1)) then
+            ! Root 1 is null, return root 2
+            new_root => root2
+        else if (.not. associated(root2)) then
+            ! Root 2 is null, return root 1
+            new_root => root1
+        else
+            ! Both roots are not null, merge them
+            val1 = root1%val
+            val2 = root2%val
+
+            if (val1 == val2) then
+                ! Values are equal, sum them up
+                new_root => create_node(val1 + val2)
+            else
+                ! Values are not equal, use the non-null value
+                if (val1 > val2) then
+                    new_root => root1
+                else
+                    new_root => root2
+                end if
+            end if
+
+            ! Recursively merge left and right subtrees
+            new_root%left => merge_trees(root1%left, root2%left)
+            new_root%right => merge_trees(root1%right, root2%right)
+        end if
+    end function
+
+    subroutine print_tree(root)
+        type(Node), pointer, intent(in) :: root
+        integer :: val
+
+        if (associated(root)) then
+            val = root%val
+            write (*,*) val
+            call print_tree(root%left)
+            call print_tree(root%right)
+        end if
+    end subroutine
+
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:16:18:
+
+   16 |         type(Node) :: node
+      |                  1
+Error: GENERIC attribute conflicts with RESULT attribute in ‘node’ at (1)
+temp.f95:18:17:
+
+   18 |         allocate(node)
+      |                 1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:19:14:
+
+   19 |         node%val = val
+      |              1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:20:14:
+
+   20 |         node%left => null()
+      |              1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:21:14:
+
+   21 |         node%right => null()
+      |              1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:27:9:
+
+   27 |     use BinaryTree
+      |         1
+Fatal Error: Cannot open module file ‘binarytree.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def merge_trees(root1: TreeNode, root2: TreeNode) -&gt; TreeNode:
+    if root1 is None: return root2
+    if root2 is None: return root1
+
+    root1.val += root2.val
+    root1.left = merge_trees(root1.left, root2.left)
+    root1.right = merge_trees(root1.right, root2.right)
+    return root1
+</code></pre>
+<p>The algorithm uses a recursive approach to merge the two given binary trees. We define a base case: If one of the tree nodes is null, we return the other tree node. For the overlapping nodes, we add the values of the two nodes and update the value of the first node. Then, we call the function recursively for the left and right child nodes of both trees. Finally, we return the first tree as a merged tree.</p>
+<p>Here is a step-by-step explanation of the algorithm:</p>
+<ol>
+<li>If <code>root1</code> is null, return <code>root2</code>, and vice versa.</li>
+<li>Add the value of <code>root2</code> to the value of <code>root1</code>.</li>
+<li>Call the function recursively for the left child nodes of both trees and store the result in <code>root1</code>'s left node.</li>
+<li>Call the function recursively for the right child nodes of both trees and store the result in <code>root1</code>'st right node.</li>
+<li>Return <code>root1</code> as the merged tree.</li>
+</ol>
+<p>The algorithm ensures that the trees are merged according to the given conditions in the question.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+};
+
+TreeNode* mergeTrees(TreeNode* root1, TreeNode* root2) {
+    if (root1 == nullptr) return root2;
+    if (root2 == nullptr) return root1;
+
+    root1-&gt;val += root2-&gt;val;
+    root1-&gt;left = mergeTrees(root1-&gt;left, root2-&gt;left);
+    root1-&gt;right = mergeTrees(root1-&gt;right, root2-&gt;right);
+    return root1;
+}
+</code></pre>
+<p>The algorithm uses a recursive approach to merge the two given binary trees. We define a base case: If one of the tree nodes is null, we return the other tree node. For the overlapping nodes, we add the values of the two nodes and update the value of the first node. Then, we call the function recursively for the left and right child nodes of both trees. Finally, we return the first tree as a merged tree.</p>
+<p>Here is a step-by-step explanation of the algorithm:</p>
+<ol>
+<li>If <code>root1</code> is null, return <code>root2</code>, and vice versa.</li>
+<li>Add the value of <code>root2</code> to the value of <code>root1</code>.</li>
+<li>Call the function recursively for the left child nodes of both trees and store the result in <code>root1</code>'s left node.</li>
+<li>Call the function recursively for the right child nodes of both trees and store the result in <code>root1</code>'st right node.</li>
+<li>Return <code>root1</code> as the merged tree.</li>
+</ol>
+<p>The algorithm ensures that the trees are merged according to the given conditions in the question.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Maximize Sum Of Array After K Negations</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1002/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1009/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code> and an integer <code>k</code>, modify the array in the following way:</p>
+<ul>
+<li>choose an index <code>i</code> and replace <code>nums[i]</code> with <code>-nums[i]</code>.</li>
+</ul>
+<p>You should apply this process exactly <code>k</code> times. You may choose the same index <code>i</code> multiple times.</p>
+<p>Return <em>the largest possible sum of the array after modifying it in this way</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [4,2,3], k = 1
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> Choose index 1 and nums becomes [4,-2,3].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [3,-1,0,2], k = 3
+<strong>Output:</strong> 6
+<strong>Explanation:</strong> Choose indices (1, 2, 2) and nums becomes [3,1,0,2].</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [2,-3,-1,5,-4], k = 2
+<strong>Output:</strong> 13
+<strong>Explanation:</strong> Choose indices (1, 4) and nums becomes [2,3,-1,5,4].</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 104</code></li>
+<li><code>-100 &lt;= nums[i] &lt;= 100</code></li>
+<li><code>1 &lt;= k &lt;= 104</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/maximize-sum-of-array-after-k-negations/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, parameter :: k = 1
+    integer, dimension(n) :: nums
+    integer :: i
+    integer :: max_sum
+
+    ! Example 1
+    nums = (/ 4, 2, 3 /)
+    call solve(nums, k)
+    write (*, '(A, I0)') 'Example 1: ', sum(nums)
+
+    ! Example 2
+    nums = (/ 3, -1, 0, 2 /)
+    call solve(nums, k)
+    write (*, '(A, I0)') 'Example 2: ', sum(nums)
+
+    ! Example 3
+    nums = (/ 2, -3, -1, 5, -4 /)
+    call solve(nums, k)
+    write (*, '(A, I0)') 'Example 3: ', sum(nums)
+
+contains
+
+    subroutine solve(nums, k)
+        implicit none
+        integer, intent(inout) :: nums(:)
+        integer, value :: k
+        integer :: i
+
+        do i = 1, k
+            call choose_index(nums)
+        end do
+    end subroutine solve
+
+    subroutine choose_index(nums)
+        implicit none
+        integer, intent(inout) :: nums(:)
+        integer :: i
+
+        call random_number(i)
+        i = int(i * size(nums)) + 1
+        nums(i) = -nums(i)
+    end subroutine choose_index
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:43:27:
+
+   43 |         call random_number(i)
+      |                           1
+Error: ‘harvest’ argument of ‘random_number’ intrinsic at (1) must be REAL
+temp.f95:11:4:
+
+   11 |     nums = (/ 4, 2, 3 /)
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (4 and 3)
+temp.f95:21:4:
+
+   21 |     nums = (/ 2, -3, -1, 5, -4 /)
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (4 and 5)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module MaxSumAfterModifyingArray
+    implicit none
+    private
+    public :: max_sum_after_modifying_array
+
+contains
+
+    function max_sum_after_modifying_array(nums, k) result(max_sum)
+        integer, intent(in) :: nums(:)
+        integer, intent(in) :: k
+        integer :: max_sum
+        integer :: i, j, index
+        integer :: sum
+
+        ! Initialize variables
+        max_sum = 0
+        sum = 0
+
+        ! Loop k times
+        do i = 1, k
+            ! Find the maximum sum
+            do j = 1, size(nums)
+                sum = sum + nums(j)
+                if (sum > max_sum) then
+                    max_sum = sum
+                    index = j
+                end if
+            end do
+
+            ! Replace the maximum value with its negative
+            nums(index) = -nums(index)
+            sum = 0
+        end do
+
+        ! Return the maximum sum
+        max_sum = sum(nums)
+    end function max_sum_after_modifying_array
+end module MaxSumAfterModifyingArray
+
+! Test the function with the given examples
+program test_max_sum_after_modifying_array
+    use MaxSumAfterModifyingArray
+    implicit none
+    integer, parameter :: nums1\[\] = \[4, 2, 3\]
+    integer, parameter :: nums2\[\] = \[3, -1, 0, 2\]
+    integer, parameter :: nums3\[\] = \[2, -3, -1, 5, -4\]
+    integer, parameter :: k1 = 1
+    integer, parameter :: k2 = 3
+    integer, parameter :: k3 = 2
+    integer :: max_sum
+
+    max_sum = max_sum_after_modifying_array(nums1, k1)
+    write (*,*) "Example 1:", max_sum
+    max_sum = max_sum_after_modifying_array(nums2, k2)
+    write (*,*) "Example 2:", max_sum
+    max_sum = max_sum_after_modifying_array(nums3, k3)
+    write (*,*) "Example 3:", max_sum
+end program test_max_sum_after_modifying_array
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:36:9:
+
+   36 |         max_sum = sum(nums)
+      |         1
+Error: Unclassifiable statement at (1)
+temp.f95:31:12:
+
+   31 |             nums(index) = -nums(index)
+      |            1
+Error: Dummy argument ‘nums’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:42:9:
+
+   42 |     use MaxSumAfterModifyingArray
+      |         1
+Fatal Error: Cannot open module file ‘maxsumaftermodifyingarray.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_univalued(root, val=None):
+    if not root:
+        return True
+    if val is None:
+        val = root.val
+    return root.val == val and is_univalued(root.left, val) and is_univalued(root.right, val)
+</code></pre>
+<p>The algorithm first checks if the root node is null, if it is, the function returns true as an empty tree is uni-valued. If this is the first call to the function (indicated by default value for val), it sets the val to the root node's value. For all other calls, val is already set, and it only checks if the current node's value is equal to val. If it is equal, it recursively calls for the left and right sub-trees. If all calls return true, the tree is uni-valued, otherwise it's not.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool isUnivalued(TreeNode* root, int val = -1) {
+    if (!root) return true;
+    if (val == -1) val = root-&gt;val;
+    return root-&gt;val == val &amp;&amp; isUnivalued(root-&gt;left, val) &amp;&amp; isUnivalued(root-&gt;right, val);
+}
+</code></pre>
+<p>The algorithm first checks if the root node is null, if it is, the function returns true as an empty tree is uni-valued. If this is the first call to the function (indicated by default value for val), it sets the val to the root node's value. For all other calls, val is already set, and it only checks if the current node's value is equal to val. If it is equal, it recursively calls for the left and right sub-trees. If all calls return true, the tree is uni-valued, otherwise it's not.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Similar RGB Color</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/796/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/804/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>The red-green-blue color <code>"#AABBCC "</code> can be written as <code>"#ABC "</code> in shorthand.</p>
+<ul>
+<li>For example, <code>"#15c "</code> is shorthand for the color <code>"#1155cc "</code>.</li>
+</ul>
+<p>The similarity between the two colors <code>"#ABCDEF "</code> and <code>"#UVWXYZ "</code> is <code>-(AB - UV)2 - (CD - WX)2 - (EF - YZ)2</code>.</p>
+<p>Given a string <code>color</code> that follows the format <code>"#ABCDEF "</code>, return a string represents the color that is most similar to the given color and has a shorthand (i.e., it can be represented as some <code>"#XYZ "</code>).</p>
+<p><strong>Any answer</strong> which has the same highest similarity as the best answer will be accepted.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> color =  "#09f166 "
+<strong>Output:</strong>  "#11ee66 "
+<strong>Explanation:</strong> 
+The similarity is -(0x09 - 0x11)2 -(0xf1 - 0xee)2 - (0x66 - 0x66)2 = -64 -9 -0 = -73.
+This is the highest among any shorthand color.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> color =  "#4e3fe1 "
+<strong>Output:</strong>  "#5544dd "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>color.length == 7</code></li>
+<li><code>color[0] == '#'</code></li>
+<li><code>color[i]</code> is either digit or character in the range <code>['a', 'f']</code> for <code>i &gt; 0</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/similar-rgb-color/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, k
+    character(len=8) :: color
+    character(len=4) :: shorthand
+    real :: similarity
+    real, parameter :: max_similarity = -1.0e+10
+    real :: best_similarity = max_similarity
+    character(len=8), dimension(16) :: colors
+    data colors / &
+        "#000000 ", "#111111 ", "#222222 ", "#333333 ", &
+        "#444444 ", "#555555 ", "#666666 ", "#777777 ", &
+        "#888888 ", "#999999 ", "#aaaaaa ", "#bbbbbb ", &
+        "#cccccc ", "#dddddd ", "#eeeeee ", "#ffffff " /
+
+    do i = 1, size(colors)
+        color = colors(i)
+        do j = 1, size(colors)
+            if (i /= j) then
+                shorthand = shorten_color(color)
+                similarity = similarity_between_colors(color, colors(j))
+                if (similarity > best_similarity) then
+                    best_similarity = similarity
+                    write (*,*) "Best similarity:", best_similarity, "for color:", color, "shorthand:", shorthand
+                end if
+            end if
+        end do
+    end do
+
+contains
+
+    function shorten_color(color) result(shorthand)
+        implicit none
+        character(len=*), intent(in) :: color
+        character(len=4) :: shorthand
+        integer :: r, g, b
+
+        read (color(2:5), "(H2, H2, H2)") r, g, b
+        write (shorthand, "(I1, I1, I1)") r, g, b
+    end function shorten_color
+
+    function similarity_between_colors(color1, color2) result(similarity)
+        implicit none
+        character(len=*), intent(in) :: color1, color2
+        integer :: r1, g1, b1, r2, g2, b2
+        real :: similarity
+
+        read (color1(2:5), "(H2, H2, H2)") r1, g1, b1
+        read (color2(2:5), "(H2, H2, H2)") r2, g2, b2
+        similarity = -((r1 - r2)**2 - (g1 - g2)**2 - (b1 - b2)**2)
+    end function similarity_between_colors
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:39:28:
+
+   39 |         read (color(2:5), "(H2, H2, H2)") r, g, b
+      |                            1
+Error: Unexpected element ‘,’ in format string at (1)
+temp.f95:49:49:
+
+   49 |         read (color1(2:5), "(H2, H2, H2)") r1, g1, b1
+      |                                                 1
+Warning: Extraneous characters in format at (1)
+temp.f95:50:55:
+
+   50 |         read (color2(2:5), "(H2, H2, H2)") r2, g2, b2
+      |                                                       1
+Warning: Extraneous characters in format at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: i, j, k, l, m, n
+character(len=7) :: color, shorthand
+integer :: similarity
+
+! Read input
+read(*,*) color
+
+! Initialize variables
+similarity = -1
+shorthand = "#000000 "
+
+! Loop through all possible shorthand colors
+do i = 0, 15
+    do j = 0, 15
+        do k = 0, 15
+            do l = 0, 15
+                do m = 0, 15
+                    do n = 0, 15
+                        ! Calculate similarity
+                        similarity = -((i*16 + j) - (k*16 + l))**2 - ((m*16 + n) - (k*16 + l))**2
+                        
+                        ! Check if similarity is higher than current best
+                        if (similarity > similarity) then
+                            similarity = similarity
+                            shorthand = "#" // char(i+48) // char(j+48) // char(k+48) // char(l+48) // char(m+48) // char(n+48) // " "
+                        end if
+                    end do
+                end do
+            end do
+        end do
+    end do
+end do
+
+! Output result
+write(*,*) shorthand
+
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:26:132:
+
+   26 |                             shorthand = "#" // char(i+48) // char(j+48) // char(k+48) // char(l+48) // char(m+48) // char(n+48) // " "
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:26:132:
+
+   26 |                             shorthand = "#" // char(i+48) // char(j+48) // char(k+48) // char(l+48) // char(m+48) // char(n+48) // " "
+      |                                                                                                                                    1
+Error: Unterminated character constant beginning at (1)
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def letterCasePermutation(s):
+    def backtrack(index):
+        if index == len(s):
+            result.append(&quot;&quot;.join(s))
+            return
+        backtrack(index + 1)
+        if s[index].isalpha():
+            s[index] = s[index].swapcase()
+            backtrack(index + 1)
+            s[index] = s[index].swapcase()
+
+    result = []
+    s = list(s)
+    backtrack(0)
+    return result
+</code></pre>
+<p>The algorithm here is a simple backtracking algorithm. We traverse every character in the input string starting from the first character. For each character, we recursively call the backtrack function considering two cases, one without changing the case, and the other one changing the case, if it is an alphabet.</p>
+<p>Before the call, we change the case of the character and change it back after the function call to backtrack to the previous state when exploring other branches of the solution tree.</p>
+<p>At the base case, when we reach the end of the input string after considering all characters, we construct the string from the character array and add it to the result list.</p>
+<p>The time complexity of this algorithm is O(2^N * N) where N is the length of the string: 2^N is the number of possible solutions, and for each solution, we use O(N) time to construct the string. The space complexity is O(N) due to the function call stack size.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+
+void backtrack(std::string s, int index, std::vector&lt;std::string&gt;&amp; result) {
+    if (index == s.length()) {
+        result.push_back(s);
+        return;
+    }
+    backtrack(s, index + 1, result);
+    if (isalpha(s[index])) {
+        s[index] ^= (1 &lt;&lt; 5);
+        backtrack(s, index + 1, result);
+    }
+}
+
+std::vector&lt;std::string&gt; letterCasePermutation(std::string s) {
+    std::vector&lt;std::string&gt; result;
+    backtrack(s, 0, result);
+    return result;
+}
+</code></pre>
+<p>The algorithm here is a simple backtracking algorithm. We traverse every character in the input string starting from the first character. For each character, we recursively call the backtrack function considering two cases, one without changing the case, and the other one changing the case, if it is an alphabet.</p>
+<p>Before the call, we change the case of the character and change it back after the function call to backtrack to the previous state when exploring other branches of the solution tree.</p>
+<p>At the base case, when we reach the end of the input string after considering all characters, we construct the string from the character array and add it to the result list.</p>
+<p>The time complexity of this algorithm is O(2^N * N) where N is the length of the string: 2^N is the number of possible solutions, and for each solution, we use O(N) time to construct the string. The space complexity is O(N) due to the function call stack size.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

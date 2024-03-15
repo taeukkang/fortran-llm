@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Matrix Cells in Distance Order</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1025/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1037/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given four integers <code>row</code>, <code>cols</code>, <code>rCenter</code>, and <code>cCenter</code>. There is a <code>rows x cols</code> matrix and you are on the cell with the coordinates <code>(rCenter, cCenter)</code>.</p>
+<p>Return <em>the coordinates of all cells in the matrix, sorted by their <strong>distance</strong> from</em> <code>(rCenter, cCenter)</code> <em>from the smallest distance to the largest distance</em>. You may return the answer in <strong>any order</strong> that satisfies this condition.</p>
+<p>The <strong>distance</strong> between two cells <code>(r1, c1)</code> and <code>(r2, c2)</code> is <code>|r1 - r2| + |c1 - c2|</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> rows = 1, cols = 2, rCenter = 0, cCenter = 0
+<strong>Output:</strong> [[0,0],[0,1]]
+<strong>Explanation:</strong> The distances from (0, 0) to other cells are: [0,1]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> rows = 2, cols = 2, rCenter = 0, cCenter = 1
+<strong>Output:</strong> [[0,1],[0,0],[1,1],[1,0]]
+<strong>Explanation:</strong> The distances from (0, 1) to other cells are: [0,1,1,2]
+The answer [[0,1],[1,1],[0,0],[1,0]] would also be accepted as correct.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> rows = 2, cols = 3, rCenter = 1, cCenter = 2
+<strong>Output:</strong> [[1,2],[0,2],[1,1],[0,1],[1,0],[0,0]]
+<strong>Explanation:</strong> The distances from (1, 2) to other cells are: [0,1,1,2,2,3]
+There are other answers that would also be accepted as correct, such as [[1,2],[1,1],[0,2],[1,0],[0,1],[0,0]].</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= rows, cols &lt;= 100</code></li>
+<li><code>0 &lt;= rCenter &lt; rows</code></li>
+<li><code>0 &lt;= cCenter &lt; cols</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/matrix-cells-in-distance-order/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: row, col, rCenter, cCenter
+    integer, allocatable :: dist(:, :)
+    integer :: i, j
+
+    ! Example 1
+    row = 1
+    col = 2
+    rCenter = 0
+    cCenter = 0
+    call solve(row, col, rCenter, cCenter, dist)
+    write(*, "(A)") "Example 1:"
+    do i = 1, size(dist, 1)
+        write(*, "(A, I0, A, I0)") "[", dist(i, 1), ",", dist(i, 2), "]"
+    end do
+
+    ! Example 2
+    row = 2
+    col = 2
+    rCenter = 0
+    cCenter = 1
+    call solve(row, col, rCenter, cCenter, dist)
+    write(*, "(A)") "Example 2:"
+    do i = 1, size(dist, 1)
+        write(*, "(A, I0, A, I0)") "[", dist(i, 1), ",", dist(i, 2), "]"
+    end do
+
+    ! Example 3
+    row = 2
+    col = 3
+    rCenter = 1
+    cCenter = 2
+    call solve(row, col, rCenter, cCenter, dist)
+    write(*, "(A)") "Example 3:"
+    do i = 1, size(dist, 1)
+        write(*, "(A, I0, A, I0)") "[", dist(i, 1), ",", dist(i, 2), "]"
+    end do
+
+contains
+
+    subroutine solve(row, col, rCenter, cCenter, dist)
+        implicit none
+        integer, intent(in) :: row, col, rCenter, cCenter
+        integer, allocatable, intent(out) :: dist(:, :)
+        integer :: i, j
+
+        allocate(dist(row * col, 2))
+
+        do i = 1, row
+            do j = 1, col
+                dist((i-1)*col+j, 1) = i
+                dist((i-1)*col+j, 2) = j
+            end do
+        end do
+
+        dist = abs(dist - [/( (i-1)*col+j, j=1,col ),/)])
+
+        dist = sum(dist, dim=2)
+
+        dist = sort(dist, dim=1)
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:58:28:
+
+   58 |         dist = abs(dist - [/( (i-1)*col+j, j=1,col ),/)])
+      |                            1
+Error: Syntax error in array constructor at (1)
+temp.f95:60:8:
+
+   60 |         dist = sum(dist, dim=2)
+      |        1
+Error: Incompatible ranks 2 and 1 in assignment at (1)
+temp.f95:62:30:
+
+   62 |         dist = sort(dist, dim=1)
+      |                              1
+Error: Keyword argument requires explicit interface for procedure ‘sort’ at (1)
+temp.f95:62:15:
+
+   62 |         dist = sort(dist, dim=1)
+      |               1
+Error: Function ‘sort’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module distance_from_center
+
+contains
+
+function get_distances(rows, cols, rCenter, cCenter) result(distances)
+    implicit none
+    integer, intent(in) :: rows, cols, rCenter, cCenter
+    integer :: i, j
+    integer, dimension(rows*cols) :: distances
+
+    ! Initialize distances array
+    distances = 0
+
+    ! Calculate distances from (rCenter, cCenter) to all cells in the matrix
+    do i = 0, rows - 1
+        do j = 0, cols - 1
+            distances(i*cols + j + 1) = abs(i - rCenter) + abs(j - cCenter)
+        end do
+    end do
+
+end function get_distances
+
+end module distance_from_center
+
+program main
+    use distance_from_center
+    implicit none
+    integer, parameter :: rows = 2, cols = 3, rCenter = 1, cCenter = 2
+    integer, dimension(rows*cols) :: distances
+    integer :: i
+
+    ! Calculate distances from (rCenter, cCenter) to all cells in the matrix
+    distances = get_distances(rows, cols, rCenter, cCenter)
+
+    ! Print distances
+    do i = 1, rows*cols
+        write (*,*) distances(i), "(", i, ",", i, ")"
+    end do
+
+end program main
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>           3 (           1 ,           1 )
+           2 (           2 ,           2 )
+           1 (           3 ,           3 )
+           2 (           4 ,           4 )
+           1 (           5 ,           5 )
+           0 (           6 ,           6 )
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def smallestFromLeaf(self, root: TreeNode) -&gt; str:
+        if not root:
+            return &quot;|&quot;
+        s = chr(root.val + 97)
+        if not root.left and not root.right:
+            return s
+        left = self.smallestFromLeaf(root.left)
+        right = self.smallestFromLeaf(root.right)
+        return min(left, right) + s
+</code></pre>
+<p>We perform a post-order traversal of the tree. If the root is null, we return the largest possible lexicographically ordered string "|". If the root is a leaf (both left and right children are null), we return the character equivalent of the node value converted to the corresponding lowercase alphabet character.</p>
+<p>We get the lexicographically smallest strings from both the left and right subtrees (if they exist) and add the current root value's character equivalent to the result. We use the min function to determine the lexicographically smaller string between the two.</p>
+<p>Note that we add the current root value's character equivalent to the end of the result string, so that the result string starts with a leaf node and goes to the root node as the function returns. This keeps the lexicographically smaller strings at the beginning and correctly forms the lexicographically smallest string from leaf to root.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;climits&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+string smallestFromLeaf(TreeNode* root) {
+    if (!root) return &quot;|&quot;;
+    string s(1, root-&gt;val + 'a');
+    if (!root-&gt;left &amp;&amp; !root-&gt;right) return s;
+    string left = smallestFromLeaf(root-&gt;left);
+    string right = smallestFromLeaf(root-&gt;right);
+    return min(left, right) + s;
+}
+</code></pre>
+<p>We perform a post-order traversal of the tree. If the root is null, we return the largest possible lexicographically ordered string "|". If the root is a leaf (both left and right children are null), we return the character equivalent of the node value converted to the corresponding lowercase alphabet character.</p>
+<p>We get the lexicographically smallest strings from both the left and right subtrees (if they exist) and add the current root value's character equivalent to the result. We use the min function to determine the lexicographically smaller string between the two.</p>
+<p>Note that we add the current root value's character equivalent to the end of the result string, so that the result string starts with a leaf node and goes to the root node as the function returns. This keeps the lexicographically smaller strings at the beginning and correctly forms the lexicographically smallest string from leaf to root.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

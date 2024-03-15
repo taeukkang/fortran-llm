@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Sort Integers by The Number of 1 Bits</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1351/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1360/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer array <code>arr</code>. Sort the integers in the array in ascending order by the number of <code>1</code>'s in their binary representation and in case of two or more integers have the same number of <code>1</code>'s you have to sort them in ascending order.</p>
+<p>Return <em>the array after sorting it</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [0,1,2,3,4,5,6,7,8]
+<strong>Output:</strong> [0,1,2,4,8,3,5,6,7]
+<strong>Explantion:</strong> [0] is the only integer with 0 bits.
+[1,2,4,8] all have 1 bit.
+[3,5,6] have 2 bits.
+[7] has 3 bits.
+The sorted array by bits is [0,1,2,4,8,3,5,6,7]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [1024,512,256,128,64,32,16,8,4,2,1]
+<strong>Output:</strong> [1,2,4,8,16,32,64,128,256,512,1024]
+<strong>Explantion:</strong> All integers have 1 bit in the binary representation, you should just sort them in ascending order.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= arr.length &lt;= 500</code></li>
+<li><code>0 &lt;= arr[i] &lt;= 104</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/sort-integers-by-the-number-of-1-bits/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 9
+    integer :: arr(n) = reshape([0, 1, 2, 3, 4, 5, 6, 7, 8], shape(arr))
+    integer :: i, j, tmp
+
+    call sort_by_bits(arr)
+
+    do i = 1, size(arr)
+        write(*, '(I0)', advance='no') arr(i)
+    end do
+    write(*,*)
+
+contains
+
+subroutine sort_by_bits(arr)
+    implicit none
+    integer, intent(inout) :: arr(:)
+    integer :: i, j, tmp
+
+    do i = 1, size(arr) - 1
+        do j = i + 1, size(arr)
+            if (count_bits(arr(i)) < count_bits(arr(j))) then
+                tmp = arr(i)
+                arr(i) = arr(j)
+                arr(j) = tmp
+            else if (count_bits(arr(i)) == count_bits(arr(j)) .and. arr(i) > arr(j)) then
+                tmp = arr(i)
+                arr(i) = arr(j)
+                arr(j) = tmp
+            end if
+        end do
+    end do
+end subroutine sort_by_bits
+
+function count_bits(x) result(res)
+    implicit none
+    integer, value :: x
+    integer :: res
+
+    res = 0
+    do while (x /= 0)
+        res = res + 1
+        x = x - 2 * (mod(x, 2))
+    end do
+end function count_bits
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>infinite loop</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module sort_by_bits
+    implicit none
+    private
+    public :: sort_by_bits
+contains
+    function sort_by_bits(arr) result(sorted_arr)
+        integer, intent(in) :: arr(:)
+        integer :: sorted_arr(size(arr))
+        integer :: i, j, temp
+        logical :: swapped
+
+        do
+            swapped = .false.
+            do i = 1, size(arr) - 1
+                if (count_bits(arr(i)) > count_bits(arr(i + 1))) then
+                    temp = arr(i)
+                    arr(i) = arr(i + 1)
+                    arr(i + 1) = temp
+                    swapped = .true.
+                end if
+            end do
+            if (.not. swapped) exit
+        end do
+
+        sorted_arr = arr
+    end function sort_by_bits
+
+    function count_bits(n) result(count)
+        integer, intent(in) :: n
+        integer :: count
+        integer :: i
+
+        count = 0
+        do i = n, 1, -1
+            if (mod(n, 2) == 1) then
+                count = count + 1
+            end if
+            n = n / 2
+        end do
+    end function count_bits
+end module sort_by_bits
+
+program test_sort_by_bits
+    use sort_by_bits
+    implicit none
+    integer, parameter :: arr1(9) = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    integer, parameter :: arr2(11) = [1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1]
+    integer :: arr(9)
+
+    arr = arr1
+    write (*, '(A)') 'Example 1:'
+    write (*, '(A)') 'Input:  ' // to_string(arr)
+    write (*, '(A)') 'Output: ' // to_string(sort_by_bits(arr))
+    write (*, *)
+
+    arr = arr2
+    write (*, '(A)') 'Example 2:'
+    write (*, '(A)') 'Input:  ' // to_string(arr)
+    write (*, '(A)') 'Output: ' // to_string(sort_by_bits(arr))
+    write (*, *)
+contains
+    function to_string(arr) result(str)
+        integer, intent(in) :: arr(:)
+        character(len=:), allocatable :: str
+        integer :: i
+
+        allocate(character(len=size(arr)*10) :: str)
+        do i = 1, size(arr)
+            write (str(10*(i-1)+1:10*i), '(I10)') arr(i)
+        end do
+    end function to_string
+end program test_sort_by_bits
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:26:
+
+    4 |     public :: sort_by_bits
+      |                          1
+Error: PUBLIC attribute applied to MODULE sort_by_bits at (1)
+temp.f95:6:25:
+
+    6 |     function sort_by_bits(arr) result(sorted_arr)
+      |                         1
+Error: MODULE attribute of ‘sort_by_bits’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:37:
+
+    7 |         integer, intent(in) :: arr(:)
+      |                                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:35:
+
+    8 |         integer :: sorted_arr(size(arr))
+      |                                   1
+Error: Symbol ‘arr’ is used before it is typed at (1)
+temp.f95:9:29:
+
+    9 |         integer :: i, j, temp
+      |                             1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:26:
+
+   10 |         logical :: swapped
+      |                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:10:
+
+   12 |         do
+      |          1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:13:29:
+
+   13 |             swapped = .false.
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:14:35:
+
+   14 |             do i = 1, size(arr) - 1
+      |                                   1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:15:69:
+
+   15 |                 if (count_bits(arr(i)) > count_bits(arr(i + 1))) then
+      |                                                                     1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:16:33:
+
+   16 |                     temp = arr(i)
+      |                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:39:
+
+   17 |                     arr(i) = arr(i + 1)
+      |                                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:18:37:
+
+   18 |                     arr(i + 1) = temp
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:36:
+
+   19 |                     swapped = .true.
+      |                                    1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:19:
+
+   20 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:21:15:
+
+   21 |             end do
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:22:35:
+
+   22 |             if (.not. swapped) exit
+      |                                   1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:23:11:
+
+   23 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:24:
+
+   25 |         sorted_arr = arr
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:7:
+
+   26 |     end function sort_by_bits
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:38:12:
+
+   38 |             n = n / 2
+      |            1
+Error: Dummy argument ‘n’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:44:9:
+
+   44 |     use sort_by_bits
+      |         1
+Fatal Error: Cannot open module file ‘sort_by_bits.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_moves_to_palindrome(s: str) -&gt; int:
+    moves = 0
+    s = list(s)
+    left, right = 0, len(s) - 1
+
+    while left &lt; right:
+        if s[left] != s[right]:
+            temp_right = right
+
+            while s[left] != s[temp_right]:
+                temp_right -= 1
+            s.insert(right, s.pop(temp_right))
+            moves += right - temp_right
+        left += 1
+        right -= 1
+
+    return moves
+</code></pre>
+<ol>
+<li>Initialize variables <code>moves</code> to store the total number of moves, and <code>left</code> and <code>right</code> pointers for both ends of string s.</li>
+<li>Iterate until the <code>left</code> pointer is less than <code>right</code>.
+   a. If the characters at the left and right pointers are not equal, find the position of the left pointer character in the remaining right section of the string.
+   b. Swap the characters found in the right section with the character at 'right' position.
+   c. Increment the number of moves by the distance between the <code>right</code> and the swap position.</li>
+<li>Increment the <code>left</code> pointer and decrement the <code>right</code> pointer after each iteration.</li>
+<li>Finally, return the total number of moves.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+using namespace std;
+
+int min_moves_to_palindrome(string s) {
+    int moves = 0;
+    int left = 0, right = s.length() - 1;
+
+    while (left &lt; right) {
+        if (s[left] != s[right]) {
+            int temp_right = right;
+
+            while (s[left] != s[temp_right]) {
+                temp_right--;
+            }
+            s.erase(s.begin() + temp_right);
+            s.insert(s.begin() + right, s[left]);
+            moves += right - temp_right;
+        }
+        left++;
+        right--;
+    }
+
+    return moves;
+}
+</code></pre>
+<ol>
+<li>Initialize variables <code>moves</code> to store the total number of moves, and <code>left</code> and <code>right</code> pointers for both ends of string s.</li>
+<li>Iterate until the <code>left</code> pointer is less than <code>right</code>.
+   a. If the characters at the left and right pointers are not equal, find the position of the left pointer character in the remaining right section of the string.
+   b. Swap the characters found in the right section with the character at 'right' position.
+   c. Increment the number of moves by the distance between the <code>right</code> and the swap position.</li>
+<li>Increment the <code>left</code> pointer and decrement the <code>right</code> pointer after each iteration.</li>
+<li>Finally, return the total number of moves.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

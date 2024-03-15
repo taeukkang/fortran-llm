@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Maximum Difference Between Increasing Elements</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2011/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2022/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a <strong>0-indexed</strong> integer array <code>nums</code> of size <code>n</code>, find the <strong>maximum difference</strong> between <code>nums[i]</code> and <code>nums[j]</code> (i.e., <code>nums[j] - nums[i]</code>), such that <code>0 &lt;= i &lt; j &lt; n</code> and <code>nums[i] &lt; nums[j]</code>.</p>
+<p>Return <em>the <strong>maximum difference</strong>.</em> If no such <code>i</code> and <code>j</code> exists, return <code>-1</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [7,<strong>1</strong>,<strong>5</strong>,4]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong>
+The maximum difference occurs with i = 1 and j = 2, nums[j] - nums[i] = 5 - 1 = 4.
+Note that with i = 1 and j = 0, the difference nums[j] - nums[i] = 7 - 1 = 6, but i &gt; j, so it is not valid.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [9,4,3,2]
+<strong>Output:</strong> -1
+<strong>Explanation:</strong>
+There is no i and j such that i &lt; j and nums[i] &lt; nums[j].</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [<strong>1</strong>,5,2,<strong>10</strong>]
+<strong>Output:</strong> 9
+<strong>Explanation:</strong>
+The maximum difference occurs with i = 0 and j = 3, nums[j] - nums[i] = 10 - 1 = 9.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == nums.length</code></li>
+<li><code>2 &lt;= n &lt;= 1000</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 109</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/maximum-difference-between-increasing-elements/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program max_diff
+    implicit none
+
+    integer :: n, i, j, diff, max_diff
+    integer, dimension(:), allocatable :: nums
+
+    ! read input
+    read(*,*) n
+    allocate(nums(n))
+    do i=1,n
+        read(*,*) nums(i)
+    end do
+
+    ! find maximum difference
+    max_diff = -1
+    do i=1,n-1
+        do j=i+1,n
+            diff = nums(j) - nums(i)
+            if (diff > max_diff .and. nums(i) < nums(j)) then
+                max_diff = diff
+            end if
+        end do
+    end do
+
+    ! print output
+    write(*,*) max_diff
+
+end program max_diff</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:38:
+
+    4 |     integer :: n, i, j, diff, max_diff
+      |                                      1
+Error: Symbol ‘max_diff’ at (1) cannot have a type
+temp.f95:15:13:
+
+   15 |     max_diff = -1
+      |             1
+Error: ‘max_diff’ at (1) is not a variable
+temp.f95:19:32:
+
+   19 |             if (diff > max_diff .and. nums(i) < nums(j)) then
+      |                                1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:20:25:
+
+   20 |                 max_diff = diff
+      |                         1
+Error: ‘max_diff’ at (1) is not a variable
+temp.f95:21:15:
+
+   21 |             end if
+      |               1
+Error: Expecting END DO statement at (1)
+temp.f95:26:23:
+
+   26 |     write(*,*) max_diff
+      |                       1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:18:16:
+
+   18 |             diff = nums(j) - nums(i)
+      |                1
+Error: Symbol ‘diff’ at (1) has no IMPLICIT type
+temp.f95:10:8:
+
+   10 |     do i=1,n
+      |        1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:17:12:
+
+   17 |         do j=i+1,n
+      |            1
+Error: Symbol ‘j’ at (1) has no IMPLICIT type
+temp.f95:8:15:
+
+    8 |     read(*,*) n
+      |               1
+Error: Symbol ‘n’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module max_difference
+  implicit none
+contains
+  function find_max_difference(nums) result(max_diff)
+    integer, intent(in) :: nums(:)
+    integer :: max_diff, i, j
+
+    max_diff = -1
+    do i = 1, size(nums) - 1
+      do j = i + 1, size(nums)
+        if (nums(j) - nums(i) > max_diff .and. nums(i) < nums(j)) then
+          max_diff = nums(j) - nums(i)
+        end if
+      end do
+    end do
+  end function find_max_difference
+end module max_difference
+
+program test_max_difference
+  use max_difference
+  implicit none
+  integer, parameter :: n = 4
+  integer :: nums(n) = [7, 1, 5, 4]
+  integer :: max_diff
+
+  max_diff = find_max_difference(nums)
+  write (*,*) "Max difference: ", max_diff
+
+  nums = [9, 4, 3, 2]
+  max_diff = find_max_difference(nums)
+  write (*,*) "Max difference: ", max_diff
+
+  nums = [1, 5, 2, 10]
+  max_diff = find_max_difference(nums)
+  write (*,*) "Max difference: ", max_diff
+end program test_max_difference
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Max difference:            4
+ Max difference:           -1
+ Max difference:            9
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_steps_to_equal_elements(nums):
+    min_elem = min(nums)
+    steps = 0
+    for num in nums:
+        steps += (num - min_elem)
+    return steps
+</code></pre>
+<p>The algorithm you use to minimize the number of operations is as follows:</p>
+<ol>
+<li>Find the minimum element in the array. This can be done using a built-in function (e.g., in C++, std::min_element; in Python, min(); or in JavaScript, Math.min()) or by iterating through the array and keeping track of the minimum element encountered.</li>
+<li>Initialize a variable named <code>steps</code> to store the total number of operations needed.</li>
+<li>Iterate through the array again, and for each element, subtract the minimum element from the current element, and add the result to <code>steps</code>.</li>
+<li>Return <code>steps</code>. The variable <code>steps</code> will store the minimum number of operations required to make all elements equal in the input array.</li>
+</ol>
+<p>The idea behind this approach is that we can perform multiple subtractions on each element until they all reach the same value as the minimum element in the array. This guarantees the minimum number of operations possible because making all values equal necessarily means having them all equal to the minimum element in the array. Otherwise, additional operations would be needed to decrease the value of at least one element further.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int min_steps_to_equal_elements(vector&lt;int&gt;&amp; nums) {
+    int min_elem = *min_element(nums.begin(), nums.end());
+    int steps = 0;
+    for(int num : nums) {
+        steps += (num - min_elem);
+    }
+    return steps;
+}
+</code></pre>
+<p>The algorithm you use to minimize the number of operations is as follows:</p>
+<ol>
+<li>Find the minimum element in the array. This can be done using a built-in function (e.g., in C++, std::min_element; in Python, min(); or in JavaScript, Math.min()) or by iterating through the array and keeping track of the minimum element encountered.</li>
+<li>Initialize a variable named <code>steps</code> to store the total number of operations needed.</li>
+<li>Iterate through the array again, and for each element, subtract the minimum element from the current element, and add the result to <code>steps</code>.</li>
+<li>Return <code>steps</code>. The variable <code>steps</code> will store the minimum number of operations required to make all elements equal in the input array.</li>
+</ol>
+<p>The idea behind this approach is that we can perform multiple subtractions on each element until they all reach the same value as the minimum element in the array. This guarantees the minimum number of operations possible because making all values equal necessarily means having them all equal to the minimum element in the array. Otherwise, additional operations would be needed to decrease the value of at least one element further.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

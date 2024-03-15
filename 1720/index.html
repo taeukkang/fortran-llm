@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Decode XORed Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1716/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1725/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>There is a <strong>hidden</strong> integer array <code>arr</code> that consists of <code>n</code> non-negative integers.</p>
+<p>It was encoded into another integer array <code>encoded</code> of length <code>n - 1</code>, such that <code>encoded[i] = arr[i] XOR arr[i + 1]</code>. For example, if <code>arr = [1,0,2,1]</code>, then <code>encoded = [1,2,3]</code>.</p>
+<p>You are given the <code>encoded</code> array. You are also given an integer <code>first</code>, that is the first element of <code>arr</code>, i.e. <code>arr[0]</code>.</p>
+<p>Return <em>the original array</em> <code>arr</code>. It can be proved that the answer exists and is unique.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> encoded = [1,2,3], first = 1
+<strong>Output:</strong> [1,0,2,1]
+<strong>Explanation:</strong> If arr = [1,0,2,1], then first = 1 and encoded = [1 XOR 0, 0 XOR 2, 2 XOR 1] = [1,2,3]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> encoded = [6,2,7,3], first = 4
+<strong>Output:</strong> [4,2,0,7,4]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= n &lt;= 104</code></li>
+<li><code>encoded.length == n - 1</code></li>
+<li><code>0 &lt;= encoded[i] &lt;= 105</code></li>
+<li><code>0 &lt;= first &lt;= 105</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/decode-xored-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, dimension(n) :: arr
+    integer, dimension(n - 1) :: encoded
+    integer :: first
+
+    ! Examples
+    encoded = [1, 2, 3]
+    first = 1
+    call solve(encoded, first, arr)
+    write (*, '(A)') 'Example 1:'
+    write (*, '(A)') 'encoded = [1,2,3]'
+    write (*, '(A)') 'first = 1'
+    write (*, '(A)') 'arr = [1,0,2,1]'
+    write (*, '(A)') ''
+    write (*, '(A)') 'Example 2:'
+    write (*, '(A)') 'encoded = [6,2,7,3]'
+    write (*, '(A)') 'first = 4'
+    write (*, '(A)') 'arr = [4,2,0,7,4]'
+
+contains
+
+    subroutine solve(encoded, first, arr)
+        implicit none
+        integer, intent(in) :: encoded(:), first
+        integer, intent(out) :: arr(:)
+
+        integer :: i, j
+
+        arr(1) = first
+        do i = 2, size(arr)
+            arr(i) = arr(i - 1) ^ encoded(i - 2)
+        end do
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:34:13:
+
+   34 |             arr(i) = arr(i - 1) ^ encoded(i - 2)
+      |             1
+Error: Unclassifiable statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module solution
+    implicit none
+    contains
+    function decode(encoded, first) result(arr)
+        integer, intent(in) :: encoded(:), first
+        integer :: arr(size(encoded) + 1)
+        arr(1) = first
+        arr(2:) = encoded
+    end function decode
+end module solution
+
+program main
+    use solution
+    implicit none
+    integer, parameter :: n = 5
+    integer :: encoded(n - 1) = [6, 2, 7, 3]
+    integer :: first = 4
+    integer :: arr(n)
+
+    arr = decode(encoded, first)
+
+    write (*, '(A, 5I5)') 'Original array:', arr
+end program main
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Original array:    4    6    2    7    3
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minOperations(logs):
+    depth = 0
+    for log in logs:
+        if log == &quot;../&quot;:
+            if depth &gt; 0:
+                depth -= 1
+        elif log != &quot;./&quot;:
+            depth += 1
+    return depth
+</code></pre>
+<pre><code>The algorithm maintains a variable `depth` to keep track of the current folder depth from the main folder. It starts from 0 (main folder) becuase the file system initially starts in the main folder. Then, it iterates through the `logs` list:
+</code></pre>
+<ul>
+<li>If the log is "../", it means the operation is to go up one level, so we decrement the <code>depth</code> by 1. Note that we check if <code>depth</code> is greater than 0 to handle the situation where the current folder is already the main folder (we don't want to go above the main folder).</li>
+<li>If the log is not "./" (which means it's a sub-folder), it means the operation is to go down one level, so we increment the <code>depth</code> by 1.</li>
+</ul>
+<p>After the loop, the value of <code>depth</code> represents the minimum number of operations needed to go back to the main folder, so we return it.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minOperations(vector&lt;string&gt;&amp; logs) {
+    int depth = 0;
+    for (const string&amp; log : logs) {
+        if (log == &quot;../&quot;) {
+            if (depth &gt; 0) {
+                depth--;
+            }
+        } else if (log != &quot;./&quot;) {
+            depth++;
+        }
+    }
+    return depth;
+}
+</code></pre>
+<pre><code>The algorithm maintains a variable `depth` to keep track of the current folder depth from the main folder. It starts from 0 (main folder) becuase the file system initially starts in the main folder. Then, it iterates through the `logs` list:
+</code></pre>
+<ul>
+<li>If the log is "../", it means the operation is to go up one level, so we decrement the <code>depth</code> by 1. Note that we check if <code>depth</code> is greater than 0 to handle the situation where the current folder is already the main folder (we don't want to go above the main folder).</li>
+<li>If the log is not "./" (which means it's a sub-folder), it means the operation is to go down one level, so we increment the <code>depth</code> by 1.</li>
+</ul>
+<p>After the loop, the value of <code>depth</code> represents the minimum number of operations needed to go back to the main folder, so we return it.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

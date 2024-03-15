@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find Resultant Array After Removing Anagrams</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2269/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2278/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>0-indexed</strong> string array <code>words</code>, where <code>words[i]</code> consists of lowercase English letters.</p>
+<p>In one operation, select any index <code>i</code> such that <code>0 &lt; i &lt; words.length</code> and <code>words[i - 1]</code> and <code>words[i]</code> are <strong>anagrams</strong>, and <strong>delete</strong> <code>words[i]</code> from <code>words</code>. Keep performing this operation as long as you can select an index that satisfies the conditions.</p>
+<p>Return <code>words</code> <em>after performing all operations</em>. It can be shown that selecting the indices for each operation in <strong>any</strong> arbitrary order will lead to the same result.</p>
+<p>An <strong>Anagram</strong> is a word or phrase formed by rearranging the letters of a different word or phrase using all the original letters exactly once. For example, <code>"dacb "</code> is an anagram of <code>"abdc "</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> words = [ "abba ", "baba ", "bbaa ", "cd ", "cd "]
+<strong>Output:</strong> [ "abba ", "cd "]
+<strong>Explanation:</strong>
+One of the ways we can obtain the resultant array is by using the following operations:
+- Since words[2] =  "bbaa " and words[1] =  "baba " are anagrams, we choose index 2 and delete words[2].
+  Now words = [ "abba ", "baba ", "cd ", "cd "].
+- Since words[1] =  "baba " and words[0] =  "abba " are anagrams, we choose index 1 and delete words[1].
+  Now words = [ "abba ", "cd ", "cd "].
+- Since words[2] =  "cd " and words[1] =  "cd " are anagrams, we choose index 2 and delete words[2].
+  Now words = [ "abba ", "cd "].
+We can no longer perform any operations, so [ "abba ", "cd "] is the final answer.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> words = [ "a ", "b ", "c ", "d ", "e "]
+<strong>Output:</strong> [ "a ", "b ", "c ", "d ", "e "]
+<strong>Explanation:</strong>
+No two adjacent strings in words are anagrams of each other, so no operations are performed.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= words.length &lt;= 100</code></li>
+<li><code>1 &lt;= words[i].length &lt;= 10</code></li>
+<li><code>words[i]</code> consists of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-resultant-array-after-removing-anagrams/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=10), dimension(:), allocatable :: words
+    integer :: i, j
+
+    allocate(words(5))
+    words(1) = 'abba'
+    words(2) = 'baba'
+    words(3) = 'bbaa'
+    words(4) = 'cd'
+    words(5) = 'cd'
+
+    do while (any(words(2:) == words(1:-1)))
+        do i = 2, size(words)-1
+            if (words(i-1) == words(i) .and. words(i+1) == words(i)) then
+                deallocate(words(i))
+                exit
+            end if
+        end do
+    end do
+
+    print '(A)', words
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:17:27:
+
+   17 |                 deallocate(words(i))
+      |                           1
+Error: Allocate-object at (1) must be ALLOCATABLE or a POINTER
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program anagram_strings
+      implicit none
+
+      integer, parameter :: MAX_WORDS = 100
+      integer, parameter :: MAX_LEN = 10
+
+      character(len=MAX_LEN), dimension(MAX_WORDS) :: words
+      integer :: n_words, i, j
+
+      ! Read the input
+      read(*,*) n_words
+      do i = 1, n_words
+        read(*,*) words(i)
+      end do
+
+      ! Sort the words
+      do i = 1, n_words - 1
+        do j = i + 1, n_words
+          if (sorted(words(i), words(j))) then
+            call swap(words(i), words(j))
+          end if
+        end do
+      end do
+
+      ! Print the result
+      do i = 1, n_words
+        write(*,*) words(i)
+      end do
+
+      contains
+
+        ! Swap two strings
+        subroutine swap(a, b)
+          character(len=*), intent(inout) :: a, b
+          character(len=len(a)) :: temp
+
+          temp = a
+          a = b
+          b = temp
+        end subroutine swap
+
+        ! Check if two strings are sorted
+        function sorted(a, b) result(sorted)
+          character(len=*), intent(in) :: a, b
+          logical :: sorted
+
+          sorted = .true.
+          do i = 1, len(a)
+            if (a(i:i) < b(i:i)) then
+              sorted = .false.
+              exit
+            end if
+          end do
+        end function sorted
+
+      end program anagram_strings
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:43:44:
+
+   43 |         function sorted(a, b) result(sorted)
+      |                                            1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:44:46:
+
+   44 |           character(len=*), intent(in) :: a, b
+      |                                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:45:27:
+
+   45 |           logical :: sorted
+      |                           1
+Error: Symbol ‘sorted’ at (1) has already been host associated
+temp.f95:47:17:
+
+   47 |           sorted = .true.
+      |                 1
+Error: Symbol ‘sorted’ at (1) has already been host associated
+temp.f95:48:26:
+
+   48 |           do i = 1, len(a)
+      |                          1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:49:20:
+
+   49 |             if (a(i:i) < b(i:i)) then
+      |                    1
+Error: Syntax error in argument list at (1)
+temp.f95:50:21:
+
+   50 |               sorted = .false.
+      |                     1
+Error: Symbol ‘sorted’ at (1) has already been host associated
+temp.f95:51:18:
+
+   51 |               exit
+      |                  1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:52:15:
+
+   52 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:53:13:
+
+   53 |           end do
+      |             1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:54:11:
+
+   54 |         end function sorted
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:19:14:
+
+   19 |           if (sorted(words(i), words(j))) then
+      |              1
+Error: Function ‘sorted’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def anagramOperations(words):
+    i = 1
+    while i &lt; len(words):
+        word1 = sorted(words[i])
+        word2 = sorted(words[i - 1])
+        if word1 == word2:
+            del words[i]
+        else:
+            i += 1
+    return words
+</code></pre>
+<pre><code>The algorithm iterates through the input array `words` starting from index 1. For each index `i` it checks if `words[i]` and `words[i-1]` are anagrams by sorting the characters within the two strings and comparing if they are equal (sorting and comparing their characters arrays in Java and JavaScript). If they are anagrams, it removes `words[i]` from the array and decrements index `i`. If not, it increments `i`. This continues until `i` reaches the end of the array. The resulting array will have no adjacent strings that are anagrams, since it iterated through all adjacent pairs and removed anagrams where possible.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;algorithm&gt;
+
+std::vector&lt;std::string&gt; anagramOperations(std::vector&lt;std::string&gt; &amp;words) {
+    for (int i = 1; i &lt; words.size(); ++i) {
+        std::string s1 = words[i];
+        std::string s2 = words[i - 1];
+        std::sort(s1.begin(), s1.end());
+        std::sort(s2.begin(), s2.end());
+        if (s1 == s2) {
+            words.erase(words.begin() + i);
+            --i;
+        }
+    }
+    return words;
+}
+</code></pre>
+<pre><code>The algorithm iterates through the input array `words` starting from index 1. For each index `i` it checks if `words[i]` and `words[i-1]` are anagrams by sorting the characters within the two strings and comparing if they are equal (sorting and comparing their characters arrays in Java and JavaScript). If they are anagrams, it removes `words[i]` from the array and decrements index `i`. If not, it increments `i`. This continues until `i` reaches the end of the array. The resulting array will have no adjacent strings that are anagrams, since it iterated through all adjacent pairs and removed anagrams where possible.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

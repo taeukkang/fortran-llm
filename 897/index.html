@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Increasing Order Search Tree</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/896/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/905/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of a binary search tree, rearrange the tree in <strong>in-order</strong> so that the leftmost node in the tree is now the root of the tree, and every node has no left child and only one right child.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [5,3,6,2,4,null,8,1,null,null,null,7,9]
+<strong>Output:</strong> [1,null,2,null,3,null,4,null,5,null,6,null,7,null,8,null,9]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [5,1,7]
+<strong>Output:</strong> [1,null,5,null,7]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the given tree will be in the range <code>[1, 100]</code>.</li>
+<li><code>0 &lt;= Node.val &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/increasing-order-search-tree/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, iostat_end
+    implicit none
+    integer, parameter :: unit_in = 10, unit_out = 20
+    character(len=256) :: filename
+    type(error_type), allocatable :: err
+    type(tree_node), pointer :: root
+
+    ! Read input from file
+    write (unit=unit_out, fmt='(A)') 'Enter input filename:'
+    read (unit=unit_in, fmt='(A)', iostat=err%stat, iomsg=err%msg, &
+          iolength=err%n) filename
+    if (err%stat /= 0) then
+        write (unit=error_unit, fmt='(2A)') 'error: ', trim(err%msg)
+        stop 1
+    end if
+    open (newunit=unit_in, file=filename, status='old', &
+          action='read', access='stream', form='unformatted', &
+          iostat=err%stat, iomsg=err%msg)
+    if (err%stat /= 0) then
+        write (unit=error_unit, fmt='(2A)') 'error: ', trim(err%msg)
+        stop 1
+    end if
+    call read_tree(unit_in, root)
+    close (unit=unit_in)
+
+    ! Rearrange tree
+    call rearrange_tree(root)
+
+    ! Write output to stdout
+    call print_tree(root, unit_out)
+
+contains
+
+    subroutine read_tree(unit, root)
+        implicit none
+        integer, intent(in) :: unit
+        type(tree_node), pointer, intent(out) :: root
+        class(tree_node), pointer :: current
+        integer :: stat
+
+        allocate (current)
+        current => root
+        do
+            read (unit=unit, fmt=*, iostat=stat) current%val
+            if (stat == iostat_end) exit
+            allocate (current%right)
+            current => current%right
+        end do
+        nullify (current%right)
+    end subroutine read_tree
+
+    subroutine rearrange_tree(root)
+        implicit none
+        type(tree_node), pointer, intent(inout) :: root
+        type(tree_node), pointer :: current, next
+
+        current => root
+        do while (associated(current))
+            if (associated(current%left)) then
+                next => current%left
+                current%left => null()
+                current => next
+            else
+                next => current%right
+                current%right => null()
+                current => next
+            end if
+        end do
+    end subroutine rearrange_tree
+
+    subroutine print_tree(root, unit)
+        implicit none
+        type(tree_node), pointer, intent(in) :: root
+        integer, intent(in) :: unit
+        class(tree_node), pointer :: current
+
+        current => root
+        do while (associated(current))
+            write (unit=unit, fmt='(I0)') current%val
+            if (associated(current%left)) then
+                current => current%left
+            else if (associated(current%right)) then
+                current => current%right
+            else
+                exit
+            end if
+        end do
+    end subroutine print_tree
+
+end program main
+
+type :: tree_node
+    integer :: val
+    type(tree_node), pointer :: left => null(), right => null()
+end type tree_node</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:21:
+
+    6 |     type(error_type), allocatable :: err
+      |                     1
+Error: Derived type ‘error_type’ at (1) is being used before it is defined
+temp.f95:7:20:
+
+    7 |     type(tree_node), pointer :: root
+      |                    1
+Error: Derived type ‘tree_node’ at (1) is being used before it is defined
+temp.f95:11:43:
+
+   11 |     read (unit=unit_in, fmt='(A)', iostat=err%stat, iomsg=err%msg, &
+      |                                           1
+Error: Invalid value for IOSTAT specification at (1)
+temp.f95:13:13:
+
+   13 |     if (err%stat /= 0) then
+      |             1
+Error: Symbol ‘err’ at (1) has no IMPLICIT type
+temp.f95:14:65:
+
+   14 |         write (unit=error_unit, fmt='(2A)') 'error: ', trim(err%msg)
+      |                                                                 1
+Error: Symbol ‘err’ at (1) has no IMPLICIT type
+temp.f95:16:7:
+
+   16 |     end if
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:19:18:
+
+   19 |           iostat=err%stat, iomsg=err%msg)
+      |                  1
+Error: Invalid value for IOSTAT specification at (1)
+temp.f95:20:13:
+
+   20 |     if (err%stat /= 0) then
+      |             1
+Error: Symbol ‘err’ at (1) has no IMPLICIT type
+temp.f95:21:65:
+
+   21 |         write (unit=error_unit, fmt='(2A)') 'error: ', trim(err%msg)
+      |                                                                 1
+Error: Symbol ‘err’ at (1) has no IMPLICIT type
+temp.f95:23:7:
+
+   23 |     end if
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:38:24:
+
+   38 |         type(tree_node), pointer, intent(out) :: root
+      |                        1
+Error: Derived type ‘tree_node’ at (1) is being used before it is defined
+temp.f95:39:25:
+
+   39 |         class(tree_node), pointer :: current
+      |                         1
+Error: Derived type ‘tree_node’ at (1) is being used before it is defined
+temp.f95:42:18:
+
+   42 |         allocate (current)
+      |                  1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:45:58:
+
+   45 |             read (unit=unit, fmt=*, iostat=stat) current%val
+      |                                                          1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:47:31:
+
+   47 |             allocate (current%right)
+      |                               1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:48:32:
+
+   48 |             current => current%right
+      |                                1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:50:26:
+
+   50 |         nullify (current%right)
+      |                          1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:55:24:
+
+   55 |         type(tree_node), pointer, intent(inout) :: root
+      |                        1
+Error: Derived type ‘tree_node’ at (1) is being used before it is defined
+temp.f95:56:24:
+
+   56 |         type(tree_node), pointer :: current, next
+      |                        1
+Error: Derived type ‘tree_node’ at (1) is being used before it is defined
+temp.f95:60:36:
+
+   60 |             if (associated(current%left)) then
+      |                                    1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:61:33:
+
+   61 |                 next => current%left
+      |                                 1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:62:25:
+
+   62 |                 current%left => null()
+      |                         1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:64:16:
+
+   64 |             else
+      |                1
+Error: Unexpected ELSE statement at (1)
+temp.f95:65:33:
+
+   65 |                 next => current%right
+      |                                 1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:66:25:
+
+   66 |                 current%right => null()
+      |                         1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:68:15:
+
+   68 |             end if
+      |               1
+Error: Expecting END DO statement at (1)
+temp.f95:74:24:
+
+   74 |         type(tree_node), pointer, intent(in) :: root
+      |                        1
+Error: Derived type ‘tree_node’ at (1) is being used before it is defined
+temp.f95:76:25:
+
+   76 |         class(tree_node), pointer :: current
+      |                         1
+Error: Derived type ‘tree_node’ at (1) is being used before it is defined
+temp.f95:80:51:
+
+   80 |             write (unit=unit, fmt='(I0)') current%val
+      |                                                   1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:81:36:
+
+   81 |             if (associated(current%left)) then
+      |                                    1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:82:36:
+
+   82 |                 current => current%left
+      |                                    1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:83:41:
+
+   83 |             else if (associated(current%right)) then
+      |                                         1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:84:36:
+
+   84 |                 current => current%right
+      |                                    1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:85:16:
+
+   85 |             else
+      |                1
+Error: Unexpected ELSE statement at (1)
+temp.f95:87:15:
+
+   87 |             end if
+      |               1
+Error: Expecting END DO statement at (1)
+temp.f95:1:12:
+
+    1 | program main
+      |            1
+......
+   93 | type :: tree_node
+      |                 2
+Error: Two main PROGRAMs at (1) and (2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module BST
+
+! Declare the node structure
+type :: Node
+    integer :: val
+    type(Node), pointer :: left
+    type(Node), pointer :: right
+end type
+
+contains
+
+! Function to rearrange the tree
+recursive function rearrange(root) result(new_root)
+    type(Node), pointer :: root
+    type(Node), pointer :: new_root
+    type(Node), pointer :: current
+    type(Node), pointer :: previous
+
+    ! Base case: if the root is null, return null
+    if (.not. associated(root)) then
+        nullify(new_root)
+        return
+    end if
+
+    ! Recursive case: rearrange the left subtree
+    current => root
+    previous => null()
+    call rearrange(current%left, new_root)
+
+    ! Connect the previous node to the current node
+    if (associated(previous)) then
+        previous%right => current
+    end if
+
+    ! Connect the current node to the right subtree
+    current%left => null()
+    call rearrange(current%right, current%right)
+
+    ! Return the new root
+    new_root => current
+
+end function
+
+end module
+
+program main
+    use BST
+    implicit none
+
+    ! Test case 1
+    type(Node), pointer :: root
+    type(Node), pointer :: new_root
+    integer, dimension(10) :: values = [5, 3, 6, 2, 4, 0, 8, 1, 0, 7, 9]
+
+    ! Create the tree
+    root => null()
+    do i = 1, size(values)
+        call insert(root, values(i))
+    end do
+
+    ! Rearrange the tree
+    new_root => rearrange(root)
+
+    ! Print the tree
+    call print_tree(new_root)
+
+    ! Test case 2
+    root => null()
+    call insert(root, 5)
+    call insert(root, 1)
+    call insert(root, 7)
+
+    ! Rearrange the tree
+    new_root => rearrange(root)
+
+    ! Print the tree
+    call print_tree(new_root)
+
+contains
+
+! Function to insert a value in the tree
+recursive subroutine insert(root, val)
+    type(Node), pointer :: root
+    integer :: val
+    type(Node), pointer :: current
+
+    ! Base case: if the root is null, create a new node
+    if (.not. associated(root)) then
+        allocate(root)
+        root%val = val
+        root%left => null()
+        root%right => null()
+        return
+    end if
+
+    ! Recursive case: insert the value in the left or right subtree
+    current => root
+    if (val < current%val) then
+        call insert(current%left, val)
+    else
+        call insert(current%right, val)
+    end if
+
+end subroutine
+
+! Function to print the tree
+recursive subroutine print_tree(root)
+    type(Node), pointer :: root
+    type(Node), pointer :: current
+
+    ! Base case: if the root is null, return
+    if (.not. associated(root)) then
+        return
+    end if
+
+    ! Print the left subtree
+    current => root
+    call print_tree(current%left)
+
+    ! Print the current node
+    write (*,*) current%val
+
+    ! Print the right subtree
+    call print_tree(current%right)
+
+end subroutine
+
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:13:0:
+
+   13 | recursive function rearrange(root) result(new_root)
+      | 
+......
+   28 |     call rearrange(current%left, new_root)
+      |                                          2
+Error: ‘rearrange’ at (1) has a type, which is not consistent with the CALL at (2)
+temp.f95:13:0:
+
+   13 | recursive function rearrange(root) result(new_root)
+      | 
+......
+   37 |     call rearrange(current%right, current%right)
+      |                                                2
+Error: ‘rearrange’ at (1) has a type, which is not consistent with the CALL at (2)
+temp.f95:47:9:
+
+   47 |     use BST
+      |         1
+Fatal Error: Cannot open module file ‘bst.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_prime(n):
+    if n &lt;= 1:
+        return False
+    i = 2
+    while i * i &lt;= n:
+        if n % i == 0:
+            return False
+        i += 1
+    return True
+
+def is_palindrome(n):
+    return str(n) == str(n)[::-1]
+
+def prime_palindrome(n):
+    while True:
+        if is_prime(n) and is_palindrome(n):
+            return n
+        n += 1
+</code></pre>
+<p>The algorithm consists of three functions: isPrime, isPalindrome, and primePalindrome. The first function, isPrime, checks if a given number is prime by iterating from 2 to the square root of the number and checking if the number has any divisors. If not, the function returns true, indicating prime.</p>
+<p>The second function, isPalindrome, checks if a given number is a palindrome by converting the number to a string and then reversing the string. If the original and reversed strings are the same, the function returns true, indicating a palindrome.</p>
+<p>The main function, primePalindrome, takes an integer n as input and iterates from n onward, checking if each number is both prime and a palindrome using the isPrime and isPalindrome helper functions. When a number is found to be both prime and a palindrome, it is returned as the answer.</p>
+<p>The algorithm has a complexity of O(sqrt(n) * n) in the worst case because isPrime has a complexity of O(sqrt(n)) and both isPalindrome and primePalindrome have complexities of O(n).</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool isPrime(int n) {
+    if (n &lt;= 1) return false;
+    for (int i = 2; i * i &lt;= n; i++) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
+bool isPalindrome(int n) {
+    int rev = 0, orig = n;
+    while (n &gt; 0) {
+        rev = rev * 10 + n % 10;
+        n /= 10;
+    }
+    return orig == rev;
+}
+
+int primePalindrome(int n) {
+    while (true) {
+        if (isPrime(n) &amp;&amp; isPalindrome(n)) return n;
+        n++;
+    }
+}
+</code></pre>
+<p>The algorithm consists of three functions: isPrime, isPalindrome, and primePalindrome. The first function, isPrime, checks if a given number is prime by iterating from 2 to the square root of the number and checking if the number has any divisors. If not, the function returns true, indicating prime.</p>
+<p>The second function, isPalindrome, checks if a given number is a palindrome by converting the number to a string and then reversing the string. If the original and reversed strings are the same, the function returns true, indicating a palindrome.</p>
+<p>The main function, primePalindrome, takes an integer n as input and iterates from n onward, checking if each number is both prime and a palindrome using the isPrime and isPalindrome helper functions. When a number is found to be both prime and a palindrome, it is returned as the answer.</p>
+<p>The algorithm has a complexity of O(sqrt(n) * n) in the worst case because isPrime has a complexity of O(sqrt(n)) and both isPalindrome and primePalindrome have complexities of O(n).</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

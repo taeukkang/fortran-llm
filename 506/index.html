@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Relative Ranks</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/504/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/507/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer array <code>score</code> of size <code>n</code>, where <code>score[i]</code> is the score of the <code>ith</code> athlete in a competition. All the scores are guaranteed to be <strong>unique</strong>.</p>
+<p>The athletes are <strong>placed</strong> based on their scores, where the <code>1st</code> place athlete has the highest score, the <code>2nd</code> place athlete has the <code>2nd</code> highest score, and so on. The placement of each athlete determines their rank:</p>
+<ul>
+<li>The <code>1st</code> place athlete's rank is <code>"Gold Medal "</code>.</li>
+<li>The <code>2nd</code> place athlete's rank is <code>"Silver Medal "</code>.</li>
+<li>The <code>3rd</code> place athlete's rank is <code>"Bronze Medal "</code>.</li>
+<li>For the <code>4th</code> place to the <code>nth</code> place athlete, their rank is their placement number (i.e., the <code>xth</code> place athlete's rank is <code>"x "</code>).</li>
+</ul>
+<p>Return an array <code>answer</code> of size <code>n</code> where <code>answer[i]</code> is the <strong>rank</strong> of the <code>ith</code> athlete.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> score = [5,4,3,2,1]
+<strong>Output:</strong> [ "Gold Medal ", "Silver Medal ", "Bronze Medal ", "4 ", "5 "]
+<strong>Explanation:</strong> The placements are [1st, 2nd, 3rd, 4th, 5th].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> score = [10,3,8,9,4]
+<strong>Output:</strong> [ "Gold Medal ", "5 ", "Bronze Medal ", "Silver Medal ", "4 "]
+<strong>Explanation:</strong> The placements are [1st, 5th, 3rd, 2nd, 4th].</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == score.length</code></li>
+<li><code>1 &lt;= n &lt;= 104</code></li>
+<li><code>0 &lt;= score[i] &lt;= 106</code></li>
+<li>All the values in <code>score</code> are <strong>unique</strong>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/relative-ranks/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 5
+    integer :: score(n) = [5, 4, 3, 2, 1]
+    character(len=10) :: answer(n)
+
+    call solve(score, answer)
+
+    write (*, '(A)') answer
+
+contains
+
+    subroutine solve(score, answer)
+        implicit none
+        integer, intent(in) :: score(:)
+        character(len=10), intent(out) :: answer(:)
+
+        integer :: i, j
+
+        do i = 1, size(score)
+            select case(i)
+                case(1)
+                    answer(i) = "Gold Medal "
+                case(2)
+                    answer(i) = "Silver Medal "
+                case(3)
+                    answer(i) = "Bronze Medal "
+                case default
+                    write (answer(i), '(I0)') i
+            end select
+        end do
+    end subroutine solve
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Gold Medal
+Silver Med
+Bronze Med
+4         
+5         
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module Fortran
+contains
+    function get_rank(score) result(answer)
+        implicit none
+        integer, dimension(:), intent(in) :: score
+        character(len=10), dimension(size(score)) :: answer
+
+        ! Declare variables
+        integer :: i, n
+        integer, dimension(size(score)) :: sorted_score
+
+        ! Sort the scores in descending order
+        sorted_score = score
+        call sort(sorted_score)
+
+        ! Assign ranks based on the sorted scores
+        do i = 1, size(score)
+            if (i <= 3) then
+                answer(i) = trim(adjustl(str(i))) // " Medal "
+            else
+                answer(i) = trim(adjustl(str(i))) // " "
+            end if
+        end do
+
+        ! Print the results
+        do i = 1, size(score)
+            write (*,*) answer(i), sorted_score(i)
+        end do
+
+    end function get_rank
+end module Fortran
+
+program test_get_rank
+    use Fortran
+    implicit none
+    integer, parameter :: n = 5
+    integer, dimension(n) :: score = [5, 4, 3, 2, 1]
+    character(len=10), dimension(n) :: answer
+
+    ! Test case 1
+    answer = get_rank(score)
+    write (*,*) "Test case 1:"
+    write (*,*) "Expected: " // "Gold Medal " // "Silver Medal " // "Bronze Medal " // "4 " // "5 "
+    write (*,*) "Actual: " // answer
+
+    ! Test case 2
+    score = [10, 3, 8, 9, 4]
+    answer = get_rank(score)
+    write (*,*) "Test case 2:"
+    write (*,*) "Expected: " // "Gold Medal " // "5 " // "Bronze Medal " // "Silver Medal " // "4 "
+    write (*,*) "Actual: " // answer
+end program test_get_rank
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:19:41:
+
+   19 |                 answer(i) = trim(adjustl(str(i))) // " Medal "
+      |                                         1
+Error: Function ‘str’ at (1) has no IMPLICIT type
+temp.f95:21:41:
+
+   21 |                 answer(i) = trim(adjustl(str(i))) // " "
+      |                                         1
+Error: Function ‘str’ at (1) has no IMPLICIT type
+temp.f95:34:9:
+
+   34 |     use Fortran
+      |         1
+Fatal Error: Cannot open module file ‘fortran.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def find_relative_ranks(score):
+    rank_sort = sorted(range(len(score)), key=lambda i: score[i], reverse=True)
+    result = [0] * len(score)
+    for i, rank in enumerate(rank_sort):
+        result[rank] = i + 1
+    return result
+</code></pre>
+<pre><code>The algorithm works in the following steps:
+</code></pre>
+<ol>
+<li>
+<p>Create an array of indices ranging from 0 to n-1, where n is the size of the given score array.</p>
+</li>
+<li>
+<p>Sort the indices array based on their corresponding score values in descending order. So, after sorting, the first element will be the index of the highest score in the original score array.</p>
+</li>
+<li>
+<p>Create a result array of size n.</p>
+</li>
+<li>
+<p>Iterate over the sorted indices array and assign its rank (1-based) to the corresponding index in the result array.</p>
+</li>
+<li>
+<p>Return the result array that now contains the ranks of athletes.</p>
+</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+std::vector&lt;int&gt; findRelativeRanks(std::vector&lt;int&gt;&amp; score) {
+    std::vector&lt;int&gt; rank_sort(score.size());
+    for(int i = 0; i &lt; score.size(); ++i) rank_sort[i] = i;
+    std::sort(rank_sort.begin(), rank_sort.end(), [&amp;](int i1, int i2) { return score[i1] &gt; score[i2]; });
+    std::vector&lt;int&gt;  result(score.size());
+    for(int i = 0; i &lt; rank_sort.size(); ++i) result[rank_sort[i]] = i + 1;
+    return result;
+}
+</code></pre>
+<pre><code>The algorithm works in the following steps:
+</code></pre>
+<ol>
+<li>
+<p>Create an array of indices ranging from 0 to n-1, where n is the size of the given score array.</p>
+</li>
+<li>
+<p>Sort the indices array based on their corresponding score values in descending order. So, after sorting, the first element will be the index of the highest score in the original score array.</p>
+</li>
+<li>
+<p>Create a result array of size n.</p>
+</li>
+<li>
+<p>Iterate over the sorted indices array and assign its rank (1-based) to the corresponding index in the result array.</p>
+</li>
+<li>
+<p>Return the result array that now contains the ranks of athletes.</p>
+</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

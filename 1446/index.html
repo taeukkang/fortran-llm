@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Consecutive Characters</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1437/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1450/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>The <strong>power</strong> of the string is the maximum length of a non-empty substring that contains only one unique character.</p>
+<p>Given a string <code>s</code>, return <em>the <strong>power</strong> of</em> <code>s</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "leetcode "
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The substring  "ee " is of length 2 with the character 'e' only.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "abbcccddddeeeeedcba "
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> The substring  "eeeee " is of length 5 with the character 'e' only.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 500</code></li>
+<li><code>s</code> consists of only lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/consecutive-characters/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: power, i, j
+    character(len=500) :: s
+
+    ! Example 1
+    s = "leetcode "
+    power = powerOfString(s)
+    write (*,*) power
+
+    ! Example 2
+    s = "abbcccddddeeeeedcba "
+    power = powerOfString(s)
+    write (*,*) power
+
+contains
+
+    function powerOfString(s) result(power)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer :: power, count, i
+
+        power = 0
+        do i = 1, len(s) - 1
+            if (s(i:i+1) == s(i+1:i+2)) then
+                cycle
+            else
+                count = 1
+                do j = i + 1, len(s)
+                    if (s(j:j+1) == s(i:i+1)) then
+                        count = count + 1
+                    else
+                        exit
+                    end if
+                end do
+                power = max(power, count)
+            end if
+        end do
+    end function powerOfString
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>           1
+           1
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module power_of_string
+
+implicit none
+
+contains
+
+integer function power(s) result(power)
+
+! Given a string s, return the power of s.
+
+character(len=*), intent(in) :: s
+
+integer :: i, j, count, max_count
+
+power = 0
+
+! Iterate over the string and calculate the power
+
+do i = 1, len(s)
+
+    count = 1
+
+    ! Iterate over the remaining characters in the string
+
+    do j = i + 1, len(s)
+
+        ! If the current character is the same as the previous character, increment the count
+
+        if (s(j:j) == s(i:i)) then
+
+            count = count + 1
+
+        ! If the current character is not the same as the previous character, break the loop
+
+        else
+
+            exit
+
+        end if
+
+    end do
+
+    ! If the count is greater than the maximum count, update the maximum count and the index
+
+    if (count > max_count) then
+
+        max_count = count
+
+        power = j - i + 1
+
+    end if
+
+end do
+
+end function power
+
+end module power_of_string
+
+! Test the power function with the given examples
+
+program test_power
+
+use power_of_string
+
+implicit none
+
+integer :: power
+
+! Example 1:
+
+power = power_of_string("leetcode ")
+
+write (*,*) "Example 1: Power of 'leetcode ' is ", power
+
+! Example 2:
+
+power = power_of_string("abbcccddddeeeeedcba ")
+
+write (*,*) "Example 2: Power of 'abbcccddddeeeeedcba ' is ", power
+
+end program test_power
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:39:
+
+    7 | integer function power(s) result(power)
+      |                                       1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:11:33:
+
+   11 | character(len=*), intent(in) :: s
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:33:
+
+   13 | integer :: i, j, count, max_count
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:6:
+
+   15 | power = 0
+      |      1
+Error: Symbol ‘power’ at (1) has already been host associated
+temp.f95:19:16:
+
+   19 | do i = 1, len(s)
+      |                1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:21:13:
+
+   21 |     count = 1
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:25:24:
+
+   25 |     do j = i + 1, len(s)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:29:16:
+
+   29 |         if (s(j:j) == s(i:i)) then
+      |                1
+Error: Syntax error in argument list at (1)
+temp.f95:31:29:
+
+   31 |             count = count + 1
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:35:12:
+
+   35 |         else
+      |            1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:37:16:
+
+   37 |             exit
+      |                1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:39:11:
+
+   39 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:41:7:
+
+   41 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:45:31:
+
+   45 |     if (count > max_count) then
+      |                               1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:47:25:
+
+   47 |         max_count = count
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:49:14:
+
+   49 |         power = j - i + 1
+      |              1
+Error: Symbol ‘power’ at (1) has already been host associated
+temp.f95:51:7:
+
+   51 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:53:3:
+
+   53 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:55:3:
+
+   55 | end function power
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:63:5:
+
+   63 | use power_of_string
+      |     1
+Fatal Error: Cannot open module file ‘power_of_string.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def angleClock(hour: int, minutes: int) -&gt; float:
+    minute_angle = 6 * minutes
+    hour_angle = 30 * hour + 0.5 * minutes
+    angle = abs(hour_angle - minute_angle)
+    return min(angle, 360 - angle)
+</code></pre>
+<p>Here is the algorithm to find the smaller angle between the hour and the minute hand:</p>
+<ol>
+<li>Calculate the angle of the minute hand from the 12 o'clock position. Since each minute mark is 6 degrees apart (360/60), multiply the provided minutes by 6 to find the angle.</li>
+<li>Calculate the angle of the hour hand from the 12 o'clock position. Each hour mark is 30 degrees apart (360/12). Multiply the provided hours by 30, but also add half a degree for each minute passed as the hour hand moves slightly with each passing minute.</li>
+<li>Find the absolute difference between the hour and minute hand angles.</li>
+<li>Return the minimum of the calculated angle and 360 minus the calculated angle, as the target angle should always be the smaller angle formed between the clock hands.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">double angleClock(int hour, int minutes) {
+    double minuteAngle = 6 * minutes;
+    double hourAngle = 30 * hour + 0.5 * minutes;
+    double angle = abs(hourAngle - minuteAngle);
+    return min(angle, 360 - angle);
+}
+</code></pre>
+<p>Here is the algorithm to find the smaller angle between the hour and the minute hand:</p>
+<ol>
+<li>Calculate the angle of the minute hand from the 12 o'clock position. Since each minute mark is 6 degrees apart (360/60), multiply the provided minutes by 6 to find the angle.</li>
+<li>Calculate the angle of the hour hand from the 12 o'clock position. Each hour mark is 30 degrees apart (360/12). Multiply the provided hours by 30, but also add half a degree for each minute passed as the hour hand moves slightly with each passing minute.</li>
+<li>Find the absolute difference between the hour and minute hand angles.</li>
+<li>Return the minimum of the calculated angle and 360 minus the calculated angle, as the target angle should always be the smaller angle formed between the clock hands.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

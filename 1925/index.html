@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count Square Sum Triples</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1920/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1929/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A <strong>square triple</strong> <code>(a,b,c)</code> is a triple where <code>a</code>, <code>b</code>, and <code>c</code> are <strong>integers</strong> and <code>a2 + b2 = c2</code>.</p>
+<p>Given an integer <code>n</code>, return <em>the number of <strong>square triples</strong> such that</em> <code>1 &lt;= a, b, c &lt;= n</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 5
+<strong>Output:</strong> 2
+<strong>Explanation</strong>: The square triples are (3,4,5) and (4,3,5).</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 10
+<strong>Output:</strong> 4
+<strong>Explanation</strong>: The square triples are (3,4,5), (4,3,5), (6,8,10), and (8,6,10).</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 250</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-square-sum-triples/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n
+    integer :: result
+
+    print '(A)', 'Example 1:'
+    n = 5
+    result = countSquareTriples(n)
+    print '(I0)', result
+    print '(A)', ''
+
+    print '(A)', 'Example 2:'
+    n = 10
+    result = countSquareTriples(n)
+    print '(I0)', result
+    print '(A)', ''
+
+contains
+
+    function countSquareTriples(n) result(count)
+        implicit none
+
+        integer, intent(in) :: n
+        integer :: count
+        integer :: i, j, k
+
+        count = 0
+        do i = 1, n
+            do j = i, n
+                k = sqrt(i**2 + j**2)
+                if (k == int(k)) then
+                    count = count + 1
+                end if
+            end do
+        end do
+    end function countSquareTriples
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:31:25:
+
+   31 |                 k = sqrt(i**2 + j**2)
+      |                         1
+Error: ‘x’ argument of ‘sqrt’ intrinsic at (1) must be REAL or COMPLEX
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">```
+program square_triples
+    implicit none
+    integer :: n, a, b, c, count
+
+    ! Read input
+    read *, n
+
+    ! Initialize count
+    count = 0
+
+    ! Loop over all possible values of a, b, and c
+    do a = 1, n
+        do b = 1, n
+            do c = 1, n
+                ! Check if the triple is a square triple
+                if (a**2 + b**2 == c**2) then
+                    ! Increment count
+                    count = count + 1
+                end if
+            end do
+        end do
+    end do
+
+    ! Print output
+    write (*,*) count
+
+end program square_triples
+```
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:1:2:
+
+    1 | ```
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:29:2:
+
+   29 | ```
+      |  1
+Error: Invalid character in name at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def reverse(x):
+    rev = 0
+
+    while x != 0:
+        rev = rev * 10 + x % 10
+        x = x // 10
+
+    return rev
+
+def count_nice_pairs(nums):
+    MOD = 1_000_000_007
+    count = {}
+    result = 0
+
+    for num in nums:
+        diff = num - reverse(num)
+        count[diff] = count.get(diff, 0) + 1
+
+    for val in count.values():
+        result = (result + ((val * (val - 1)) // 2) % MOD) % MOD
+
+    return result
+</code></pre>
+<ol>
+<li>Define a helper function 'reverse' to find the reverse of a number.</li>
+<li>Initialize a dictionary 'count' to store the difference between the number and its reverse and their count in the nums array.</li>
+<li>Initialize a result variable.</li>
+<li>Traverse the nums array, calculate the difference between num and its reverse, and update the count.</li>
+<li>Traverse the count dictionary's values, and for each value, add ((value * (value - 1)) / 2) % MOD to the current result, and take the modulus by 1e9 + 7.</li>
+<li>Return the result as the final count of nice pairs.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int reverse(int x) {
+    int rev = 0;
+    while (x != 0) {
+        rev = rev * 10 + x % 10;
+        x = x / 10;
+    }
+    return rev;
+}
+
+int countNicePairs(vector&lt;int&gt;&amp; nums) {
+    const int MOD = 1e9 + 7;
+    unordered_map&lt;int, int&gt; count;
+    int result = 0;
+
+    for (int num : nums) {
+        int diff = num - reverse(num);
+        count[diff]++;
+    }
+
+    for (auto &amp;[_, val] : count) {
+        result = (result + ((val * (val - 1LL)) / 2) % MOD) % MOD;
+    }
+
+    return result;
+}
+</code></pre>
+<ol>
+<li>Define a helper function 'reverse' to find the reverse of a number.</li>
+<li>Initialize a dictionary 'count' to store the difference between the number and its reverse and their count in the nums array.</li>
+<li>Initialize a result variable.</li>
+<li>Traverse the nums array, calculate the difference between num and its reverse, and update the count.</li>
+<li>Traverse the count dictionary's values, and for each value, add ((value * (value - 1)) / 2) % MOD to the current result, and take the modulus by 1e9 + 7.</li>
+<li>Return the result as the final count of nice pairs.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

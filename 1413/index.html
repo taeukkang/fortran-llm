@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Value to Get Positive Step by Step Sum</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1408/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1417/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of integers <code>nums</code>, you start with an initial <strong>positive</strong> value <em>startValue__.</em></p>
+<p>In each iteration, you calculate the step by step sum of <em>startValue</em> plus elements in <code>nums</code> (from left to right).</p>
+<p>Return the minimum <strong>positive</strong> value of <em>startValue</em> such that the step by step sum is never less than 1.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [-3,2,-3,4,2]
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> If you choose startValue = 4, in the third iteration your step by step sum is less than 1.
+<strong>step by step sum</strong>
+<strong>startValue = 4 | startValue = 5 | nums</strong>
+  (4 <strong>-3</strong> ) = 1  | (5 <strong>-3</strong> ) = 2    |  -3
+  (1 <strong>+2</strong> ) = 3  | (2 <strong>+2</strong> ) = 4    |   2
+  (3 <strong>-3</strong> ) = 0  | (4 <strong>-3</strong> ) = 1    |  -3
+  (0 <strong>+4</strong> ) = 4  | (1 <strong>+4</strong> ) = 5    |   4
+  (4 <strong>+2</strong> ) = 6  | (5 <strong>+2</strong> ) = 7    |   2</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,2]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> Minimum start value should be positive. </p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [1,-2,-3]
+<strong>Output:</strong> 5</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+<li><code>-100 &lt;= nums[i] &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-value-to-get-positive-step-by-step-sum/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program minStartValue
+    implicit none
+
+    integer, parameter :: dp = selected_real_kind(15)
+
+    integer, dimension(:), allocatable :: nums
+    integer :: n, i, j, startValue, stepByStepSum
+    logical :: foundMin
+
+    ! read input
+    read(*,*) n
+    allocate(nums(n))
+    do i = 1, n
+        read(*,*) nums(i)
+    end do
+
+    ! find minimum positive start value
+    startValue = huge(startValue)
+    foundMin = .false.
+    do while (.not. foundMin)
+        stepByStepSum = startValue
+        do j = 1, n
+            if (nums(j) < 0) then
+                stepByStepSum = stepByStepSum + nums(j)
+            else
+                exit
+            end if
+        end do
+        if (stepByStepSum >= 1) then
+            foundMin = .true.
+        else
+            startValue = startValue - 1
+        end if
+    end do
+
+    ! print result
+    write(*,*) startValue
+
+end program minStartValue</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 11 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7f596d55d960 in ???
+#1  0x7f596d55e4d9 in ???
+#2  0x7f596d7b217b in ???
+#3  0x7f596d7ab684 in ???
+#4  0x7f596d7ac2aa in ???
+#5  0x5b783c373272 in MAIN__
+#6  0x5b783c3735a1 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module min_start_value
+    implicit none
+    private
+    public :: min_start_value
+contains
+    function min_start_value(nums) result(min_value)
+        integer, intent(in) :: nums(:)
+        integer :: min_value
+        integer :: start_value, step_sum
+        integer :: i
+
+        min_value = 1
+        start_value = 1
+
+        do i = 1, size(nums)
+            step_sum = start_value + nums(i)
+            if (step_sum < 1) then
+                start_value = start_value + 1
+            end if
+        end do
+
+        min_value = start_value
+    end function min_start_value
+end module min_start_value
+
+program test_min_start_value
+    use min_start_value
+    implicit none
+    integer, parameter :: nums(2) = [1, 2]
+    integer :: min_value
+
+    min_value = min_start_value(nums)
+
+    write (*,*) "Minimum start value:", min_value
+end program test_min_start_value
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:29:
+
+    4 |     public :: min_start_value
+      |                             1
+Error: PUBLIC attribute applied to MODULE min_start_value at (1)
+temp.f95:6:28:
+
+    6 |     function min_start_value(nums) result(min_value)
+      |                            1
+Error: MODULE attribute of ‘min_start_value’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:38:
+
+    7 |         integer, intent(in) :: nums(:)
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:28:
+
+    8 |         integer :: min_value
+      |                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:40:
+
+    9 |         integer :: start_value, step_sum
+      |                                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:20:
+
+   10 |         integer :: i
+      |                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:21:
+
+   12 |         min_value = 1
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:13:23:
+
+   13 |         start_value = 1
+      |                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:28:
+
+   15 |         do i = 1, size(nums)
+      |                            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:16:44:
+
+   16 |             step_sum = start_value + nums(i)
+      |                                            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:34:
+
+   17 |             if (step_sum < 1) then
+      |                                  1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:18:45:
+
+   18 |                 start_value = start_value + 1
+      |                                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:15:
+
+   19 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:20:11:
+
+   20 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:22:31:
+
+   22 |         min_value = start_value
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:7:
+
+   23 |     end function min_start_value
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:27:9:
+
+   27 |     use min_start_value
+      |         1
+Fatal Error: Cannot open module file ‘min_start_value.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def maxSideLength(mat, threshold):
+    m, n = len(mat), len(mat[0])
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    ans = 0
+
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            dp[i][j] = mat[i - 1][j - 1] + dp[i][j - 1] + dp[i - 1][j] - dp[i - 1][j - 1]
+            k = ans + 1
+            if i &gt;= k and j &gt;= k and dp[i][j] - dp[i][j - k] - dp[i - k][j] + dp[i - k][j - k] &lt;= threshold:
+                ans += 1
+
+    return ans
+</code></pre>
+<p>We use dynamic programming to solve this problem. First, we create a 2D dp array of size (m+1) x (n+1) initialized with 0. The dp array stores the sum of all elements above and left of the current cell, including the current cell. Then, we iterate through each cell in the input matrix, and compute the sums for the dp array.</p>
+<p>At each cell, we check if there is a possibility of extending the side length of the square. We do this by checking if the current cell's row and column are greater than or equal to the side length we are checking for (ans + 1). If true, we check if the sum of the square with side length (ans + 1) is less than or equal to the threshold. The sum is computed using the dp array's values by adding the top-left and bottom-right corners and subtracting the bottom-left and top-right corners. If the sum is within the threshold, we increment the ans variable.</p>
+<p>Finally, we return the ans variable which stores the maximum side-length of a square with sum less than or equal to the threshold.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int maxSideLength(vector&lt;vector&lt;int&gt;&gt;&amp; mat, int threshold) {
+    int m = mat.size();
+    int n = mat[0].size();
+    vector&lt;vector&lt;int&gt;&gt; dp(m + 1, vector&lt;int&gt;(n + 1, 0));
+    int ans = 0;
+
+    for (int i = 1; i &lt;= m; i++) {
+        for (int j = 1; j &lt;= n; j++) {
+            dp[i][j] = mat[i-1][j-1] + dp[i][j-1] + dp[i-1][j] - dp[i-1][j-1];
+            int k = ans + 1;
+            if (i &gt;= k &amp;&amp; j &gt;= k &amp;&amp; dp[i][j] - dp[i][j-k] - dp[i-k][j] + dp[i-k][j-k] &lt;= threshold) {
+                ans++;
+            }
+        }
+    }
+    return ans;
+}
+</code></pre>
+<p>We use dynamic programming to solve this problem. First, we create a 2D dp array of size (m+1) x (n+1) initialized with 0. The dp array stores the sum of all elements above and left of the current cell, including the current cell. Then, we iterate through each cell in the input matrix, and compute the sums for the dp array.</p>
+<p>At each cell, we check if there is a possibility of extending the side length of the square. We do this by checking if the current cell's row and column are greater than or equal to the side length we are checking for (ans + 1). If true, we check if the sum of the square with side length (ans + 1) is less than or equal to the threshold. The sum is computed using the dp array's values by adding the top-left and bottom-right corners and subtracting the bottom-left and top-right corners. If the sum is within the threshold, we increment the ans variable.</p>
+<p>Finally, we return the ans variable which stores the maximum side-length of a square with sum less than or equal to the threshold.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

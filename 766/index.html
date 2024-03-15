@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Toeplitz Matrix</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/762/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/771/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an <code>m x n</code> <code>matrix</code>, return <em><code>true</code> if the matrix is Toeplitz. Otherwise, return <code>false</code>.</em></p>
+<p>A matrix is <strong>Toeplitz</strong> if every diagonal from top-left to bottom-right has the same elements.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> matrix = [[1,2,3,4],[5,1,2,3],[9,5,1,2]]
+<strong>Output:</strong> true
+<strong>Explanation:</strong>
+In the above grid, the diagonals are:
+ "[9] ",  "[5, 5] ",  "[1, 1, 1] ",  "[2, 2, 2] ",  "[3, 3] ",  "[4] ".
+In each diagonal all elements are the same, so the answer is True.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> matrix = [[1,2],[2,2]]
+<strong>Output:</strong> false
+<strong>Explanation:</strong>
+The diagonal  "[1, 2] " has different elements.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>m == matrix.length</code></li>
+<li><code>n == matrix[i].length</code></li>
+<li><code>1 &lt;= m, n &lt;= 20</code></li>
+<li><code>0 &lt;= matrix[i][j] &lt;= 99</code></li>
+</ul>
+<p><strong>Follow up:</strong></p>
+<ul>
+<li>What if the <code>matrix</code> is stored on disk, and the memory is limited such that you can only load at most one row of the matrix into the memory at once?</li>
+<li>What if the <code>matrix</code> is so large that you can only load up a partial row into the memory at once?</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/toeplitz-matrix/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: m = 3, n = 4
+    integer, dimension(m, n) :: matrix
+    logical :: result
+
+    ! Example 1
+    matrix(:, :) = reshape([1, 2, 3, 4, &
+                             5, 1, 2, 3, &
+                             9, 5, 1, 2], shape(matrix))
+    write(*, '(L1)') toeplitz(matrix)
+
+    ! Example 2
+    matrix(:, :) = reshape([1, 2, &
+                             2, 2], shape(matrix))
+    write(*, '(L1)') toeplitz(matrix)
+
+contains
+
+    function toeplitz(matrix) result(result)
+        implicit none
+        integer, intent(in) :: matrix(:, :)
+        logical :: result
+        integer :: i, j
+
+        do i = 1, size(matrix, 1) - 1
+            do j = 1, size(matrix, 2) - 1
+                if (matrix(i, j) /= matrix(i + 1, j + 1)) then
+                    result = .false.
+                    return
+                end if
+            end do
+        end do
+
+        result = .true.
+    end function toeplitz
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:27:
+
+   15 |     matrix(:, :) = reshape([1, 2, &
+      |                           1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module toeplitz
+implicit none
+contains
+
+function is_toeplitz(matrix) result(is_toeplitz)
+integer, intent(in) :: matrix(:,:)
+logical :: is_toeplitz
+integer :: i, j, m, n
+
+m = size(matrix, 1)
+n = size(matrix, 2)
+
+is_toeplitz = .true.
+
+do i = 1, m - 1
+    do j = 1, n
+        if (matrix(i, j) .ne. matrix(i+1, j+1)) then
+            is_toeplitz = .false.
+            exit
+        end if
+    end do
+    if (.not. is_toeplitz) exit
+end do
+
+end function is_toeplitz
+
+end module toeplitz
+
+program main
+use toeplitz
+implicit none
+
+integer, parameter :: m = 3, n = 4
+integer :: matrix(m, n) = reshape([1, 2, 3, 4, 5, 1, 2, 3, 9, 5, 1, 2], [m, n])
+
+write (*, '(L1)') is_toeplitz(matrix)
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:48:
+
+    5 | function is_toeplitz(matrix) result(is_toeplitz)
+      |                                                1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:6:34:
+
+    6 | integer, intent(in) :: matrix(:,:)
+      |                                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:7:22:
+
+    7 | logical :: is_toeplitz
+      |                      1
+Error: Symbol ‘is_toeplitz’ at (1) has already been host associated
+temp.f95:8:21:
+
+    8 | integer :: i, j, m, n
+      |                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:19:
+
+   10 | m = size(matrix, 1)
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:11:19:
+
+   11 | n = size(matrix, 2)
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:13:12:
+
+   13 | is_toeplitz = .true.
+      |            1
+Error: Symbol ‘is_toeplitz’ at (1) has already been host associated
+temp.f95:15:15:
+
+   15 | do i = 1, m - 1
+      |               1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:16:15:
+
+   16 |     do j = 1, n
+      |               1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:17:52:
+
+   17 |         if (matrix(i, j) .ne. matrix(i+1, j+1)) then
+      |                                                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:18:24:
+
+   18 |             is_toeplitz = .false.
+      |                        1
+Error: Symbol ‘is_toeplitz’ at (1) has already been host associated
+temp.f95:19:16:
+
+   19 |             exit
+      |                1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:20:11:
+
+   20 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:21:7:
+
+   21 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:22:26:
+
+   22 |     if (.not. is_toeplitz) exit
+      |                          1
+Error: Function ‘is_toeplitz’ requires an argument list at (1)
+temp.f95:23:3:
+
+   23 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:3:
+
+   25 | end function is_toeplitz
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:5:
+
+   30 | use toeplitz
+      |     1
+Fatal Error: Cannot open module file ‘toeplitz.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class Node:
+    def __init__(self, val=0, prev=None, next=None, child=None):
+        self.val = val
+        self.prev = prev
+        self.next = next
+        self.child = child
+
+def flatten(head: Node) -&gt; Node:
+    if not head:
+        return None
+
+    curr = head
+    while curr:
+        if curr.child:
+            insert = curr.child
+            next_node = curr.next
+
+            insert.prev = curr
+            curr.next = insert
+            curr.child = None
+
+            while insert.next:
+                insert = insert.next
+
+            if next_node:
+                next_node.prev = insert
+                insert.next = next_node
+
+        curr = curr.next
+
+    return head
+</code></pre>
+<pre><code>The basic idea of the algorithm is to traverse the doubly linked list and if a node has a child, we insert the child list between the current node and its next node. We do this by adjusting the previous and next pointers accordingly. After inserting the child list, we set the child pointer of the current node to null. We keep doing this for each node in the list.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">class Node {
+public:
+    int val;
+    Node* prev;
+    Node* next;
+    Node* child;
+};
+
+Node* flatten(Node* head) {
+    if(!head) return nullptr;
+
+    Node* curr = head;
+    while(curr) {
+        if(curr-&gt;child) {
+            Node* insert = curr-&gt;child;
+            Node* next = curr-&gt;next;
+
+            insert-&gt;prev = curr;
+            curr-&gt;next = insert;
+            curr-&gt;child = nullptr;
+
+            while(insert-&gt;next) insert = insert-&gt;next;
+
+            if(next) {
+                next-&gt;prev = insert;
+                insert-&gt;next = next;
+            }
+        }
+        curr = curr-&gt;next;
+    }
+
+    return head;
+}
+</code></pre>
+<pre><code>The basic idea of the algorithm is to traverse the doubly linked list and if a node has a child, we insert the child list between the current node and its next node. We do this by adjusting the previous and next pointers accordingly. After inserting the child list, we set the child pointer of the current node to null. We keep doing this for each node in the list.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

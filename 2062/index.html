@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count Vowel Substrings of a String</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2057/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2068/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A <strong>substring</strong> is a contiguous (non-empty) sequence of characters within a string.</p>
+<p>A <strong>vowel substring</strong> is a substring that <strong>only</strong> consists of vowels (<code>'a'</code>, <code>'e'</code>, <code>'i'</code>, <code>'o'</code>, and <code>'u'</code>) and has <strong>all five</strong> vowels present in it.</p>
+<p>Given a string <code>word</code>, return <em>the number of <strong>vowel substrings</strong> in</em> <code>word</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> word =  "aeiouu "
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The vowel substrings of word are as follows (underlined):
+-  "<strong>aeiou</strong>u "
+-  "<strong>aeiouu</strong> "</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> word =  "unicornarihan "
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> Not all 5 vowels are present, so there are no vowel substrings.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> word =  "cuaieuouac "
+<strong>Output:</strong> 7
+<strong>Explanation:</strong> The vowel substrings of word are as follows (underlined):
+-  "c<strong>uaieuo</strong>uac "
+-  "c<strong>uaieuou</strong>ac "
+-  "c<strong>uaieuoua</strong>c "
+-  "cu<strong>aieuo</strong>uac "
+-  "cu<strong>aieuou</strong>ac "
+-  "cu<strong>aieuoua</strong>c "
+-  "cua<strong>ieuoua</strong>c "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= word.length &lt;= 100</code></li>
+<li><code>word</code> consists of lowercase English letters only.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-vowel-substrings-of-a-string/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, n
+    character(len=100) :: word
+    logical :: is_vowel_substring
+
+    ! Example 1
+    word = 'aeiouu '
+    print '(I0)', count_vowel_substrings(word)
+
+    ! Example 2
+    word = 'unicornarihan '
+    print '(I0)', count_vowel_substrings(word)
+
+    ! Example 3
+    word = 'cuaieuouac '
+    print '(I0)', count_vowel_substrings(word)
+
+contains
+
+    function count_vowel_substrings(word) result(n)
+        implicit none
+        character(len=*), intent(in) :: word
+        integer :: n
+
+        do i = 1, len(word) - 4
+            if (is_vowel_substring(word(i:i+4))) then
+                n = n + 1
+            end if
+        end do
+    end function count_vowel_substrings
+
+    function is_vowel_substring(word) result(res)
+        implicit none
+        character(len=*), intent(in) :: word
+        logical :: res
+
+        res = .false.
+        do i = 1, 5
+            if (index(word, ['a', 'e', 'i', 'o', 'u'][i]) == 0) exit
+        end do
+        if (i == 6) then
+            res = .true.
+        end if
+    end function is_vowel_substring
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:34:32:
+
+   34 |     function is_vowel_substring(word) result(res)
+      |                                1
+Error: Procedure ‘is_vowel_substring’ at (1) has an explicit interface from a previous declaration
+temp.f95:35:21:
+
+   35 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:36:44:
+
+   36 |         character(len=*), intent(in) :: word
+      |                                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:37:22:
+
+   37 |         logical :: res
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:39:21:
+
+   39 |         res = .false.
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:40:19:
+
+   40 |         do i = 1, 5
+      |                   1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:41:54:
+
+   41 |             if (index(word, ['a', 'e', 'i', 'o', 'u'][i]) == 0) exit
+      |                                                      1
+Error: Syntax error in argument list at (1)
+temp.f95:42:11:
+
+   42 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:43:24:
+
+   43 |         if (i == 6) then
+      |                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:44:24:
+
+   44 |             res = .true.
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:45:11:
+
+   45 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:46:7:
+
+   46 |     end function is_vowel_substring
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:28:16:
+
+   28 |             if (is_vowel_substring(word(i:i+4))) then
+      |                1
+Error: ‘is_vowel_substring’ at (1) is not a function
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program vowel_substrings
+      implicit none
+
+      integer :: i, j, n, count
+      character(len=100) :: word
+
+      ! Read the input word
+      read (*,*) word
+
+      ! Initialize the count
+      count = 0
+
+      ! Loop through the characters of the word
+      do i = 1, len_trim(word)
+         ! Check if the current character is a vowel
+         if (word(i:i) == 'a' .or. word(i:i) == 'e' .or. &
+             word(i:i) == 'i' .or. word(i:i) == 'o' .or. &
+             word(i:i) == 'u') then
+            ! Loop through the remaining characters of the word
+            do j = i + 1, len_trim(word)
+               ! Check if the substring starting at i and ending at j is a vowel substring
+               if (word(i:j) == 'aeiou' .or. word(i:j) == 'aeioua' .or. &
+                   word(i:j) == 'aeiouae' .or. word(i:j) == 'aeiouao' .or. &
+                   word(i:j) == 'aeiouau' .or. word(i:j) == 'aeiouei' .or. &
+                   word(i:j) == 'aeiouio' .or. word(i:j) == 'aeiouiu' .or. &
+                   word(i:j) == 'aeiouoa' .or. word(i:j) == 'aeiouou' .or. &
+                   word(i:j) == 'eaiouae' .or. word(i:j) == 'eaiouao' .or. &
+                   word(i:j) == 'eaiouau' .or. word(i:j) == 'eaiouei' .or. &
+                   word(i:j) == 'eaiouio' .or. word(i:j) == 'eaiouiu' .or. &
+                   word(i:j) == 'eaiouoa' .or. word(i:j) == 'eaiouou' .or. &
+                   word(i:j) == 'iouaeiou' .or. word(i:j) == 'iouaeioua' .or. &
+                   word(i:j) == 'iouaeiouae' .or. word(i:j) == 'iouaeiouao' .or. &
+                   word(i:j) == 'iouaeiouau' .or. word(i:j) == 'iouaeiouei' .or. &
+                   word(i:j) == 'iouaeiouio' .or. word(i:j) == 'iouaeiouiu' .or. &
+                   word(i:j) == 'iouaeiouoa' .or. word(i:j) == 'iouaeiouou' .or. &
+                   word(i:j) == 'iouaoaeiou' .or. word(i:j) == 'iouaoaeioua' .or. &
+                   word(i:j) == 'iouaoaeiouae' .or. word(i:j) == 'iouaoaeiouao' .or. &
+                   word(i:j) == 'iouaoaeiouau' .or. word(i:j) == 'iouaoaeiouei' .or. &
+                   word(i:j) == 'iouaoaeiouio' .or. word(i:j) == 'iouaoaeiouiu' .or. &
+                   word(i:j) == 'iouaoaeiouoa' .or. word(i:j) == 'iouaoaeiouou' .or. &
+                   word(i:j) == 'iouauaeiou' .or. word(i:j) == 'iouauaeioua' .or. &
+                   word(i:j) == 'iouauaeiouae' .or. word(i:j) == '
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:42:66:
+
+   42 |                    word(i:j) == 'iouauaeiouae' .or. word(i:j) == '
+      |                                                                  1
+Error: Unterminated character constant beginning at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def count_vowel_substrings(word: str) -&gt; int:
+    count, a, e, i, o, u = 0, 0, 0, 0, 0, 0
+    for c in word:
+        if c == 'a': a += 1
+        elif c == 'e': e = a + e
+        elif c == 'i': i = e + i
+        elif c == 'o': o = i + o
+        elif c == 'u': u = o + u
+    return u
+</code></pre>
+<p>The algorithm counts the number of vowel substrings in the given input <code>word</code>. The basic idea is to maintain separate counter variables for each vowel <code>a</code>, <code>e</code>, <code>i</code>, <code>o</code>, and <code>u</code>. When iterating through the characters of the input string, the algorithm increases or updates the respective counter variables based on whether a character is a given type of vowel. The updated counter variables keep track of the number of vowel substrings. Once the iteration is completed, the result can be obtained from the counter variable of last vowel <code>u</code>. This solution has a time complexity of O(N), where N is the length of the input string <code>word</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int countVowelSubstrings(string word) {
+    int count = 0, a = 0, e = 0, i = 0, o = 0, u = 0;
+    for (char c : word) {
+        if (c == 'a') a++;
+        else if (c == 'e') e = a + e;
+        else if (c == 'i') i = e + i;
+        else if (c == 'o') o = i + o;
+        else if (c == 'u') u = o + u;
+    }
+    return u;
+}
+</code></pre>
+<p>The algorithm counts the number of vowel substrings in the given input <code>word</code>. The basic idea is to maintain separate counter variables for each vowel <code>a</code>, <code>e</code>, <code>i</code>, <code>o</code>, and <code>u</code>. When iterating through the characters of the input string, the algorithm increases or updates the respective counter variables based on whether a character is a given type of vowel. The updated counter variables keep track of the number of vowel substrings. Once the iteration is completed, the result can be obtained from the counter variable of last vowel <code>u</code>. This solution has a time complexity of O(N), where N is the length of the input string <code>word</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

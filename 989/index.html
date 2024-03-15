@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Add to Array-Form of Integer</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/977/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/993/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>The <strong>array-form</strong> of an integer <code>num</code> is an array representing its digits in left to right order.</p>
+<ul>
+<li>For example, for <code>num = 1321</code>, the array form is <code>[1,3,2,1]</code>.</li>
+</ul>
+<p>Given <code>num</code>, the <strong>array-form</strong> of an integer, and an integer <code>k</code>, return <em>the <strong>array-form</strong> of the integer</em> <code>num + k</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num = [1,2,0,0], k = 34
+<strong>Output:</strong> [1,2,3,4]
+<strong>Explanation:</strong> 1200 + 34 = 1234</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num = [2,7,4], k = 181
+<strong>Output:</strong> [4,5,5]
+<strong>Explanation:</strong> 274 + 181 = 455</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> num = [2,1,5], k = 806
+<strong>Output:</strong> [1,0,2,1]
+<strong>Explanation:</strong> 215 + 806 = 1021</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= num.length &lt;= 104</code></li>
+<li><code>0 &lt;= num[i] &lt;= 9</code></li>
+<li><code>num</code> does not contain any leading zeros except for the zero itself.</li>
+<li><code>1 &lt;= k &lt;= 104</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/add-to-array-form-of-integer/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: num(4), k
+    integer :: i
+
+    ! Example 1
+    num = [1, 2, 0, 0]
+    k = 34
+    call print_array_form(num)
+    write (*,*) " + ", k, " = "
+    call add_to_array_form(num, k)
+    call print_array_form(num)
+    write (*,*) ""
+
+    ! Example 2
+    num = [2, 7, 4]
+    k = 181
+    call print_array_form(num)
+    write (*,*) " + ", k, " = "
+    call add_to_array_form(num, k)
+    call print_array_form(num)
+    write (*,*) ""
+
+    ! Example 3
+    num = [2, 1, 5]
+    k = 806
+    call print_array_form(num)
+    write (*,*) " + ", k, " = "
+    call add_to_array_form(num, k)
+    call print_array_form(num)
+    write (*,*) ""
+
+contains
+
+    subroutine print_array_form(num)
+        implicit none
+        integer, intent(in) :: num(:)
+        integer :: i
+
+        do i = size(num), 1, -1
+            write (*,*) num(i), " "
+        end do
+    end subroutine print_array_form
+
+    subroutine add_to_array_form(num, k)
+        implicit none
+        integer, intent(inout) :: num(:)
+        integer, value :: k
+        integer :: carry
+
+        carry = 0
+        do i = 1, size(num)
+            num(i) = num(i) + carry
+            carry = num(i) / 10
+            num(i) = mod(num(i), 10)
+        end do
+        if (carry > 0) then
+            allocate(num(size(num)+1))
+            num(1:size(num)-1) = 0
+            num(size(num)) = carry
+        end if
+    end subroutine add_to_array_form
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:59:21:
+
+   59 |             allocate(num(size(num)+1))
+      |                     1
+Error: Allocate-object at (1) must be ALLOCATABLE or a POINTER
+temp.f95:17:4:
+
+   17 |     num = [2, 7, 4]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (4 and 3)
+temp.f95:26:4:
+
+   26 |     num = [2, 1, 5]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (4 and 3)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module AddToArrayForm
+    implicit none
+    private
+    public :: addToArrayForm
+contains
+    function addToArrayForm(num, k) result(result)
+        integer, intent(in) :: num(:)
+        integer, intent(in) :: k
+        integer :: result(size(num))
+
+        integer :: carry, i
+
+        carry = k
+        do i = 1, size(num)
+            result(i) = (num(i) + carry) mod 10
+            carry = (num(i) + carry) / 10
+        end do
+
+        if (carry > 0) then
+            allocate(result(size(num) + 1))
+            result(1:size(num)) = num
+            result(size(num) + 1) = carry
+        end if
+    end function addToArrayForm
+end module AddToArrayForm
+
+program test_addToArrayForm
+    use AddToArrayForm
+    implicit none
+    integer, parameter :: num = [1, 3, 2, 1]
+    integer, parameter :: k = 34
+    integer :: result(size(num))
+
+    result = addToArrayForm(num, k)
+
+    write (*,*) "Result: ", result
+end program test_addToArrayForm
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:28:
+
+    4 |     public :: addToArrayForm
+      |                            1
+Error: PUBLIC attribute applied to MODULE addtoarrayform at (1)
+temp.f95:6:27:
+
+    6 |     function addToArrayForm(num, k) result(result)
+      |                           1
+Error: MODULE attribute of ‘addtoarrayform’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:37:
+
+    7 |         integer, intent(in) :: num(:)
+      |                                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:32:
+
+    8 |         integer, intent(in) :: k
+      |                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:31:
+
+    9 |         integer :: result(size(num))
+      |                               1
+Error: Symbol ‘num’ is used before it is typed at (1)
+temp.f95:11:27:
+
+   11 |         integer :: carry, i
+      |                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:17:
+
+   13 |         carry = k
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:14:27:
+
+   14 |         do i = 1, size(num)
+      |                           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:16:41:
+
+   16 |             carry = (num(i) + carry) / 10
+      |                                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:11:
+
+   17 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:19:27:
+
+   19 |         if (carry > 0) then
+      |                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:20:21:
+
+   20 |             allocate(result(size(num) + 1))
+      |                     1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:22:41:
+
+   22 |             result(size(num) + 1) = carry
+      |                                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:11:
+
+   23 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:24:7:
+
+   24 |     end function addToArrayForm
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:9:
+
+   28 |     use AddToArrayForm
+      |         1
+Fatal Error: Cannot open module file ‘addtoarrayform.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from collections import defaultdict
+
+def largestComponentSize(nums):
+    def primes(n):
+        for i in range(2, int(n**0.5) + 1):
+            if n % i == 0:
+                return i
+        return n
+
+    def dfs(node, visited, graph):
+        if node in visited:
+            return 0
+        visited.add(node)
+        size = 1
+        for neighbor in graph[node]:
+            size += dfs(neighbor, visited, graph)
+        return size
+
+    graph = defaultdict(set)
+    visited = set()
+
+    for num in nums:
+        prime = primes(num)
+        graph[prime].add(num)
+        if num != prime:
+            graph[num].add(prime)
+
+    count = 0
+    for num in nums:
+        count = max(count, dfs(num, visited, graph))
+
+    return count
+</code></pre>
+<p>The algorithm uses the following steps:</p>
+<ol>
+<li>For each number in <code>nums</code>, find the smallest prime divisor, which is the prime number that divides the current number.</li>
+<li>Construct a graph where the nodes are numbers, and the edges are between each number and its smallest prime divisor.</li>
+<li>Perform a depth-first search (DFS) on the graph for each number in <code>nums</code>, counting the size of connected components and keeping track of visited nodes.</li>
+<li>Return the size of the largest connected component in the graph.</li>
+</ol>
+<p>This algorithm starts by mapping each number to its smallest prime divisor, and then building a graph to model the relationships between the numbers and the divisors. The DFS traversal helps to find connected components, and the largest connected component is returned. The time complexity of this algorithm is O(N√W), where N is the size of the nums array, and W is the maximum number in it.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include&lt;vector&gt;
+#include&lt;unordered_set&gt;
+#include&lt;unordered_map&gt;
+
+using namespace std;
+
+int primes(int n) {
+    for (int i = 2; i * i &lt;= n; ++i) {
+        if (n % i == 0) return i;
+    }
+    return n;
+}
+
+int largestComponentSize(vector&lt;int&gt;&amp; nums) {
+    int count = 0;
+    unordered_map&lt;int, unordered_set&lt;int&gt;&gt; graph;
+    unordered_set&lt;int&gt; visited;
+    for (int num : nums) {
+        int prime = primes(num);
+        graph[prime].insert(num);
+        if (num != prime) graph[num].insert(prime);
+    }
+
+    function&lt;int(int)&gt; dfs = [&amp;](int node) {
+        if (!visited.insert(node).second) return 0;
+        int res = 1;
+        for (int neighbor : graph[node]) {
+            res += dfs(neighbor);
+        }
+        return res;
+    };
+
+    for (int num : nums) {
+        count = max(count, dfs(num));
+    }
+    return count;
+}
+</code></pre>
+<p>The algorithm uses the following steps:</p>
+<ol>
+<li>For each number in <code>nums</code>, find the smallest prime divisor, which is the prime number that divides the current number.</li>
+<li>Construct a graph where the nodes are numbers, and the edges are between each number and its smallest prime divisor.</li>
+<li>Perform a depth-first search (DFS) on the graph for each number in <code>nums</code>, counting the size of connected components and keeping track of visited nodes.</li>
+<li>Return the size of the largest connected component in the graph.</li>
+</ol>
+<p>This algorithm starts by mapping each number to its smallest prime divisor, and then building a graph to model the relationships between the numbers and the divisors. The DFS traversal helps to find connected components, and the largest connected component is returned. The time complexity of this algorithm is O(N√W), where N is the size of the nums array, and W is the maximum number in it.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

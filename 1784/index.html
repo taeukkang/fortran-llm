@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Check if Binary String Has at Most One Segment of Ones</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1779/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1790/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a binary string <code>s</code> <strong>​​​​​without leading zeros</strong>, return <code>true</code>​​​ <em>if</em> <code>s</code> <em>contains <strong>at most one contiguous segment of ones</strong></em>. Otherwise, return <code>false</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "1001 "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The ones do not form a contiguous segment.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "110 "
+<strong>Output:</strong> true</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 100</code></li>
+<li><code>s[i]</code>​​​​ is either <code>'0'</code> or <code>'1'</code>.</li>
+<li><code>s[0]</code> is <code>'1'</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/check-if-binary-string-has-at-most-one-segment-of-ones/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=100) :: s
+    logical :: result
+
+    ! Example 1
+    s = "1001"
+    result = contains_contiguous_segment_of_ones(s)
+    if (result) then
+        write (*,*) "FAILURE: Expected false but got true for input ", s
+    else
+        write (*,*) "SUCCESS: Expected false and got false for input ", s
+    end if
+
+    ! Example 2
+    s = "110"
+    result = contains_contiguous_segment_of_ones(s)
+    if (.not. result) then
+        write (*,*) "FAILURE: Expected true but got false for input ", s
+    else
+        write (*,*) "SUCCESS: Expected true and got true for input ", s
+    end if
+
+contains
+
+    function contains_contiguous_segment_of_ones(s) result(res)
+        implicit none
+        character(len=*), intent(in) :: s
+        logical :: res
+
+        integer :: i, j
+
+        res = .false.
+
+        do i = 2, len(s) - 1
+            if (s(i:i) == '1') then
+                do j = i + 1, len(s)
+                    if (s(j:j) /= '1') exit
+                end do
+                if (j - i > 1) then
+                    res = .true.
+                    exit
+                end if
+            end if
+        end do
+
+    end function contains_contiguous_segment_of_ones
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> SUCCESS: Expected false and got false for input 1001                                                                                                
+ FAILURE: Expected true but got false for input 110                                                                                                 
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module one_segment
+    implicit none
+    private
+    public :: one_segment
+contains
+    function one_segment(s) result(output)
+        implicit none
+        character(len=*), intent(in) :: s
+        logical :: output
+        integer :: i, j
+        output = .false.
+        do i = 2, len(s)
+            if (s(i:i) == '1') then
+                j = i
+                do while (j <= len(s) .and. s(j:j) == '1')
+                    j = j + 1
+                end do
+                if (j - i > 1) then
+                    output = .true.
+                    exit
+                end if
+            end if
+        end do
+    end function one_segment
+end module one_segment
+
+program test_one_segment
+    use one_segment
+    implicit none
+    character(len=100) :: s
+    logical :: output
+    s = "1001 "
+    output = one_segment(s)
+    if (output) then
+        print *, "The ones form a contiguous segment."
+    else
+        print *, "The ones do not form a contiguous segment."
+    end if
+    s = "110 "
+    output = one_segment(s)
+    if (output) then
+        print *, "The ones form a contiguous segment."
+    else
+        print *, "The ones do not form a contiguous segment."
+    end if
+end program test_one_segment
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:25:
+
+    4 |     public :: one_segment
+      |                         1
+Error: PUBLIC attribute applied to MODULE one_segment at (1)
+temp.f95:6:24:
+
+    6 |     function one_segment(s) result(output)
+      |                        1
+Error: MODULE attribute of ‘one_segment’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:21:
+
+    7 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:8:41:
+
+    8 |         character(len=*), intent(in) :: s
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:25:
+
+    9 |         logical :: output
+      |                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:23:
+
+   10 |         integer :: i, j
+      |                       1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:24:
+
+   11 |         output = .false.
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:12:24:
+
+   12 |         do i = 2, len(s)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:13:20:
+
+   13 |             if (s(i:i) == '1') then
+      |                    1
+Error: Syntax error in argument list at (1)
+temp.f95:14:21:
+
+   14 |                 j = i
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:48:
+
+   15 |                 do while (j <= len(s) .and. s(j:j) == '1')
+      |                                                1
+Error: Syntax error in argument list at (1)
+temp.f95:16:29:
+
+   16 |                     j = j + 1
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:19:
+
+   17 |                 end do
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:18:35:
+
+   18 |                 if (j - i > 1) then
+      |                                   1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:19:35:
+
+   19 |                     output = .true.
+      |                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:24:
+
+   20 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:21:19:
+
+   21 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:22:15:
+
+   22 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:11:
+
+   23 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:24:7:
+
+   24 |     end function one_segment
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:9:
+
+   28 |     use one_segment
+      |         1
+Fatal Error: Cannot open module file ‘one_segment.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minimum_energy(tasks):
+    tasks.sort(key=lambda task: task[1] - task[0], reverse=True)
+
+    energy = 0
+    for task in tasks:
+        energy = max(energy + task[0], task[1])
+    return energy
+</code></pre>
+<ol>
+<li>Sort the tasks in descending order based on the difference between the minimum energy required to start the task and the actual energy cost to complete the task <code>(minimum[i] - actual[i])</code>.</li>
+<li>Initialize the current energy to 0.</li>
+<li>Iterate through the sorted list of tasks, for each task:</li>
+<li>Calculate the maximum of the current energy plus the actual energy cost to complete the task, or the minimum energy required to start the task, and set it as the current energy.</li>
+<li>Return the current energy after processing all tasks. This will be the minimum initial amount of energy required to finish all tasks.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int minimumEnergy(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; tasks) {
+    std::sort(tasks.begin(), tasks.end(), [](const std::vector&lt;int&gt;&amp; a, const std::vector&lt;int&gt;&amp; b) {
+        return a[1] - a[0] &gt; b[1] - b[0];
+    });
+
+    int energy = 0;
+    for (const auto&amp; task : tasks) {
+        energy = std::max(energy + task[0], task[1]);
+    }
+    return energy;
+}
+</code></pre>
+<ol>
+<li>Sort the tasks in descending order based on the difference between the minimum energy required to start the task and the actual energy cost to complete the task <code>(minimum[i] - actual[i])</code>.</li>
+<li>Initialize the current energy to 0.</li>
+<li>Iterate through the sorted list of tasks, for each task:</li>
+<li>Calculate the maximum of the current energy plus the actual energy cost to complete the task, or the minimum energy required to start the task, and set it as the current energy.</li>
+<li>Return the current energy after processing all tasks. This will be the minimum initial amount of energy required to finish all tasks.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

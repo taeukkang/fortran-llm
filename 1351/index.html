@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count Negative Numbers in a Sorted Matrix</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1346/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1356/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a <code>m x n</code> matrix <code>grid</code> which is sorted in non-increasing order both row-wise and column-wise, return <em>the number of <strong>negative</strong> numbers in</em> <code>grid</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> grid = [[4,3,2,-1],[3,2,1,-1],[1,1,-1,-2],[-1,-1,-2,-3]]
+<strong>Output:</strong> 8
+<strong>Explanation:</strong> There are 8 negatives number in the matrix.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> grid = [[3,2],[1,0]]
+<strong>Output:</strong> 0</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>m == grid.length</code></li>
+<li><code>n == grid[i].length</code></li>
+<li><code>1 &lt;= m, n &lt;= 100</code></li>
+<li><code>-100 &lt;= grid[i][j] &lt;= 100</code></li>
+</ul>
+<p><strong>Follow up:</strong> Could you find an <code>O(n + m)</code> solution?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-negative-numbers-in-a-sorted-matrix/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: m = 4, n = 4
+    integer :: grid(m, n)
+    integer :: i, j
+    integer :: negative_count
+
+    ! Example 1
+    grid(:, :) = reshape([4, 3, 2, -1, 3, 2, 1, -1, 1, 1, -1, -2, -1, -1, -2, -3], shape(grid))
+    write(*, '(A, I0)') 'Example 1: ', count_negatives(grid)
+
+    ! Example 2
+    grid(:, :) = reshape([3, 2, 1, 0, 1, 0], shape(grid))
+    write(*, '(A, I0)') 'Example 2: ', count_negatives(grid)
+
+contains
+
+    function count_negatives(grid) result(negative_count)
+        implicit none
+        integer, intent(in) :: grid(:, :)
+        integer :: i, j
+        integer :: negative_count
+
+        negative_count = 0
+        do i = 1, size(grid, 1)
+            do j = 1, size(grid, 2)
+                if (grid(i, j) < 0) then
+                    negative_count = negative_count + 1
+                end if
+            end do
+        end do
+    end function count_negatives
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:14:25:
+
+   14 |     grid(:, :) = reshape([3, 2, 1, 0, 1, 0], shape(grid))
+      |                         1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module NegativeNumbersInSortedMatrix
+    implicit none
+    private
+    public :: negativeNumbersInSortedMatrix
+
+contains
+
+    function negativeNumbersInSortedMatrix(grid) result(count)
+        integer, intent(in) :: grid(:, :)
+        integer :: count
+
+        integer :: i, j
+
+        count = 0
+        do i = 1, size(grid, 1)
+            do j = 1, size(grid, 2)
+                if (grid(i, j) < 0) then
+                    count = count + 1
+                end if
+            end do
+        end do
+    end function negativeNumbersInSortedMatrix
+end module NegativeNumbersInSortedMatrix
+
+program test_negativeNumbersInSortedMatrix
+    use NegativeNumbersInSortedMatrix
+    implicit none
+
+    integer, parameter :: m = 4
+    integer, parameter :: n = 4
+    integer, parameter :: grid(m, n) = reshape([4, 3, 2, -1, 3, 2, 1, -1, 1, 1, -1, -2, -1, -1, -2, -3], [m, n])
+    integer :: count
+
+    count = negativeNumbersInSortedMatrix(grid)
+
+    write (*, *) "Negative numbers in grid:", count
+
+    contains
+
+    subroutine check(expected, actual)
+        integer, intent(in) :: expected, actual
+
+        if (expected /= actual) then
+            write (*, *) "Error: expected ", expected, " but got ", actual
+            stop 1
+        end if
+    end subroutine check
+end program test_negativeNumbersInSortedMatrix
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:43:
+
+    4 |     public :: negativeNumbersInSortedMatrix
+      |                                           1
+Error: PUBLIC attribute applied to MODULE negativenumbersinsortedmatrix at (1)
+temp.f95:8:42:
+
+    8 |     function negativeNumbersInSortedMatrix(grid) result(count)
+      |                                          1
+Error: MODULE attribute of ‘negativenumbersinsortedmatrix’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:41:
+
+    9 |         integer, intent(in) :: grid(:, :)
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:24:
+
+   10 |         integer :: count
+      |                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:23:
+
+   12 |         integer :: i, j
+      |                       1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:17:
+
+   14 |         count = 0
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:31:
+
+   15 |         do i = 1, size(grid, 1)
+      |                               1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:16:35:
+
+   16 |             do j = 1, size(grid, 2)
+      |                                   1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:17:40:
+
+   17 |                 if (grid(i, j) < 0) then
+      |                                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:18:37:
+
+   18 |                     count = count + 1
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:19:
+
+   19 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:20:15:
+
+   20 |             end do
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:21:11:
+
+   21 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:22:7:
+
+   22 |     end function negativeNumbersInSortedMatrix
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:9:
+
+   26 |     use NegativeNumbersInSortedMatrix
+      |         1
+Fatal Error: Cannot open module file ‘negativenumbersinsortedmatrix.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def balanced_string(s):
+    n = len(s)
+    freq_map = {}
+    for c in s:
+        freq_map[c] = freq_map.get(c, 0) + 1
+
+    i = 0
+    result = n
+    for j in range(n):
+        freq_map[s[j]] -= 1
+        while i &lt; n and all(freq_map.get(c, 0) &lt;= n // 4 for c in &quot;QWER&quot;):
+            result = min(result, j - i + 1)
+            freq_map[s[i]] += 1
+            i += 1
+
+    return result
+</code></pre>
+<ol>
+<li>Create a frequency map of characters in the given string.</li>
+<li>Initialize two pointers, i and j, to traverse the string.</li>
+<li>Traverse the string with pointer j and decrease the frequency of the current character.</li>
+<li>Check if the frequency of all characters is less than or equal to n/4. If so, update the minimum length of substring.</li>
+<li>Increment pointer i while maintaining the frequency map until the frequency of any character becomes more than n/4.</li>
+<li>Return the minimum length of substring found.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int balancedString(string s) {
+    int n = s.size();
+    unordered_map&lt;char, int&gt; freq_map;
+    for (char c : s)
+        freq_map[c]++;
+
+    int i = 0, result = n;
+    for (int j = 0; j &lt; n; j++) {
+        freq_map[s[j]]--;
+        while (i &lt; n &amp;&amp; freq_map['Q'] &lt;= n / 4 &amp;&amp; freq_map['W'] &lt;= n / 4 &amp;&amp; freq_map['E'] &lt;= n / 4 &amp;&amp; freq_map['R'] &lt;= n / 4) {
+            result = min(result, j - i + 1);
+            freq_map[s[i]]++;
+            i++;
+        }
+    }
+    return result;
+}
+</code></pre>
+<ol>
+<li>Create a frequency map of characters in the given string.</li>
+<li>Initialize two pointers, i and j, to traverse the string.</li>
+<li>Traverse the string with pointer j and decrease the frequency of the current character.</li>
+<li>Check if the frequency of all characters is less than or equal to n/4. If so, update the minimum length of substring.</li>
+<li>Increment pointer i while maintaining the frequency map until the frequency of any character becomes more than n/4.</li>
+<li>Return the minimum length of substring found.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Subsequence in Non-Increasing Order</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1399/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1408/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the array <code>nums</code>, obtain a subsequence of the array whose sum of elements is <strong>strictly greater</strong> than the sum of the non included elements in such subsequence.</p>
+<p>If there are multiple solutions, return the subsequence with <strong>minimum size</strong> and if there still exist multiple solutions, return the subsequence with the <strong>maximum total sum</strong> of all its elements. A subsequence of an array can be obtained by erasing some (possibly zero) elements from the array.</p>
+<p>Note that the solution with the given constraints is guaranteed to be <strong>unique</strong>. Also return the answer sorted in <strong>non-increasing</strong> order.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [4,3,10,9,8]
+<strong>Output:</strong> [10,9] 
+<strong>Explanation:</strong> The subsequences [10,9] and [10,8] are minimal such that the sum of their elements is strictly greater than the sum of elements not included. However, the subsequence [10,9] has the maximum total sum of its elements. </p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [4,4,7,6,7]
+<strong>Output:</strong> [7,7,6] 
+<strong>Explanation:</strong> The subsequence [7,7] has the sum of its elements equal to 14 which is not strictly greater than the sum of elements not included (14 = 4 + 4 + 6). Therefore, the subsequence [7,6,7] is the minimal satisfying the conditions. Note the subsequence has to be returned in non-decreasing order.  </p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 500</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-subsequence-in-non-increasing-order/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 5
+    integer, dimension(n) :: nums = (/ 4, 3, 10, 9, 8 /)
+    integer, dimension(:), allocatable :: subseq
+    integer :: i, j, k, l, m, n_subseq, min_size, max_sum
+
+    call solve(nums, subseq, n_subseq, min_size, max_sum)
+
+    write (*, '(A, I0, A, I0, A)') 'Subsequence: ', subseq, &
+        ' (', n_subseq, ' elements)'
+    write (*, '(A, I0, A, I0, A)') 'Minimal size: ', min_size, &
+        ' (', n_subseq, ' elements)'
+    write (*, '(A, I0, A, I0, A)') 'Maximum sum: ', max_sum, &
+        ' (', n_subseq, ' elements)'
+
+contains
+
+    subroutine solve(nums, subseq, n_subseq, min_size, max_sum)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer, allocatable, intent(out) :: subseq(:)
+        integer, intent(out) :: n_subseq, min_size, max_sum
+        integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+
+        ! Initialize variables
+        n_subseq = 0
+        min_size = huge(n_subseq)
+        max_sum = -huge(max_sum)
+
+        ! Loop over all possible subsequences
+        do i = 1, size(nums)
+            do j = i + 1, size(nums)
+                do k = j + 1, size(nums)
+                    do l = k + 1, size(nums)
+                        do m = l + 1, size(nums)
+                            do n = m + 1, size(nums)
+                                do o = n + 1, size(nums)
+                                    do p = o + 1, size(nums)
+                                        do q = p + 1, size(nums)
+                                            do r = q + 1, size(nums)
+                                                do s = r + 1, size(nums)
+                                                    do t = s + 1, size(nums)
+                                                        do u = t + 1, size(nums)
+                                                            do v = u + 1, size(nums)
+                                                                do w = v + 1, size(nums)
+                                                                    do x = w + 1, size(nums)
+                                                                        do y = x + 1, size(nums)
+                                                                            do z = y + 1, size(nums)
+                                                                                ! Check if subsequence satisfies conditions
+                                                                                if (sum(nums(i:z)) > sum(nums(1:i-1)) .and. &
+                                                                                    sum(nums(i:z)) > sum(nums(j:k-1)) .and. &
+                                                                                    sum(nums(i:z)) > sum(nums(l:m-1)) .and. &
+                                                                                    sum(nums(i:z)) > sum(nums(n:o-1)) .and. &
+                                                                                    sum(nums(i:z)) > sum(nums(p:q-1)) .and. &
+                                                                                    sum(nums(i:z)) > sum(nums(r:s-1)) .and. &
+                                                                                    sum(nums(i:z)) > sum(nums(t:u-1)) .and. &
+                                                                                    sum(nums(i:z)) > sum(nums(v:w-1)) .and. &
+                                                                                    sum(nums(i:z)) > sum(nums(x:y-1))) then
+                                                </code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module main
+
+implicit none
+
+integer, parameter :: dp = selected_real_kind(15, 307)
+
+integer, dimension(:), allocatable :: nums
+integer :: n
+
+integer, dimension(:), allocatable :: dp_fwd
+integer, dimension(:), allocatable :: dp_bwd
+
+integer :: i, j, k
+integer :: max_sum
+integer :: min_size
+
+contains
+
+subroutine solve(nums, n, dp_fwd, dp_bwd, max_sum, min_size)
+
+integer, dimension(:), intent(in) :: nums
+integer, intent(in) :: n
+integer, dimension(:), intent(out) :: dp_fwd
+integer, dimension(:), intent(out) :: dp_bwd
+integer, intent(out) :: max_sum
+integer, intent(out) :: min_size
+
+integer :: i, j, k
+
+! Initialize dp_fwd and dp_bwd
+dp_fwd = 0
+dp_bwd = 0
+
+! Initialize dp_fwd(0) and dp_bwd(0)
+dp_fwd(0) = 0
+dp_bwd(0) = 0
+
+! Loop through all elements of nums
+do i = 1, n
+
+    ! Loop through all elements of nums that are less than or equal to i
+    do j = 1, i - 1
+
+        ! Update dp_fwd(i)
+        if (nums(i) > nums(j)) then
+            dp_fwd(i) = max(dp_fwd(i), dp_fwd(j) + nums(i))
+        end if
+
+        ! Update dp_bwd(i)
+        if (nums(i) > nums(j)) then
+            dp_bwd(i) = max(dp_bwd(i), dp_bwd(j) + nums(i))
+        end if
+
+    end do
+
+end do
+
+! Find the maximum sum
+max_sum = 0
+do i = 1, n
+    max_sum = max(max_sum, dp_fwd(i) + dp_bwd(i))
+end do
+
+! Find the minimum size
+min_size = n + 1
+do i = 1, n
+    if (dp_fwd(i) + dp_bwd(i) == max_sum) then
+        min_size = min(min_size, i)
+    end if
+end do
+
+end subroutine solve
+
+end module main
+
+program main
+
+use main
+
+implicit none
+
+integer, parameter :: n = 5
+integer, parameter :: nums(n) = [4, 3, 10, 9, 8]
+
+integer, dimension(n) :: dp_fwd
+integer, dimension(n) :: dp_bwd
+integer :: max_sum
+integer :: min_size
+
+call solve(nums, n, dp_fwd, dp_bwd, max_sum, min_size)
+
+write (*, *) "Max sum: ", max_sum
+write (*, *) "Min size: ", min_size
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:35:7:
+
+   35 | dp_fwd(0) = 0
+      |       1
+Warning: Array reference at (1) is out of bounds (0 < 1) in dimension 1
+temp.f95:36:7:
+
+   36 | dp_bwd(0) = 0
+      |       1
+Warning: Array reference at (1) is out of bounds (0 < 1) in dimension 1
+temp.f95:76:12:
+
+    1 | module main
+      |           2 
+......
+   76 | program main
+      |            1
+Error: Global name ‘main’ at (1) is already being used as a MODULE at (2)
+temp.f95:78:5:
+
+   78 | use main
+      |     1
+Error: ‘main’ of module ‘main’, imported at (1), is also the name of the current program unit
+temp.f95:82:23:
+
+   78 | use main
+      |    2                   
+......
+   82 | integer, parameter :: n = 5
+      |                       1
+Error: Symbol ‘n’ at (1) conflicts with symbol from module ‘main’, use-associated at (2)
+temp.f95:83:30:
+
+   83 | integer, parameter :: nums(n) = [4, 3, 10, 9, 8]
+      |                              1
+Error: Explicit shaped array with nonconstant bounds at (1)
+temp.f95:85:31:
+
+   85 | integer, dimension(n) :: dp_fwd
+      |                               1
+Error: Explicit shaped array with nonconstant bounds at (1)
+temp.f95:86:31:
+
+   86 | integer, dimension(n) :: dp_bwd
+      |                               1
+Error: Explicit shaped array with nonconstant bounds at (1)
+temp.f95:87:18:
+
+   78 | use main
+      |    2              
+......
+   87 | integer :: max_sum
+      |                  1
+Error: Symbol ‘max_sum’ at (1) conflicts with symbol from module ‘main’, use-associated at (2)
+temp.f95:88:19:
+
+   78 | use main
+      |    2               
+......
+   88 | integer :: min_size
+      |                   1
+Error: Symbol ‘min_size’ at (1) conflicts with symbol from module ‘main’, use-associated at (2)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_changes_to_divide_string(s, k):
+    n = len(s)
+    if n % k != 0:
+        return -1
+    chunk_count = n // k
+    res = 0
+    for i in range(k):
+        counts = [0] * 26
+        for j in range(i, n, k):
+            counts[ord(s[j]) - ord('a')] += 1
+        max_count = max(counts)
+        res += chunk_count - max_count
+    return res
+</code></pre>
+<p>The algorithm works as follows:</p>
+<ol>
+<li>Check if the length of the string s is divisible by k. If not, return -1 as it's impossible to divide the string.</li>
+<li>Calculate the number of chunks the string will be divided into. This value will be (length of string / k).</li>
+<li>Initialize a variable <code>res</code> to 0. This will store the total count of characters needed to be changed.</li>
+<li>Loop through 0 to k as <code>i</code>:
+   a. Create a count array <code>counts</code> with 26 elements for each character in the lowercase English alphabet.
+   b. Loop through the characters of the string starting from <code>i</code> and incrementing by <code>k</code>.
+   c. Increment the count associated with each lowercase character in the <code>counts</code> array.
+   d. Find the maximum count in the <code>counts</code> array.
+   e. Add the difference of chunkCount and maxCount to the <code>res</code> variable.</li>
+<li>Return the <code>res</code> variable, which contains the minimal number of characters that need to be changed.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int min_changes_to_divide_string(const std::string&amp; s, int k) {
+    int n = s.length();
+    if (n % k != 0) return -1;
+    int chunk_count = n / k;
+    int res = 0;
+    for (int i = 0; i &lt; k; ++i) {
+        int counts[26] = {0};
+        for (int j = i; j &lt; n; j += k) {
+            ++counts[s[j] - 'a'];
+        }
+        int max_count = *std::max_element(counts, counts + 26);
+        res += chunk_count - max_count;
+    }
+    return res;
+}
+</code></pre>
+<p>The algorithm works as follows:</p>
+<ol>
+<li>Check if the length of the string s is divisible by k. If not, return -1 as it's impossible to divide the string.</li>
+<li>Calculate the number of chunks the string will be divided into. This value will be (length of string / k).</li>
+<li>Initialize a variable <code>res</code> to 0. This will store the total count of characters needed to be changed.</li>
+<li>Loop through 0 to k as <code>i</code>:
+   a. Create a count array <code>counts</code> with 26 elements for each character in the lowercase English alphabet.
+   b. Loop through the characters of the string starting from <code>i</code> and incrementing by <code>k</code>.
+   c. Increment the count associated with each lowercase character in the <code>counts</code> array.
+   d. Find the maximum count in the <code>counts</code> array.
+   e. Add the difference of chunkCount and maxCount to the <code>res</code> variable.</li>
+<li>Return the <code>res</code> variable, which contains the minimal number of characters that need to be changed.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

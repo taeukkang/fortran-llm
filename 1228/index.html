@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Missing Number In Arithmetic Progression</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1221/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1232/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>In some array <code>arr</code>, the values were in arithmetic progression: the values <code>arr[i + 1] - arr[i]</code> are all equal for every <code>0 &lt;= i &lt; arr.length - 1</code>.</p>
+<p>A value from <code>arr</code> was removed that <strong>was not the first or last value in the array</strong>.</p>
+<p>Given <code>arr</code>, return <em>the removed value</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [5,7,11,13]
+<strong>Output:</strong> 9
+<strong>Explanation:</strong> The previous array was [5,7,<strong>9</strong>,11,13].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [15,13,12]
+<strong>Output:</strong> 14
+<strong>Explanation:</strong> The previous array was [15,<strong>14</strong>,13,12].</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>3 &lt;= arr.length &lt;= 1000</code></li>
+<li><code>0 &lt;= arr[i] &lt;= 105</code></li>
+<li>The given array is <strong>guaranteed</strong> to be a valid array.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/missing-number-in-arithmetic-progression/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 5
+    integer, dimension(n) :: arr
+    integer :: i
+
+    ! Example 1
+    arr = [5, 7, 11, 13]
+    call solve(arr)
+    write (*, '(I0)') arr(3)
+
+    ! Example 2
+    arr = [15, 13, 12]
+    call solve(arr)
+    write (*, '(I0)') arr(2)
+
+contains
+
+    subroutine solve(arr)
+        implicit none
+        integer, dimension(:), intent(inout) :: arr
+        integer :: diff, i
+
+        diff = arr(2) - arr(1)
+        do i = 2, size(arr) - 1
+            if (arr(i + 1) - arr(i) /= diff) then
+                arr(i) = arr(i) + diff
+                exit
+            end if
+        end do
+    end subroutine solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:4:
+
+    9 |     arr = [5, 7, 11, 13]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (5 and 4)
+temp.f95:14:4:
+
+   14 |     arr = [15, 13, 12]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (5 and 3)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program remove_value
+      implicit none
+
+      integer, parameter :: int64 = selected_int_kind(13)
+
+      integer(int64), dimension(:), allocatable :: arr
+      integer(int64) :: i, n, removed_value
+
+      read(*,*) n
+
+      allocate(arr(n))
+
+      do i = 1, n
+         read(*,*) arr(i)
+      end do
+
+      removed_value = solve(arr, n)
+
+      write(*,*) removed_value
+
+      contains
+
+      function solve(arr, n) result(removed_value)
+      implicit none
+
+      integer(int64), dimension(n), intent(in) :: arr
+      integer(int64), intent(in) :: n
+      integer(int64) :: i, diff
+
+      removed_value = 0
+
+      do i = 2, n - 1
+         diff = arr(i + 1) - arr(i)
+         if (diff /= arr(i - 1) - arr(i)) then
+            removed_value = arr(i)
+            exit
+         end if
+      end do
+
+      end function solve
+
+      end program remove_value
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:23:50:
+
+   23 |       function solve(arr, n) result(removed_value)
+      |                                                  1
+Error: Function result ‘removed_value’ at (1) has no IMPLICIT type
+temp.f95:17:22:
+
+   17 |       removed_value = solve(arr, n)
+      |                      1
+Error: Cannot convert UNKNOWN to INTEGER(8) at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def mctFromLeafValues(arr: List[int]) -&gt; int:
+    n = len(arr)
+    dp = [[0] * n for _ in range(n)]
+    maxs = [[0] * n for _ in range(n)]
+
+    for i in range(n):
+        for j in range(i, n):
+            maxs[i][j] = max(arr[i:j+1])
+
+    for len_ in range(1, n):
+        for i in range(n - len_):
+            j = i + len_
+            dp[i][j] = float('inf')
+            for k in range(i, j):
+                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k+1][j] + maxs[i][k] * maxs[k+1][j])
+
+    return dp[0][n - 1]
+</code></pre>
+<p>The algorithm uses dynamic programming to find the smallest possible sum of non-leaf nodes. The 'dp' matrix stores the minimum sum for each sub-array within the input array 'arr'. The 'maxs' matrix stores the maximum values for each sub-array of 'arr'. To fill up the 'dp' matrix, the code iterates through sub-arrays of increasing length and uses previously computed values to find the minimum sum. It tries all possible binary trees using a nested loop and selects the one with the smallest sum. At the end, it returns the minimum sum of non-leaf nodes for the whole array, which is stored in dp[0][n-1].</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int mctFromLeafValues(vector&lt;int&gt;&amp; arr) {
+    int n = arr.size();
+    vector&lt;vector&lt;int&gt;&gt; dp(n, vector&lt;int&gt;(n, 0));
+    vector&lt;vector&lt;int&gt;&gt; maxs(n, vector&lt;int&gt;(n, 0));
+
+    for (int i = 0; i &lt; n; ++i) {
+        for (int j = i; j &lt; n; ++j) {
+            maxs[i][j] = *max_element(arr.begin() + i, arr.begin() + j + 1);
+        }
+    }
+
+    for (int len = 1; len &lt; n; ++len) {
+        for (int i = 0; i + len &lt; n; ++i) {
+            int j = i + len;
+            dp[i][j] = INT_MAX;
+            for (int k = i; k &lt; j; ++k) {
+                dp[i][j] = min(dp[i][j], dp[i][k] + dp[k + 1][j] + maxs[i][k] * maxs[k + 1][j]);
+            }
+        }
+    }
+    return dp[0][n - 1];
+}
+</code></pre>
+<p>The algorithm uses dynamic programming to find the smallest possible sum of non-leaf nodes. The 'dp' matrix stores the minimum sum for each sub-array within the input array 'arr'. The 'maxs' matrix stores the maximum values for each sub-array of 'arr'. To fill up the 'dp' matrix, the code iterates through sub-arrays of increasing length and uses previously computed values to find the minimum sum. It tries all possible binary trees using a nested loop and selects the one with the smallest sum. At the end, it returns the minimum sum of non-leaf nodes for the whole array, which is stored in dp[0][n-1].</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

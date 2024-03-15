@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Rings and Rods</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2099/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2108/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>There are <code>n</code> rings and each ring is either red, green, or blue. The rings are distributed <strong>across ten rods</strong> labeled from <code>0</code> to <code>9</code>.</p>
+<p>You are given a string <code>rings</code> of length <code>2n</code> that describes the <code>n</code> rings that are placed onto the rods. Every two characters in <code>rings</code> forms a <strong>color-position pair</strong> that is used to describe each ring where:</p>
+<ul>
+<li>The <strong>first</strong> character of the <code>ith</code> pair denotes the <code>ith</code> ring's <strong>color</strong> (<code>'R'</code>, <code>'G'</code>, <code>'B'</code>).</li>
+<li>The <strong>second</strong> character of the <code>ith</code> pair denotes the <strong>rod</strong> that the <code>ith</code> ring is placed on (<code>'0'</code> to <code>'9'</code>).</li>
+</ul>
+<p>For example, <code>"R3G2B1 "</code> describes <code>n == 3</code> rings: a red ring placed onto the rod labeled 3, a green ring placed onto the rod labeled 2, and a blue ring placed onto the rod labeled 1.</p>
+<p>Return <em>the number of rods that have <strong>all three colors</strong> of rings on them.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> rings =  "B0B6G0R6R0R6G9 "
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> 
+- The rod labeled 0 holds 3 rings with all colors: red, green, and blue.
+- The rod labeled 6 holds 3 rings, but it only has red and blue.
+- The rod labeled 9 holds only a green ring.
+Thus, the number of rods with all three colors is 1.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> rings =  "B0R0G0R9R0B0G0 "
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> 
+- The rod labeled 0 holds 6 rings with all colors: red, green, and blue.
+- The rod labeled 9 holds only a red ring.
+Thus, the number of rods with all three colors is 1.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> rings =  "G4 "
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> 
+Only one ring is given. Thus, no rods have all three colors.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>rings.length == 2 * n</code></li>
+<li><code>1 &lt;= n &lt;= 100</code></li>
+<li><code>rings[i]</code> where <code>i</code> is <strong>even</strong> is either <code>'R'</code>, <code>'G'</code>, or <code>'B'</code> (<strong>0-indexed</strong>).</li>
+<li><code>rings[i]</code> where <code>i</code> is <strong>odd</strong> is a digit from <code>'0'</code> to <code>'9'</code> (<strong>0-indexed</strong>).</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/rings-and-rods/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, k, n, m, num_roads
+    character(len=2) :: rings
+    character(len=1), dimension(:), allocatable :: colors
+    integer, dimension(:), allocatable :: positions
+
+    ! read input
+    read(*,*) n
+    allocate(colors(n))
+    allocate(positions(n))
+    read(*,*) rings
+
+    ! parse input
+    do i = 1, n
+        j = (i - 1)*2 + 1
+        k = (i - 1)*2 + 2
+        colors(i) = rings(j:j)
+        positions(i) = iachar(rings(k:k)) - iachar('0')
+    end do
+
+    ! solve problem
+    num_roads = 0
+    do i = 0, 9
+        if (count(positions == i) == 3) then
+            num_roads = num_roads + 1
+        end if
+    end do
+
+    ! print output
+    write(*,*) num_roads
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 10 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7cca34856960 in ???
+#1  0x7cca348574d9 in ???
+#2  0x7cca34aab17b in ???
+#3  0x7cca34aa4684 in ???
+#4  0x7cca34aa52aa in ???
+#5  0x5bd1854382bc in MAIN__
+#6  0x5bd185438771 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module rings
+
+implicit none
+
+contains
+
+integer function count_rods(rings) result(num_rods)
+
+! This function takes a string of length 2n that describes the n rings
+! placed onto the rods. Every two characters in rings forms a color-position
+! pair that is used to describe each ring where:
+!
+! * The first character of the ith pair denotes the ith ring's color
+!   ('R', 'G', 'B').
+! * The second character of the ith pair denotes the rod that the ith ring
+!   is placed on (0 to 9).
+!
+! For example, "R3G2B1 " describes n == 3 rings: a red ring placed onto the
+! rod labeled 3, a green ring placed onto the rod labeled 2, and a blue ring
+! placed onto the rod labeled 1.
+!
+! Return the number of rods that have all three colors of rings on them.
+
+integer :: i, j, k, n
+character(len=2) :: color
+character(len=10) :: rod
+logical :: has_red, has_green, has_blue
+
+! Initialize variables
+n = len(rings) / 2
+has_red = .false.
+has_green = .false.
+has_blue = .false.
+
+! Loop through each ring and update the has_color variables
+do i = 1, n
+    color = rings(2 * (i - 1) + 1:2 * (i - 1) + 2)
+    select case (color)
+        case ("R")
+            has_red = .true.
+        case ("G")
+            has_green = .true.
+        case ("B")
+            has_blue = .true.
+        case default
+            write (*,*) "Invalid color: ", color
+            stop
+    end select
+end do
+
+! Loop through each rod and count the number of rings with all three colors
+num_rods = 0
+do i = 0, 9
+    rod = char(i + 48)
+    if (has_red .and. has_green .and. has_blue) then
+        num_rods = num_rods + 1
+    end if
+end do
+
+end function count_rods
+
+end module rings
+
+program test_rings
+
+use rings
+
+implicit none
+
+! Test case 1:
+! "B0B6G0R6R0R6G9 "
+! Expected output: 1
+call test_case("B0B6G0R6R0R6G9 ", 1)
+
+! Test case 2:
+! "B0R0G0R9R0B0G0 "
+! Expected output: 1
+call test_case("B0R0G0R9R0B0G0 ", 1)
+
+! Test case 3:
+! "G4 "
+! Expected output: 0
+call test_case("G4 ", 0)
+
+contains
+
+subroutine test_case(rings, expected)
+
+character(len=*), intent(in) :: rings
+integer, intent(in) :: expected
+
+integer :: actual
+
+actual = count_rods(rings)
+
+if (actual == expected) then
+    write (*,*) "Pass: ", rings
+else
+    write (*,*) "Fail: ", rings, " Expected: ", expected, " Actual: ", actual
+end if
+
+end subroutine test_case
+
+end program test_rings
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:37:34:
+
+   37 |     color = rings(2 * (i - 1) + 1:2 * (i - 1) + 2)
+      |                                  1
+Error: Syntax error in argument list at (1)
+temp.f95:7:33:
+
+    7 | integer function count_rods(rings) result(num_rods)
+      |                                 1
+Error: Symbol ‘rings’ at (1) has no IMPLICIT type
+temp.f95:66:5:
+
+   66 | use rings
+      |     1
+Fatal Error: Cannot open module file ‘rings.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def findFarmland(land):
+    m, n = len(land), len(land[0])
+    res = []
+
+    for i in range(m):
+        for j in range(n):
+            if land[i][j] == 1:
+                r, c = i, j
+                while r &lt; m and land[r][j] == 1: r += 1
+                while c &lt; n and land[i][c] == 1: c += 1
+                for x in range(i, r):
+                    for y in range(j,c):
+                        land[x][y] = 0
+                res.append([i, j, r - 1, c - 1])
+
+    return res
+</code></pre>
+<pre><code>1. Iterate over each cell (i, j) in the given land matrix.
+</code></pre>
+<ol>
+<li>If the cell value is 1 (farmland), initiate two pointers (r and c) at the current cell.</li>
+<li>Move r downwards while the cells in the same column have value 1.</li>
+<li>Move c rightwards while the cells in the same row have value 1.</li>
+<li>Set all cells within the rectangle (i, j, r-1, c-1) to 0, and add [i, j, r-1, c-1] to the result list.</li>
+<li>Repeat steps 1-5 for each cell in the land matrix.</li>
+<li>Return the result list with coordinates for each group of farmland.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+using namespace std;
+
+vector&lt;vector&lt;int&gt;&gt; findFarmland(vector&lt;vector&lt;int&gt;&gt;&amp; land) {
+    int m = land.size(), n = land[0].size();
+    vector&lt;vector&lt;int&gt;&gt; res;
+
+    for (int i = 0; i &lt; m; ++i) {
+        for (int j = 0; j &lt; n; ++j) {
+            if (land[i][j] == 1) {
+                int r = i, c = j;
+                while (r &lt; m &amp;&amp; land[r][j] == 1) ++r;
+                while (c &lt; n &amp;&amp; land[i][c] == 1) ++c;
+                for (int x = i; x &lt; r; ++x) {
+                    for (int y = j; y &lt; c; ++y) {
+                        land[x][y] = 0;
+                    }
+                }
+                res.push_back({i, j, r - 1, c - 1});
+            }
+        }
+    }
+
+    return res;
+}
+</code></pre>
+<pre><code>1. Iterate over each cell (i, j) in the given land matrix.
+</code></pre>
+<ol>
+<li>If the cell value is 1 (farmland), initiate two pointers (r and c) at the current cell.</li>
+<li>Move r downwards while the cells in the same column have value 1.</li>
+<li>Move c rightwards while the cells in the same row have value 1.</li>
+<li>Set all cells within the rectangle (i, j, r-1, c-1) to 0, and add [i, j, r-1, c-1] to the result list.</li>
+<li>Repeat steps 1-5 for each cell in the land matrix.</li>
+<li>Return the result list with coordinates for each group of farmland.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

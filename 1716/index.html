@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Calculate Money in Leetcode Bank</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1710/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1720/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Hercy wants to save money for his first car. He puts money in the Leetcode bank <strong>every day</strong>.</p>
+<p>He starts by putting in <code>$1</code> on Monday, the first day. Every day from Tuesday to Sunday, he will put in <code>$1</code> more than the day before. On every subsequent Monday, he will put in <code>$1</code> more than the <strong>previous Monday</strong>.</p>
+<p>Given <code>n</code>, return <em>the total amount of money he will have in the Leetcode bank at the end of the</em> <code>nth</code> <em>day.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 4
+<strong>Output:</strong> 10
+<strong>Explanation:</strong> After the 4th day, the total is 1 + 2 + 3 + 4 = 10.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 10
+<strong>Output:</strong> 37
+<strong>Explanation:</strong> After the 10th day, the total is (1 + 2 + 3 + 4 + 5 + 6 + 7) + (2 + 3 + 4) = 37. Notice that on the 2nd Monday, Hercy only puts in $2.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> n = 20
+<strong>Output:</strong> 96
+<strong>Explanation:</strong> After the 20th day, the total is (1 + 2 + 3 + 4 + 5 + 6 + 7) + (2 + 3 + 4 + 5 + 6 + 7 + 8) + (3 + 4 + 5 + 6 + 7 + 8) = 96.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/calculate-money-in-leetcode-bank/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n, i, j
+    integer :: days(7), prev_days(7)
+    integer :: total
+
+    do while (.true.)
+        read(*,*) n
+        if (n == -1) exit
+
+        ! Initialize the array with the starting values
+        days = (/1, 1, 1, 1, 1, 1, 1/)
+
+        ! Loop through the days
+        do i=2,n
+            ! If it's a Monday, add one to the previous Monday's value
+            if (mod(i,7) == 1) then
+                days(1) = days(1) + 1
+            else
+                ! Otherwise, add one to the previous day's value
+                days(mod(i-1,7)+1) = days(mod(i-1,7)+1) + 1
+            end if
+        end do
+
+        ! Print the total
+        write(*,'(I0)') sum(days)
+    end do
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 9 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7d81f1b42960 in ???
+#1  0x7d81f1b434d9 in ???
+#2  0x7d81f1d9717b in ???
+#3  0x7d81f1d90684 in ???
+#4  0x7d81f1d912aa in ???
+#5  0x5a643a56c209 in MAIN__
+#6  0x5a643a56c401 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM LeetcodeBank
+      IMPLICIT NONE
+
+      INTEGER :: n, i, j, total
+
+      READ(*,*) n
+
+      total = 0
+
+      DO i = 1, n
+          IF (MODULO(i, 7) == 1) THEN
+              total = total + i
+          ELSE
+              total = total + (i - 1)
+          END IF
+      END DO
+
+      WRITE(*,*) total
+
+      END PROGRAM LeetcodeBank
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 6 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x799d1b924960 in ???
+#1  0x799d1b9254d9 in ???
+#2  0x799d1bb7917b in ???
+#3  0x799d1bb72684 in ???
+#4  0x799d1bb732aa in ???
+#5  0x558fcb872209 in MAIN__
+#6  0x558fcb872329 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def maxProductPath(grid):
+    m, n, mod = len(grid), len(grid[0]), int(1e9 + 7)
+    dp = [[[0, 0] for _ in range(n)] for _ in range(m)]
+
+    dp[0][0] = [grid[0][0], grid[0][0]]
+
+    for i in range(1, m):
+        dp[i][0] = [dp[i - 1][0][0] * grid[i][0], dp[i - 1][0][0] * grid[i][0]]
+    for j in range(1, n):
+        dp[0][j] = [dp[0][j - 1][0] * grid[0][j], dp[0][j - 1][0] * grid[0][j]]
+
+    for i in range(1, m):
+        for j in range(1, n):
+            if grid[i][j] &lt; 0:
+                dp[i][j][0] = min(dp[i - 1][j][1], dp[i][j - 1][1]) * grid[i][j]
+                dp[i][j][1] = max(dp[i - 1][j][0], dp[i][j - 1][0]) * grid[i][j]
+            else:
+                dp[i][j][0] = max(dp[i - 1][j][0], dp[i][j - 1][0]) * grid[i][j]
+                dp[i][j][1] = min(dp[i - 1][j][1], dp[i][j - 1][1]) * grid[i][j]
+
+    return dp[m - 1][n - 1][0] % mod if dp[m - 1][n - 1][0] &gt;= 0 else -1
+</code></pre>
+<pre><code>The algorithm used is a dynamic programming approach, where we maintain a 3D DP array `dp` with dimensions m x n x 2. For each cell `dp[i][j]`, we store the maximum non-negative product and the minimum non-positive product of the path up until cell (i, j) in the grid. We initialize the first row and first column of the grid, and then iterate through the remaining cells.
+</code></pre>
+<p>At each cell, if the corresponding grid value is negative, the product of this value with the minimum non-positive value of the previous cells will give the maximum non-negative value for the current cell, and vice versa for minimum non-positive value. If the value is non-negative, multiplying by maximum non-negative values from previous cells will give the maximum non-negative value for the current cell, and similarly for minimum non-positive value.</p>
+<p>After filling out the DP array, the result is the modulo of the maximum non-negative product of the last cell in the DP array, unless it's negative, in which case we return -1.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+using namespace std;
+
+int maxProductPath(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    int m = grid.size(), n = grid[0].size(), mod = 1e9 + 7;
+    vector&lt;vector&lt;vector&lt;long long&gt;&gt;&gt; dp(m, vector&lt;vector&lt;long long&gt;&gt;(n, vector&lt;long long&gt;(2)));
+
+    dp[0][0] = {grid[0][0], grid[0][0]};
+
+    for(int i = 1; i &lt; m; i++) {
+        dp[i][0][0] = dp[i][0][1] = dp[i-1][0][0] * grid[i][0];
+    }
+    for(int j = 1; j &lt; n; j++) {
+        dp[0][j][0] = dp[0][j][1] = dp[0][j-1][0] * grid[0][j];
+    }
+
+    for(int i = 1; i &lt; m; i++) {
+        for(int j = 1; j &lt; n; j++) {
+            if(grid[i][j] &lt; 0) {
+                dp[i][j][0] = min(dp[i - 1][j][1], dp[i][j - 1][1]) * grid[i][j];
+                dp[i][j][1] = max(dp[i - 1][j][0], dp[i][j - 1][0]) * grid[i][j];
+            } else {
+                dp[i][j][0] = max(dp[i - 1][j][0], dp[i][j - 1][0]) * grid[i][j];
+                dp[i][j][1] = min(dp[i - 1][j][1], dp[i][j - 1][1]) * grid[i][j];
+            }
+        }
+    }
+
+    return dp[m - 1][n - 1][0] &gt;= 0 ? dp[m - 1][n - 1][0] % mod : -1;
+}
+</code></pre>
+<pre><code>The algorithm used is a dynamic programming approach, where we maintain a 3D DP array `dp` with dimensions m x n x 2. For each cell `dp[i][j]`, we store the maximum non-negative product and the minimum non-positive product of the path up until cell (i, j) in the grid. We initialize the first row and first column of the grid, and then iterate through the remaining cells.
+</code></pre>
+<p>At each cell, if the corresponding grid value is negative, the product of this value with the minimum non-positive value of the previous cells will give the maximum non-negative value for the current cell, and vice versa for minimum non-positive value. If the value is non-negative, multiplying by maximum non-negative values from previous cells will give the maximum non-negative value for the current cell, and similarly for minimum non-positive value.</p>
+<p>After filling out the DP array, the result is the modulo of the maximum non-negative product of the last cell in the DP array, unless it's negative, in which case we return -1.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

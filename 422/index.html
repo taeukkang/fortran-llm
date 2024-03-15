@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Valid Word Square</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/415/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/434/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of strings <code>words</code>, return <code>true</code> <em>if it forms a valid <strong>word square</strong></em>.</p>
+<p>A sequence of strings forms a valid <strong>word square</strong> if the <code>kth</code> row and column read the same string, where <code>0 &lt;= k &lt; max(numRows, numColumns)</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> words = [ "abcd ", "bnrt ", "crmy ", "dtye "]
+<strong>Output:</strong> true
+<strong>Explanation:</strong>
+The 1st row and 1st column both read  "abcd ".
+The 2nd row and 2nd column both read  "bnrt ".
+The 3rd row and 3rd column both read  "crmy ".
+The 4th row and 4th column both read  "dtye ".
+Therefore, it is a valid word square.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> words = [ "abcd ", "bnrt ", "crm ", "dt "]
+<strong>Output:</strong> true
+<strong>Explanation:</strong>
+The 1st row and 1st column both read  "abcd ".
+The 2nd row and 2nd column both read  "bnrt ".
+The 3rd row and 3rd column both read  "crm ".
+The 4th row and 4th column both read  "dt ".
+Therefore, it is a valid word square.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> words = [ "ball ", "area ", "read ", "lady "]
+<strong>Output:</strong> false
+<strong>Explanation:</strong>
+The 3rd row reads  "read " while the 3rd column reads  "lead ".
+Therefore, it is NOT a valid word square.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= words.length &lt;= 500</code></li>
+<li><code>1 &lt;= words[i].length &lt;= 500</code></li>
+<li><code>words[i]</code> consists of only lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/valid-word-square/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, n
+    character(len=500) :: words(500)
+    logical :: valid_word_square
+
+    ! Example 1
+    words(1) = 'abcd '
+    words(2) = 'bnrt '
+    words(3) = 'crmy '
+    words(4) = 'dtye '
+    call assert(valid_word_square(words))
+
+    ! Example 2
+    words(1) = 'abcd '
+    words(2) = 'bnrt '
+    words(3) = 'crm '
+    words(4) = 'dt '
+    call assert(valid_word_square(words))
+
+    ! Example 3
+    words(1) = 'ball '
+    words(2) = 'area '
+    words(3) = 'read '
+    words(4) = 'lady '
+    call assert(.not. valid_word_square(words))
+
+contains
+
+    subroutine assert(condition)
+        implicit none
+        logical, intent(in) :: condition
+
+        if (.not. condition) then
+            write (*,*) 'Assertion failed!'
+            stop 1
+        end if
+    end subroutine assert
+
+    function valid_word_square(words) result(valid)
+        implicit none
+        character(len=*), intent(in) :: words(:)
+        integer :: num_rows, num_cols, i, j
+        logical :: valid
+
+        num_rows = size(words)
+        num_cols = size(words, dim=2)
+
+        do i = 0, min(num_rows, num_cols) - 1
+            do j = 0, min(num_rows, num_cols) - 1
+                if (words(i+1)(j+1:j+1) /= words(j+1)(i+1:i+1)) then
+                    valid = .false.
+                    exit
+                end if
+            end do
+            if (.not. valid) exit
+        end do
+    end function valid_word_square
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:41:31:
+
+   41 |     function valid_word_square(words) result(valid)
+      |                               1
+Error: Procedure ‘valid_word_square’ at (1) has an explicit interface from a previous declaration
+temp.f95:42:21:
+
+   42 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:43:48:
+
+   43 |         character(len=*), intent(in) :: words(:)
+      |                                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:44:43:
+
+   44 |         integer :: num_rows, num_cols, i, j
+      |                                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:45:24:
+
+   45 |         logical :: valid
+      |                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:47:30:
+
+   47 |         num_rows = size(words)
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:48:37:
+
+   48 |         num_cols = size(words, dim=2)
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:50:45:
+
+   50 |         do i = 0, min(num_rows, num_cols) - 1
+      |                                             1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:51:49:
+
+   51 |             do j = 0, min(num_rows, num_cols) - 1
+      |                                                 1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:52:68:
+
+   52 |                 if (words(i+1)(j+1:j+1) /= words(j+1)(i+1:i+1)) then
+      |                                                                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:53:35:
+
+   53 |                     valid = .false.
+      |                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:54:24:
+
+   54 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:55:19:
+
+   55 |                 end if
+      |                   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:56:15:
+
+   56 |             end do
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:57:33:
+
+   57 |             if (.not. valid) exit
+      |                                 1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:58:11:
+
+   58 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:59:7:
+
+   59 |     end function valid_word_square
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program is_word_square
+      implicit none
+
+      integer, parameter :: MAX_LENGTH = 500
+
+      character(len=MAX_LENGTH) :: words(MAX_LENGTH)
+      integer :: num_rows, num_cols, i, j
+      logical :: is_valid
+
+      read(*,*) num_rows, num_cols
+      read(*,*) words
+
+      is_valid = .true.
+
+      ! Check rows
+      do i = 1, num_rows
+         do j = 1, num_cols
+            if (words(i)(j:j) /= words(i)(1:1)) then
+               is_valid = .false.
+               exit
+            end if
+         end do
+         if (.not. is_valid) exit
+      end do
+
+      ! Check columns
+      do j = 1, num_cols
+         do i = 1, num_rows
+            if (words(i)(j:j) /= words(1)(j:j)) then
+               is_valid = .false.
+               exit
+            end if
+         end do
+         if (.not. is_valid) exit
+      end do
+
+      if (is_valid) then
+         print *, "True"
+      else
+         print *, "False"
+      end if
+
+      end program is_word_square
+
+This program uses a 2D array to store the input words. It then checks each row and column to ensure that the characters in each position are the same. If any of the checks fail, the program sets `is_valid` to `.false.` and exits the loop. If all checks pass, the program sets `is_valid` to `.true.` and prints "True" to stdout.
+
+Note that the program uses a parameter `MAX_LENGTH` to set the maximum length of each word. This is necessary because the input words can have any length, but the program needs to know how much memory to allocate for the 2D array.
+
+Also note that the program uses the `implicit none` statement to prevent the use of any uninitialized variables. This is a good practice to follow in Fortran programs to avoid errors and improve code readability.
+
+This program should run with all provided examples and output "True" or "False" to stdout, depending on whether the input array forms a valid word square.
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:45:132:
+
+   45 | This program uses a 2D array to store the input words. It then checks each row and column to ensure that the characters in each position are the same. If any of the checks fail, the program sets `is_valid` to `.false.` and exits the loop. If all checks pass, the program sets `is_valid` to `.true.` and prints "True" to stdout.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:47:132:
+
+   47 | Note that the program uses a parameter `MAX_LENGTH` to set the maximum length of each word. This is necessary because the input words can have any length, but the program needs to know how much memory to allocate for the 2D array.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:49:132:
+
+   49 | Also note that the program uses the `implicit none` statement to prevent the use of any uninitialized variables. This is a good practice to follow in Fortran programs to avoid errors and improve code readability.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:51:132:
+
+   51 | This program should run with all provided examples and output "True" or "False" to stdout, depending on whether the input array forms a valid word square.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def valid_word_square(words):
+    for i in range(len(words)):
+        for j in range(len(words[i])):
+            if j &gt;= len(words) or i &gt;= len(words[j]) or words[i][j] != words[j][i]:
+                return False
+    return True
+</code></pre>
+<pre><code>This solution is based on validating the elements of an array in place. Loop through each row `i` and column `j` of the given array. In the inner loop, check if the condition `j &gt;= words.size() || i &gt;= words[j].size() || words[i][j] != words[j][i]` is true. If the condition is true, that means it's not a valid word square, so return false. If the loop completes without returning false, then it's a valid word square, so return true.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool validWordSquare(vector&lt;string&gt;&amp; words) {
+    for (int i = 0; i &lt; words.size(); ++i) {
+        for (int j = 0; j &lt; words[i].size(); ++j) {
+            if (j &gt;= words.size() || i &gt;= words[j].size() || words[i][j] != words[j][i]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+</code></pre>
+<pre><code>This solution is based on validating the elements of an array in place. Loop through each row `i` and column `j` of the given array. In the inner loop, check if the condition `j &gt;= words.size() || i &gt;= words[j].size() || words[i][j] != words[j][i]` is true. If the condition is true, that means it's not a valid word square, so return false. If the loop completes without returning false, then it's a valid word square, so return true.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

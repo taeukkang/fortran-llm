@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Number Complement</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/463/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/482/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>The <strong>complement</strong> of an integer is the integer you get when you flip all the <code>0</code>'s to <code>1</code>'s and all the <code>1</code>'s to <code>0</code>'s in its binary representation.</p>
+<ul>
+<li>For example, The integer <code>5</code> is <code>"101 "</code> in binary and its <strong>complement</strong> is <code>"010 "</code> which is the integer <code>2</code>.</li>
+</ul>
+<p>Given an integer <code>num</code>, return <em>its complement</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num = 5
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The binary representation of 5 is 101 (no leading zero bits), and its complement is 010. So you need to output 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num = 1
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> The binary representation of 1 is 1 (no leading zero bits), and its complement is 0. So you need to output 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= num &lt; 231</code></li>
+</ul>
+<p><strong>Note:</strong> This question is the same as 1009: <a href="https://leetcode.com/problems/complement-of-base-10-integer/">https://leetcode.com/problems/complement-of-base-10-integer/</a></p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/number-complement/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: num, complement
+
+    ! Example 1
+    num = 5
+    write (*, '(A, I0)') 'Complement of ', num, ' is ', complement(num)
+
+    ! Example 2
+    num = 1
+    write (*, '(A, I0)') 'Complement of ', num, ' is ', complement(num)
+
+contains
+
+    function complement(num) result(res)
+        implicit none
+        integer, intent(in) :: num
+        integer :: res
+
+        res = btest(num, 0_8)
+    end function complement
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:16:24:
+
+   16 |     function complement(num) result(res)
+      |                        1
+Error: Procedure ‘complement’ at (1) has an explicit interface from a previous declaration
+temp.f95:17:21:
+
+   17 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:18:34:
+
+   18 |         integer, intent(in) :: num
+      |                                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:19:22:
+
+   19 |         integer :: res
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:21:29:
+
+   21 |         res = btest(num, 0_8)
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:7:
+
+   22 |     end function complement
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!include(header.f90)
+
+program complement
+    implicit none
+
+    integer :: num, complement
+
+    ! Test case 1:
+    num = 5
+    complement = get_complement(num)
+    write (*,*) "Complement of ", num, " is ", complement
+
+    ! Test case 2:
+    num = 1
+    complement = get_complement(num)
+    write (*,*) "Complement of ", num, " is ", complement
+
+contains
+
+    function get_complement(num) result(complement)
+        implicit none
+        integer, intent(in) :: num
+        integer :: complement
+
+        ! Convert the integer to binary
+        integer :: binary_num(32)
+        binary_num = 0
+        do i = 1, 32
+            binary_num(i) = mod(num, 2)
+            num = num / 2
+        end do
+
+        ! Flip all the 0's to 1's and all the 1's to 0's
+        do i = 1, 32
+            if (binary_num(i) == 0) then
+                binary_num(i) = 1
+            else
+                binary_num(i) = 0
+            end if
+        end do
+
+        ! Convert the binary array back to an integer
+        complement = 0
+        do i = 1, 32
+            complement = complement * 2 + binary_num(i)
+        end do
+    end function get_complement
+end program complement
+
+!include(footer.f90)
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:30:
+
+    6 |     integer :: num, complement
+      |                              1
+Error: Symbol ‘complement’ at (1) cannot have a type
+temp.f95:10:15:
+
+   10 |     complement = get_complement(num)
+      |               1
+Error: ‘complement’ at (1) is not a variable
+temp.f95:11:57:
+
+   11 |     write (*,*) "Complement of ", num, " is ", complement
+      |                                                         1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:15:15:
+
+   15 |     complement = get_complement(num)
+      |               1
+Error: ‘complement’ at (1) is not a variable
+temp.f95:16:57:
+
+   16 |     write (*,*) "Complement of ", num, " is ", complement
+      |                                                         1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:9:7:
+
+    9 |     num = 5
+      |       1
+Error: Symbol ‘num’ at (1) has no IMPLICIT type
+temp.f95:28:12:
+
+   28 |         do i = 1, 32
+      |            1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:30:12:
+
+   30 |             num = num / 2
+      |            1
+Error: Dummy argument ‘num’ with INTENT(IN) in variable definition context (assignment) at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def find_complement(num: int) -&gt; int:
+    bit_length = 0
+    mask = num
+    while mask &gt; 0:
+        mask &gt;&gt;= 1
+        bit_length += 1
+    all_ones = (1 &lt;&lt; bit_length) - 1
+
+    return num ^ all_ones
+</code></pre>
+<p>First, we calculate the number of bits in the binary representation of the input integer <code>num</code>. We do this by consecutively right-shifting the number (bitwise operation) and counting the iterations until the number becomes 0. This gives us the length of the binary representation.</p>
+<p>Once we have the length, we create a bitmask of the same length with all bits set to 1 (for example, if the length is 3, the bitmask would be 111 in binary). To get the complement of the input integer, we then XOR (<code>^</code> operator) the number with this all-1 mask. The XOR operation returns 1 when the input bits are different and 0 when they are the same, so if we have a 0 in the input, we will get 1 and vice versa. This way, we get the complement of the original number.</p>
+<p>Finally, we return the resulting number, which is the complement of the input integer <code>num</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int findComplement(int num) {
+    int bitLength = 0;
+    int mask = num;
+    while (mask &gt; 0) {
+        mask &gt;&gt;= 1;
+        bitLength++;
+    }
+    int allOnes = (1 &lt;&lt; bitLength) - 1;
+
+    return num ^ allOnes;
+}
+</code></pre>
+<p>First, we calculate the number of bits in the binary representation of the input integer <code>num</code>. We do this by consecutively right-shifting the number (bitwise operation) and counting the iterations until the number becomes 0. This gives us the length of the binary representation.</p>
+<p>Once we have the length, we create a bitmask of the same length with all bits set to 1 (for example, if the length is 3, the bitmask would be 111 in binary). To get the complement of the input integer, we then XOR (<code>^</code> operator) the number with this all-1 mask. The XOR operation returns 1 when the input bits are different and 0 when they are the same, so if we have a 0 in the input, we will get 1 and vice versa. This way, we get the complement of the original number.</p>
+<p>Finally, we return the resulting number, which is the complement of the input integer <code>num</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

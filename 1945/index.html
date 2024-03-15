@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Sum of Digits of String After Convert</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1941/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1952/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>s</code> consisting of lowercase English letters, and an integer <code>k</code>.</p>
+<p>First, <strong>convert</strong> <code>s</code> into an integer by replacing each letter with its position in the alphabet (i.e., replace <code>'a'</code> with <code>1</code>, <code>'b'</code> with <code>2</code>, ..., <code>'z'</code> with <code>26</code>). Then, <strong>transform</strong> the integer by replacing it with the <strong>sum of its digits</strong>. Repeat the <strong>transform</strong> operation <code>k</code> <strong>times</strong> in total.</p>
+<p>For example, if <code>s = "zbax "</code> and <code>k = 2</code>, then the resulting integer would be <code>8</code> by the following operations:</p>
+<ul>
+<li><strong>Convert</strong>: <code>"zbax " ➝ "(26)(2)(1)(24) " ➝ "262124 " ➝ 262124</code></li>
+<li><strong>Transform #1</strong>: <code>262124 ➝ 2 + 6 + 2 + 1 + 2 + 4 ➝ 17</code></li>
+<li><strong>Transform #2</strong>: <code>17 ➝ 1 + 7 ➝ 8</code></li>
+</ul>
+<p>Return <em>the resulting integer after performing the operations described above</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "iiii ", k = 1
+<strong>Output:</strong> 36
+<strong>Explanation:</strong> The operations are as follows:
+- Convert:  "iiii " ➝  "(9)(9)(9)(9) " ➝  "9999 " ➝ 9999
+- Transform #1: 9999 ➝ 9 + 9 + 9 + 9 ➝ 36
+Thus the resulting integer is 36.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "leetcode ", k = 2
+<strong>Output:</strong> 6
+<strong>Explanation:</strong> The operations are as follows:
+- Convert:  "leetcode " ➝  "(12)(5)(5)(20)(3)(15)(4)(5) " ➝  "12552031545 " ➝ 12552031545
+- Transform #1: 12552031545 ➝ 1 + 2 + 5 + 5 + 2 + 0 + 3 + 1 + 5 + 4 + 5 ➝ 33
+- Transform #2: 33 ➝ 3 + 3 ➝ 6
+Thus the resulting integer is 6.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "zbax ", k = 2
+<strong>Output:</strong> 8</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 100</code></li>
+<li><code>1 &lt;= k &lt;= 10</code></li>
+<li><code>s</code> consists of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/sum-of-digits-of-string-after-convert/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=*), parameter :: s = "zbax "
+    integer, parameter :: k = 2
+    integer :: result
+
+    result = solve(s, k)
+    print '(I0)', result
+
+contains
+
+    function solve(s, k) result(result)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer, intent(in) :: k
+        integer :: result
+
+        ! convert s into an integer by replacing each letter with its position in the alphabet
+        result = 0
+        do i = 1, len_trim(s)
+            result = result * 26 + ichar(s(i:i)) - ichar('a') + 1
+        end do
+
+        ! transform the integer by replacing it with the sum of its digits
+        do j = 1, k
+            result = sum(digits(result))
+        end do
+
+    contains
+
+        function digits(n) result(d)
+            implicit none
+            integer, intent(in) :: n
+            integer :: d(10)
+
+            d = 0
+            do while (n > 0)
+                d(mod(n, 10) + 1) = mod(n, 10)
+                n = n / 10
+            end do
+        end function digits
+
+    end function solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:30:12:
+
+   30 |     contains
+      |            1
+Error: CONTAINS statement at (1) is already in a contained program unit
+temp.f95:33:25:
+
+   33 |             implicit none
+      |                         1
+Error: Duplicate IMPLICIT NONE statement at (1)
+temp.f95:34:36:
+
+   34 |             integer, intent(in) :: n
+      |                                    1
+Error: Unexpected data declaration statement at (1)
+temp.f95:35:28:
+
+   35 |             integer :: d(10)
+      |                            1
+Error: Unexpected data declaration statement at (1)
+temp.f95:42:27:
+
+   42 |         end function digits
+      |                           1
+Error: Expected label ‘solve’ for END FUNCTION statement at (1)
+temp.f95:37:13:
+
+   37 |             d = 0
+      |             1
+Error: Symbol ‘d’ at (1) has no IMPLICIT type
+temp.f95:21:12:
+
+   21 |         do i = 1, len_trim(s)
+      |            1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:26:12:
+
+   26 |         do j = 1, k
+      |            1
+Error: Symbol ‘j’ at (1) has no IMPLICIT type
+temp.f95:38:23:
+
+   38 |             do while (n > 0)
+      |                       1
+Error: Symbol ‘n’ at (1) has no IMPLICIT type
+temp.f95:27:25:
+
+   27 |             result = sum(digits(result))
+      |                         1
+Error: ‘array’ argument of ‘sum’ intrinsic at (1) must be an array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM main
+
+IMPLICIT NONE
+
+CHARACTER(len=100) :: s
+INTEGER :: k
+INTEGER :: i
+INTEGER :: result
+
+! Read input
+READ(*,*) s, k
+
+! Convert string to integer
+result = 0
+DO i = 1, LEN(s)
+    result = result * 26 + ICHAR(s(i:i)) - ICHAR('a') + 1
+END DO
+
+! Perform transformations
+DO i = 1, k
+    result = SUM(DIGITS(result))
+END DO
+
+! Output result
+WRITE(*,*) result
+
+END PROGRAM main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:21:17:
+
+   21 |     result = SUM(DIGITS(result))
+      |                 1
+Error: ‘array’ argument of ‘sum’ intrinsic at (1) must be an array
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from collections import defaultdict
+
+def finding_users_active_minutes(logs, k):
+    user_minutes = defaultdict(set)
+    for log in logs:
+        user_minutes[log[0]].add(log[1])
+    result = [0] * k
+    for minutes in user_minutes.values():
+        if len(minutes) &lt;= k:
+            result[len(minutes) - 1] += 1
+    return result
+</code></pre>
+<pre><code>1. Create a data structure to store the unique minutes for each user ID. In this case, we use a hash map with user IDs as keys and sets of minutes as values.
+</code></pre>
+<ol>
+<li>Iterate through each log entry, adding the minute of the action to the user's set of minutes in the data structure.</li>
+<li>Initialize an array of size k to store the final result.</li>
+<li>Iterate through the values of the data structure, which represent sets of unique minutes for each user. If the number of unique minutes for a user is less than or equal to k, increment the corresponding value in the result array.</li>
+<li>Return the result array.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;unordered_map&gt;
+#include &lt;unordered_set&gt;
+
+std::vector&lt;int&gt; finding_users_active_minutes(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; logs, int k) {
+    std::unordered_map&lt;int, std::unordered_set&lt;int&gt;&gt; user_minutes;
+    for (const auto&amp; log : logs) {
+        user_minutes[log[0]].insert(log[1]);
+    }
+    std::vector&lt;int&gt; result(k, 0);
+    for (const auto&amp; entry : user_minutes) {
+        if (entry.second.size() &lt;= k) {
+            result[entry.second.size() - 1]++;
+        }
+    }
+    return result;
+}
+</code></pre>
+<pre><code>1. Create a data structure to store the unique minutes for each user ID. In this case, we use a hash map with user IDs as keys and sets of minutes as values.
+</code></pre>
+<ol>
+<li>Iterate through each log entry, adding the minute of the action to the user's set of minutes in the data structure.</li>
+<li>Initialize an array of size k to store the final result.</li>
+<li>Iterate through the values of the data structure, which represent sets of unique minutes for each user. If the number of unique minutes for a user is less than or equal to k, increment the corresponding value in the result array.</li>
+<li>Return the result array.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

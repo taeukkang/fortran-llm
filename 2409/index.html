@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count Days Spent Together</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2404/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2413/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Alice and Bob are traveling to Rome for separate business meetings.</p>
+<p>You are given 4 strings <code>arriveAlice</code>, <code>leaveAlice</code>, <code>arriveBob</code>, and <code>leaveBob</code>. Alice will be in the city from the dates <code>arriveAlice</code> to <code>leaveAlice</code> (<strong>inclusive</strong>), while Bob will be in the city from the dates <code>arriveBob</code> to <code>leaveBob</code> (<strong>inclusive</strong>). Each will be a 5-character string in the format <code>"MM-DD "</code>, corresponding to the month and day of the date.</p>
+<p>Return <em>the total number of days that Alice and Bob are in Rome together.</em></p>
+<p>You can assume that all dates occur in the <strong>same</strong> calendar year, which is <strong>not</strong> a leap year. Note that the number of days per month can be represented as: <code>[31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arriveAlice =  "08-15 ", leaveAlice =  "08-18 ", arriveBob =  "08-16 ", leaveBob =  "08-19 "
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> Alice will be in Rome from August 15 to August 18. Bob will be in Rome from August 16 to August 19. They are both in Rome together on August 16th, 17th, and 18th, so the answer is 3.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arriveAlice =  "10-01 ", leaveAlice =  "10-31 ", arriveBob =  "11-01 ", leaveBob =  "12-31 "
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There is no day when Alice and Bob are in Rome together, so we return 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>All dates are provided in the format <code>"MM-DD "</code>.</li>
+<li>Alice and Bob's arrival dates are <strong>earlier than or equal to</strong> their leaving dates.</li>
+<li>The given dates are valid dates of a <strong>non-leap</strong> year.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-days-spent-together/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=5) :: arriveAlice, leaveAlice, arriveBob, leaveBob
+    integer :: numDays
+
+    ! Example 1
+    arriveAlice = '08-15 '
+    leaveAlice = '08-18 '
+    arriveBob = '08-16 '
+    leaveBob = '08-19 '
+    write(*,*) solve(arriveAlice, leaveAlice, arriveBob, leaveBob)
+
+    ! Example 2
+    arriveAlice = '10-01 '
+    leaveAlice = '10-31 '
+    arriveBob = '11-01 '
+    leaveBob = '12-31 '
+    write(*,*) solve(arriveAlice, leaveAlice, arriveBob, leaveBob)
+
+contains
+
+    function solve(arriveAlice, leaveAlice, arriveBob, leaveBob) result(numDays)
+        implicit none
+        character(len=5), intent(in) :: arriveAlice, leaveAlice, arriveBob, leaveBob
+        integer :: numDays
+
+        integer, parameter :: DAYS_PER_MONTH(12) = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+
+        i = index(arriveAlice, '-')
+        j = index(leaveAlice, '-')
+        k = index(arriveBob, '-')
+        l = index(leaveBob, '-')
+
+        m = 0
+        do while (m < 12)
+            if (i == 3 .and. j == 3) then
+                if (arriveAlice(1:2) == arriveBob(1:2)) then
+                    if (arriveAlice(4:5) <= arriveBob(4:5)) then
+                        if (leaveAlice(4:5) >= leaveBob(4:5)) then
+                            m = m + DAYS_PER_MONTH(m)
+                        end if
+                    end if
+                end if
+            else if (k == 3 .and. l == 3) then
+                if (arriveAlice(1:2) == arriveBob(1:2)) then
+                    if (arriveAlice(4:5) <= arriveBob(4:5)) then
+                        if (leaveAlice(4:5) >= leaveBob(4:5)) then
+                            m = m + DAYS_PER_MONTH(m)
+                        end if
+                    end if
+                end if
+            end if
+
+            i = i + 1
+            j = j + 1
+            k = k + 1
+            l = l + 1
+            m = m + 1
+        end do
+
+        numDays = m - 1
+
+    end function solve
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>          11
+          11
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program aliceAndBob
+      implicit none
+
+      integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+      integer :: daysAlice, daysBob, daysTogether
+      character(len=5) :: arriveAlice, leaveAlice, arriveBob, leaveBob
+
+      read(*,*) arriveAlice, leaveAlice, arriveBob, leaveBob
+
+      daysAlice = 0
+      daysBob = 0
+      daysTogether = 0
+
+      do i = 1, 12
+        do j = 1, 31
+          if (arriveAlice(1:2) == i) then
+            if (arriveAlice(4:5) == j) then
+              daysAlice = daysAlice + 1
+            end if
+          end if
+          if (leaveAlice(1:2) == i) then
+            if (leaveAlice(4:5) == j) then
+              daysAlice = daysAlice - 1
+            end if
+          end if
+          if (arriveBob(1:2) == i) then
+            if (arriveBob(4:5) == j) then
+              daysBob = daysBob + 1
+            end if
+          end if
+          if (leaveBob(1:2) == i) then
+            if (leaveBob(4:5) == j) then
+              daysBob = daysBob - 1
+            end if
+          end if
+        end do
+      end do
+
+      do i = 1, 12
+        do j = 1, 31
+          if (daysAlice == 0 .and. daysBob == 0) then
+            exit
+          end if
+          if (daysAlice > 0 .and. daysBob > 0) then
+            if (arriveAlice(1:2) == i) then
+              if (arriveAlice(4:5) == j) then
+                if (daysAlice == 1) then
+                  daysAlice = 0
+                else
+                  daysAlice = daysAlice - 1
+                end if
+              end if
+            end if
+            if (arriveBob(1:2) == i) then
+              if (arriveBob(4:5) == j) then
+                if (daysBob == 1) then
+                  daysBob = 0
+                else
+                  daysBob = daysBob - 1
+                end if
+              end if
+            end if
+            if (daysAlice > 0 .and. daysBob > 0) then
+              daysTogether = daysTogether + 1
+            end if
+          end if
+        end do
+      end do
+
+      write(*,*) daysTogether
+
+      end program aliceAndBob
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:16:14:
+
+   16 |           if (arriveAlice(1:2) == i) then
+      |              1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:17:16:
+
+   17 |             if (arriveAlice(4:5) == j) then
+      |                1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:21:14:
+
+   21 |           if (leaveAlice(1:2) == i) then
+      |              1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:22:16:
+
+   22 |             if (leaveAlice(4:5) == j) then
+      |                1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:26:14:
+
+   26 |           if (arriveBob(1:2) == i) then
+      |              1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:27:16:
+
+   27 |             if (arriveBob(4:5) == j) then
+      |                1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:31:14:
+
+   31 |           if (leaveBob(1:2) == i) then
+      |              1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:32:16:
+
+   32 |             if (leaveBob(4:5) == j) then
+      |                1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:45:16:
+
+   45 |             if (arriveAlice(1:2) == i) then
+      |                1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:46:18:
+
+   46 |               if (arriveAlice(4:5) == j) then
+      |                  1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:54:16:
+
+   54 |             if (arriveBob(1:2) == i) then
+      |                1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:55:18:
+
+   55 |               if (arriveBob(4:5) == j) then
+      |                  1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def days_together(arrive_alice, leave_alice, arrive_bob, leave_bob):
+    days_in_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+    def date_to_days(date):
+        month, day = map(int, date.split('-'))
+        return sum(days_in_month[:month]) + day
+
+    arrive_days_alice = date_to_days(arrive_alice)
+    leave_days_alice = date_to_days(leave_alice)
+    arrive_days_bob = date_to_days(arrive_bob)
+    leave_days_bob = date_to_days(leave_bob)
+
+    common_start_date = max(arrive_days_alice, arrive_days_bob)
+    common_end_date = min(leave_days_alice, leave_days_bob)
+
+    return max(0, common_end_date - common_start_date + 1)
+</code></pre>
+<ol>
+<li>Store the days in each month of a non-leap year in an array <code>daysInMonth</code>.</li>
+<li>Define a function <code>dateToDays</code> that takes a date string and the <code>daysInMonth</code> array, then converts the date string to the total number of days from the beginning of the year. Calculate this by summing up days from prior months plus the day of the month.</li>
+<li>Compute the total number of days for <code>arriveAlice</code>, <code>leaveAlice</code>, <code>arriveBob</code>, and <code>leaveBob</code> by calling <code>dateToDays</code>.</li>
+<li>Calculate the common starting date by taking the max of <code>arriveDaysAlice</code> and <code>arriveDaysBob</code>.</li>
+<li>Calculate the common end date by taking the min of <code>leaveDaysAlice</code> and <code>leaveDaysBob</code>.</li>
+<li>Calculate and return the total number of days Alice and Bob are in Rome together by finding the difference between the common end and start dates, adding 1, and taking the max between that result and 0.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;algorithm&gt;
+
+int daysTogether(const std::string&amp; arriveAlice, const std::string&amp; leaveAlice, const std::string&amp; arriveBob, const std::string&amp; leaveBob) {
+    int daysInMonth[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    auto dateToDays = [&amp;](const std::string&amp; date) {
+        int month = stoi(date.substr(0, 2));
+        int day = stoi(date.substr(3, 2));
+        int days = day;
+        for (int i = 1; i &lt; month; ++i) {
+            days += daysInMonth[i];
+        }
+        return days;
+    };
+
+    int arriveDaysAlice = dateToDays(arriveAlice);
+    int leaveDaysAlice = dateToDays(leaveAlice);
+    int arriveDaysBob = dateToDays(arriveBob);
+    int leaveDaysBob = dateToDays(leaveBob);
+
+    int commonStartDate = std::max(arriveDaysAlice, arriveDaysBob);
+    int commonEndDate = std::min(leaveDaysAlice, leaveDaysBob);
+
+    return std::max(0, commonEndDate - commonStartDate + 1);
+}
+</code></pre>
+<ol>
+<li>Store the days in each month of a non-leap year in an array <code>daysInMonth</code>.</li>
+<li>Define a function <code>dateToDays</code> that takes a date string and the <code>daysInMonth</code> array, then converts the date string to the total number of days from the beginning of the year. Calculate this by summing up days from prior months plus the day of the month.</li>
+<li>Compute the total number of days for <code>arriveAlice</code>, <code>leaveAlice</code>, <code>arriveBob</code>, and <code>leaveBob</code> by calling <code>dateToDays</code>.</li>
+<li>Calculate the common starting date by taking the max of <code>arriveDaysAlice</code> and <code>arriveDaysBob</code>.</li>
+<li>Calculate the common end date by taking the min of <code>leaveDaysAlice</code> and <code>leaveDaysBob</code>.</li>
+<li>Calculate and return the total number of days Alice and Bob are in Rome together by finding the difference between the common end and start dates, adding 1, and taking the max between that result and 0.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

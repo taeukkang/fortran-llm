@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Divide a String Into Groups of Size k</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2133/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2144/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A string <code>s</code> can be partitioned into groups of size <code>k</code> using the following procedure:</p>
+<ul>
+<li>The first group consists of the first <code>k</code> characters of the string, the second group consists of the next <code>k</code> characters of the string, and so on. Each character can be a part of <strong>exactly one</strong> group.</li>
+<li>For the last group, if the string <strong>does not</strong> have <code>k</code> characters remaining, a character <code>fill</code> is used to complete the group.</li>
+</ul>
+<p>Note that the partition is done so that after removing the <code>fill</code> character from the last group (if it exists) and concatenating all the groups in order, the resultant string should be <code>s</code>.</p>
+<p>Given the string <code>s</code>, the size of each group <code>k</code> and the character <code>fill</code>, return <em>a string array denoting the <strong>composition of every group</strong></em> <code>s</code> <em>has been divided into, using the above procedure</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "abcdefghi ", k = 3, fill =  "x "
+<strong>Output:</strong> [ "abc ", "def ", "ghi "]
+<strong>Explanation:</strong>
+The first 3 characters  "abc " form the first group.
+The next 3 characters  "def " form the second group.
+The last 3 characters  "ghi " form the third group.
+Since all groups can be completely filled by characters from the string, we do not need to use fill.
+Thus, the groups formed are  "abc ",  "def ", and  "ghi ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "abcdefghij ", k = 3, fill =  "x "
+<strong>Output:</strong> [ "abc ", "def ", "ghi ", "jxx "]
+<strong>Explanation:</strong>
+Similar to the previous example, we are forming the first three groups  "abc ",  "def ", and  "ghi ".
+For the last group, we can only use the character 'j' from the string. To complete this group, we add 'x' twice.
+Thus, the 4 groups formed are  "abc ",  "def ",  "ghi ", and  "jxx ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 100</code></li>
+<li><code>s</code> consists of lowercase English letters only.</li>
+<li><code>1 &lt;= k &lt;= 100</code></li>
+<li><code>fill</code> is a lowercase English letter.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/divide-a-string-into-groups-of-size-k/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, k
+    character(len=100) :: s
+    character(len=100) :: fill
+    character(len=100), allocatable :: groups(:)
+
+    ! Example 1
+    s = "abcdefghi "
+    k = 3
+    fill = "x "
+    call solve(s, k, fill, groups)
+    write(*,*) trim(groups(1)) // trim(groups(2)) // trim(groups(3))
+
+    ! Example 2
+    s = "abcdefghij "
+    k = 3
+    fill = "x "
+    call solve(s, k, fill, groups)
+    write(*,*) trim(groups(1)) // trim(groups(2)) // trim(groups(3)) // trim(groups(4))
+
+contains
+
+    subroutine solve(s, k, fill, groups)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer, intent(in) :: k
+        character(len=*), intent(in) :: fill
+        character(len=*), allocatable, intent(out) :: groups(:)
+        integer :: n
+        integer :: i
+
+        n = ceiling(real(len(s)) / real(k))
+        allocate(groups(n))
+
+        do i = 1, n-1
+            groups(i) = s(1+((i-1)*k):k*(i))
+        end do
+
+        if (mod(len(s), k) == 0) then
+            groups(n) = s(1+(n-1)*k:len(s))
+        else
+            groups(n) = fill(1:(len(s)-(n-1)*k)) // s(1+(n-1)*k:len(s))
+        end if
+
+    end subroutine solve
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> abcdefghi
+ abcdefghij
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+      implicit none
+
+      integer, parameter :: k = 3
+      character(len=100), parameter :: fill = "x "
+
+      character(len=100) :: s
+      character(len=k), dimension(:), allocatable :: groups
+
+      read(*,*) s
+
+      allocate(groups(ceiling(real(len(s))/k)))
+
+      groups = [character(len=k) :: ]
+
+      do i = 1, ceiling(real(len(s))/k)
+         groups(i) = s(i*k-k+1:i*k)
+      end do
+
+      if (mod(len(s),k) /= 0) then
+         groups(ceiling(real(len(s))/k)) = fill(1:k-mod(len(s),k)) // groups(ceiling(real(len(s))/k))
+      end if
+
+      write(*,*) groups
+
+      end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:16:10:
+
+   16 |       do i = 1, ceiling(real(len(s))/k)
+      |          1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def sum_of_beauties(nums: List[int]) -&gt; int:
+    n = len(nums)
+    result = 0
+
+    left_max = [0] * n
+    left_max[0] = nums[0]
+    right_min = [0] * n
+    right_min[n - 1] = nums[n - 1]
+
+    for i in range(1, n):
+        left_max[i] = max(left_max[i - 1], nums[i])
+
+    for i in range(n - 2, -1, -1):
+        right_min[i] = min(right_min[i + 1], nums[i])
+
+    for i in range(1, n - 1):
+        if nums[i] &gt; left_max[i - 1] and nums[i] &lt; right_min[i + 1]:
+            result += 1
+
+    return result
+</code></pre>
+<p>To solve this problem, we first create two arrays, <code>leftMax</code> and <code>rightMin</code>. <code>leftMax</code> stores the maximum value to the left of each index i, and <code>rightMin</code> stores the minimum value to the right of each index i. We then iterate through the input array <code>nums</code> from index 1 to index n - 2 (inclusive) and check if the current value is greater than the maximum to its left and less than the minimum to its right. If both conditions are fulfilled, we increase the result by 1. Finally, we return the result as the sum of the beauty of all <code>nums[i]</code> where 1 &lt;= i &lt;= nums.length - 2.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int sumOfBeauties(std::vector&lt;int&gt;&amp; nums) {
+    int n = nums.size();
+    int result = 0;
+
+    std::vector&lt;int&gt; leftMax(n);
+    leftMax[0] = nums[0];
+    std::vector&lt;int&gt; rightMin(n);
+    rightMin[n - 1] = nums[n - 1];
+
+    for (int i = 1; i &lt; n; i++) {
+        leftMax[i] = std::max(leftMax[i - 1], nums[i]);
+    }
+
+    for (int i = n - 2; i &gt;= 0; i--) {
+        rightMin[i] = std::min(rightMin[i + 1], nums[i]);
+    }
+
+    for (int i = 1; i &lt;= n - 2; i++) {
+        if (nums[i] &gt; leftMax[i - 1] &amp;&amp; nums[i] &lt; rightMin[i + 1]) {
+            result += 1;
+        }
+    }
+
+    return result;
+}
+</code></pre>
+<p>To solve this problem, we first create two arrays, <code>leftMax</code> and <code>rightMin</code>. <code>leftMax</code> stores the maximum value to the left of each index i, and <code>rightMin</code> stores the minimum value to the right of each index i. We then iterate through the input array <code>nums</code> from index 1 to index n - 2 (inclusive) and check if the current value is greater than the maximum to its left and less than the minimum to its right. If both conditions are fulfilled, we increase the result by 1. Finally, we return the result as the sum of the beauty of all <code>nums[i]</code> where 1 &lt;= i &lt;= nums.length - 2.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

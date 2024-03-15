@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Power of Two</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/228/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/232/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer <code>n</code>, return <em><code>true</code> if it is a power of two. Otherwise, return <code>false</code></em>.</p>
+<p>An integer <code>n</code> is a power of two, if there exists an integer <code>x</code> such that <code>n == 2x</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 1
+<strong>Output:</strong> true
+<strong>Explanation:</strong> 20 = 1</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 16
+<strong>Output:</strong> true
+<strong>Explanation:</strong> 24 = 16</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> n = 3
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>-231 &lt;= n &lt;= 231 - 1</code></li>
+</ul>
+<p><strong>Follow up:</strong> Could you solve it without loops/recursion?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/power-of-two/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n
+    logical :: result
+
+    ! Example 1:
+    n = 1
+    result = is_power_of_two(n)
+    print '(L1)', result
+
+    ! Example 2:
+    n = 16
+    result = is_power_of_two(n)
+    print '(L1)', result
+
+    ! Example 3:
+    n = 3
+    result = is_power_of_two(n)
+    print '(L1)', result
+
+contains
+
+    function is_power_of_two(n) result(result)
+        implicit none
+        integer, intent(in) :: n
+        logical :: result
+        integer :: x
+
+        result = .false.
+        do x = 1, n
+            if (n == 2 * x) then
+                result = .true.
+                exit
+            end if
+        end do
+    end function is_power_of_two
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>F
+T
+F
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module power_of_two
+implicit none
+private
+public :: is_power_of_two
+interface is_power_of_two
+module procedure is_power_of_two_int
+end interface
+contains
+logical function is_power_of_two_int(n) result(is_power_of_two)
+integer, intent(in) :: n
+is_power_of_two = (n > 0).and.(n.eq.2**floor(log(real(n,kind=8))/log(2.0)))
+end function is_power_of_two_int
+end module power_of_two
+
+program power_of_two_test
+use power_of_two
+implicit none
+integer :: n
+logical :: is_power_of_two
+n = 1
+is_power_of_two = is_power_of_two_int(n)
+if (is_power_of_two) then
+    print *, "The number ", n, " is a power of two."
+else
+    print *, "The number ", n, " is not a power of two."
+end if
+
+n = 16
+is_power_of_two = is_power_of_two_int(n)
+if (is_power_of_two) then
+    print *, "The number ", n, " is a power of two."
+else
+    print *, "The number ", n, " is not a power of two."
+end if
+
+n = 3
+is_power_of_two = is_power_of_two_int(n)
+if (is_power_of_two) then
+    print *, "The number ", n, " is a power of two."
+else
+    print *, "The number ", n, " is not a power of two."
+end if
+end program power_of_two_test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:21:16:
+
+   21 | is_power_of_two = is_power_of_two_int(n)
+      |                1
+Error: ‘is_power_of_two’ at (1) is not a variable
+temp.f95:24:4:
+
+   24 | else
+      |    1
+Error: Unexpected ELSE statement at (1)
+temp.f95:26:3:
+
+   26 | end if
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:29:16:
+
+   29 | is_power_of_two = is_power_of_two_int(n)
+      |                1
+Error: ‘is_power_of_two’ at (1) is not a variable
+temp.f95:32:4:
+
+   32 | else
+      |    1
+Error: Unexpected ELSE statement at (1)
+temp.f95:34:3:
+
+   34 | end if
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:37:16:
+
+   37 | is_power_of_two = is_power_of_two_int(n)
+      |                1
+Error: ‘is_power_of_two’ at (1) is not a variable
+temp.f95:40:4:
+
+   40 | else
+      |    1
+Error: Unexpected ELSE statement at (1)
+temp.f95:42:3:
+
+   42 | end if
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_power_of_two(n):
+    if n &lt;= 0:
+        return False
+    return (n &amp; (n - 1)) == 0
+</code></pre>
+<p>The algorithm checks if the given integer n is a power of two. First, we check if n is a negative number or zero, in which case it cannot be a power of two, so we return false. </p>
+<p>If n is positive, we can use bitwise manipulation to check if it's a power of two. A power of two in binary representation has only one bit set to 1 (e.g., 1: 001, 2: 010, 4: 100, 8: 1000). When we subtract 1 from a power of two, all the bits from the right of the set bit become 1 (e.g., 1-1: 000, 2-1: 001, 4-1: 011, 8-1: 0111). </p>
+<p>By performing bitwise AND operation (n &amp; (n-1)) between n and (n-1), we can check if there is only one bit set in n. If the result is 0, that means there is no overlapping bit between n and (n-1), indicating that n is a power of two; returning true. Otherwise, return false.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool isPowerOfTwo(int n) {
+    if (n &lt;= 0) {
+        return false;
+    }
+    return (n &amp; (n - 1)) == 0;
+}
+</code></pre>
+<p>The algorithm checks if the given integer n is a power of two. First, we check if n is a negative number or zero, in which case it cannot be a power of two, so we return false. </p>
+<p>If n is positive, we can use bitwise manipulation to check if it's a power of two. A power of two in binary representation has only one bit set to 1 (e.g., 1: 001, 2: 010, 4: 100, 8: 1000). When we subtract 1 from a power of two, all the bits from the right of the set bit become 1 (e.g., 1-1: 000, 2-1: 001, 4-1: 011, 8-1: 0111). </p>
+<p>By performing bitwise AND operation (n &amp; (n-1)) between n and (n-1), we can check if there is only one bit set in n. If the result is 0, that means there is no overlapping bit between n and (n-1), indicating that n is a power of two; returning true. Otherwise, return false.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

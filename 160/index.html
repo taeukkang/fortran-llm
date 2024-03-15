@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Intersection of Two Linked Lists</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/157/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/163/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the heads of two singly linked-lists <code>headA</code> and <code>headB</code>, return <em>the node at which the two lists intersect</em>. If the two linked lists have no intersection at all, return <code>null</code>.</p>
+<p>For example, the following two linked lists begin to intersect at node <code>c1</code>:</p>
+<p>The test cases are generated such that there are no cycles anywhere in the entire linked structure.</p>
+<p><strong>Note</strong> that the linked lists must <strong>retain their original structure</strong> after the function returns.</p>
+<p><strong>Custom Judge:</strong></p>
+<p>The inputs to the <strong>judge</strong> are given as follows (your program is <strong>not</strong> given these inputs):</p>
+<ul>
+<li><code>intersectVal</code> - The value of the node where the intersection occurs. This is <code>0</code> if there is no intersected node.</li>
+<li><code>listA</code> - The first linked list.</li>
+<li><code>listB</code> - The second linked list.</li>
+<li><code>skipA</code> - The number of nodes to skip ahead in <code>listA</code> (starting from the head) to get to the intersected node.</li>
+<li><code>skipB</code> - The number of nodes to skip ahead in <code>listB</code> (starting from the head) to get to the intersected node.</li>
+</ul>
+<p>The judge will then create the linked structure based on these inputs and pass the two heads, <code>headA</code> and <code>headB</code> to your program. If you correctly return the intersected node, then your solution will be <strong>accepted</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> intersectVal = 8, listA = [4,1,8,4,5], listB = [5,6,1,8,4,5], skipA = 2, skipB = 3
+<strong>Output:</strong> Intersected at '8'
+<strong>Explanation:</strong> The intersected node's value is 8 (note that this must not be 0 if the two lists intersect).
+From the head of A, it reads as [4,1,8,4,5]. From the head of B, it reads as [5,6,1,8,4,5]. There are 2 nodes before the intersected node in A; There are 3 nodes before the intersected node in B.
+- Note that the intersected node's value is not 1 because the nodes with value 1 in A and B (2nd node in A and 3rd node in B) are different node references. In other words, they point to two different locations in memory, while the nodes with value 8 in A and B (3rd node in A and 4th node in B) point to the same location in memory.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> intersectVal = 2, listA = [1,9,1,2,4], listB = [3,2,4], skipA = 3, skipB = 1
+<strong>Output:</strong> Intersected at '2'
+<strong>Explanation:</strong> The intersected node's value is 2 (note that this must not be 0 if the two lists intersect).
+From the head of A, it reads as [1,9,1,2,4]. From the head of B, it reads as [3,2,4]. There are 3 nodes before the intersected node in A; There are 1 node before the intersected node in B.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> intersectVal = 0, listA = [2,6,4], listB = [1,5], skipA = 3, skipB = 2
+<strong>Output:</strong> No intersection
+<strong>Explanation:</strong> From the head of A, it reads as [2,6,4]. From the head of B, it reads as [1,5]. Since the two lists do not intersect, intersectVal must be 0, while skipA and skipB can be arbitrary values.
+Explanation: The two lists do not intersect, so return null.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes of <code>listA</code> is in the <code>m</code>.</li>
+<li>The number of nodes of <code>listB</code> is in the <code>n</code>.</li>
+<li><code>1 &lt;= m, n &lt;= 3 * 104</code></li>
+<li><code>1 &lt;= Node.val &lt;= 105</code></li>
+<li><code>0 &lt;= skipA &lt; m</code></li>
+<li><code>0 &lt;= skipB &lt; n</code></li>
+<li><code>intersectVal</code> is <code>0</code> if <code>listA</code> and <code>listB</code> do not intersect.</li>
+<li><code>intersectVal == listA[skipA] == listB[skipB]</code> if <code>listA</code> and <code>listB</code> intersect.</li>
+</ul>
+<p><strong>Follow up:</strong> Could you write a solution that runs in <code>O(m + n)</code> time and use only <code>O(1)</code> memory?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/intersection-of-two-linked-lists/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solves the problem of finding the intersection node of two linked lists.
+    implicit none
+
+    type :: node_type
+        integer :: val
+        type(node_type), pointer :: next => null()
+    end type node_type
+
+    type(node_type), target :: headA, headB
+    type(node_type), pointer :: currA, currB
+    integer :: i, j, k, l
+    logical :: found
+
+    ! Test case 1
+    call init_linked_list(headA, [4, 1, 8, 4, 5])
+    call init_linked_list(headB, [5, 6, 1, 8, 4, 5])
+    currA => headA
+    currB => headB
+    call find_intersection(currA, currB, found)
+    if (found) then
+        print "(A)", "Intersected at '8'"
+    else
+        print "(A)", "No intersection"
+    end if
+
+    ! Test case 2
+    call init_linked_list(headA, [1, 9, 1, 2, 4])
+    call init_linked_list(headB, [3, 2, 4])
+    currA => headA
+    currB => headB
+    call find_intersection(currA, currB, found)
+    if (found) then
+        print "(A)", "Intersected at '2'"
+    else
+        print "(A)", "No intersection"
+    end if
+
+    ! Test case 3
+    call init_linked_list(headA, [2, 6, 4])
+    call init_linked_list(headB, [1, 5])
+    currA => headA
+    currB => headB
+    call find_intersection(currA, currB, found)
+    if (found) then
+        print "(A)", "Intersected at '2'"
+    else
+        print "(A)", "No intersection"
+    end if
+
+contains
+
+    subroutine init_linked_list(head, values)
+        ! Initializes a linked list with the given values.
+        type(node_type), target :: head
+        integer, intent(in) :: values(:)
+        type(node_type), pointer :: curr
+        integer :: i
+
+        curr => head
+        do i = 1, size(values)
+            allocate(curr%next)
+            curr%next%val = values(i)
+            curr => curr%next
+        end do
+        nullify(curr%next)
+    end subroutine init_linked_list
+
+    subroutine find_intersection(headA, headB, found)
+        ! Finds the intersection node of two linked lists.
+        type(node_type), target :: headA, headB
+        type(node_type), pointer :: currA, currB
+        logical, intent(out) :: found
+        integer :: skipA, skipB
+
+        ! Find the intersection node by comparing the values of the two lists.
+        currA => headA
+        currB => headB
+        skipA = 0
+        skipB = 0
+        do while (.true.)
+            if (currA%val == currB%val) then
+                found = .true.
+                exit
+            end if
+            skipA = skipA + 1
+            skipB = skipB + 1
+            currA => currA%next
+            currB => currB%next
+            if (.not. associated(currA)) then
+                currA => headA
+                skipA = 0
+            end if
+            if (.not. associated(currB)) then
+                currB => headB
+                skipB = 0
+            end if
+        end do
+
+        ! Print the result.
+        if (found) then
+            print "(A, I0)", "Intersected at '", currA%val, "'"
+        else
+            print "(A)", "No intersection"
+        end if
+    end subroutine find_intersection
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Intersected at '0
+'
+Intersected at '8'
+Intersected at '0
+'
+Intersected at '2'
+Intersected at '0
+'
+Intersected at '2'
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module linked_lists
+
+implicit none
+
+type :: node
+    integer :: val
+    type(node), pointer :: next => null()
+end type
+
+contains
+
+function get_intersection_node(headA, headB, skipA, skipB) result(intersection)
+    type(node), pointer :: headA, headB, intersection
+    integer :: skipA, skipB
+
+    ! Initialize intersection to null
+    intersection => null()
+
+    ! If either list is empty, return null
+    if (associated(headA, null()) .or. associated(headB, null())) return
+
+    ! Advance both lists by the appropriate number of nodes
+    do i = 1, skipA
+        headA => headA%next
+    end do
+    do i = 1, skipB
+        headB => headB%next
+    end do
+
+    ! Advance both lists simultaneously until they intersect
+    do while (associated(headA, headB))
+        headA => headA%next
+        headB => headB%next
+    end do
+
+    ! If the lists intersect, return the intersection node
+    if (associated(headA, headB)) intersection => headA
+
+end function
+
+end module
+
+program main
+
+use linked_lists
+
+implicit none
+
+type(node), pointer :: headA, headB, intersection
+integer :: skipA, skipB
+
+! Test case 1: lists intersect
+headA => [4,1,8,4,5]
+headB => [5,6,1,8,4,5]
+skipA = 2
+skipB = 3
+intersection => get_intersection_node(headA, headB, skipA, skipB)
+write (*,*) "Intersection: ", intersection%val
+
+! Test case 2: lists do not intersect
+headA => [1,9,1,2,4]
+headB => [3,2,4]
+skipA = 3
+skipB = 1
+intersection => get_intersection_node(headA, headB, skipA, skipB)
+if (associated(intersection, null())) write (*,*) "No intersection"
+
+! Test case 3: lists are the same
+headA => [2,6,4]
+headB => [1,5]
+skipA = 3
+skipB = 2
+intersection => get_intersection_node(headA, headB, skipA, skipB)
+if (associated(intersection, null())) write (*,*) "No intersection"
+
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:23:8:
+
+   23 |     do i = 1, skipA
+      |        1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:20:57:
+
+   20 |     if (associated(headA, null()) .or. associated(headB, null())) return
+      |                                                         1
+Error: NULL at (1) is not permitted as actual argument to ‘associated’ intrinsic function
+temp.f95:45:5:
+
+   45 | use linked_lists
+      |     1
+Fatal Error: Cannot open module file ‘linked_lists.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+
+def getIntersectionNode(headA, headB):
+    pA, pB = headA, headB
+    while pA is not pB:
+        pA = pA.next if pA else headB
+        pB = pB.next if pB else headA
+    return pA
+</code></pre>
+<pre><code>The algorithm uses two pointers, one for each linked list head (headA and headB). The pointers traverse through the lists such that they traverse the sum of the node count of both lists. If the lists intersect at a node, the pointers will eventually meet at this intersection node because they will have traversed the same number of total nodes. If the lists do not intersect, the pointers will meet at the end of the lists, resulting in both pointers being null, and the function will return null.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
+
+ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+    ListNode *pA = headA, *pB = headB;
+    while (pA != pB) {
+        pA = pA ? pA-&gt;next : headB;
+        pB = pB ? pB-&gt;next : headA;
+    }
+    return pA;
+}
+</code></pre>
+<pre><code>The algorithm uses two pointers, one for each linked list head (headA and headB). The pointers traverse through the lists such that they traverse the sum of the node count of both lists. If the lists intersect at a node, the pointers will eventually meet at this intersection node because they will have traversed the same number of total nodes. If the lists do not intersect, the pointers will meet at the end of the lists, resulting in both pointers being null, and the function will return null.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

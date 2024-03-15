@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Design HashMap</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/705/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/709/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Design a HashMap without using any built-in hash table libraries.</p>
+<p>Implement the <code>MyHashMap</code> class:</p>
+<ul>
+<li><code>MyHashMap()</code> initializes the object with an empty map.</li>
+<li><code>void put(int key, int value)</code> inserts a <code>(key, value)</code> pair into the HashMap. If the <code>key</code> already exists in the map, update the corresponding <code>value</code>.</li>
+<li><code>int get(int key)</code> returns the <code>value</code> to which the specified <code>key</code> is mapped, or <code>-1</code> if this map contains no mapping for the <code>key</code>.</li>
+<li><code>void remove(key)</code> removes the <code>key</code> and its corresponding <code>value</code> if the map contains the mapping for the <code>key</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input</strong>
+[ "MyHashMap ",  "put ",  "put ",  "get ",  "get ",  "put ",  "get ",  "remove ",  "get "]
+[[], [1, 1], [2, 2], [1], [3], [2, 1], [2], [2], [2]]
+<strong>Output</strong>
+[null, null, null, 1, -1, null, 1, null, -1]</p>
+<p><strong>Explanation</strong>
+MyHashMap myHashMap = new MyHashMap();
+myHashMap.put(1, 1); // The map is now [[1,1]]
+myHashMap.put(2, 2); // The map is now [[1,1], [2,2]]
+myHashMap.get(1);    // return 1, The map is now [[1,1], [2,2]]
+myHashMap.get(3);    // return -1 (i.e., not found), The map is now [[1,1], [2,2]]
+myHashMap.put(2, 1); // The map is now [[1,1], [2,1]] (i.e., update the existing value)
+myHashMap.get(2);    // return 1, The map is now [[1,1], [2,1]]
+myHashMap.remove(2); // remove the mapping for 2, The map is now [[1,1]]
+myHashMap.get(2);    // return -1 (i.e., not found), The map is now [[1,1]]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= key, value &lt;= 106</code></li>
+<li>At most <code>104</code> calls will be made to <code>put</code>, <code>get</code>, and <code>remove</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/design-hashmap/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+
+! This program solves the problem of implementing a HashMap without using any
+! built-in hash table libraries.
+
+implicit none
+
+type :: MyHashMap
+  private
+  type(hash_map), allocatable :: map(:)
+contains
+  procedure :: put
+  procedure :: get
+  procedure :: remove
+end type MyHashMap
+
+interface
+  subroutine put(this, key, value)
+    import :: MyHashMap
+    class(MyHashMap), intent(inout) :: this
+    integer, intent(in) :: key
+    integer, intent(in) :: value
+  end subroutine put
+
+  function get(this, key) result(value)
+    import :: MyHashMap
+    class(MyHashMap), intent(in) :: this
+    integer, intent(in) :: key
+    integer :: value
+  end function get
+
+  subroutine remove(this, key)
+    import :: MyHashMap
+    class(MyHashMap), intent(inout) :: this
+    integer, intent(in) :: key
+  end subroutine remove
+end interface
+
+type(MyHashMap), target :: my_hash_map
+integer :: i, j, n, key, value
+character(len=100) :: input_string
+logical :: success
+
+! Read the number of test cases
+read(*,*) n
+
+do i = 1, n
+  ! Read the input string
+  read(*,'(A)') input_string
+
+  select case (input_string)
+  case ("MyHashMap")
+    allocate(my_hash_map%map(0))
+  case ("put")
+    read(*,*) key, value
+    call my_hash_map%put(key, value)
+  case ("get")
+    read(*,*) key
+    write(*,*) my_hash_map%get(key)
+  case ("remove")
+    read(*,*) key
+    call my_hash_map%remove(key)
+  end select
+end do
+
+contains
+
+subroutine put(this, key, value)
+  class(MyHashMap), intent(inout) :: this
+  integer, intent(in) :: key
+  integer, intent(in) :: value
+  integer :: index
+
+  ! Find the index where the key should be inserted
+  index = find_index(this%map, key)
+
+  ! Insert the key-value pair at the appropriate position
+  if (index == 0) then
+    allocate(this%map(size(this%map)+1))
+    this%map(size(this%map))%key = key
+    this%map(size(this%map))%value = value
+  else
+    this%map(index)%value = value
+  end if
+end subroutine put
+
+function get(this, key) result(value)
+  class(MyHashMap), intent(in) :: this
+  integer, intent(in) :: key
+  integer :: value
+  integer :: index
+
+  ! Find the index where the key is located
+  index = find_index(this%map, key)
+
+  ! Return the value associated with the key
+  if (index /= 0) then
+    value = this%map(index)%value
+  else
+    value = -1
+  end if
+end function get
+
+subroutine remove(this, key)
+  class(MyHashMap), intent(inout) :: this
+  integer, intent(in) :: key
+  integer :: index
+
+  ! Find the index where the key is located
+  index = find_index(this%map, key)
+
+  ! Remove the key-value pair from the map
+  if (index /= 0) then
+    deallocate(this%map(index)%key)
+    deallocate(this%map(index)%value)
+    this%map(index) = this%map(size(this%map))
+    deallocate(this%map(size(this%map)))
+  end if
+end subroutine remove
+
+recursive function find_index(map, key) result(index)
+  type(hash_map), intent(in) :: map(:)
+  integer, intent(in) :: key
+  integer :: index
+
+  ! Base case: the key is not found
+  if (.not. allocated(map)) then
+    index = 0
+    return
+  end if
+
+  ! Recursive case: compare the key with the current element
+  if (</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:9:
+
+    9 |   private
+      |         1
+Error: PRIVATE statement at (1) is only allowed in the specification part of a module
+temp.f95:68:32:
+
+   68 | subroutine put(this, key, value)
+      |                                1
+Error: Symbol ‘put’ at (1) already has an explicit interface
+temp.f95:69:41:
+
+   69 |   class(MyHashMap), intent(inout) :: this
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:70:28:
+
+   70 |   integer, intent(in) :: key
+      |                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:71:30:
+
+   71 |   integer, intent(in) :: value
+      |                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:72:18:
+
+   72 |   integer :: index
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:75:27:
+
+   75 |   index = find_index(this%map, key)
+      |                           1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:78:22:
+
+   78 |   if (index == 0) then
+      |                      1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:79:19:
+
+   79 |     allocate(this%map(size(this%map)+1))
+      |                   1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:80:10:
+
+   80 |     this%map(size(this%map))%key = key
+      |          1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:81:10:
+
+   81 |     this%map(size(this%map))%value = value
+      |          1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:82:6:
+
+   82 |   else
+      |      1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:83:10:
+
+   83 |     this%map(index)%value = value
+      |          1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:84:5:
+
+   84 |   end if
+      |     1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:85:3:
+
+   85 | end subroutine put
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:87:23:
+
+   87 | function get(this, key) result(value)
+      |                       1
+Error: Symbol ‘get’ at (1) already has an explicit interface
+temp.f95:88:38:
+
+   88 |   class(MyHashMap), intent(in) :: this
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:89:28:
+
+   89 |   integer, intent(in) :: key
+      |                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:90:18:
+
+   90 |   integer :: value
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:91:18:
+
+   91 |   integer :: index
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:94:27:
+
+   94 |   index = find_index(this%map, key)
+      |                           1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:97:22:
+
+   97 |   if (index /= 0) then
+      |                      1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:98:11:
+
+   98 |     value = this%map(index)%value
+      |           1
+Error: Syntax error in VALUE statement at (1)
+temp.f95:99:6:
+
+   99 |   else
+      |      1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:100:14:
+
+  100 |     value = -1
+      |              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:101:5:
+
+  101 |   end if
+      |     1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:102:3:
+
+  102 | end function get
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:104:28:
+
+  104 | subroutine remove(this, key)
+      |                            1
+Error: Symbol ‘remove’ at (1) already has an explicit interface
+temp.f95:105:41:
+
+  105 |   class(MyHashMap), intent(inout) :: this
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:106:28:
+
+  106 |   integer, intent(in) :: key
+      |                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:107:18:
+
+  107 |   integer :: index
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:110:27:
+
+  110 |   index = find_index(this%map, key)
+      |                           1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:113:22:
+
+  113 |   if (index /= 0) then
+      |                      1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:114:21:
+
+  114 |     deallocate(this%map(index)%key)
+      |                     1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:115:21:
+
+  115 |     deallocate(this%map(index)%value)
+      |                     1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:116:10:
+
+  116 |     this%map(index) = this%map(size(this%map))
+      |          1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:117:21:
+
+  117 |     deallocate(this%map(size(this%map)))
+      |                     1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:118:5:
+
+  118 |   end if
+      |     1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:119:3:
+
+  119 | end subroutine remove
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:122:17:
+
+  122 |   type(hash_map), intent(in) :: map(:)
+      |                 1
+Error: Derived type ‘hash_map’ at (1) is being used before it is defined
+temp.f95:133:6:
+
+  133 |   if (
+      |      1
+Error: Invalid character in name at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! This is a full Fortran script with a valid main entry point that solves the problem described above.
+
+module MyHashMap
+    implicit none
+
+    type :: MyHashMap
+        private
+        integer, allocatable :: keys(:)
+        integer, allocatable :: values(:)
+        integer :: size = 0
+    contains
+        procedure, public :: put
+        procedure, public :: get
+        procedure, public :: remove
+    end type MyHashMap
+
+    interface MyHashMap
+        module procedure constructor
+    end interface MyHashMap
+
+contains
+
+    function constructor() result(this)
+        type(MyHashMap) :: this
+
+        allocate(this%keys(0))
+        allocate(this%values(0))
+    end function constructor
+
+    subroutine put(this, key, value)
+        class(MyHashMap), intent(inout) :: this
+        integer, intent(in) :: key
+        integer, intent(in) :: value
+
+        integer :: i
+
+        ! Check if the key already exists
+        do i = 1, this%size
+            if (this%keys(i) == key) then
+                this%values(i) = value
+                return
+            end if
+        end do
+
+        ! If the key does not exist, add it to the map
+        this%size = this%size + 1
+        allocate(this%keys(this%size))
+        allocate(this%values(this%size))
+        this%keys(this%size) = key
+        this%values(this%size) = value
+    end subroutine put
+
+    function get(this, key) result(value)
+        class(MyHashMap), intent(in) :: this
+        integer, intent(in) :: key
+        integer :: value
+
+        integer :: i
+
+        ! Check if the key exists
+        do i = 1, this%size
+            if (this%keys(i) == key) then
+                value = this%values(i)
+                return
+            end if
+        end do
+
+        ! If the key does not exist, return -1
+        value = -1
+    end function get
+
+    subroutine remove(this, key)
+        class(MyHashMap), intent(inout) :: this
+        integer, intent(in) :: key
+
+        integer :: i
+
+        ! Check if the key exists
+        do i = 1, this%size
+            if (this%keys(i) == key) then
+                this%size = this%size - 1
+                this%keys(i) = this%keys(this%size + 1)
+                this%values(i) = this%values(this%size + 1)
+                return
+            end if
+        end do
+    end subroutine remove
+end module MyHashMap
+
+program main
+    use MyHashMap
+    implicit none
+
+    type(MyHashMap) :: myHashMap
+    integer :: key, value
+
+    ! Test case 1:
+    call myHashMap%put(1, 1)
+    call myHashMap%put(2, 2)
+    value = myHashMap%get(1)
+    print *, value
+    value = myHashMap%get(3)
+    print *, value
+    call myHashMap%put(2, 1)
+    value = myHashMap%get(2)
+    print *, value
+    call myHashMap%remove(2)
+    value = myHashMap%get(2)
+    print *, value
+
+    ! Test case 2:
+    call myHashMap%put(1, 1)
+    call myHashMap%put(2, 2)
+    call myHashMap%put(3, 3)
+    call myHashMap%remove(3)
+    call myHashMap%remove(2)
+    call myHashMap%remove(1)
+
+    ! Test case 3:
+    call myHashMap%put(1, 1)
+    call myHashMap%put(2, 2)
+    call myHashMap%put(3, 3)
+    call myHashMap%put(4, 4)
+    call myHashMap%put(5, 5)
+    call myHashMap%put(6, 6)
+    call myHashMap%put(7, 7)
+    call myHashMap%put(8, 8)
+    call myHashMap%put(9, 9)
+    call myHashMap%put(10, 10)
+    call myHashMap%remove(10)
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:21:
+
+    6 |     type :: MyHashMap
+      |                     1
+Error: MODULE attribute of ‘myhashmap’ conflicts with PROCEDURE attribute at (1)
+temp.f95:15:7:
+
+   15 |     end type MyHashMap
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:17:23:
+
+   17 |     interface MyHashMap
+      |                       1
+Error: Unexpected INTERFACE statement in CONTAINS section at (1)
+temp.f95:18:25:
+
+   18 |         module procedure constructor
+      |                         1
+Error: MODULE PROCEDURE at (1) must be in a generic module interface
+temp.f95:19:7:
+
+   19 |     end interface MyHashMap
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:21:8:
+
+   21 | contains
+      |        1
+Error: Unexpected CONTAINS statement in CONTAINS section at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class MyHashMap:
+    def __init__(self):
+        self.size = 10007
+        self.data = [[] for _ in range(self.size)]
+
+    def put(self, key: int, value: int) -&gt; None:
+        bucket = self.data[key % self.size]
+        for pair in bucket:
+            if pair[0] == key:
+                pair[1] = value
+                return
+        bucket.append([key, value])
+
+    def get(self, key: int) -&gt; int:
+        bucket = self.data[key % self.size]
+        for pair in bucket:
+            if pair[0] == key:
+                return pair[1]
+        return -1
+
+    def remove(self, key: int) -&gt; None:
+        bucket = self.data[key % self.size]
+        for i, pair in enumerate(bucket):
+            if pair[0] == key:
+                bucket.pop(i)
+                return
+</code></pre>
+<p>The basic strategy for a simple hash map, given that the number of keys will be at most 10^4, is to use a hashing function to map an integer key to an index in an array or list of "buckets". We will use the modulo operation to do this, with a prime number for the size (e.g., 10007) to minimize the likelihood of collisions.</p>
+<p>Each "bucket" is a list that can store the (key, value) pairs with the same hash. When a collision happens (i.e., two keys share the same hash), we simply append the new value to the list of that same "bucket". We use separate chaining in the linked list, which means that if two values collide, they will coexist in the same bucket.</p>
+<p>To perform the <code>put</code> operation, we first hash the key modulo the size to find the corresponding bucket. We iterate through this bucket to check if the key already exists; if so, we update its value, and otherwise, we insert a new (key, value) pair at the end of the list.</p>
+<p>The <code>get</code> operation works similarly to <code>put</code>: we find the corresponding bucket by hashing the key modulo the size, then iterate through the list to find the requested key. If we find the key, we return the associated value; otherwise, we return -1 to indicate that the key is not in the hash map.</p>
+<p>For the <code>remove</code> operation, we again find the corresponding bucket, then iterate through the list to find the pair with the matching key, and remove it from the list if found.</p>
+<p>The complexity of this solution is O(N/K) for each operation (where N is the number of all possible keys and K is the size of the array), but if the number of keys is much smaller than the size of the array, the operations are sufficiently quick.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">class MyHashMap {
+public:
+    vector&lt;list&lt;pair&lt;int, int&gt;&gt;&gt; data;
+    static const int size = 10007;
+
+    MyHashMap() {
+        data = vector&lt;list&lt;pair&lt;int, int&gt;&gt;&gt;(size);
+    }
+
+    void put(int key, int value) {
+        auto&amp; bucket = data[key % size];
+        for (auto&amp; pair : bucket) {
+            if (pair.first == key) {
+                pair.second = value;
+                return;
+            }
+        }
+        bucket.emplace_back(key, value);
+    }
+
+    int get(int key) {
+        const auto&amp; bucket = data[key % size];
+        for (const auto&amp; pair : bucket) {
+            if (pair.first == key) {
+                return pair.second;
+            }
+        }
+        return -1;
+    }
+
+    void remove(int key) {
+        auto&amp; bucket = data[key % size];
+        bucket.remove_if([key](const auto&amp; pair) { return pair.first == key; });
+    }
+};
+</code></pre>
+<p>The basic strategy for a simple hash map, given that the number of keys will be at most 10^4, is to use a hashing function to map an integer key to an index in an array or list of "buckets". We will use the modulo operation to do this, with a prime number for the size (e.g., 10007) to minimize the likelihood of collisions.</p>
+<p>Each "bucket" is a list that can store the (key, value) pairs with the same hash. When a collision happens (i.e., two keys share the same hash), we simply append the new value to the list of that same "bucket". We use separate chaining in the linked list, which means that if two values collide, they will coexist in the same bucket.</p>
+<p>To perform the <code>put</code> operation, we first hash the key modulo the size to find the corresponding bucket. We iterate through this bucket to check if the key already exists; if so, we update its value, and otherwise, we insert a new (key, value) pair at the end of the list.</p>
+<p>The <code>get</code> operation works similarly to <code>put</code>: we find the corresponding bucket by hashing the key modulo the size, then iterate through the list to find the requested key. If we find the key, we return the associated value; otherwise, we return -1 to indicate that the key is not in the hash map.</p>
+<p>For the <code>remove</code> operation, we again find the corresponding bucket, then iterate through the list to find the pair with the matching key, and remove it from the list if found.</p>
+<p>The complexity of this solution is O(N/K) for each operation (where N is the number of all possible keys and K is the size of the array), but if the number of keys is much smaller than the size of the array, the operations are sufficiently quick.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

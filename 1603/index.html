@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Design Parking System</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1598/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1608/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Design a parking system for a parking lot. The parking lot has three kinds of parking spaces: big, medium, and small, with a fixed number of slots for each size.</p>
+<p>Implement the <code>ParkingSystem</code> class:</p>
+<ul>
+<li><code>ParkingSystem(int big, int medium, int small)</code> Initializes object of the <code>ParkingSystem</code> class. The number of slots for each parking space are given as part of the constructor.</li>
+<li><code>bool addCar(int carType)</code> Checks whether there is a parking space of <code>carType</code> for the car that wants to get into the parking lot. <code>carType</code> can be of three kinds: big, medium, or small, which are represented by <code>1</code>, <code>2</code>, and <code>3</code> respectively. <strong>A car can only park in a parking space of its</strong> <code>carType</code>. If there is no space available, return <code>false</code>, else park the car in that size space and return <code>true</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input</strong>
+[ "ParkingSystem ",  "addCar ",  "addCar ",  "addCar ",  "addCar "]
+[[1, 1, 0], [1], [2], [3], [1]]
+<strong>Output</strong>
+[null, true, true, false, false]</p>
+<p><strong>Explanation</strong>
+ParkingSystem parkingSystem = new ParkingSystem(1, 1, 0);
+parkingSystem.addCar(1); // return true because there is 1 available slot for a big car
+parkingSystem.addCar(2); // return true because there is 1 available slot for a medium car
+parkingSystem.addCar(3); // return false because there is no available slot for a small car
+parkingSystem.addCar(1); // return false because there is no available slot for a big car. It is already occupied.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= big, medium, small &lt;= 1000</code></li>
+<li><code>carType</code> is <code>1</code>, <code>2</code>, or <code>3</code></li>
+<li>At most <code>1000</code> calls will be made to <code>addCar</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/design-parking-system/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use ParkingSystem_mod
+    implicit none
+
+    type(ParkingSystem) :: parkingSystem
+    integer :: i
+
+    ! Example 1
+    call parkingSystem%init(1, 1, 0)
+    print '(L1)', parkingSystem%addCar(1) ! true
+    print '(L1)', parkingSystem%addCar(2) ! true
+    print '(L1)', parkingSystem%addCar(3) ! false
+    print '(L1)', parkingSystem%addCar(1) ! false
+
+contains
+
+subroutine init(this, big, medium, small)
+    class(ParkingSystem), intent(inout) :: this
+    integer, intent(in) :: big, medium, small
+
+    this%big = big
+    this%medium = medium
+    this%small = small
+end subroutine init
+
+function addCar(this, carType) result(res)
+    class(ParkingSystem), intent(inout) :: this
+    integer, intent(in) :: carType
+    logical :: res
+
+    select case (carType)
+        case (1)
+            if (this%big > 0) then
+                this%big = this%big - 1
+                res = .true.
+            else
+                res = .false.
+            end if
+        case (2)
+            if (this%medium > 0) then
+                this%medium = this%medium - 1
+                res = .true.
+            else
+                res = .false.
+            end if
+        case (3)
+            if (this%small > 0) then
+                this%small = this%small - 1
+                res = .true.
+            else
+                res = .false.
+            end if
+        case default
+            error stop 'Invalid car type'
+    end select
+end function addCar
+
+end program main
+
+module ParkingSystem_mod
+    implicit none
+
+    private
+    public :: ParkingSystem
+
+    type :: ParkingSystem
+        private
+        integer :: big, medium, small
+    contains
+        procedure, pass :: init => init
+        procedure, pass :: addCar => addCar
+    end type ParkingSystem
+
+contains
+
+subroutine init(this, big, medium, small)
+    class(ParkingSystem), intent(inout) :: this
+    integer, intent(in) :: big, medium, small
+
+    this%big = big
+    this%medium = medium
+    this%small = small
+end subroutine init
+
+function addCar(this, carType) result(res)
+    class(ParkingSystem), intent(inout) :: this
+    integer, intent(in) :: carType
+    logical :: res
+
+    select case (carType)
+        case (1)
+            if (this%big > 0) then
+                this%big = this%big - 1
+                res = .true.
+            else
+                res = .false.
+            end if
+        case (2)
+            if (this%medium > 0) then
+                this%medium = this%medium - 1
+                res = .true.
+            else
+                res = .false.
+            end if
+        case (3)
+            if (this%small > 0) then
+                this%small = this%small - 1
+                res = .true.
+            else
+                res = .false.
+            end if
+        case default
+            error stop 'Invalid car type'
+    end select
+end function addCar
+
+end module ParkingSystem_mod</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:2:9:
+
+    2 |     use ParkingSystem_mod
+      |         1
+Fatal Error: Cannot open module file ‘parkingsystem_mod.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!include "parking_system.f90"
+
+program main
+    implicit none
+
+    integer, parameter :: big = 1, medium = 2, small = 3
+    integer :: big_slots, medium_slots, small_slots
+    integer :: car_type
+    type(ParkingSystem) :: parking_system
+
+    ! read the number of slots for each parking space
+    read(*,*) big_slots, medium_slots, small_slots
+
+    ! create a new parking system object
+    parking_system = ParkingSystem(big_slots, medium_slots, small_slots)
+
+    ! test the addCar function with different car types
+    do car_type = 1, 3
+        if (parking_system%addCar(car_type)) then
+            write(*,*) "true"
+        else
+            write(*,*) "false"
+        end if
+    end do
+
+end program
+
+!------------------------------------------------------------------------------
+
+module ParkingSystemModule
+    implicit none
+
+    type ParkingSystem
+        integer :: big_slots, medium_slots, small_slots
+        integer :: big_count, medium_count, small_count
+    contains
+        procedure :: addCar
+    end type ParkingSystem
+
+contains
+
+    logical function addCar(this, carType) result(success)
+        class(ParkingSystem), intent(inout) :: this
+        integer, intent(in) :: carType
+
+        success = .false.
+
+        ! check if there is a parking space of carType available
+        if (carType == 1) then
+            if (this%big_count < this%big_slots) then
+                this%big_count = this%big_count + 1
+                success = .true.
+            end if
+        else if (carType == 2) then
+            if (this%medium_count < this%medium_slots) then
+                this%medium_count = this%medium_count + 1
+                success = .true.
+            end if
+        else if (carType == 3) then
+            if (this%small_count < this%small_slots) then
+                this%small_count = this%small_count + 1
+                success = .true.
+            end if
+        end if
+
+    end function addCar
+
+end module ParkingSystemModule
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:24:
+
+    9 |     type(ParkingSystem) :: parking_system
+      |                        1
+Error: Derived type ‘parkingsystem’ at (1) is being used before it is defined
+temp.f95:19:28:
+
+   19 |         if (parking_system%addCar(car_type)) then
+      |                            1
+Error: Symbol ‘parking_system’ at (1) has no IMPLICIT type
+temp.f95:21:12:
+
+   21 |         else
+      |            1
+Error: Unexpected ELSE statement at (1)
+temp.f95:23:11:
+
+   23 |         end if
+      |           1
+Error: Expecting END DO statement at (1)
+temp.f95:15:18:
+
+   15 |     parking_system = ParkingSystem(big_slots, medium_slots, small_slots)
+      |                  1
+Error: Symbol ‘parking_system’ at (1) has no IMPLICIT type
+temp.f95:15:21:
+
+   15 |     parking_system = ParkingSystem(big_slots, medium_slots, small_slots)
+      |                     1
+Error: Function ‘parkingsystem’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def runningSum(nums):
+    for i in range(1, len(nums)):
+        nums[i] += nums[i - 1]
+    return nums
+</code></pre>
+<p>The algorithm iterates over the input array starting from the second element (i = 1). In each iteration, it adds the (i-1)-th element to the i-th element of the array (nums[i] += nums[i-1]).</p>
+<p>This operation computes the running sum of the array by essentially summing up every previous element with the current element. This is an in-place operation, and the modified input array is returned as output.</p>
+<p>The time complexity of this algorithm is O(n), where n is the length of the input array, as the loop iterates once over each of the n elements in the array. The space complexity is O(1), since it only modifies the input array in-place and requires no additional memory.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">vector&lt;int&gt; runningSum(vector&lt;int&gt;&amp; nums) {
+    for (int i = 1; i &lt; nums.size(); i++) {
+        nums[i] += nums[i - 1];
+    }
+    return nums;
+}
+</code></pre>
+<p>The algorithm iterates over the input array starting from the second element (i = 1). In each iteration, it adds the (i-1)-th element to the i-th element of the array (nums[i] += nums[i-1]).</p>
+<p>This operation computes the running sum of the array by essentially summing up every previous element with the current element. This is an in-place operation, and the modified input array is returned as output.</p>
+<p>The time complexity of this algorithm is O(n), where n is the length of the input array, as the loop iterates once over each of the n elements in the array. The space complexity is O(1), since it only modifies the input array in-place and requires no additional memory.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

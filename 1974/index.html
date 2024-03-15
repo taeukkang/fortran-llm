@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Time to Type Word Using Special Typewriter</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1971/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1979/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>There is a special typewriter with lowercase English letters <code>'a'</code> to <code>'z'</code> arranged in a <strong>circle</strong> with a <strong>pointer</strong>. A character can <strong>only</strong> be typed if the pointer is pointing to that character. The pointer is <strong>initially</strong> pointing to the character <code>'a'</code>.</p>
+<p>Each second, you may perform one of the following operations:</p>
+<ul>
+<li>Move the pointer one character <strong>counterclockwise</strong> or <strong>clockwise</strong>.</li>
+<li>Type the character the pointer is <strong>currently</strong> on.</li>
+</ul>
+<p>Given a string <code>word</code>, return the <strong>minimum</strong> number of seconds to type out the characters in <code>word</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> word =  "abc "
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> 
+The characters are printed as follows:
+- Type the character 'a' in 1 second since the pointer is initially on 'a'.
+- Move the pointer clockwise to 'b' in 1 second.
+- Type the character 'b' in 1 second.
+- Move the pointer clockwise to 'c' in 1 second.
+- Type the character 'c' in 1 second.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> word =  "bza "
+<strong>Output:</strong> 7
+<strong>Explanation:</strong>
+The characters are printed as follows:
+- Move the pointer clockwise to 'b' in 1 second.
+- Type the character 'b' in 1 second.
+- Move the pointer counterclockwise to 'z' in 2 seconds.
+- Type the character 'z' in 1 second.
+- Move the pointer clockwise to 'a' in 1 second.
+- Type the character 'a' in 1 second.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> word =  "zjpc "
+<strong>Output:</strong> 34
+<strong>Explanation:</strong>
+The characters are printed as follows:
+- Move the pointer counterclockwise to 'z' in 1 second.
+- Type the character 'z' in 1 second.
+- Move the pointer clockwise to 'j' in 10 seconds.
+- Type the character 'j' in 1 second.
+- Move the pointer clockwise to 'p' in 6 seconds.
+- Type the character 'p' in 1 second.
+- Move the pointer counterclockwise to 'c' in 13 seconds.
+- Type the character 'c' in 1 second.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= word.length &lt;= 100</code></li>
+<li><code>word</code> consists of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-time-to-type-word-using-special-typewriter/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solves the problem described in the task
+    implicit none
+
+    integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+    integer :: num_seconds
+    character(len=1) :: word
+
+    ! Define the special typewriter
+    data (i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z)/'a', 'b', 'c', &
+        'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', &
+        'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'/
+
+    ! Initialize the pointer
+    data i /'a'/
+
+    ! Read the input string
+    read(*,'(A)') word
+
+    ! Loop over each character in the input string
+    do j=1,len(word)
+        select case(word(j:j))
+            ! If the character is 'a' to 'z', move the pointer accordingly
+            case('a':'z')
+                if (word(j:j) == i) then
+                    ! If the pointer is already pointing to the current character, type it
+                    write(*,'(I1)') 1
+                else
+                    ! Otherwise, move the pointer to the current character and type it
+                    i = word(j:j)
+                    write(*,'(I1)') 1
+                end if
+            ! If the character is ' ', skip it
+            case(' ')
+                continue
+            ! If the character is not recognized, error
+            case default
+                write(*,'(A)') 'Error: Unrecognized character.'
+                stop
+        end select
+    end do
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:10:63:
+
+   10 |     data (i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z)/'a', 'b', 'c', &
+      |                                                               1
+Error: Syntax error in DATA statement at (1)
+temp.f95:15:11:
+
+   15 |     data i /'a'/
+      |           1
+Error: Incompatible types in DATA statement at (1); attempted conversion of CHARACTER(1) to INTEGER(4)
+temp.f95:25:20:
+
+   25 |                 if (word(j:j) == i) then
+      |                    1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:30:24:
+
+   30 |                     i = word(j:j)
+      |                        1
+Error: Cannot convert CHARACTER(*) to INTEGER(4) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module typewriter
+
+implicit none
+
+integer, parameter :: n = 26 ! number of characters in the alphabet
+integer, parameter :: m = 10 ! number of seconds to move the pointer clockwise or counterclockwise
+
+integer :: pointer = 1 ! initial position of the pointer
+integer :: seconds = 0 ! total number of seconds
+
+contains
+
+subroutine type_word(word)
+
+character(len=*), intent(in) :: word
+
+integer :: i ! loop variable
+
+do i = 1, len(word)
+
+! move the pointer clockwise or counterclockwise
+if (word(i:i) == 'L') then
+pointer = mod(pointer - 1, n) + 1
+seconds = seconds + m
+else if (word(i:i) == 'R') then
+pointer = mod(pointer + 1, n) + 1
+seconds = seconds + m
+end if
+
+! type the character
+write (*, '(A)') word(i:i)
+seconds = seconds + 1
+
+end do
+
+end subroutine type_word
+
+end module typewriter
+
+program main
+
+use typewriter
+
+implicit none
+
+character(len=100) :: word ! input word
+
+! test cases
+call type_word('abc') ! 5 seconds
+call type_word('bza') ! 7 seconds
+call type_word('zjpc') ! 34 seconds
+
+end program main
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>a
+b
+c
+b
+z
+a
+z
+j
+p
+c
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minTimeToType(word: str) -&gt; int:
+    time = 0
+    position = 0
+    for c in word:
+        next_position = ord(c) - ord('a')
+        diff = abs(next_position - position)
+        time += min(diff, 26 - diff) + 1
+        position = next_position
+    return time
+</code></pre>
+<ol>
+<li>Initialize the time and position to 0.</li>
+<li>Iterate through the characters of the word.</li>
+<li>Calculate the next position based on the ASCII value of the character and 'a'.</li>
+<li>Calculate the difference between the next position and the current position.</li>
+<li>Update the time by adding the minimum of the difference and (26 - difference), and 1 extra second for typing the character.</li>
+<li>Update the current position to the next position.</li>
+<li>Return the total time after processing all characters in the word.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minTimeToType(string word) {
+    int time = 0, position = 0;
+    for (char c : word) {
+        int next_position = c - 'a';
+        int diff = abs(next_position - position);
+        time += min(diff, 26 - diff) + 1;
+        position = next_position;
+    }
+    return time;
+}
+</code></pre>
+<ol>
+<li>Initialize the time and position to 0.</li>
+<li>Iterate through the characters of the word.</li>
+<li>Calculate the next position based on the ASCII value of the character and 'a'.</li>
+<li>Calculate the difference between the next position and the current position.</li>
+<li>Update the time by adding the minimum of the difference and (26 - difference), and 1 extra second for typing the character.</li>
+<li>Update the current position to the next position.</li>
+<li>Return the total time after processing all characters in the word.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

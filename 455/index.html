@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Assign Cookies</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/448/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/459/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Assume you are an awesome parent and want to give your children some cookies. But, you should give each child at most one cookie.</p>
+<p>Each child <code>i</code> has a greed factor <code>g[i]</code>, which is the minimum size of a cookie that the child will be content with; and each cookie <code>j</code> has a size <code>s[j]</code>. If <code>s[j] &gt;= g[i]</code>, we can assign the cookie <code>j</code> to the child <code>i</code>, and the child <code>i</code> will be content. Your goal is to maximize the number of your content children and output the maximum number.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> g = [1,2,3], s = [1,1]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> You have 3 children and 2 cookies. The greed factors of 3 children are 1, 2, 3. 
+And even though you have 2 cookies, since their size is both 1, you could only make the child whose greed factor is 1 content.
+You need to output 1.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> g = [1,2], s = [1,2,3]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> You have 2 children and 3 cookies. The greed factors of 2 children are 1, 2. 
+You have 3 cookies and their sizes are big enough to gratify all of the children, 
+You need to output 2.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= g.length &lt;= 3 * 104</code></li>
+<li><code>0 &lt;= s.length &lt;= 3 * 104</code></li>
+<li><code>1 &lt;= g[i], s[j] &lt;= 231 - 1</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/assign-cookies/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n_children, n_cookies
+    integer, dimension(:), allocatable :: greed_factors
+    integer, dimension(:), allocatable :: cookie_sizes
+    integer :: i, j
+    integer :: max_content_children
+
+    ! read input
+    read(*,*) n_children
+    allocate(greed_factors(n_children))
+    do i = 1, n_children
+        read(*,*) greed_factors(i)
+    end do
+    read(*,*) n_cookies
+    allocate(cookie_sizes(n_cookies))
+    do i = 1, n_cookies
+        read(*,*) cookie_sizes(i)
+    end do
+
+    ! solve problem
+    max_content_children = 0
+    do i = 1, n_children
+        do j = 1, n_cookies
+            if (cookie_sizes(j) >= greed_factors(i)) then
+                max_content_children = max(max_content_children, 1)
+                exit
+            end if
+        end do
+    end do
+
+    ! print output
+    write (*,*) max_content_children
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 11 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7a1d1a54f960 in ???
+#1  0x7a1d1a5504d9 in ???
+#2  0x7a1d1a7a417b in ???
+#3  0x7a1d1a79d684 in ???
+#4  0x7a1d1a79e2aa in ???
+#5  0x5cf4337572af in MAIN__
+#6  0x5cf43375788c in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module MaxContentChildren
+  implicit none
+contains
+  subroutine solve(g, s, n, m, result)
+    integer, intent(in) :: n, m
+    integer, intent(in) :: g(n), s(m)
+    integer, intent(out) :: result
+
+    integer :: i, j, k
+    integer :: max_content
+
+    ! Initialize variables
+    max_content = 0
+    k = 1
+
+    ! Loop through the children
+    do i = 1, n
+      ! Loop through the cookies
+      do j = k, m
+        ! If the cookie size is greater than or equal to the child's greed factor,
+        ! assign the cookie to the child and increment the number of content children
+        if (s(j) >= g(i)) then
+          max_content = max_content + 1
+          k = j + 1
+          exit
+        end if
+      end do
+    end do
+
+    ! Output the maximum number of content children
+    result = max_content
+  end subroutine solve
+end module MaxContentChildren
+
+program test
+  use MaxContentChildren
+  implicit none
+
+  integer, parameter :: n = 3
+  integer, parameter :: m = 2
+  integer :: g(n) = [1, 2, 3]
+  integer :: s(m) = [1, 1]
+  integer :: result
+
+  call solve(g, s, n, m, result)
+  write (*,*) result
+
+  g = [1, 2]
+  s = [1, 2, 3]
+  call solve(g, s, n, m, result)
+  write (*,*) result
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:48:2:
+
+   48 |   g = [1, 2]
+      |  1
+Error: Different shape for array assignment at (1) on dimension 1 (3 and 2)
+temp.f95:49:2:
+
+   49 |   s = [1, 2, 3]
+      |  1
+Error: Different shape for array assignment at (1) on dimension 1 (2 and 3)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def find_content_children(g, s):
+    g.sort()
+    s.sort()
+    i = j = 0
+
+    while i &lt; len(g) and j &lt; len(s):
+        if s[j] &gt;= g[i]:
+            i += 1
+
+        j += 1
+
+    return i
+</code></pre>
+<pre><code>The algorithm first sorts both the greed factors of children `g` and the sizes of cookies `s`. Next, two pointers are declared, `i` for the greed factors and `j` for the cookies.
+</code></pre>
+<p>The algorithm then iterates through the sorted lists in parallel using a while loop until either the greed factors or the cookies run out. Inside the loop, we check if the current cookie <code>s[j]</code> is greater than or equal to the current greed factor <code>g[i]</code>. If it is, that means the child is content and we increment the <code>i</code> pointer to the next child. In both cases (whether the child is content or not), we move on to the next cookie by incrementing the <code>j</code> pointer.
+The algorithm returns the number of content children (<code>i</code>) once the loop is done.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int findContentChildren(std::vector&lt;int&gt;&amp; g, std::vector&lt;int&gt;&amp; s) {
+    std::sort(g.begin(), g.end());
+    std::sort(s.begin(), s.end());
+    int i = 0, j = 0;
+
+    while (i &lt; g.size() &amp;&amp; j &lt; s.size()) {
+      if (s[j] &gt;= g[i]) {
+        i++;
+      }
+
+      j++;
+    }
+
+    return i;
+}
+</code></pre>
+<pre><code>The algorithm first sorts both the greed factors of children `g` and the sizes of cookies `s`. Next, two pointers are declared, `i` for the greed factors and `j` for the cookies.
+</code></pre>
+<p>The algorithm then iterates through the sorted lists in parallel using a while loop until either the greed factors or the cookies run out. Inside the loop, we check if the current cookie <code>s[j]</code> is greater than or equal to the current greed factor <code>g[i]</code>. If it is, that means the child is content and we increment the <code>i</code> pointer to the next child. In both cases (whether the child is content or not), we move on to the next cookie by incrementing the <code>j</code> pointer.
+The algorithm returns the number of content children (<code>i</code>) once the loop is done.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

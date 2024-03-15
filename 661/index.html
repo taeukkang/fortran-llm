@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Image Smoother</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/657/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/671/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>An <strong>image smoother</strong> is a filter of the size <code>3 x 3</code> that can be applied to each cell of an image by rounding down the average of the cell and the eight surrounding cells (i.e., the average of the nine cells in the blue smoother). If one or more of the surrounding cells of a cell is not present, we do not consider it in the average (i.e., the average of the four cells in the red smoother).</p>
+<p>Given an <code>m x n</code> integer matrix <code>img</code> representing the grayscale of an image, return <em>the image after applying the smoother on each cell of it</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> img = [[1,1,1],[1,0,1],[1,1,1]]
+<strong>Output:</strong> [[0,0,0],[0,0,0],[0,0,0]]
+<strong>Explanation:</strong>
+For the points (0,0), (0,2), (2,0), (2,2): floor(3/4) = floor(0.75) = 0
+For the points (0,1), (1,0), (1,2), (2,1): floor(5/6) = floor(0.83333333) = 0
+For the point (1,1): floor(8/9) = floor(0.88888889) = 0</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> img = [[100,200,100],[200,50,200],[100,200,100]]
+<strong>Output:</strong> [[137,141,137],[141,138,141],[137,141,137]]
+<strong>Explanation:</strong>
+For the points (0,0), (0,2), (2,0), (2,2): floor((100+200+200+50)/4) = floor(137.5) = 137
+For the points (0,1), (1,0), (1,2), (2,1): floor((200+200+50+200+100+100)/6) = floor(141.666667) = 141
+For the point (1,1): floor((50+200+200+200+200+100+100+100+100)/9) = floor(138.888889) = 138</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>m == img.length</code></li>
+<li><code>n == img[i].length</code></li>
+<li><code>1 &lt;= m, n &lt;= 200</code></li>
+<li><code>0 &lt;= img[i][j] &lt;= 255</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/image-smoother/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, iostat_end, DP => REAL64
+    implicit none
+    integer, parameter :: m = 3, n = 3
+    integer, dimension(m, n) :: img
+    real(kind=DP), dimension(m, n) :: smoothed_img
+    integer :: i, j
+
+    ! read input
+    read(*, *) img
+
+    ! apply smoother
+    do i = 1, m
+        do j = 1, n
+            smoothed_img(i, j) = floor(avg(img(i-1:i+1, j-1:j+1)))
+        end do
+    end do
+
+    ! print output
+    write (*, '(A)') 'Smoothed image:'
+    do i = 1, m
+        write (*, '(3I3)') smoothed_img(i, :)
+    end do
+
+contains
+
+    function avg(arr) result(res)
+        implicit none
+        integer, intent(in) :: arr(:, :)
+        integer :: res
+        res = sum(arr) / size(arr, dim=1)
+    end function avg
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:39:
+
+   15 |             smoothed_img(i, j) = floor(avg(img(i-1:i+1, j-1:j+1)))
+      |                                       1
+Error: ‘a’ argument of ‘floor’ intrinsic at (1) must be REAL
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program imageSmoother
+    implicit none
+
+    integer, parameter :: m = 3, n = 3
+    integer :: img(m, n)
+    integer :: smoothedImg(m, n)
+
+    ! test case 1
+    img = reshape((/1, 1, 1, 1, 0, 1, 1, 1, 1/), shape=(/m, n/))
+    smoothedImg = imageSmoother(img)
+    write (*,*) smoothedImg
+
+    ! test case 2
+    img = reshape((/100, 200, 100, 200, 50, 200, 100, 200, 100/), shape=(/m, n/))
+    smoothedImg = imageSmoother(img)
+    write (*,*) smoothedImg
+end program imageSmoother
+
+function imageSmoother(img) result(smoothedImg)
+    implicit none
+
+    integer, intent(in) :: img(3, 3)
+    integer :: smoothedImg(3, 3)
+
+    integer :: i, j
+    integer :: sum, count
+
+    do i = 1, 3
+        do j = 1, 3
+            sum = 0
+            count = 0
+
+            ! calculate the sum and count of the surrounding cells
+            if (i > 1 .and. j > 1) then
+                sum = sum + img(i-1, j-1)
+                count = count + 1
+            end if
+            if (i > 1) then
+                sum = sum + img(i-1, j)
+                count = count + 1
+            end if
+            if (i > 1 .and. j < 3) then
+                sum = sum + img(i-1, j+1)
+                count = count + 1
+            end if
+            if (j > 1) then
+                sum = sum + img(i, j-1)
+                count = count + 1
+            end if
+            if (j < 3) then
+                sum = sum + img(i, j+1)
+                count = count + 1
+            end if
+            if (i < 3 .and. j > 1) then
+                sum = sum + img(i+1, j-1)
+                count = count + 1
+            end if
+            if (i < 3) then
+                sum = sum + img(i+1, j)
+                count = count + 1
+            end if
+            if (i < 3 .and. j < 3) then
+                sum = sum + img(i+1, j+1)
+                count = count + 1
+            end if
+
+            ! calculate the average and round down
+            if (count > 0) then
+                smoothedImg(i, j) = int(sum / count)
+            else
+                smoothedImg(i, j) = 0
+            end if
+        end do
+    end do
+end function imageSmoother
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:10:32:
+
+   10 |     smoothedImg = imageSmoother(img)
+      |                                1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:15:32:
+
+   15 |     smoothedImg = imageSmoother(img)
+      |                                1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:19:0:
+
+    1 | program imageSmoother
+      |                     2
+......
+   19 | function imageSmoother(img) result(smoothedImg)
+      | 
+Error: Global name ‘imagesmoother’ at (1) is already being used as a PROGRAM at (2)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def imageSmoother(img):
+    m, n = len(img), len(img[0])
+    result = [[0] * n for _ in range(m)]
+
+    for i in range(m):
+        for j in range(n):
+            count, total = 0, 0
+            for x in range(i - 1, i + 2):
+                for y in range(j - 1, j + 2):
+                    if 0 &lt;= x &lt; m and 0 &lt;= y &lt; n:
+                        total += img[x][y]
+                        count += 1
+            result[i][j] = total // count
+
+    return result
+</code></pre>
+<ol>
+<li>Find the dimensions (m, n) of the input img array.</li>
+<li>Initialize the result array with the same dimensions as img.</li>
+<li>Iterate through each cell (i, j) of the img array.</li>
+<li>Iterate through 8 neighboring cells with corresponding coordinates (x, y) within a 3x3 grid centered at (i, j).</li>
+<li>Check if the neighboring cell (x, y) is within the boundaries of img. If so, add the value of img[x][y] to the sum, and increment the count.</li>
+<li>Calculate the average by dividing the sum by count and round down the result.</li>
+<li>Set the value of the result[i][j] to the calculated average.</li>
+<li>Return the result array.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+using namespace std;
+
+vector&lt;vector&lt;int&gt;&gt; imageSmoother(vector&lt;vector&lt;int&gt;&gt;&amp; img) {
+    int m = img.size(), n = img[0].size();
+    vector&lt;vector&lt;int&gt;&gt; result(m, vector&lt;int&gt;(n, 0));
+
+    for (int i = 0; i &lt; m; i++) {
+        for (int j = 0; j &lt; n; j++) {
+            int count = 0, sum = 0;
+            for (int x = i - 1; x &lt;= i + 1; x++) {
+                for (int y = j - 1; y &lt;= j + 1; y++) {
+                    if (x &gt;= 0 &amp;&amp; x &lt; m &amp;&amp; y &gt;= 0 &amp;&amp; y &lt; n) {
+                        sum += img[x][y];
+                        count++;
+                    }
+                }
+            }
+            result[i][j] = sum / count;
+        }
+    }
+
+    return result;
+}
+</code></pre>
+<ol>
+<li>Find the dimensions (m, n) of the input img array.</li>
+<li>Initialize the result array with the same dimensions as img.</li>
+<li>Iterate through each cell (i, j) of the img array.</li>
+<li>Iterate through 8 neighboring cells with corresponding coordinates (x, y) within a 3x3 grid centered at (i, j).</li>
+<li>Check if the neighboring cell (x, y) is within the boundaries of img. If so, add the value of img[x][y] to the sum, and increment the count.</li>
+<li>Calculate the average by dividing the sum by count and round down the result.</li>
+<li>Set the value of the result[i][j] to the calculated average.</li>
+<li>Return the result array.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

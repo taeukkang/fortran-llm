@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Number of Operations to Convert Time</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2220/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2229/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given two strings <code>current</code> and <code>correct</code> representing two <strong>24-hour times</strong>.</p>
+<p>24-hour times are formatted as <code>"HH:MM "</code>, where <code>HH</code> is between <code>00</code> and <code>23</code>, and <code>MM</code> is between <code>00</code> and <code>59</code>. The earliest 24-hour time is <code>00:00</code>, and the latest is <code>23:59</code>.</p>
+<p>In one operation you can increase the time <code>current</code> by <code>1</code>, <code>5</code>, <code>15</code>, or <code>60</code> minutes. You can perform this operation <strong>any</strong> number of times.</p>
+<p>Return <em>the <strong>minimum number of operations</strong> needed to convert</em> <code>current</code> <em>to</em> <code>correct</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> current =  "02:30 ", correct =  "04:35 "
+<strong>Output:</strong> 3
+<strong>Explanation:</strong>
+We can convert current to correct in 3 operations as follows:
+- Add 60 minutes to current. current becomes  "03:30 ".
+- Add 60 minutes to current. current becomes  "04:30 ".
+- Add 5 minutes to current. current becomes  "04:35 ".
+It can be proven that it is not possible to convert current to correct in fewer than 3 operations.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> current =  "11:00 ", correct =  "11:01 "
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> We only have to add one minute to current, so the minimum number of operations needed is 1.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>current</code> and <code>correct</code> are in the format <code>"HH:MM "</code></li>
+<li><code>current &lt;= correct</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-number-of-operations-to-convert-time/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=8) :: current, correct
+    integer :: n_ops
+
+    ! Example 1
+    current = '02:30 '
+    correct = '04:35 '
+    write (*,*) 'Example 1:'
+    call solve(current, correct, n_ops)
+    write (*,'(A,I0)') 'Number of operations: ', n_ops
+
+    ! Example 2
+    current = '11:00 '
+    correct = '11:01 '
+    write (*,*) 'Example 2:'
+    call solve(current, correct, n_ops)
+    write (*,'(A,I0)') 'Number of operations: ', n_ops
+
+contains
+
+    subroutine solve(current, correct, n_ops)
+        implicit none
+        character(len=*), intent(in) :: current, correct
+        integer, intent(out) :: n_ops
+        integer :: hh_curr, mm_curr, hh_corr, mm_corr
+
+        read (current, fmt='(I2, A, I2)') hh_curr, ':', mm_curr
+        read (correct, fmt='(I2, A, I2)') hh_corr, ':', mm_corr
+
+        if (hh_curr == hh_corr .and. mm_curr == mm_corr) then
+            n_ops = 0
+            return
+        end if
+
+        if (hh_curr < hh_corr .or. (hh_curr == hh_corr .and. mm_curr < mm_corr)) then
+            n_ops = 1
+            return
+        end if
+
+        if (mm_curr + 1 == mm_corr) then
+            n_ops = 2
+            return
+        end if
+
+        if (mm_curr + 5 == mm_corr) then
+            n_ops = 3
+            return
+        end if
+
+        if (mm_curr + 15 == mm_corr) then
+            n_ops = 4
+            return
+        end if
+
+        if (mm_curr + 60 == mm_corr) then
+            n_ops = 5
+            return
+        end if
+
+        stop 'Invalid input'
+    end subroutine solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:29:51:
+
+   29 |         read (current, fmt='(I2, A, I2)') hh_curr, ':', mm_curr
+      |                                                   1
+Error: Expecting variable in READ statement at (1)
+temp.f95:30:51:
+
+   30 |         read (correct, fmt='(I2, A, I2)') hh_corr, ':', mm_corr
+      |                                                   1
+Error: Expecting variable in READ statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!--------------------------------------------------------------------------------
+! This is a Fortran implementation of the problem.
+! The program takes two command line arguments: current and correct.
+! The program outputs the minimum number of operations needed to convert current
+! to correct.
+
+program main
+    implicit none
+
+    character(len=5) :: current, correct
+    integer :: n_operations
+
+    ! Read the input from the command line
+    read(*,*) current, correct
+
+    ! Convert the strings to integers
+    read(current,*) n_operations
+
+    ! Calculate the number of operations needed to convert current to correct
+    n_operations = calculate_n_operations(n_operations, correct)
+
+    ! Print the result
+    write(*,*) n_operations
+
+contains
+
+    !----------------------------------------------------------------------------
+    ! This function calculates the minimum number of operations needed to convert
+    ! current to correct.
+    !----------------------------------------------------------------------------
+    function calculate_n_operations(current, correct) result(n_operations)
+        implicit none
+
+        character(len=5), intent(in) :: current, correct
+        integer :: n_operations
+
+        ! Initialize the number of operations to 0
+        n_operations = 0
+
+        ! Loop until current is equal to correct
+        do while (.not. equal_times(current, correct))
+            ! Increment the number of operations
+            n_operations = n_operations + 1
+
+            ! Increment current by 1 minute
+            current = increment_time(current)
+        end do
+
+    end function calculate_n_operations
+
+    !----------------------------------------------------------------------------
+    ! This function checks if two times are equal.
+    !----------------------------------------------------------------------------
+    function equal_times(time1, time2) result(equal)
+        implicit none
+
+        character(len=5), intent(in) :: time1, time2
+        logical :: equal
+
+        ! Check if the hours are equal
+        if (time1(1:2) /= time2(1:2)) then
+            equal = .false.
+            return
+        end if
+
+        ! Check if the minutes are equal
+        if (time1(4:5) /= time2(4:5)) then
+            equal = .false.
+            return
+        end if
+
+        ! If we reach this point, the times are equal
+        equal = .true.
+
+    end function equal_times
+
+    !----------------------------------------------------------------------------
+    ! This function increments a time by 1 minute.
+    !----------------------------------------------------------------------------
+    function increment_time(time) result(new_time)
+        implicit none
+
+        character(len=5), intent(in) :: time
+        character(len=5) :: new_time
+
+        ! Increment the minutes
+        if (time(4:5) == "59") then
+            new_time = "00:00"
+        else
+            new_time = time(1:4) // int_to_str(int(time(4:5)) + 1)
+        end if
+
+    end function increment_time
+
+    !----------------------------------------------------------------------------
+    ! This function converts an integer to a string.
+    !----------------------------------------------------------------------------
+    function int_to_str(n) result(str)
+        implicit none
+
+        integer, intent(in) :: n
+        character(len=2) :: str
+
+        write(str,*) n
+
+    end function int_to_str
+
+end program main
+!--------------------------------------------------------------------------------
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:90:51:
+
+   90 |             new_time = time(1:4) // int_to_str(int(time(4:5)) + 1)
+      |                                                   1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+temp.f95:46:12:
+
+   46 |             current = increment_time(current)
+      |            1
+Error: Dummy argument ‘current’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:20:19:
+
+   20 |     n_operations = calculate_n_operations(n_operations, correct)
+      |                   1
+Error: Type mismatch in argument ‘current’ at (1); passed INTEGER(4) to CHARACTER(5)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minimum_operations(current: str, correct: str) -&gt; int:
+    ch, cm = map(int, current.split(':'))
+    th, tm = map(int, correct.split(':'))
+    ct = ch * 60 + cm
+    tt = th * 60 + tm
+
+    operations = 0
+    while ct &lt; tt:
+        if tt - ct &gt;= 60:
+            ct += 60
+        elif tt - ct &gt;= 15:
+            ct += 15
+        elif tt - ct &gt;= 5:
+            ct += 5
+        else:
+            ct += 1
+
+        operations += 1
+
+    return operations
+</code></pre>
+<pre><code>The approach to solving this problem is fairly straightforward. First, we parse the input strings 'current' and 'correct' into hours and minutes. We then calculate the total minutes for both 'current' (ct) and 'correct' (tt).
+</code></pre>
+<p>We initialize a variable <code>operations</code> tokeep track of the minimum number of operations needed.</p>
+<p>Using a while loop, we check if ct is smaller than tt indicating that we still need to perform operations. In each iteration, we choose the largest operation possible (60, 15, 5, or 1 minute(s)) based on the difference between tt and ct. After performing the operation, we increment the operations counter.</p>
+<p>The final result is the value of the <code>operations</code> counter at the end of the loop.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minimumOperations(string current, string correct) {
+    int ch = stoi(current.substr(0, 2)), cm = stoi(current.substr(3));
+    int th = stoi(correct.substr(0, 2)), tm = stoi(correct.substr(3));
+    int ct = ch * 60 + cm, tt = th * 60 + tm;
+
+    int operations = 0;
+    while (ct &lt; tt) {
+        if (tt - ct &gt;= 60)
+            ct += 60;
+        else if (tt - ct &gt;= 15)
+            ct += 15;
+        else if (tt - ct &gt;= 5)
+            ct += 5;
+        else
+            ct += 1;
+
+        operations++;
+    }
+    return operations;
+}
+</code></pre>
+<pre><code>The approach to solving this problem is fairly straightforward. First, we parse the input strings 'current' and 'correct' into hours and minutes. We then calculate the total minutes for both 'current' (ct) and 'correct' (tt).
+</code></pre>
+<p>We initialize a variable <code>operations</code> tokeep track of the minimum number of operations needed.</p>
+<p>Using a while loop, we check if ct is smaller than tt indicating that we still need to perform operations. In each iteration, we choose the largest operation possible (60, 15, 5, or 1 minute(s)) based on the difference between tt and ct. After performing the operation, we increment the operations counter.</p>
+<p>The final result is the value of the <code>operations</code> counter at the end of the loop.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

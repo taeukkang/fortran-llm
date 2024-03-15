@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Average Value of Even Numbers That Are Divisible by Three</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2451/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2460/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code> of <strong>positive</strong> integers, return <em>the average value of all even integers that are divisible by</em> <code>3</code><em>.</em></p>
+<p>Note that the <strong>average</strong> of <code>n</code> elements is the <strong>sum</strong> of the <code>n</code> elements divided by <code>n</code> and <strong>rounded down</strong> to the nearest integer.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,3,6,10,12,15]
+<strong>Output:</strong> 9
+<strong>Explanation:</strong> 6 and 12 are even numbers that are divisible by 3. (6 + 12) / 2 = 9.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,4,7,10]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There is no single number that satisfies the requirement, so return 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 1000</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/average-value-of-even-numbers-that-are-divisible-by-three/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: dp = selected_real_kind(15, 307)
+
+    integer, dimension(:), allocatable :: nums
+    integer :: n, i, j, k, sum, avg
+
+    ! read input
+    read (*, *) n
+    allocate (nums(n))
+    do i = 1, n
+        read (*, *) nums(i)
+    end do
+
+    ! solve problem
+    sum = 0
+    do i = 1, n
+        if (mod(nums(i), 2) == 0 .and. mod(nums(i), 3) == 0) then
+            sum = sum + nums(i)
+        end if
+    end do
+    avg = sum / n
+
+    ! print output
+    write (*, '(I0)') avg
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 10 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x78f6d0850960 in ???
+#1  0x78f6d08514d9 in ???
+#2  0x78f6d0aa517b in ???
+#3  0x78f6d0a9e684 in ???
+#4  0x78f6d0a9f2aa in ???
+#5  0x5574cc6f7272 in MAIN__
+#6  0x5574cc6f75e4 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module average_of_even_divisible_by_3
+
+implicit none
+
+contains
+
+function average_of_even_divisible_by_3(nums) result(average)
+
+integer, intent(in) :: nums(:)
+real :: average
+
+integer :: i, j, k, n
+
+n = size(nums)
+
+average = 0
+
+do i = 1, n
+    if (mod(nums(i), 2) == 0 .and. mod(nums(i), 3) == 0) then
+        average = average + nums(i)
+    end if
+end do
+
+average = average / real(n)
+
+end function average_of_even_divisible_by_3
+
+end module average_of_even_divisible_by_3
+
+program test
+
+use average_of_even_divisible_by_3
+
+implicit none
+
+integer, parameter :: nums1(5) = [1, 3, 6, 10, 12, 15]
+integer, parameter :: nums2(3) = [1, 2, 4]
+integer, parameter :: nums3(1) = [1]
+
+write (*, '(a, f0.2)') 'Average of even divisible by 3: ', &
+    average_of_even_divisible_by_3(nums1)
+write (*, '(a, f0.2)') 'Average of even divisible by 3: ', &
+    average_of_even_divisible_by_3(nums2)
+write (*, '(a, f0.2)') 'Average of even divisible by 3: ', &
+    average_of_even_divisible_by_3(nums3)
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:39:
+
+    7 | function average_of_even_divisible_by_3(nums) result(average)
+      |                                       1
+Error: MODULE attribute of ‘average_of_even_divisible_by_3’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:30:
+
+    9 | integer, intent(in) :: nums(:)
+      |                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:15:
+
+   10 | real :: average
+      |               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:21:
+
+   12 | integer :: i, j, k, n
+      |                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:14:
+
+   14 | n = size(nums)
+      |              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:11:
+
+   16 | average = 0
+      |           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:18:11:
+
+   18 | do i = 1, n
+      |           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:19:61:
+
+   19 |     if (mod(nums(i), 2) == 0 .and. mod(nums(i), 3) == 0) then
+      |                                                             1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:20:35:
+
+   20 |         average = average + nums(i)
+      |                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:21:7:
+
+   21 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:22:3:
+
+   22 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:24:27:
+
+   24 | average = average / real(n)
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:3:
+
+   26 | end function average_of_even_divisible_by_3
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:32:5:
+
+   32 | use average_of_even_divisible_by_3
+      |     1
+Fatal Error: Cannot open module file ‘average_of_even_divisible_by_3.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def average_even_divisible_by_three(nums):
+    total = 0
+    count = 0
+    for num in nums:
+        if num % 2 == 0 and num % 3 == 0:
+            total += num
+            count += 1
+    return total // count if count &gt; 0 else 0
+</code></pre>
+<p>The algorithm iterates through the input array, checking if an element is even (<code>num % 2 == 0</code>) and divisible by 3 (<code>num % 3 == 0</code>). If the element satisfies both conditions, it is added to the <code>sum</code> and the <code>count</code> is incremented. After the iteration, if <code>count</code> is greater than 0, the average is calculated by dividing the <code>sum</code> by <code>count</code>. The result is returned as an integer by rounding down the division result in all languages. If <code>count</code> is 0, meaning there were no elements that satisfied the conditions, the function returns 0.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int averageEvenDivisibleByThree(const std::vector&lt;int&gt;&amp; nums) {
+    int sum = 0;
+    int count = 0;
+    for (int num : nums) {
+        if (num % 2 == 0 &amp;&amp; num % 3 == 0) {
+            sum += num;
+            count++;
+        }
+    }
+    return count == 0 ? 0 : sum / count;
+}
+</code></pre>
+<p>The algorithm iterates through the input array, checking if an element is even (<code>num % 2 == 0</code>) and divisible by 3 (<code>num % 3 == 0</code>). If the element satisfies both conditions, it is added to the <code>sum</code> and the <code>count</code> is incremented. After the iteration, if <code>count</code> is greater than 0, the average is calculated by dividing the <code>sum</code> by <code>count</code>. The result is returned as an integer by rounding down the division result in all languages. If <code>count</code> is 0, meaning there were no elements that satisfied the conditions, the function returns 0.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

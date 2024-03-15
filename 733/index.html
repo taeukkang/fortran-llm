@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Flood Fill</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/728/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/734/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>An image is represented by an <code>m x n</code> integer grid <code>image</code> where <code>image[i][j]</code> represents the pixel value of the image.</p>
+<p>You are also given three integers <code>sr</code>, <code>sc</code>, and <code>color</code>. You should perform a <strong>flood fill</strong> on the image starting from the pixel <code>image[sr][sc]</code>.</p>
+<p>To perform a <strong>flood fill</strong>, consider the starting pixel, plus any pixels connected <strong>4-directionally</strong> to the starting pixel of the same color as the starting pixel, plus any pixels connected <strong>4-directionally</strong> to those pixels (also with the same color), and so on. Replace the color of all of the aforementioned pixels with <code>color</code>.</p>
+<p>Return <em>the modified image after performing the flood fill</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> image = [[1,1,1],[1,1,0],[1,0,1]], sr = 1, sc = 1, color = 2
+<strong>Output:</strong> [[2,2,2],[2,2,0],[2,0,1]]
+<strong>Explanation:</strong> From the center of the image with position (sr, sc) = (1, 1) (i.e., the red pixel), all pixels connected by a path of the same color as the starting pixel (i.e., the blue pixels) are colored with the new color.
+Note the bottom corner is not colored 2, because it is not 4-directionally connected to the starting pixel.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> image = [[0,0,0],[0,0,0]], sr = 0, sc = 0, color = 0
+<strong>Output:</strong> [[0,0,0],[0,0,0]]
+<strong>Explanation:</strong> The starting pixel is already colored 0, so no changes are made to the image.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>m == image.length</code></li>
+<li><code>n == image[i].length</code></li>
+<li><code>1 &lt;= m, n &lt;= 50</code></li>
+<li><code>0 &lt;= image[i][j], color &lt; 216</code></li>
+<li><code>0 &lt;= sr &lt; m</code></li>
+<li><code>0 &lt;= sc &lt; n</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/flood-fill/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: m = 3, n = 3
+    integer, dimension(m, n) :: image
+    integer :: sr, sc, color
+
+    ! Example 1
+    image = reshape([1, 1, 1, &
+                      1, 1, 0, &
+                      1, 0, 1], shape(image))
+    sr = 1; sc = 1; color = 2
+    call flood_fill(image, sr, sc, color)
+    write(*, '(A)') 'Example 1:'
+    write(*, '(A)') 'Before:'
+    call print_image(image)
+    write(*, '(A)') 'After:'
+    call print_image(image)
+    write(*, *)
+
+    ! Example 2
+    image = reshape([0, 0, 0, &
+                      0, 0, 0], shape(image))
+    sr = 0; sc = 0; color = 0
+    call flood_fill(image, sr, sc, color)
+    write(*, '(A)') 'Example 2:'
+    write(*, '(A)') 'Before:'
+    call print_image(image)
+    write(*, '(A)') 'After:'
+    call print_image(image)
+    write(*, *)
+
+contains
+
+    subroutine flood_fill(image, sr, sc, color)
+        implicit none
+        integer, intent(inout) :: image(:, :)
+        integer, intent(in) :: sr, sc, color
+        integer :: i, j
+
+        if (image(sr, sc) /= color) then
+            return
+        end if
+
+        do i = 1, size(image, 1)
+            do j = 1, size(image, 2)
+                if (image(i, j) == color) then
+                    image(i, j) = color
+                end if
+            end do
+        end do
+
+        do i = 1, size(image, 1) - 1
+            do j = 1, size(image, 2) - 1
+                if (image(i, j) == color .and. &
+                    image(i + 1, j) == color .and. &
+                    image(i, j + 1) == color .and. &
+                    image(i + 1, j + 1) == color) then
+                    call flood_fill(image, i, j, color)
+                end if
+            end do
+        end do
+
+    end subroutine flood_fill
+
+    subroutine print_image(image)
+        implicit none
+        integer, intent(in) :: image(:, :)
+        integer :: i, j
+
+        do i = 1, size(image, 1)
+            do j = 1, size(image, 2)
+                write(*, '(I0)', advance='no') image(i, j)
+            end do
+            write(*, *)
+        end do
+
+    end subroutine print_image
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:59:55:
+
+   59 |                     call flood_fill(image, i, j, color)
+      |                                                       1
+Error: SUBROUTINE ‘flood_fill’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:22:20:
+
+   22 |     image = reshape([0, 0, 0, &
+      |                    1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module flood_fill
+    implicit none
+
+contains
+
+    subroutine flood_fill_helper(image, sr, sc, color)
+        integer, dimension(:, :), intent(inout) :: image
+        integer, intent(in) :: sr, sc, color
+
+        ! Local variables
+        integer :: m, n, i, j, new_color
+
+        ! Get the size of the image
+        m = size(image, 1)
+        n = size(image, 2)
+
+        ! Initialize the new color
+        new_color = color
+
+        ! Check if the starting pixel is already the same color as the new color
+        if (image(sr, sc) == new_color) then
+            return
+        end if
+
+        ! Perform the flood fill
+        call flood_fill_recursive(image, sr, sc, new_color, m, n)
+
+    end subroutine flood_fill_helper
+
+    recursive subroutine flood_fill_recursive(image, sr, sc, new_color, m, n)
+        integer, dimension(:, :), intent(inout) :: image
+        integer, intent(in) :: sr, sc, new_color, m, n
+
+        ! Local variables
+        integer :: i, j
+
+        ! Check if the starting pixel is out of bounds
+        if (sr < 0 .or. sr >= m .or. sc < 0 .or. sc >= n) then
+            return
+        end if
+
+        ! Check if the starting pixel is already the same color as the new color
+        if (image(sr, sc) == new_color) then
+            return
+        end if
+
+        ! Change the color of the starting pixel
+        image(sr, sc) = new_color
+
+        ! Recursively flood fill the neighboring pixels
+        call flood_fill_recursive(image, sr - 1, sc, new_color, m, n)
+        call flood_fill_recursive(image, sr + 1, sc, new_color, m, n)
+        call flood_fill_recursive(image, sr, sc - 1, new_color, m, n)
+        call flood_fill_recursive(image, sr, sc + 1, new_color, m, n)
+
+    end subroutine flood_fill_recursive
+
+end module flood_fill
+
+program main
+    use flood_fill
+    implicit none
+
+    ! Test case 1
+    integer, parameter :: m = 3, n = 3, sr = 1, sc = 1, color = 2
+    integer, dimension(m, n) :: image
+    image = reshape((/ 1, 1, 1, &
+                       1, 1, 0, &
+                       1, 0, 1 /), shape(image))
+    call flood_fill_helper(image, sr, sc, color)
+    write (*, *) image
+
+    ! Test case 2
+    integer, parameter :: m = 2, n = 2, sr = 0, sc = 0, color = 0
+    integer, dimension(m, n) :: image
+    image = reshape((/ 0, 0, &
+                       0, 0 /), shape(image))
+    call flood_fill_helper(image, sr, sc, color)
+    write (*, *) image
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:74:27:
+
+   74 |     integer, parameter :: m = 2, n = 2, sr = 0, sc = 0, color = 0
+      |                           1
+Error: Symbol ‘m’ at (1) already has basic type of INTEGER
+temp.f95:75:37:
+
+   75 |     integer, dimension(m, n) :: image
+      |                                     1
+Error: Symbol ‘image’ at (1) already has basic type of INTEGER
+temp.f95:76:20:
+
+   76 |     image = reshape((/ 0, 0, &
+      |                    1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def floodFill(image, sr, sc, newColor):
+    startColor = image[sr][sc]
+    def fill(sr, sc):
+        if not (0 &lt;= sr &lt; len(image)) or not (0 &lt;= sc &lt; len(image[0])) or image[sr][sc] != startColor or image[sr][sc] == newColor: 
+            return
+        image[sr][sc] = newColor
+        fill(sr - 1, sc)
+        fill(sr + 1, sc)
+        fill(sr, sc - 1)
+        fill(sr, sc + 1)
+
+    fill(sr, sc)
+    return image
+</code></pre>
+<pre><code>To implement the flood-fill algorithm, we create a `fill` function that receives the image, the target position, the new color, and the starting color. It is not necessary to pass the image every time, because it's mutable, but we require the other parameters each time. We then check if the current position is out of bounds or if the current pixel color at the position is not the same as the starting color or if the current pixel color is equal to the new color. If any of these conditions are met, we return without modifying the image. Otherwise, we set the color of the current pixel to the new color and call `fill` function recursively for each adjacent 4-directionally connected pixel. The main function first sets the `startColor` as the color of the pixel image[sr][sc] and then executes the `fill` function with `sr`, `sc`, `newColor`, and `startColor`. Finally, the modified image is returned.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include&lt;vector&gt;
+using namespace std;
+
+void fill(vector&lt;vector&lt;int&gt;&gt;&amp; image, int sr, int sc, int newColor, int startColor) {
+    if (sr &lt; 0 || sc &lt; 0 || sr &gt;= image.size() || sc &gt;= image[0].size() || image[sr][sc] != startColor || image[sr][sc] == newColor) return;
+    image[sr][sc] = newColor;
+    fill(image, sr - 1, sc, newColor, startColor);
+    fill(image, sr + 1, sc, newColor, startColor);
+    fill(image, sr, sc - 1, newColor, startColor);
+    fill(image, sr, sc + 1, newColor, startColor);
+}
+
+vector&lt;vector&lt;int&gt;&gt; floodFill(vector&lt;vector&lt;int&gt;&gt;&amp; image, int sr, int sc, int newColor) {
+    int startColor = image[sr][sc];
+    fill(image, sr, sc, newColor, startColor);
+    return image;
+}
+</code></pre>
+<pre><code>To implement the flood-fill algorithm, we create a `fill` function that receives the image, the target position, the new color, and the starting color. It is not necessary to pass the image every time, because it's mutable, but we require the other parameters each time. We then check if the current position is out of bounds or if the current pixel color at the position is not the same as the starting color or if the current pixel color is equal to the new color. If any of these conditions are met, we return without modifying the image. Otherwise, we set the color of the current pixel to the new color and call `fill` function recursively for each adjacent 4-directionally connected pixel. The main function first sets the `startColor` as the color of the pixel image[sr][sc] and then executes the `fill` function with `sr`, `sc`, `newColor`, and `startColor`. Finally, the modified image is returned.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

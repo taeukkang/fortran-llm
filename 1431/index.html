@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Kids With the Greatest Number of Candies</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1427/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1436/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>There are <code>n</code> kids with candies. You are given an integer array <code>candies</code>, where each <code>candies[i]</code> represents the number of candies the <code>ith</code> kid has, and an integer <code>extraCandies</code>, denoting the number of extra candies that you have.</p>
+<p>Return <em>a boolean array</em> <code>result</code> <em>of length</em> <code>n</code><em>, where</em> <code>result[i]</code> <em>is</em> <code>true</code> <em>if, after giving the</em> <code>ith</code> <em>kid all the</em> <code>extraCandies</code><em>, they will have the <strong>greatest</strong> number of candies among all the kids__, or</em> <code>false</code> <em>otherwise</em>.</p>
+<p>Note that <strong>multiple</strong> kids can have the <strong>greatest</strong> number of candies.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> candies = [2,3,5,1,3], extraCandies = 3
+<strong>Output:</strong> [true,true,true,false,true] 
+<strong>Explanation:</strong> If you give all extraCandies to:
+- Kid 1, they will have 2 + 3 = 5 candies, which is the greatest among the kids.
+- Kid 2, they will have 3 + 3 = 6 candies, which is the greatest among the kids.
+- Kid 3, they will have 5 + 3 = 8 candies, which is the greatest among the kids.
+- Kid 4, they will have 1 + 3 = 4 candies, which is not the greatest among the kids.
+- Kid 5, they will have 3 + 3 = 6 candies, which is the greatest among the kids.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> candies = [4,2,1,1,2], extraCandies = 1
+<strong>Output:</strong> [true,false,false,false,false] 
+<strong>Explanation:</strong> There is only 1 extra candy.
+Kid 1 will always have the greatest number of candies, even if a different kid is given the extra candy.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> candies = [12,1,12], extraCandies = 10
+<strong>Output:</strong> [true,false,true]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == candies.length</code></li>
+<li><code>2 &lt;= n &lt;= 100</code></li>
+<li><code>1 &lt;= candies[i] &lt;= 100</code></li>
+<li><code>1 &lt;= extraCandies &lt;= 50</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/kids-with-the-greatest-number-of-candies/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 5
+    integer, dimension(n) :: candies = [2, 3, 5, 1, 3]
+    integer :: extraCandies = 3
+    logical, dimension(n) :: result
+
+    result = solve(candies, extraCandies)
+
+    write (*, '(L1)') result
+
+contains
+
+    function solve(candies, extraCandies) result(result)
+        implicit none
+        integer, intent(in) :: candies(:), extraCandies
+        logical, dimension(size(candies)) :: result
+        integer :: i
+
+        do i = 1, size(candies)
+            result(i) = (candies(i) + extraCandies) >= maxval(candies)
+        end do
+    end function solve
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>T
+T
+T
+F
+T
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module kids_with_the_greatest_number_of_candies
+    implicit none
+
+contains
+
+    function kids_with_the_greatest_number_of_candies(candies, extra_candies) result(result)
+        integer, intent(in) :: candies(:)
+        integer, intent(in) :: extra_candies
+        logical :: result(size(candies))
+
+        ! Declare local variables
+        integer :: i, max_candies, current_candies
+
+        ! Initialize the result array
+        result = .false.
+
+        ! Find the maximum number of candies
+        max_candies = maxval(candies)
+
+        ! Loop through the kids
+        do i = 1, size(candies)
+            ! Calculate the current number of candies
+            current_candies = candies(i) + extra_candies
+
+            ! Check if the current number of candies is greater than the maximum
+            if (current_candies >= max_candies) then
+                ! Set the result to true
+                result(i) = .true.
+            end if
+        end do
+
+    end function kids_with_the_greatest_number_of_candies
+
+end module kids_with_the_greatest_number_of_candies
+
+program test_kids_with_the_greatest_number_of_candies
+    use kids_with_the_greatest_number_of_candies
+    implicit none
+
+    ! Declare the variables
+    integer, parameter :: n = 5
+    integer, parameter :: extra_candies = 3
+    integer :: i
+    integer :: candies(n) = [2, 3, 5, 1, 3]
+    logical :: result(n)
+
+    ! Call the function
+    result = kids_with_the_greatest_number_of_candies(candies, extra_candies)
+
+    ! Print the result
+    do i = 1, n
+        write (*,*) result(i)
+    end do
+
+end program test_kids_with_the_greatest_number_of_candies
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:53:
+
+    6 |     function kids_with_the_greatest_number_of_candies(candies, extra_candies) result(result)
+      |                                                     1
+Error: MODULE attribute of ‘kids_with_the_greatest_number_of_candies’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:41:
+
+    7 |         integer, intent(in) :: candies(:)
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:44:
+
+    8 |         integer, intent(in) :: extra_candies
+      |                                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:31:
+
+    9 |         logical :: result(size(candies))
+      |                               1
+Error: Symbol ‘candies’ is used before it is typed at (1)
+temp.f95:12:50:
+
+   12 |         integer :: i, max_candies, current_candies
+      |                                                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:24:
+
+   15 |         result = .false.
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:18:37:
+
+   18 |         max_candies = maxval(candies)
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:21:31:
+
+   21 |         do i = 1, size(candies)
+      |                               1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:23:56:
+
+   23 |             current_candies = candies(i) + extra_candies
+      |                                                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:52:
+
+   26 |             if (current_candies >= max_candies) then
+      |                                                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:28:34:
+
+   28 |                 result(i) = .true.
+      |                                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:29:15:
+
+   29 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:11:
+
+   30 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:32:7:
+
+   32 |     end function kids_with_the_greatest_number_of_candies
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:37:9:
+
+   37 |     use kids_with_the_greatest_number_of_candies
+      |         1
+Fatal Error: Cannot open module file ‘kids_with_the_greatest_number_of_candies.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from collections import defaultdict
+
+def find_ancestors(node, adj_list, visited, ans):
+    if visited[node]:
+        return
+    visited[node] = True
+    for ancestor in adj_list[node]:
+        ans.append(ancestor)
+        find_ancestors(ancestor, adj_list, visited, ans)
+
+def find_ancestors_in_dag(n, edges):
+    adj_list = defaultdict(list)
+    for edge in edges:
+        adj_list[edge[1]].append(edge[0])
+    ans = []
+    for i in range(n):
+        visited = [False] * n
+        ancestors = []
+        find_ancestors(i, adj_list, visited, ancestors)
+        ans.append(sorted(ancestors))
+    return ans
+</code></pre>
+<pre><code>The algorithm works by iterating over all the given nodes and finding the ancestors of each node.
+</code></pre>
+<ol>
+<li>Create an adjacency list representation of the graph where the keys are the nodes and the values are lists of their parents.</li>
+<li>For each node <code>i</code> in the graph, perform a Depth-First Search using a helper function <code>findAncestors()</code>, to explore all the ancestors by traversing the parent nodes.</li>
+<li>During the search, maintain a <code>visited</code> array to prevent infinite loops and avoid visiting already visited nodes.</li>
+<li>Append the ancestors of each node to a list and sort it in ascending order.</li>
+<li>Return the list of ancestors for all nodes as a nested list.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+void findAncestors(int node, vector&lt;vector&lt;int&gt;&gt;&amp; adj_list, vector&lt;bool&gt;&amp; visited, vector&lt;int&gt;&amp; ans) {
+    if (visited[node]) return;
+    visited[node] = true;
+    for (int ancestor : adj_list[node]) {
+        ans.push_back(ancestor);
+        findAncestors(ancestor, adj_list, visited, ans);
+    }
+}
+
+vector&lt;vector&lt;int&gt;&gt; findAncestorsInDAG(int n, vector&lt;vector&lt;int&gt;&gt;&amp; edges) {
+    vector&lt;vector&lt;int&gt;&gt; adj_list(n), ans(n);
+    for (vector&lt;int&gt;&amp; edge : edges) {
+        adj_list[edge[1]].push_back(edge[0]);
+    }
+    for (int i = 0; i &lt; n; ++i) {
+        vector&lt;bool&gt; visited(n, false);
+        findAncestors(i, adj_list, visited, ans[i]);
+        sort(ans[i].begin(), ans[i].end());
+    }
+    return ans;
+}
+</code></pre>
+<pre><code>The algorithm works by iterating over all the given nodes and finding the ancestors of each node.
+</code></pre>
+<ol>
+<li>Create an adjacency list representation of the graph where the keys are the nodes and the values are lists of their parents.</li>
+<li>For each node <code>i</code> in the graph, perform a Depth-First Search using a helper function <code>findAncestors()</code>, to explore all the ancestors by traversing the parent nodes.</li>
+<li>During the search, maintain a <code>visited</code> array to prevent infinite loops and avoid visiting already visited nodes.</li>
+<li>Append the ancestors of each node to a list and sort it in ascending order.</li>
+<li>Return the list of ancestors for all nodes as a nested list.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

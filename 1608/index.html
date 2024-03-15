@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Special Array With X Elements Greater Than or Equal X</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1603/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1614/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an array <code>nums</code> of non-negative integers. <code>nums</code> is considered <strong>special</strong> if there exists a number <code>x</code> such that there are <strong>exactly</strong> <code>x</code> numbers in <code>nums</code> that are <strong>greater than or equal to</strong> <code>x</code>.</p>
+<p>Notice that <code>x</code> <strong>does not</strong> have to be an element in <code>nums</code>.</p>
+<p>Return <code>x</code> <em>if the array is <strong>special</strong>, otherwise, return</em> <code>-1</code>. It can be proven that if <code>nums</code> is special, the value for <code>x</code> is <strong>unique</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [3,5]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> There are 2 values (3 and 5) that are greater than or equal to 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [0,0]
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> No numbers fit the criteria for x.
+If x = 0, there should be 0 numbers &gt;= x, but there are 2.
+If x = 1, there should be 1 number &gt;= x, but there are 0.
+If x = 2, there should be 2 numbers &gt;= x, but there are 0.
+x cannot be greater since there are only 2 numbers in nums.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [0,4,3,0,4]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> There are 3 values that are greater than or equal to 3.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+<li><code>0 &lt;= nums[i] &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/special-array-with-x-elements-greater-than-or-equal-x/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 2
+    integer, dimension(n) :: nums = (/ 3, 5 /)
+    integer :: x
+
+    x = special(nums)
+    write (*, '(I0)') x
+
+contains
+
+    function special(nums) result(x)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: x, i, count
+
+        do i = 1, size(nums)
+            count = count_if(nums > i)
+            if (count == i) then
+                x = i
+                exit
+            end if
+        end do
+
+        if (x < 0) then
+            x = -1
+        end if
+
+    end function special
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:19:20:
+
+   19 |             count = count_if(nums > i)
+      |                    1
+Error: Function ‘count_if’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module special_array
+
+implicit none
+
+contains
+
+function special_array(nums) result(x)
+
+! Given an array of non-negative integers, return the special value x
+! if the array is special, otherwise return -1.
+! It can be proven that if nums is special, the value for x is unique.
+
+integer, intent(in) :: nums(:)
+integer :: x
+
+! Edge case: if the array is empty, return -1
+if (size(nums) == 0) then
+    x = -1
+    return
+endif
+
+! Initialize variables
+integer :: i, j, count
+integer :: min_count, min_x
+logical :: found
+
+! Initialize the minimum count and x
+min_count = huge(min_count)
+min_x = -1
+
+! Loop through the array and find the minimum count and x
+do i = 1, size(nums)
+    count = 0
+    do j = 1, size(nums)
+        if (nums(j) >= i) then
+            count = count + 1
+        endif
+    enddo
+    if (count < min_count) then
+        min_count = count
+        min_x = i
+    endif
+enddo
+
+! Check if the array is special
+found = .false.
+do i = 1, size(nums)
+    if (nums(i) >= min_x) then
+        found = .true.
+        exit
+    endif
+enddo
+
+! Return the special value x if the array is special, otherwise return -1
+if (found) then
+    x = min_x
+else
+    x = -1
+endif
+
+end function special_array
+
+end module special_array
+
+program test_special_array
+
+use special_array
+
+implicit none
+
+! Test case 1: [3, 5]
+write (*,*) special_array([3, 5])
+
+! Test case 2: [0, 0]
+write (*,*) special_array([0, 0])
+
+! Test case 3: [0, 4, 3, 0, 4]
+write (*,*) special_array([0, 4, 3, 0, 4])
+
+end program test_special_array
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:22:
+
+    7 | function special_array(nums) result(x)
+      |                      1
+Error: MODULE attribute of ‘special_array’ conflicts with PROCEDURE attribute at (1)
+temp.f95:13:30:
+
+   13 | integer, intent(in) :: nums(:)
+      |                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:12:
+
+   14 | integer :: x
+      |            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:17:25:
+
+   17 | if (size(nums) == 0) then
+      |                         1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:18:10:
+
+   18 |     x = -1
+      |          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:10:
+
+   19 |     return
+      |          1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:20:3:
+
+   20 | endif
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:22:
+
+   23 | integer :: i, j, count
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:24:27:
+
+   24 | integer :: min_count, min_x
+      |                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:25:16:
+
+   25 | logical :: found
+      |                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:28:27:
+
+   28 | min_count = huge(min_count)
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:29:10:
+
+   29 | min_x = -1
+      |          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:32:20:
+
+   32 | do i = 1, size(nums)
+      |                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:33:13:
+
+   33 |     count = 0
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:34:24:
+
+   34 |     do j = 1, size(nums)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:35:30:
+
+   35 |         if (nums(j) >= i) then
+      |                              1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:36:29:
+
+   36 |             count = count + 1
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:37:11:
+
+   37 |         endif
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:38:7:
+
+   38 |     enddo
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:39:31:
+
+   39 |     if (count < min_count) then
+      |                               1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:40:25:
+
+   40 |         min_count = count
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:41:17:
+
+   41 |         min_x = i
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:42:7:
+
+   42 |     endif
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:43:3:
+
+   43 | enddo
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:46:15:
+
+   46 | found = .false.
+      |               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:47:20:
+
+   47 | do i = 1, size(nums)
+      |                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:48:30:
+
+   48 |     if (nums(i) >= min_x) then
+      |                              1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:49:22:
+
+   49 |         found = .true.
+      |                      1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:50:12:
+
+   50 |         exit
+      |            1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:51:7:
+
+   51 |     endif
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:52:3:
+
+   52 | enddo
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:55:15:
+
+   55 | if (found) then
+      |               1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:56:13:
+
+   56 |     x = min_x
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:57:4:
+
+   57 | else
+      |    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:58:10:
+
+   58 |     x = -1
+      |          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:59:3:
+
+   59 | endif
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:61:3:
+
+   61 | end function special_array
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:67:5:
+
+   67 | use special_array
+      |     1
+Fatal Error: Cannot open module file ‘special_array.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def specialArray(nums):
+    max_val = max(nums)
+    for x in range(1, max_val + 1):
+        count = sum([1 for num in nums if num &gt;= x])
+        if count == x:
+            return x
+    return -1
+</code></pre>
+<ol>
+<li>Find the maximum value in the input array <code>nums</code>.</li>
+<li>Iterate through the range <code>[1, max_val]</code> (both inclusive) and for each value of <code>x</code>, count the elements greater than or equal to <code>x</code> in the input array.</li>
+<li>If the count of such elements is equal to <code>x</code>, return <code>x</code>.</li>
+<li>If no such <code>x</code> is found, return <code>-1</code>.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int specialArray(vector&lt;int&gt;&amp; nums) {
+    int max_val = *max_element(nums.begin(), nums.end());
+    for (int x = 1; x &lt;= max_val; ++x) {
+        int count = 0;
+        for (int num : nums) {
+            if (num &gt;= x) count++;
+        }
+        if (count == x) return x;
+    }
+    return -1;
+}
+</code></pre>
+<ol>
+<li>Find the maximum value in the input array <code>nums</code>.</li>
+<li>Iterate through the range <code>[1, max_val]</code> (both inclusive) and for each value of <code>x</code>, count the elements greater than or equal to <code>x</code> in the input array.</li>
+<li>If the count of such elements is equal to <code>x</code>, return <code>x</code>.</li>
+<li>If no such <code>x</code> is found, return <code>-1</code>.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

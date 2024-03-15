@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Number of Different Integers in a String</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1800/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1812/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>word</code> that consists of digits and lowercase English letters.</p>
+<p>You will replace every non-digit character with a space. For example, <code>"a123bc34d8ef34 "</code> will become <code>" 123 34 8 34 "</code>. Notice that you are left with some integers that are separated by at least one space: <code>"123 "</code>, <code>"34 "</code>, <code>"8 "</code>, and <code>"34 "</code>.</p>
+<p>Return <em>the number of <strong>different</strong> integers after performing the replacement operations on</em> <code>word</code>.</p>
+<p>Two integers are considered different if their decimal representations <strong>without any leading zeros</strong> are different.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> word =  "a123bc34d8ef34 "
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The three different integers are  "123 ",  "34 ", and  "8 ". Notice that  "34 " is only counted once.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> word =  "leet1234code234 "
+<strong>Output:</strong> 2</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> word =  "a1b01c001 "
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> The three integers  "1 ",  "01 ", and  "001 " all represent the same integer because
+the leading zeros are ignored when comparing their decimal values.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= word.length &lt;= 1000</code></li>
+<li><code>word</code> consists of digits and lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/number-of-different-integers-in-a-string/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=1000) :: word
+    integer :: n
+
+    call get_command_argument(1, word)
+
+    n = count_integers(word)
+
+    print '(I0)', n
+
+contains
+
+    function count_integers(str) result(n)
+        implicit none
+        character(*), intent(in) :: str
+        integer :: i, j, k, n
+
+        n = 0
+        do i = 1, len(str)
+            if (is_integer(str(i:))) then
+                n = n + 1
+            end if
+        end do
+    end function count_integers
+
+    pure logical function is_integer(str)
+        implicit none
+        character(*), intent(in) :: str
+        integer :: i, j
+
+        is_integer = .false.
+        do i = 1, len(str)
+            if (.not. is_digit(str(i:))) exit
+        end do
+        if (i > 1) then
+            is_integer = .true.
+            return
+        end if
+        do i = 1, len(str) - 1
+            if (.not. is_digit(str(i:))) cycle
+            do j = i + 1, len(str)
+                if (.not. is_digit(str(j:))) exit
+            end do
+            if (j > i + 1) then
+                is_integer = .true.
+                return
+            end if
+        end do
+    end function is_integer
+
+    pure logical function is_digit(str)
+        implicit none
+        character(*), intent(in) :: str
+        integer :: i
+
+        is_digit = .false.
+        do i = 1, len(str)
+            if (str(i:) == ' ') exit
+            if (str(i:) >= '0' .and. str(i:) <= '9') then
+                is_digit = .true.
+                return
+            end if
+        end do
+    end function is_digit
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>0
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module Main
+
+implicit none
+
+interface
+
+function count_different_integers(word) result(res)
+character(len=*), intent(in) :: word
+integer :: res
+end function count_different_integers
+
+end interface
+
+contains
+
+subroutine run_test_cases()
+
+integer :: i
+character(len=1000) :: word
+integer :: res
+
+word = "a123bc34d8ef34 "
+res = count_different_integers(word)
+if (res .ne. 3) then
+    write (*,*) "Test case 1 failed. Expected 3, got ", res
+end if
+
+word = "leet1234code234 "
+res = count_different_integers(word)
+if (res .ne. 2) then
+    write (*,*) "Test case 2 failed. Expected 2, got ", res
+end if
+
+word = "a1b01c001 "
+res = count_different_integers(word)
+if (res .ne. 1) then
+    write (*,*) "Test case 3 failed. Expected 1, got ", res
+end if
+
+end subroutine run_test_cases
+
+end module Main
+
+!---------------------------------------------------------------------------------------------------------------------------------
+
+module IntegerUtils
+
+implicit none
+
+private
+public :: count_different_integers
+
+contains
+
+function count_different_integers(word) result(res)
+character(len=*), intent(in) :: word
+integer :: res
+
+! Replace non-digit characters with spaces
+word = trim(adjustl(word))
+word = transfer(word, word, 1000)
+
+! Count the number of integers
+res = 0
+do i = 1, len_trim(word)
+    if (word(i:i) .eq. ' ') then
+        res = res + 1
+    end if
+end do
+
+end function count_different_integers
+
+end module IntegerUtils
+
+!---------------------------------------------------------------------------------------------------------------------------------
+
+program main
+
+use IntegerUtils
+
+implicit none
+
+character(len=1000) :: word
+integer :: res
+
+! Read the input word from the command line
+word = ' '
+call get_command_argument(1, word)
+
+! Count the number of different integers
+res = count_different_integers(word)
+
+! Print the result
+write (*,*) res
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:65:4:
+
+   65 | do i = 1, len_trim(word)
+      |    1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:60:0:
+
+   60 | word = trim(adjustl(word))
+      | 
+Error: Dummy argument ‘word’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:61:0:
+
+   61 | word = transfer(word, word, 1000)
+      | 
+Error: Dummy argument ‘word’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:77:12:
+
+    1 | module Main
+      |           2 
+......
+   77 | program main
+      |            1
+Error: Global name ‘main’ at (1) is already being used as a MODULE at (2)
+temp.f95:79:5:
+
+   79 | use IntegerUtils
+      |     1
+Fatal Error: Cannot open module file ‘integerutils.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_moves(nums, k):
+    n = len(nums)
+    ones = [i - j for i, j in enumerate(nums) if j == 1]
+
+    moves = sum(ones[i] - ones[k // 2] for i in range(k))
+    min_moves = moves
+
+    for i in range(k, len(ones)):
+        moves += ones[i] - ones[i - k] - k
+        min_moves = min(min_moves, moves)
+
+    return min_moves
+</code></pre>
+<pre><code>First, we extract the positions of 1's into a new list and subtract the index of 1's to get the relative positions. Then we calculate the moves required to make the first k 1's consecutive. For each consecutive block of k 1's, we calculate the moves required to make them consecutive and update the minimum moves if it is less than the current minimum moves. To get the moves for the next block of k 1's, we just add the difference in positions and subtract k from the current moves, as one extra move is needed to move past the last 1 in the previous k 1's.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minMoves(vector&lt;int&gt;&amp; nums, int k) {
+    int n = nums.size();
+    vector&lt;int&gt; ones;
+    for(int i = 0; i &lt; n; ++i){
+        if(nums[i] == 1){
+            ones.push_back(i - ones.size());
+        }
+    }
+
+    int moves = 0;
+    for(int i = 0; i &lt; k; ++i){
+        moves += (ones[i] - ones[k / 2]);
+    }
+
+    int min_moves = moves;
+    for(int i = k; i &lt; ones.size(); ++i){
+        moves += ones[i] - ones[i - k] - k;
+        min_moves = min(min_moves, moves);
+    }
+
+    return min_moves;
+}
+</code></pre>
+<pre><code>First, we extract the positions of 1's into a new list and subtract the index of 1's to get the relative positions. Then we calculate the moves required to make the first k 1's consecutive. For each consecutive block of k 1's, we calculate the moves required to make them consecutive and update the minimum moves if it is less than the current minimum moves. To get the moves for the next block of k 1's, we just add the difference in positions and subtract k from the current moves, as one extra move is needed to move past the last 1 in the previous k 1's.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

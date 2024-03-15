@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Cousins in Binary Tree</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/989/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/997/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of a binary tree with unique values and the values of two different nodes of the tree <code>x</code> and <code>y</code>, return <code>true</code> <em>if the nodes corresponding to the values</em> <code>x</code> <em>and</em> <code>y</code> <em>in the tree are <strong>cousins</strong>, or</em> <code>false</code> <em>otherwise.</em></p>
+<p>Two nodes of a binary tree are <strong>cousins</strong> if they have the same depth with different parents.</p>
+<p>Note that in a binary tree, the root node is at the depth <code>0</code>, and children of each depth <code>k</code> node are at the depth <code>k + 1</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [1,2,3,4], x = 4, y = 3
+<strong>Output:</strong> false</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [1,2,3,null,4,null,5], x = 5, y = 4
+<strong>Output:</strong> true</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> root = [1,2,3,null,4], x = 2, y = 3
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[2, 100]</code>.</li>
+<li><code>1 &lt;= Node.val &lt;= 100</code></li>
+<li>Each node has a <strong>unique</strong> value.</li>
+<li><code>x != y</code></li>
+<li><code>x</code> and <code>y</code> are exist in the tree.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/cousins-in-binary-tree/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program cousinsInBinaryTree
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: UNIT_IN = 7, UNIT_OUT = 8
+
+    type :: TreeNode
+        real(kind=DP) :: val
+        type(TreeNode), pointer :: left, right
+    end type TreeNode
+
+    interface
+        function isCousin(root, x, y) result(res)
+            import TreeNode
+            type(TreeNode), target, intent(in) :: root
+            real(kind=DP), intent(in) :: x, y
+            logical :: res
+        end function isCousin
+    end interface
+
+    type(TreeNode), pointer :: root
+    real(kind=DP) :: x, y
+    logical :: res
+
+    call get_arguments()
+    call solve()
+
+contains
+
+    subroutine get_arguments()
+        read (UNIT=UNIT_IN, FMT='(L1)') x
+        read (UNIT=UNIT_IN, FMT='(L1)') y
+        allocate(root)
+        call read_tree(root)
+    end subroutine get_arguments
+
+    subroutine solve()
+        res = isCousin(root, x, y)
+        write (UNIT=UNIT_OUT, FMT='(L1)') res
+    end subroutine solve
+
+    recursive subroutine read_tree(node)
+        class(TreeNode), pointer, intent(out) :: node
+        integer :: depth
+        read (UNIT=UNIT_IN, FMT='(I1)') depth
+        if (depth == 0) then
+            nullify(node)
+        else
+            allocate(node)
+            read (UNIT=UNIT_IN, FMT='(F10.0)') node%val
+            call read_tree(node%left)
+            call read_tree(node%right)
+        end if
+    end subroutine read_tree
+
+    function isCousin(root, x, y) result(res)
+        type(TreeNode), target, intent(in) :: root
+        real(kind=DP), intent(in) :: x, y
+        logical :: res
+        type(TreeNode), pointer :: current
+        integer :: depthX, depthY
+
+        ! Find the depth of both nodes
+        current => root
+        do while (associated(current))
+            if (current%val == x) exit
+            current => current%left
+        end do
+        depthX = 0
+        do while (associated(current))
+            depthX = depthX + 1
+            current => current%parent
+        end do
+
+        current => root
+        do while (associated(current))
+            if (current%val == y) exit
+            current => current%left
+        end do
+        depthY = 0
+        do while (associated(current))
+            depthY = depthY + 1
+            current => current%parent
+        end do
+
+        res = depthX /= depthY .and. depthX == depthY - 1
+    end function isCousin
+
+end program cousinsInBinaryTree</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:22:
+
+   15 |             real(kind=DP), intent(in) :: x, y
+      |                      1
+Error: Parameter ‘dp’ at (1) has not been declared or is a variable, which does not reduce to a constant expression
+temp.f95:55:33:
+
+   55 |     function isCousin(root, x, y) result(res)
+      |                                 1
+Error: Symbol ‘iscousin’ at (1) already has an explicit interface
+temp.f95:56:50:
+
+   56 |         type(TreeNode), target, intent(in) :: root
+      |                                                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:57:41:
+
+   57 |         real(kind=DP), intent(in) :: x, y
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:58:22:
+
+   58 |         logical :: res
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:59:42:
+
+   59 |         type(TreeNode), pointer :: current
+      |                                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:60:33:
+
+   60 |         integer :: depthX, depthY
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:63:23:
+
+   63 |         current => root
+      |                       1
+Error: Unexpected pointer assignment statement in CONTAINS section at (1)
+temp.f95:64:38:
+
+   64 |         do while (associated(current))
+      |                                      1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:65:25:
+
+   65 |             if (current%val == x) exit
+      |                         1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:66:32:
+
+   66 |             current => current%left
+      |                                1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:67:11:
+
+   67 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:68:18:
+
+   68 |         depthX = 0
+      |                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:69:38:
+
+   69 |         do while (associated(current))
+      |                                      1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:70:31:
+
+   70 |             depthX = depthX + 1
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:71:32:
+
+   71 |             current => current%parent
+      |                                1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:72:11:
+
+   72 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:74:23:
+
+   74 |         current => root
+      |                       1
+Error: Unexpected pointer assignment statement in CONTAINS section at (1)
+temp.f95:75:38:
+
+   75 |         do while (associated(current))
+      |                                      1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:76:25:
+
+   76 |             if (current%val == y) exit
+      |                         1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:77:32:
+
+   77 |             current => current%left
+      |                                1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:78:11:
+
+   78 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:79:18:
+
+   79 |         depthY = 0
+      |                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:80:38:
+
+   80 |         do while (associated(current))
+      |                                      1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:81:31:
+
+   81 |             depthY = depthY + 1
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:82:32:
+
+   82 |             current => current%parent
+      |                                1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:83:11:
+
+   83 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:85:57:
+
+   85 |         res = depthX /= depthY .and. depthX == depthY - 1
+      |                                                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:86:7:
+
+   86 |     end function isCousin
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:50:27:
+
+   50 |             call read_tree(node%left)
+      |                           1
+Error: Actual argument to ‘node’ at (1) must be polymorphic
+temp.f95:51:27:
+
+   51 |             call read_tree(node%right)
+      |                           1
+Error: Actual argument to ‘node’ at (1) must be polymorphic
+temp.f95:37:14:
+
+   37 |         res = isCousin(root, x, y)
+      |              1
+Error: Type mismatch in argument ‘x’ at (1); passed REAL(8) to REAL(4)
+temp.f95:33:23:
+
+   33 |         call read_tree(root)
+      |                       1
+Error: Actual argument to ‘node’ at (1) must be polymorphic
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module cousins
+    implicit none
+
+contains
+
+    function is_cousins(root, x, y) result(is_cousin)
+        type(node), pointer, intent(in) :: root
+        integer, intent(in) :: x, y
+        logical :: is_cousin
+
+        integer :: depth_x, depth_y, parent_x, parent_y
+
+        is_cousin = .false.
+
+        if (root%val == x) then
+            depth_x = 0
+            parent_x = 0
+        else
+            depth_x = -1
+            parent_x = -1
+        end if
+
+        if (root%val == y) then
+            depth_y = 0
+            parent_y = 0
+        else
+            depth_y = -1
+            parent_y = -1
+        end if
+
+        call find_cousins(root, x, y, depth_x, depth_y, parent_x, parent_y, is_cousin)
+    end function is_cousins
+
+    recursive subroutine find_cousins(node, x, y, depth_x, depth_y, parent_x, parent_y, is_cousin)
+        type(node), pointer, intent(in) :: node
+        integer, intent(in) :: x, y
+        integer, intent(inout) :: depth_x, depth_y, parent_x, parent_y
+        logical, intent(inout) :: is_cousin
+
+        if (associated(node)) then
+            if (node%val == x) then
+                depth_x = depth_y + 1
+                parent_x = parent_y
+            end if
+
+            if (node%val == y) then
+                depth_y = depth_x + 1
+                parent_y = parent_x
+            end if
+
+            if (depth_x >= 0 .and. depth_y >= 0) then
+                if (depth_x == depth_y .and. parent_x /= parent_y) then
+                    is_cousin = .true.
+                end if
+            end if
+
+            call find_cousins(node%left, x, y, depth_x, depth_y, parent_x, parent_y, is_cousin)
+            call find_cousins(node%right, x, y, depth_x, depth_y, parent_x, parent_y, is_cousin)
+        end if
+    end subroutine find_cousins
+
+    type node
+        integer :: val
+        type(node), pointer :: left => null(), right => null()
+    end type node
+end module cousins
+
+program test
+    use cousins
+    implicit none
+
+    type(node), pointer :: root
+    integer :: x, y
+    logical :: is_cousin
+
+    ! Example 1
+    root => create_node(1)
+    root%left => create_node(2)
+    root%right => create_node(3)
+    root%left%left => create_node(4)
+    x = 4
+    y = 3
+    is_cousin = is_cousins(root, x, y)
+    if (is_cousin) then
+        write (*,*) "Example 1: true"
+    else
+        write (*,*) "Example 1: false"
+    end if
+
+    ! Example 2
+    root => create_node(1)
+    root%left => create_node(2)
+    root%right => create_node(3)
+    root%left%left => create_node(4)
+    root%left%right => create_node(5)
+    x = 5
+    y = 4
+    is_cousin = is_cousins(root, x, y)
+    if (is_cousin) then
+        write (*,*) "Example 2: true"
+    else
+        write (*,*) "Example 2: false"
+    end if
+
+    ! Example 3
+    root => create_node(1)
+    root%left => create_node(2)
+    root%right => create_node(3)
+    root%left%left => create_node(4)
+    x = 2
+    y = 3
+    is_cousin = is_cousins(root,
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:19:
+
+    7 |         type(node), pointer, intent(in) :: root
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:15:18:
+
+   15 |         if (root%val == x) then
+      |                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:18:12:
+
+   18 |         else
+      |            1
+Error: Unexpected ELSE statement at (1)
+temp.f95:21:11:
+
+   21 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:23:18:
+
+   23 |         if (root%val == y) then
+      |                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:26:12:
+
+   26 |         else
+      |            1
+Error: Unexpected ELSE statement at (1)
+temp.f95:29:11:
+
+   29 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:35:19:
+
+   35 |         type(node), pointer, intent(in) :: node
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:41:22:
+
+   41 |             if (node%val == x) then
+      |                      1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:46:22:
+
+   46 |             if (node%val == y) then
+      |                      1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:49:15:
+
+   49 |             end if
+      |               1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:57:36:
+
+   57 |             call find_cousins(node%left, x, y, depth_x, depth_y, parent_x, parent_y, is_cousin)
+      |                                    1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:58:36:
+
+   58 |             call find_cousins(node%right, x, y, depth_x, depth_y, parent_x, parent_y, is_cousin)
+      |                                    1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:59:11:
+
+   59 |         end if
+      |           1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:62:13:
+
+   62 |     type node
+      |             1
+Error: Unexpected derived type declaration statement in CONTAINS section at (1)
+temp.f95:63:22:
+
+   63 |         integer :: val
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:64:19:
+
+   64 |         type(node), pointer :: left => null(), right => null()
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:65:7:
+
+   65 |     end type node
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:42:
+
+   34 |     recursive subroutine find_cousins(node, x, y, depth_x, depth_y, parent_x, parent_y, is_cousin)
+      |                                          1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:6:28:
+
+    6 |     function is_cousins(root, x, y) result(is_cousin)
+      |                            1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:69:9:
+
+   69 |     use cousins
+      |         1
+Fatal Error: Cannot open module file ‘cousins.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def tallestBillboard(rods):
+    n = len(rods)
+    totalLength = sum(rods)
+    dp = [[-1] * (totalLength + 1) for _ in range(n + 1)]
+    dp[0][0] = 0
+
+    for i in range(1, n + 1):
+        for j in range(totalLength + 1):
+            dp[i][j] = dp[i - 1][j]
+            if rods[i - 1] &lt;= j:
+                dp[i][j] = max(dp[i][j], dp[i - 1][j - rods[i - 1]] + rods[i - 1])
+            if rods[i - 1] &lt;= totalLength - j:
+                dp[i][j] = max(dp[i][j], dp[i - 1][j + rods[i - 1]])
+
+    return dp[n][0] // 2
+</code></pre>
+<pre><code>The given problem can be solved using Dynamic Programming. We calculate the sum of all the lengths of rods available, this will help us in creating an NxM, where N is the number of rods and M is the sum of all lengths, table filled with "-1". Then we initialize the first row of this table with 0.
+</code></pre>
+<p>Now, we loop through the table and refer to the previous row while remaining within the boundaries of total sum. We make comparisons with the previous row values by checking if the current rod can be added to the current total length or not. If yes, we check for the maximum value by adding and updating the current value. This approach allows us to deduce the maximum equal length of rods that can be created.</p>
+<p>Finally, we return the value at (n,0)th index divided by 2 as our final result. This gives us the largest possible height of the supported billboard. If it's not possible to support the billboard, the function returns 0.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int tallestBillboard(vector&lt;int&gt;&amp; rods) {
+    int n = rods.size();
+    int totalLength = accumulate(rods.begin(), rods.end(), 0);
+    vector&lt;vector&lt;int&gt;&gt; dp(n + 1, vector&lt;int&gt;(totalLength + 1, -1));
+    dp[0][0] = 0;
+
+    for (int i = 1; i &lt;= n; i++) {
+        for (int j = 0; j &lt;= totalLength; j++) {
+            dp[i][j] = dp[i - 1][j];
+            if (rods[i - 1] &lt;= j) dp[i][j] = max(dp[i][j], dp[i - 1][j - rods[i - 1]] + rods[i - 1]);
+            if (rods[i - 1] &lt;= totalLength - j) dp[i][j] = max(dp[i][j], dp[i - 1][j + rods[i - 1]]);
+        }
+    }
+
+    return dp[n][0] / 2;
+}
+</code></pre>
+<pre><code>The given problem can be solved using Dynamic Programming. We calculate the sum of all the lengths of rods available, this will help us in creating an NxM, where N is the number of rods and M is the sum of all lengths, table filled with "-1". Then we initialize the first row of this table with 0.
+</code></pre>
+<p>Now, we loop through the table and refer to the previous row while remaining within the boundaries of total sum. We make comparisons with the previous row values by checking if the current rod can be added to the current total length or not. If yes, we check for the maximum value by adding and updating the current value. This approach allows us to deduce the maximum equal length of rods that can be created.</p>
+<p>Finally, we return the value at (n,0)th index divided by 2 as our final result. This gives us the largest possible height of the supported billboard. If it's not possible to support the billboard, the function returns 0.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

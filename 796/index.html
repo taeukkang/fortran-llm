@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Rotate String</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/783/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/800/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two strings <code>s</code> and <code>goal</code>, return <code>true</code> <em>if and only if</em> <code>s</code> <em>can become</em> <code>goal</code> <em>after some number of <strong>shifts</strong> on</em> <code>s</code>.</p>
+<p>A <strong>shift</strong> on <code>s</code> consists of moving the leftmost character of <code>s</code> to the rightmost position.</p>
+<ul>
+<li>For example, if <code>s = "abcde "</code>, then it will be <code>"bcdea "</code> after one shift.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s = "abcde", goal = "cdeab"
+<strong>Output:</strong> true</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s = "abcde", goal = "abced"
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length, goal.length &lt;= 100</code></li>
+<li><code>s</code> and <code>goal</code> consist of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/rotate-string/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=100) :: s, goal
+    logical :: can_become
+
+    ! Example 1
+    s = "abcde"
+    goal = "cdeab"
+    print '(L1)', can_become(s, goal)
+
+    ! Example 2
+    s = "abcde"
+    goal = "abced"
+    print '(L1)', can_become(s, goal)
+
+contains
+
+    function can_become(s, goal) result(res)
+        implicit none
+        character(len=*), intent(in) :: s, goal
+        integer :: i, j
+        logical :: res
+
+        res = .false.
+        do while (i < len(s))
+            if (s(i+1:) == goal) then
+                res = .true.
+                exit
+            end if
+            s(1:) = s(2:)
+            s(len_trim(s):) = s(1:)
+            i = i + 1
+        end do
+    end function can_become
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:19:24:
+
+   19 |     function can_become(s, goal) result(res)
+      |                        1
+Error: Procedure ‘can_become’ at (1) has an explicit interface from a previous declaration
+temp.f95:20:21:
+
+   20 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:21:47:
+
+   21 |         character(len=*), intent(in) :: s, goal
+      |                                               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:22:23:
+
+   22 |         integer :: i, j
+      |                       1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:23:22:
+
+   23 |         logical :: res
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:25:21:
+
+   25 |         res = .false.
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:29:
+
+   26 |         do while (i < len(s))
+      |                             1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:27:37:
+
+   27 |             if (s(i+1:) == goal) then
+      |                                     1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:28:28:
+
+   28 |                 res = .true.
+      |                            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:29:20:
+
+   29 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:30:15:
+
+   30 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:33:21:
+
+   33 |             i = i + 1
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:34:11:
+
+   34 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:35:7:
+
+   35 |     end function can_become
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module shift_strings
+
+implicit none
+
+contains
+
+function can_shift(s, goal) result(output)
+
+character(len=*), intent(in) :: s, goal
+logical :: output
+
+integer :: i, j, n
+character(len=1) :: c
+
+output = .false.
+n = len(s)
+
+! Check if the length of the strings is the same
+if (n /= len(goal)) then
+    return
+end if
+
+! Check if the strings are equal
+if (s == goal) then
+    output = .true.
+    return
+end if
+
+! Check if the strings can be shifted to the same length
+do i = 1, n - 1
+    if (s(i:i+1) == goal(i:i+1)) then
+        output = .true.
+        return
+    end if
+end do
+
+! Check if the strings can be shifted to the same length by shifting the leftmost character
+do i = 1, n - 1
+    c = s(1:1)
+    do j = 1, n - 1
+        if (s(j+1:j+2) == goal(j:j+1)) then
+            s(1:n-1) = s(2:n)
+            s(n:n) = c
+            output = .true.
+            return
+        end if
+    end do
+end do
+
+end function can_shift
+
+end module shift_strings
+
+program test_shift_strings
+
+use shift_strings
+
+implicit none
+
+integer :: i, j
+character(len=100) :: s, goal
+logical :: output
+
+! Test case 1:
+s = "abcde"
+goal = "cdeab"
+output = can_shift(s, goal)
+if (output) then
+    write (*,*) "Test case 1: Pass"
+else
+    write (*,*) "Test case 1: Fail"
+end if
+
+! Test case 2:
+s = "abcde"
+goal = "abced"
+output = can_shift(s, goal)
+if (.not. output) then
+    write (*,*) "Test case 2: Pass"
+else
+    write (*,*) "Test case 2: Fail"
+end if
+
+! Test case 3:
+s = "abc"
+goal = "cab"
+output = can_shift(s, goal)
+if (output) then
+    write (*,*) "Test case 3: Pass"
+else
+    write (*,*) "Test case 3: Fail"
+end if
+
+! Test case 4:
+s = "abc"
+goal = "acb"
+output = can_shift(s, goal)
+if (.not. output) then
+    write (*,*) "Test case 4: Pass"
+else
+    write (*,*) "Test case 4: Fail"
+end if
+
+! Test case 5:
+s = "a"
+goal = "a"
+output = can_shift(s, goal)
+if (output) then
+    write (*,*) "Test case 5: Pass"
+else
+    write (*,*) "Test case 5: Fail"
+end if
+
+! Test case 6:
+s = "a"
+goal = "b"
+output = can_shift(s, goal)
+if (.not. output) then
+    write (*,*) "Test case 6: Pass"
+else
+    write (*,*) "Test case 6: Fail"
+end if
+
+! Test case 7:
+s = "ab"
+goal = "ba"
+output = can_shift(s, goal)
+if (output) then
+    write (*,*) "Test case 7: Pass"
+else
+    write (*,*) "Test case 7: Fail"
+end if
+
+! Test case 8:
+s = "ab"
+goal = "ac"
+output = can_shift(s, goal)
+if (.not. output) then
+    write (*,*) "Test case 8: Pass"
+else
+    write (*,*) "Test case 8: Fail"
+end if
+
+! Test case 9:
+s = "abc"
+goal = "bca"
+output = can_shift(s, goal)
+if (output) then
+    write (*,*) "Test case 9: Pass"
+else
+    write
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:42:12:
+
+   42 |             s(1:n-1) = s(2:n)
+      |            1
+Error: Dummy argument ‘s’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:43:12:
+
+   43 |             s(n:n) = c
+      |            1
+Error: Dummy argument ‘s’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:56:5:
+
+   56 | use shift_strings
+      |     1
+Fatal Error: Cannot open module file ‘shift_strings.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def can_transform(sx, sy, tx, ty):
+    while sx != tx or sy != ty:
+        if sx &gt; tx or sy &gt; ty:
+            return False
+        if sx &lt; tx:
+            tx -= ty
+        else:
+            ty -= sx
+    return True
+</code></pre>
+<p>The algorithm starts with the target coordinates (tx, ty), and works its way backward by performing the inverse operations to approach the source point (sx, sy). In each iteration, check if sx &gt; tx or sy &gt; ty, meaning the target point cannot be reached (return false). Depending on whether tx &gt; sx or ty &gt; sy, subtract the smaller coordinate from the larger one. If (tx and ty) become equal to (sx and sy), the target point can be reached, and the function returns true.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool canTransform(int sx, int sy, int tx, int ty) {
+    while (sx != tx || sy != ty) {
+        if (sx &gt; tx || sy &gt; ty) return false;
+        if (sx &lt; tx) {
+            tx -= ty;
+        } else {
+            ty -= sx;
+        }
+    }
+    return true;
+}
+</code></pre>
+<p>The algorithm starts with the target coordinates (tx, ty), and works its way backward by performing the inverse operations to approach the source point (sx, sy). In each iteration, check if sx &gt; tx or sy &gt; ty, meaning the target point cannot be reached (return false). Depending on whether tx &gt; sx or ty &gt; sy, subtract the smaller coordinate from the larger one. If (tx and ty) become equal to (sx and sy), the target point can be reached, and the function returns true.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

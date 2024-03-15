@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Determine if Two Events Have Conflict</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2441/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2451/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given two arrays of strings that represent two inclusive events that happened <strong>on the same day</strong>, <code>event1</code> and <code>event2</code>, where:</p>
+<ul>
+<li><code>event1 = [startTime1, endTime1]</code> and</li>
+<li><code>event2 = [startTime2, endTime2]</code>.</li>
+</ul>
+<p>Event times are valid 24 hours format in the form of <code>HH:MM</code>.</p>
+<p>A <strong>conflict</strong> happens when two events have some non-empty intersection (i.e., some moment is common to both events).</p>
+<p>Return <code>true</code> <em>if there is a conflict between two events. Otherwise, return</em> <code>false</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> event1 = [ "01:15 ", "02:00 "], event2 = [ "02:00 ", "03:00 "]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The two events intersect at time 2:00.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> event1 = [ "01:00 ", "02:00 "], event2 = [ "01:20 ", "03:00 "]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The two events intersect starting from 01:20 to 02:00.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> event1 = [ "10:00 ", "11:00 "], event2 = [ "14:00 ", "15:00 "]
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The two events do not intersect.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>evnet1.length == event2.length == 2.</code></li>
+<li><code>event1[i].length == event2[i].length == 5</code></li>
+<li><code>startTime1 &lt;= endTime1</code></li>
+<li><code>startTime2 &lt;= endTime2</code></li>
+<li>All the event times follow the <code>HH:MM</code> format.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/determine-if-two-events-have-conflict/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=5), dimension(2) :: event1, event2
+    logical :: result
+
+    ! Example 1
+    event1 = ["01:15 ", "02:00 "]
+    event2 = ["02:00 ", "03:00 "]
+    write(*,*) 'Example 1:'
+    write(*,*) 'event1 = ', event1
+    write(*,*) 'event2 = ', event2
+    result = hasConflict(event1, event2)
+    write(*,*) 'Result: ', result
+
+    ! Example 2
+    event1 = ["01:00 ", "02:00 "]
+    event2 = ["01:20 ", "03:00 "]
+    write(*,*) 'Example 2:'
+    write(*,*) 'event1 = ', event1
+    write(*,*) 'event2 = ', event2
+    result = hasConflict(event1, event2)
+    write(*,*) 'Result: ', result
+
+    ! Example 3
+    event1 = ["10:00 ", "11:00 "]
+    event2 = ["14:00 ", "15:00 "]
+    write(*,*) 'Example 3:'
+    write(*,*) 'event1 = ', event1
+    write(*,*) 'event2 = ', event2
+    result = hasConflict(event1, event2)
+    write(*,*) 'Result: ', result
+
+contains
+
+    function hasConflict(event1, event2) result(conflict)
+        implicit none
+        character(len=5), intent(in) :: event1(:), event2(:)
+        integer :: startTime1, endTime1, startTime2, endTime2
+        logical :: conflict
+
+        read(event1(1), fmt='(I2)') startTime1
+        read(event1(2), fmt='(I2)') endTime1
+        read(event2(1), fmt='(I2)') startTime2
+        read(event2(2), fmt='(I2)') endTime2
+
+        if (startTime1 < startTime2 .and. endTime1 >= startTime2) then
+            conflict = .true.
+        else if (startTime2 < startTime1 .and. endTime2 >= startTime1) then
+            conflict = .true.
+        else
+            conflict = .false.
+        end if
+
+    end function hasConflict
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Example 1:
+ event1 = 01:1502:00
+ event2 = 02:0003:00
+ Result:  T
+ Example 2:
+ event1 = 01:0002:00
+ event2 = 01:2003:00
+ Result:  F
+ Example 3:
+ event1 = 10:0011:00
+ event2 = 14:0015:00
+ Result:  F
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program conflictEvents
+    implicit none
+
+    character(len=5) :: startTime1, endTime1, startTime2, endTime2
+    logical :: conflict
+
+    ! Example 1
+    startTime1 = "01:15"
+    endTime1 = "02:00"
+    startTime2 = "02:00"
+    endTime2 = "03:00"
+    conflict = conflictEvents(startTime1, endTime1, startTime2, endTime2)
+    if (conflict) then
+        write (*,*) "Conflict between events 1 and 2"
+    else
+        write (*,*) "No conflict between events 1 and 2"
+    end if
+
+    ! Example 2
+    startTime1 = "01:00"
+    endTime1 = "02:00"
+    startTime2 = "01:20"
+    endTime2 = "03:00"
+    conflict = conflictEvents(startTime1, endTime1, startTime2, endTime2)
+    if (conflict) then
+        write (*,*) "Conflict between events 1 and 2"
+    else
+        write (*,*) "No conflict between events 1 and 2"
+    end if
+
+    ! Example 3
+    startTime1 = "10:00"
+    endTime1 = "11:00"
+    startTime2 = "14:00"
+    endTime2 = "15:00"
+    conflict = conflictEvents(startTime1, endTime1, startTime2, endTime2)
+    if (conflict) then
+        write (*,*) "Conflict between events 1 and 2"
+    else
+        write (*,*) "No conflict between events 1 and 2"
+    end if
+
+contains
+
+    function conflictEvents(startTime1, endTime1, startTime2, endTime2) result(conflict)
+        implicit none
+
+        character(len=5), intent(in) :: startTime1, endTime1, startTime2, endTime2
+        logical :: conflict
+
+        ! Convert the time strings to integers
+        integer :: startTime1Int, endTime1Int, startTime2Int, endTime2Int
+        read (startTime1,*) startTime1Int
+        read (endTime1,*) endTime1Int
+        read (startTime2,*) startTime2Int
+        read (endTime2,*) endTime2Int
+
+        ! Check if the events intersect
+        if (startTime1Int <= startTime2Int .and. endTime1Int >= startTime2Int) then
+            conflict = .true.
+        else if (startTime2Int <= startTime1Int .and. endTime2Int >= startTime1Int) then
+            conflict = .true.
+        else
+            conflict = .false.
+        end if
+
+    end function conflictEvents
+
+end program conflictEvents
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:12:30:
+
+   12 |     conflict = conflictEvents(startTime1, endTime1, startTime2, endTime2)
+      |                              1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:24:30:
+
+   24 |     conflict = conflictEvents(startTime1, endTime1, startTime2, endTime2)
+      |                              1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:36:30:
+
+   36 |     conflict = conflictEvents(startTime1, endTime1, startTime2, endTime2)
+      |                              1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:45:88:
+
+   45 |     function conflictEvents(startTime1, endTime1, startTime2, endTime2) result(conflict)
+      |                                                                                        1
+Error: PROGRAM attribute of ‘conflictevents’ conflicts with PROCEDURE attribute at (1)
+temp.f95:46:21:
+
+   46 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:48:82:
+
+   48 |         character(len=5), intent(in) :: startTime1, endTime1, startTime2, endTime2
+      |                                                                                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:49:27:
+
+   49 |         logical :: conflict
+      |                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:52:73:
+
+   52 |         integer :: startTime1Int, endTime1Int, startTime2Int, endTime2Int
+      |                                                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:53:41:
+
+   53 |         read (startTime1,*) startTime1Int
+      |                                         1
+Error: Unexpected READ statement in CONTAINS section at (1)
+temp.f95:54:37:
+
+   54 |         read (endTime1,*) endTime1Int
+      |                                     1
+Error: Unexpected READ statement in CONTAINS section at (1)
+temp.f95:55:41:
+
+   55 |         read (startTime2,*) startTime2Int
+      |                                         1
+Error: Unexpected READ statement in CONTAINS section at (1)
+temp.f95:56:37:
+
+   56 |         read (endTime2,*) endTime2Int
+      |                                     1
+Error: Unexpected READ statement in CONTAINS section at (1)
+temp.f95:59:83:
+
+   59 |         if (startTime1Int <= startTime2Int .and. endTime1Int >= startTime2Int) then
+      |                                                                                   1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:60:29:
+
+   60 |             conflict = .true.
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:61:88:
+
+   61 |         else if (startTime2Int <= startTime1Int .and. endTime2Int >= startTime1Int) then
+      |                                                                                        1
+Error: Unexpected ELSE IF statement in CONTAINS section at (1)
+temp.f95:62:29:
+
+   62 |             conflict = .true.
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:63:12:
+
+   63 |         else
+      |            1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:64:30:
+
+   64 |             conflict = .false.
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:65:11:
+
+   65 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:67:7:
+
+   67 |     end function conflictEvents
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def has_event_conflict(start1: str, end1: str, start2: str, end2: str) -&gt; bool:
+    start_hour1, start_min1 = map(int, start1.split(&quot;:&quot;))
+    start_hour2, start_min2 = map(int, start2.split(&quot;:&quot;))
+    end_hour1, end_min1 = map(int, end1.split(&quot;:&quot;))
+    end_hour2, end_min2 = map(int, end2.split(&quot;:&quot;))
+
+    total_min1_start = start_hour1 * 60 + start_min1
+    total_min1_end = end_hour1 * 60 + end_min1
+    total_min2_start = start_hour2 * 60 + start_min2
+    total_min2_end = end_hour2 * 60 + end_min2
+
+    return not (total_min1_end &lt;= total_min2_start or total_min1_start &gt;= total_min2_end)
+</code></pre>
+<p>The algorithm first parses the input strings and separates the hour and minute parts of each event. Then, it converts the event times to the total minutes from 00:00 to account for easier comparisons. Finally, it checks if the two events have any intersection by comparing the start and end time of each event in minutes. If there's a conflict, return true; otherwise, return false.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+
+bool hasEventConflict(const std::string&amp; start1, const std::string&amp; end1,
+                      const std::string&amp; start2, const std::string&amp; end2) {
+    int startHour1 = stoi(start1.substr(0, 2));
+    int startMin1 = stoi(start1.substr(3, 2));
+    int startHour2 = stoi(start2.substr(0, 2));
+    int startMin2 = stoi(start2.substr(3, 2));
+
+    int endHour1 = stoi(end1.substr(0, 2));
+    int endMin1 = stoi(end1.substr(3, 2));
+    int endHour2 = stoi(end2.substr(0, 2));
+    int endMin2 = stoi(end2.substr(3, 2));
+
+    int totalMin1Start = startHour1*60 + startMin1;
+    int totalMin1End = endHour1*60 + endMin1;
+    int totalMin2Start = startHour2*60 + startMin2;
+    int totalMin2End = endHour2*60 + endMin2;
+
+    return !(totalMin1End &lt;= totalMin2Start || totalMin1Start &gt;= totalMin2End);
+}
+</code></pre>
+<p>The algorithm first parses the input strings and separates the hour and minute parts of each event. Then, it converts the event times to the total minutes from 00:00 to account for easier comparisons. Finally, it checks if the two events have any intersection by comparing the start and end time of each event in minutes. If there's a conflict, return true; otherwise, return false.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

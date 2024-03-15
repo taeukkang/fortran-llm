@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Complement of Base 10 Integer</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1005/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1013/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>The <strong>complement</strong> of an integer is the integer you get when you flip all the <code>0</code>'s to <code>1</code>'s and all the <code>1</code>'s to <code>0</code>'s in its binary representation.</p>
+<ul>
+<li>For example, The integer <code>5</code> is <code>"101 "</code> in binary and its <strong>complement</strong> is <code>"010 "</code> which is the integer <code>2</code>.</li>
+</ul>
+<p>Given an integer <code>n</code>, return <em>its complement</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 5
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> 5 is  "101 " in binary, with complement  "010 " in binary, which is 2 in base-10.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 7
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> 7 is  "111 " in binary, with complement  "000 " in binary, which is 0 in base-10.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> n = 10
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> 10 is  "1010 " in binary, with complement  "0101 " in binary, which is 5 in base-10.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= n &lt; 109</code></li>
+</ul>
+<p><strong>Note:</strong> This question is the same as 476: <a href="https://leetcode.com/problems/number-complement/">https://leetcode.com/problems/number-complement/</a></p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/complement-of-base-10-integer/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    !! Solves the problem described in the comment block
+    implicit none
+
+    integer :: n, complement
+
+    ! Examples
+    n = 5
+    write (*, '(A, I0)') 'Complement of ', n, ' is ', complement(n)
+    n = 7
+    write (*, '(A, I0)') 'Complement of ', n, ' is ', complement(n)
+    n = 10
+    write (*, '(A, I0)') 'Complement of ', n, ' is ', complement(n)
+
+contains
+
+    function complement(n) result(res)
+        !! Returns the complement of an integer
+        implicit none
+        integer, intent(in) :: n
+        integer :: res
+
+        res = iand(not(n), 1_8)
+    end function complement
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:17:24:
+
+   17 |     function complement(n) result(res)
+      |                        1
+Error: Procedure ‘complement’ at (1) has an explicit interface from a previous declaration
+temp.f95:19:21:
+
+   19 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:20:32:
+
+   20 |         integer, intent(in) :: n
+      |                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:21:22:
+
+   21 |         integer :: res
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:23:31:
+
+   23 |         res = iand(not(n), 1_8)
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:7:
+
+   24 |     end function complement
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!include(header.inc)
+
+program complement
+
+implicit none
+
+integer :: n, complement
+
+! Read input
+read(*,*) n
+
+! Calculate complement
+complement = 0
+do while (n > 0)
+    if (mod(n, 2) == 0) then
+        complement = complement + 1
+    end if
+    n = n / 2
+end do
+
+! Output result
+write(*,*) complement
+
+end program complement
+
+!include(footer.inc)
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:24:
+
+    7 | integer :: n, complement
+      |                        1
+Error: Symbol ‘complement’ at (1) cannot have a type
+temp.f95:13:11:
+
+   13 | complement = 0
+      |           1
+Error: ‘complement’ at (1) is not a variable
+temp.f95:16:19:
+
+   16 |         complement = complement + 1
+      |                   1
+Error: ‘complement’ at (1) is not a variable
+temp.f95:22:21:
+
+   22 | write(*,*) complement
+      |                     1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:10:11:
+
+   10 | read(*,*) n
+      |           1
+Error: Symbol ‘n’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def pancakeSort(arr):
+    flips = []
+    for size in range(len(arr), 1, -1):
+        maxIdx = arr.index(max(arr[:size]))
+        flips.extend([maxIdx + 1, size])
+        arr[:maxIdx + 1] = reversed(arr[:maxIdx + 1])
+        arr[:size] = reversed(arr[:size])
+    return flips
+</code></pre>
+<p>The algorithm be:
+1. Iterate over the array from the last element to the first.
+2. During each iteration, find the index of the maximum element in the unsorted part of the array.
+3. Perform a pancake flip at the maximum element index, to move it to the beginning of the array.
+4. Perform a pancake flip for the whole unsorted part of the array to place the maximum element at its correct position.
+5. Add the flip positions in the list of flips.
+6. The algorithm ends when the array is completely sorted.</p>
+<p>This guarantees that the array will be sorted within 2 * arr.length flips.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+vector&lt;int&gt; pancakeSort(vector&lt;int&gt;&amp; arr) {
+    vector&lt;int&gt; flips;
+    for (int size = arr.size(); size &gt; 1; --size) {
+        int maxIdx = max_element(arr.begin(), arr.begin() + size) - arr.begin();
+        flips.push_back(maxIdx + 1);
+        flips.push_back(size);
+        reverse(arr.begin(), arr.begin() + maxIdx + 1);
+        reverse(arr.begin(), arr.begin() + size);
+    }
+    return flips;
+}
+</code></pre>
+<p>The algorithm be:
+1. Iterate over the array from the last element to the first.
+2. During each iteration, find the index of the maximum element in the unsorted part of the array.
+3. Perform a pancake flip at the maximum element index, to move it to the beginning of the array.
+4. Perform a pancake flip for the whole unsorted part of the array to place the maximum element at its correct position.
+5. Add the flip positions in the list of flips.
+6. The algorithm ends when the array is completely sorted.</p>
+<p>This guarantees that the array will be sorted within 2 * arr.length flips.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

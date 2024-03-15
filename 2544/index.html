@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Alternating Digit Sum</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2540/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2549/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a positive integer <code>n</code>. Each digit of <code>n</code> has a sign according to the following rules:</p>
+<ul>
+<li>The <strong>most significant digit</strong> is assigned a <strong>positive</strong> sign.</li>
+<li>Each other digit has an opposite sign to its adjacent digits.</li>
+</ul>
+<p>Return <em>the sum of all digits with their corresponding sign</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 521
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> (+5) + (-2) + (+1) = 4.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 111
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> (+1) + (-1) + (+1) = 1.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> n = 886996
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> (+8) + (-8) + (+6) + (-9) + (+9) + (-6) = 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 109</code></li>
+</ul>
+<p>.spoilerbutton {display:block; border:dashed; padding: 0px 0px; margin:10px 0px; font-size:150%; font-weight: bold; color:#000000; background-color:cyan; outline:0; } .spoiler {overflow:hidden;} .spoiler &gt; div {-webkit-transition: all 0s ease;-moz-transition: margin 0s ease;-o-transition: all 0s ease;transition: margin 0s ease;} .spoilerbutton[value="Show Message"] + .spoiler &gt; div {margin-top:-500%;} .spoilerbutton[value="Hide Message"] + .spoiler {padding:5px;}</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/alternating-digit-sum/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 521
+    integer :: i, j, k, l, m, n_digits
+    character(len=1) :: digit
+    logical :: negative
+
+    ! Count the number of digits in n
+    n_digits = 0
+    do while (n /= 0)
+        n_digits = n_digits + 1
+        n = n / 10
+    end do
+
+    ! Print the sum of all digits with their corresponding sign
+    write (*, '(A)') 'Sum of all digits with their corresponding sign:'
+    do i = 1, n_digits
+        ! Get the next digit from n
+        digit = char(ichar('0') + mod(n, 10))
+        n = n / 10
+
+        ! Determine the sign of the current digit
+        if (i == 1) then
+            ! Most significant digit is always positive
+            negative = .false.
+        else
+            ! Other digits have opposite signs as their adjacent digits
+            negative = (mod(i, 2) == 0)
+        end if
+
+        ! Print the digit with its sign
+        if (negative) then
+            write (*, '(A)', advance='no') '-'
+        else
+            write (*, '(A)', advance='no') '+'
+        end if
+        write (*, '(A)', advance='no') digit
+    end do
+    write (*, *)
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:13:8:
+
+   13 |         n = n / 10
+      |        1
+Error: Named constant ‘n’ in variable definition context (assignment) at (1)
+temp.f95:21:8:
+
+   21 |         n = n / 10
+      |        1
+Error: Named constant ‘n’ in variable definition context (assignment) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM SUM_DIGITS
+      IMPLICIT NONE
+
+      INTEGER :: n, sum, digit, i
+      CHARACTER(LEN=1) :: sign
+
+      ! Read input
+      READ(*,*) n
+
+      ! Initialize sum and sign
+      sum = 0
+      sign = '+'
+
+      ! Iterate over digits of n
+      DO i = 1, LEN_TRIM(n)
+         ! Get digit and sign
+         digit = INT(n(i:i))
+         IF (i == 1) THEN
+            sign = '+'
+         ELSE
+            sign = '-'
+         END IF
+
+         ! Add digit to sum
+         sum = sum + digit * sign
+      END DO
+
+      ! Output result
+      WRITE(*,*) sum
+
+      END PROGRAM SUM_DIGITS
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:17:23:
+
+   17 |          digit = INT(n(i:i))
+      |                       1
+Error: Syntax error in argument list at (1)
+temp.f95:25:28:
+
+   25 |          sum = sum + digit * sign
+      |                            1
+Error: Operands of binary numeric operator ‘*’ at (1) are INTEGER(4)/CHARACTER(1)
+temp.f95:15:25:
+
+   15 |       DO i = 1, LEN_TRIM(n)
+      |                         1
+Error: ‘string’ argument of ‘len_trim’ intrinsic at (1) must be CHARACTER
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def sum_of_digits(n: int) -&gt; int:
+    total = 0
+    positive = True
+
+    while n &gt; 0:
+        digit = n % 10
+        n //= 10
+
+        if positive:
+            total += digit
+        else:
+            total -= digit
+
+        positive = not positive
+
+    return total
+</code></pre>
+<p>The algorithm is simple and works as follows:
+1. Initialize a variable, <code>sum</code>, to store the sum of the digits with their signs, and a boolean variable, <code>positive</code>, to determine whether the current digit should have a positive or negative sign.
+2. Iterate through the digits of the input number <code>n</code> by repeatedly dividing it by 10 and checking if it's greater than 0.
+   - Note that we process the digits from the least significant digit to the most significant digit.
+3. At each iteration, get the least significant digit (<code>digit</code>) of <code>n</code> by taking the remainder of the division of <code>n</code> by 10.
+4. If <code>positive</code> is true, add the digit to the sum; otherwise, subtract it from the sum.
+5. Toggle the value of <code>positive</code> for the next iteration.
+6. Return the final value of <code>sum</code>.</p>
+<p>The algorithm has a time complexity of O(log(n)) because it processes each digit of the input number <code>n</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int sumOfDigits(int n) {
+    int sum = 0;
+    bool positive = true;
+
+    while (n &gt; 0) {
+        int digit = n % 10;
+        n /= 10;
+
+        if (positive) {
+            sum += digit;
+        } else {
+            sum -= digit;
+        }
+
+        positive = !positive;
+    }
+
+    return sum;
+}
+</code></pre>
+<p>The algorithm is simple and works as follows:
+1. Initialize a variable, <code>sum</code>, to store the sum of the digits with their signs, and a boolean variable, <code>positive</code>, to determine whether the current digit should have a positive or negative sign.
+2. Iterate through the digits of the input number <code>n</code> by repeatedly dividing it by 10 and checking if it's greater than 0.
+   - Note that we process the digits from the least significant digit to the most significant digit.
+3. At each iteration, get the least significant digit (<code>digit</code>) of <code>n</code> by taking the remainder of the division of <code>n</code> by 10.
+4. If <code>positive</code> is true, add the digit to the sum; otherwise, subtract it from the sum.
+5. Toggle the value of <code>positive</code> for the next iteration.
+6. Return the final value of <code>sum</code>.</p>
+<p>The algorithm has a time complexity of O(log(n)) because it processes each digit of the input number <code>n</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

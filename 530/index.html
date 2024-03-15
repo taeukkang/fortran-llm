@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Absolute Difference in BST</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/521/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/541/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of a Binary Search Tree (BST), return <em>the minimum absolute difference between the values of any two different nodes in the tree</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [4,2,6,1,3]
+<strong>Output:</strong> 1</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [1,0,48,null,null,12,49]
+<strong>Output:</strong> 1</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[2, 104]</code>.</li>
+<li><code>0 &lt;= Node.val &lt;= 105</code></li>
+</ul>
+<p><strong>Note:</strong> This question is the same as 783: <a href="https://leetcode.com/problems/minimum-distance-between-bst-nodes/">https://leetcode.com/problems/minimum-distance-between-bst-nodes/</a></p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-absolute-difference-in-bst/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: n = 2
+    real(DP), dimension(n) :: x, y
+    real(DP) :: z
+    type(TreeNode), pointer :: root
+
+    x = [4._DP, 2._DP]
+    y = [6._DP, 1._DP]
+    call solve(x, y, z)
+    write (unit=error_unit, fmt='(ES24.16)') z
+
+    x = [1._DP, 0._DP]
+    y = [48._DP, 12._DP, 49._DP]
+    call solve(x, y, z)
+    write (unit=error_unit, fmt='(ES24.16)') z
+
+contains
+
+    subroutine solve(x, y, z)
+        implicit none
+        real(DP), dimension(:), intent(in) :: x, y
+        real(DP), intent(out) :: z
+        type(TreeNode), pointer :: root
+
+        allocate(root)
+        call build_tree(root, x, y)
+        z = min_abs_diff(root)
+
+        deallocate(root)
+    end subroutine solve
+
+    recursive function min_abs_diff(node) result(res)
+        implicit none
+        class(TreeNode), pointer, intent(in) :: node
+        real(DP) :: res
+
+        if (.not. associated(node)) then
+            res = huge(res)
+        elseif (.not. associated(node%left) .and. .not. associated(node%right)) then
+            res = 0._DP
+        else
+            res = min(min_abs_diff(node%left), min_abs_diff(node%right))
+        end if
+
+        if (associated(node%left) .and. associated(node%right)) then
+            res = min(res, abs(node%val - node%right%val))
+            res = min(res, abs(node%val - node%left%val))
+        end if
+    end function min_abs_diff
+
+    subroutine build_tree(root, x, y)
+        implicit none
+        type(TreeNode), pointer, intent(inout) :: root
+        real(DP), dimension(:), intent(in) :: x, y
+        integer :: i, j
+
+        do i = 1, size(x)
+            allocate(root%left)
+            root%left%val = x(i)
+            do j = 1, size(y)
+                if (y(j) == x(i)) then
+                    root%left%left => null()
+                    root%left%right => null()
+                    exit
+                end if
+            end do
+            call build_tree(root%left, x, y)
+
+            allocate(root%right)
+            root%right%val = x(i)
+            do j = 1, size(y)
+                if (y(j) == x(i)) then
+                    root%right%left => null()
+                    root%right%right => null()
+                    exit
+                end if
+            end do
+            call build_tree(root%right, x, y)
+        end do
+    end subroutine build_tree
+
+end program main
+
+type :: TreeNode
+    real(DP) :: val
+    type(TreeNode), pointer :: left
+    type(TreeNode), pointer :: right
+end type TreeNode</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:19:
+
+    7 |     type(TreeNode), pointer :: root
+      |                   1
+Error: Derived type ‘treenode’ at (1) is being used before it is defined
+temp.f95:25:23:
+
+   25 |         type(TreeNode), pointer :: root
+      |                       1
+Error: Derived type ‘treenode’ at (1) is being used before it is defined
+temp.f95:27:17:
+
+   27 |         allocate(root)
+      |                 1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:31:24:
+
+   31 |         deallocate(root)
+      |                        1
+Error: Allocate-object at (1) is not a nonprocedure pointer nor an allocatable variable
+temp.f95:36:24:
+
+   36 |         class(TreeNode), pointer, intent(in) :: node
+      |                        1
+Error: Derived type ‘treenode’ at (1) is being used before it is defined
+temp.f95:41:39:
+
+   41 |         elseif (.not. associated(node%left) .and. .not. associated(node%right)) then
+      |                                       1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:44:41:
+
+   44 |             res = min(min_abs_diff(node%left), min_abs_diff(node%right))
+      |                                         1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:47:29:
+
+   47 |         if (associated(node%left) .and. associated(node%right)) then
+      |                             1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:48:37:
+
+   48 |             res = min(res, abs(node%val - node%right%val))
+      |                                     1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:49:37:
+
+   49 |             res = min(res, abs(node%val - node%left%val))
+      |                                     1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:50:11:
+
+   50 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:55:23:
+
+   55 |         type(TreeNode), pointer, intent(inout) :: root
+      |                       1
+Error: Derived type ‘treenode’ at (1) is being used before it is defined
+temp.f95:60:27:
+
+   60 |             allocate(root%left)
+      |                           1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:61:18:
+
+   61 |             root%left%val = x(i)
+      |                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:64:26:
+
+   64 |                     root%left%left => null()
+      |                          1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:65:26:
+
+   65 |                     root%left%right => null()
+      |                          1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:69:34:
+
+   69 |             call build_tree(root%left, x, y)
+      |                                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:71:27:
+
+   71 |             allocate(root%right)
+      |                           1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:72:18:
+
+   72 |             root%right%val = x(i)
+      |                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:75:26:
+
+   75 |                     root%right%left => null()
+      |                          1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:76:26:
+
+   76 |                     root%right%right => null()
+      |                          1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:80:34:
+
+   80 |             call build_tree(root%right, x, y)
+      |                                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:1:12:
+
+    1 | program main
+      |            1
+......
+   86 | type :: TreeNode
+      |                2
+Error: Two main PROGRAMs at (1) and (2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>/usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o: in function `_start':
+(.text+0x1b): undefined reference to `main'
+collect2: error: ld returned 1 exit status
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, x: int):
+        self.val = x
+        self.left = None
+        self.right = None
+
+class Solution:
+    def getMinimumDifference(self, root: TreeNode) -&gt; int:
+        result = float('inf')
+        prev = None
+
+        def inorderTraversal(node):
+            nonlocal result, prev
+            if node is None:
+                return
+            inorderTraversal(node.left)
+            if prev is not None:
+                result = min(result, node.val - prev.val)
+            prev = node
+            inorderTraversal(node.right)
+
+        inorderTraversal(root)
+        return result
+</code></pre>
+<p>The algorithm uses an in-order traversal of the binary search tree to find the minimum absolute difference between the values of any two different nodes in the tree. Since it's an in-order traversal, we are going through the nodes in ascending order, which makes it easier to calculate and compare differences. During the traversal, we maintain a <code>prev</code> variable that stores the previously visited node to calculate the difference with the current node. If the difference between the current node and the previous node is smaller than the current result, we update the result accordingly. At the end of the traversal, the result will be the minimum absolute difference between any two different nodes in the tree.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;algorithm&gt;
+#include &lt;climits&gt;
+
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+class Solution {
+public:
+    int getMinimumDifference(TreeNode* root) {
+        int result = INT_MAX, prev = -1;
+        minimumDifference(root, result, prev);
+        return result;
+    }
+
+    void minimumDifference(TreeNode* node, int&amp; result, int&amp; prev) {
+        if (!node) return;
+        minimumDifference(node-&gt;left, result, prev);
+        if (prev != -1) {
+            result = std::min(result, node-&gt;val - prev);
+        }
+        prev = node-&gt;val;
+        minimumDifference(node-&gt;right, result, prev);
+    }
+};
+</code></pre>
+<p>The algorithm uses an in-order traversal of the binary search tree to find the minimum absolute difference between the values of any two different nodes in the tree. Since it's an in-order traversal, we are going through the nodes in ascending order, which makes it easier to calculate and compare differences. During the traversal, we maintain a <code>prev</code> variable that stores the previously visited node to calculate the difference with the current node. If the difference between the current node and the previous node is smaller than the current result, we update the result accordingly. At the end of the traversal, the result will be the minimum absolute difference between any two different nodes in the tree.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

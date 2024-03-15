@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>N-ary Tree Preorder Traversal</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/575/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/590/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of an n-ary tree, return <em>the preorder traversal of its nodes' values</em>.</p>
+<p>Nary-Tree input serialization is represented in their level order traversal. Each group of children is separated by the null value (See examples)</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [1,null,3,2,4,null,5,6]
+<strong>Output:</strong> [1,3,5,6,2,4]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14]
+<strong>Output:</strong> [1,2,3,6,7,11,14,4,8,12,5,9,13,10]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[0, 104]</code>.</li>
+<li><code>0 &lt;= Node.val &lt;= 104</code></li>
+<li>The height of the n-ary tree is less than or equal to <code>1000</code>.</li>
+</ul>
+<p><strong>Follow up:</strong> Recursive solution is trivial, could you do it iteratively?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/n-ary-tree-preorder-traversal/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: unit_in = 10, unit_out = 20
+    character(len=*), parameter :: filename_in = "narytree.txt"
+    character(len=*), parameter :: filename_out = "preordertraversal.txt"
+    type :: node
+        real(kind=DP) :: val
+        class(*), pointer :: left => null(), right => null()
+    end type
+    type(node), pointer :: root => null()
+    integer :: i, j, k, l, m, n
+    logical :: eof
+    real(kind=DP) :: x
+
+    ! Read the input file
+    open(newunit=unit_in, file=filename_in, status='old', action='read', &
+         form='formatted', access='sequential', position='rewind', &
+         iomsg=i, iostat=j)
+    if (j /= 0) then
+        write(unit=error_unit, fmt='(A,I0,A)') 'Error: Can not open file ', j, ' for reading.'
+        stop 1
+    end if
+    read(unit=unit_in, fmt=*, iomsg=k, iostat=l) root
+    close(unit=unit_in)
+    if (k /= '') then
+        write(unit=error_unit, fmt='(A,A)') 'Error: Reading from file ', trim(k), ' failed.'
+        stop 2
+    end if
+    if (l /= 0) then
+        write(unit=error_unit, fmt='(A,I0,A)') 'Error: Reading from file ', l, ' failed.'
+        stop 3
+    end if
+
+    ! Print the preorder traversal of the nodes' values
+    call print_preorder_traversal(root)
+
+contains
+
+    subroutine print_preorder_traversal(root)
+        implicit none
+        class(node), pointer, intent(in) :: root
+        logical :: first
+        first = .true.
+        do while (associated(root))
+            if (.not.first) then
+                write(unit=unit_out, fmt='(A)', advance='no') ','
+            else
+                first = .false.
+            end if
+            write(unit=unit_out, fmt='(ES24.16)') root%val
+            call print_preorder_traversal(root%left)
+            call print_preorder_traversal(root%right)
+        end do
+    end subroutine print_preorder_traversal
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:52:52:
+
+   52 |             call print_preorder_traversal(root%left)
+      |                                                    1
+Error: SUBROUTINE ‘print_preorder_traversal’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:52:52:
+
+   52 |             call print_preorder_traversal(root%left)
+      |                                                    1
+Error: Type mismatch in argument ‘root’ at (1); passed CLASS(*) to CLASS(node)
+temp.f95:53:53:
+
+   53 |             call print_preorder_traversal(root%right)
+      |                                                     1
+Error: SUBROUTINE ‘print_preorder_traversal’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:53:53:
+
+   53 |             call print_preorder_traversal(root%right)
+      |                                                     1
+Error: Type mismatch in argument ‘root’ at (1); passed CLASS(*) to CLASS(node)
+temp.f95:19:15:
+
+   19 |          iomsg=i, iostat=j)
+      |               1
+Error: IOMSG tag at (1) must be of type CHARACTER
+temp.f95:24:53:
+
+   24 |     read(unit=unit_in, fmt=*, iomsg=k, iostat=l) root
+      |                                                     1
+Error: Data transfer element at (1) cannot have POINTER components unless it is processed by a defined input/output procedure
+temp.f95:24:36:
+
+   24 |     read(unit=unit_in, fmt=*, iomsg=k, iostat=l) root
+      |                                    1
+Error: IOMSG tag at (1) must be of type CHARACTER
+temp.f95:26:8:
+
+   26 |     if (k /= '') then
+      |        1
+Error: Operands of comparison operator ‘/=’ at (1) are INTEGER(4)/CHARACTER(0)
+temp.f95:27:78:
+
+   27 |         write(unit=error_unit, fmt='(A,A)') 'Error: Reading from file ', trim(k), ' failed.'
+      |                                                                              1
+Error: ‘string’ argument of ‘trim’ intrinsic at (1) must be CHARACTER
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module nary_tree_preorder_traversal
+implicit none
+private
+public :: nary_tree_preorder_traversal
+
+contains
+
+function preorder_traversal(root) result(preorder)
+    ! Return the preorder traversal of the n-ary tree root
+    !
+    ! Args:
+    !     root: The root of the n-ary tree
+    !
+    ! Returns:
+    !     preorder: The preorder traversal of the n-ary tree
+    !
+    ! Example:
+    !     root = [1,null,3,2,4,null,5,6]
+    !     preorder = [1,3,5,6,2,4]
+    !
+    !     root = [1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14]
+    !     preorder = [1,2,3,6,7,11,14,4,8,12,5,9,13,10]
+    !
+    ! Constraints:
+    !     The number of nodes in the tree is in the range [0, 104].
+    !     0 <= Node.val <= 104
+    !     The height of the n-ary tree is less than or equal to 1000.
+
+    type(nary_node), pointer, intent(in) :: root
+    type(nary_node), pointer :: current
+    integer :: i
+    integer, allocatable :: preorder(:)
+
+    ! Allocate memory for the preorder traversal
+    allocate(preorder(size(root%children)))
+
+    ! Initialize the current node to the root
+    current => root
+
+    ! Iterate through the nodes in the preorder
+    do i = 1, size(root%children)
+        ! Add the current node's value to the preorder
+        preorder(i) = current%val
+
+        ! If the current node has children, add them to the preorder
+        if (associated(current%children)) then
+            preorder(i+1:) = preorder(i+1:) // current%children
+        end if
+
+        ! Move to the next node
+        current => current%next
+    end do
+
+end function preorder_traversal
+
+end module nary_tree_preorder_traversal
+
+module nary_node
+implicit none
+private
+public :: nary_node
+
+type :: nary_node
+    integer :: val
+    type(nary_node), pointer, dimension(:) :: children
+    type(nary_node), pointer :: next
+end type nary_node
+
+end module nary_node
+
+program main
+    use nary_tree_preorder_traversal
+    use nary_node
+    implicit none
+    integer, parameter :: n = 10
+    integer, parameter :: m = 1000
+    integer :: i, j
+    type(nary_node), pointer :: root
+    integer, allocatable :: preorder(:)
+
+    ! Create a root node
+    allocate(root)
+    root%val = 1
+
+    ! Create a list of children for the root node
+    allocate(root%children(n))
+    do i = 1, n
+        allocate(root%children(i)%children(m))
+        do j = 1, m
+            root%children(i)%children(j)%val = i*j
+        end do
+    end do
+
+    ! Print the preorder traversal of the n-ary tree
+    preorder = preorder_traversal(root)
+    do i = 1, size(preorder)
+        write (*,*) preorder(i)
+    end do
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:38:
+
+    4 | public :: nary_tree_preorder_traversal
+      |                                      1
+Error: PUBLIC attribute applied to MODULE nary_tree_preorder_traversal at (1)
+temp.f95:29:20:
+
+   29 |     type(nary_node), pointer, intent(in) :: root
+      |                    1
+Error: Derived type ‘nary_node’ at (1) is being used before it is defined
+temp.f95:30:20:
+
+   30 |     type(nary_node), pointer :: current
+      |                    1
+Error: Derived type ‘nary_node’ at (1) is being used before it is defined
+temp.f95:35:33:
+
+   35 |     allocate(preorder(size(root%children)))
+      |                                 1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:41:25:
+
+   41 |     do i = 1, size(root%children)
+      |                         1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:43:31:
+
+   43 |         preorder(i) = current%val
+      |                               1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:46:32:
+
+   46 |         if (associated(current%children)) then
+      |                                1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:47:56:
+
+   47 |             preorder(i+1:) = preorder(i+1:) // current%children
+      |                                                        1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:48:11:
+
+   48 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:51:28:
+
+   51 |         current => current%next
+      |                            1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:52:7:
+
+   52 |     end do
+      |       1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:8:32:
+
+    8 | function preorder_traversal(root) result(preorder)
+      |                                1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:38:11:
+
+   38 |     current => root
+      |           1
+Error: Symbol ‘current’ at (1) has no IMPLICIT type
+temp.f95:61:19:
+
+   61 | public :: nary_node
+      |                   1
+Error: PUBLIC attribute applied to MODULE nary_node at (1)
+temp.f95:63:17:
+
+   63 | type :: nary_node
+      |                 1
+Error: MODULE attribute of ‘nary_node’ conflicts with PROCEDURE attribute at (1)
+temp.f95:65:20:
+
+   58 | module nary_node
+      |                2    
+......
+   65 |     type(nary_node), pointer, dimension(:) :: children
+      |                    1
+Error: Type name ‘nary_node’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:66:20:
+
+   58 | module nary_node
+      |                2    
+......
+   66 |     type(nary_node), pointer :: next
+      |                    1
+Error: Type name ‘nary_node’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:67:3:
+
+   67 | end type nary_node
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:72:9:
+
+   72 |     use nary_tree_preorder_traversal
+      |         1
+Fatal Error: Cannot open module file ‘nary_tree_preorder_traversal.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class Node:
+    def __init__(self, val=None, children=None):
+        self.val = val
+        self.children = children
+
+def preorder(root):
+    result = []
+    if not root:
+        return result
+    nodes = [root]
+
+    while nodes:
+        current = nodes.pop()
+        result.append(current.val)
+        nodes.extend(reversed(current.children))
+    return result
+</code></pre>
+<p>The problem asks for an iterative solution, although a recursive solution would be trivial. Therefore, this solution uses a stack data structure to perform the preorder traversal of the n-ary tree.</p>
+<ol>
+<li>Initialize an empty list called <code>result</code> to store the traversed node values.</li>
+<li>If <code>root</code> is null, return the empty <code>result</code>.</li>
+<li>Initialize a stack called <code>nodes</code> and push <code>root</code> onto the stack.</li>
+<li>While the stack is not empty, perform the following steps:
+   a. Pop the top node from the stack and store it in a variable called <code>current</code>.
+   b. Add <code>current</code>'s value to the <code>result</code>.
+   c. Reverse iterate through <code>current</code>'s children, pushing them onto the stack.</li>
+<li>Once the stack is empty, return the <code>result</code>.</li>
+</ol>
+<p>The algorithm's time complexity is O(n), where n is the number of nodes in the tree. This is because each node gets pushed onto and popped from the stack exactly once. The space complexity is also O(n), as at worst, the stack will store all the nodes in the tree.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+
+class Node {
+public:
+    int val;
+    std::vector&lt;Node*&gt; children;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+    }
+
+    Node(int _val, std::vector&lt;Node*&gt; _children) {
+        val = _val;
+        children = _children;
+    }
+};
+
+vector&lt;int&gt; preorder(Node* root) {
+    vector&lt;int&gt; result;
+    if (root == nullptr) return result;
+    stack&lt;Node*&gt; nodes;
+    nodes.push(root);
+
+    while (!nodes.empty()) {
+        Node* current = nodes.top();
+        nodes.pop();
+        result.push_back(current-&gt;val);
+        for (int i = current-&gt;children.size() - 1; i &gt;= 0; i--) {
+            nodes.push(current-&gt;children[i]);
+        }
+    }
+    return result;
+}
+</code></pre>
+<p>The problem asks for an iterative solution, although a recursive solution would be trivial. Therefore, this solution uses a stack data structure to perform the preorder traversal of the n-ary tree.</p>
+<ol>
+<li>Initialize an empty list called <code>result</code> to store the traversed node values.</li>
+<li>If <code>root</code> is null, return the empty <code>result</code>.</li>
+<li>Initialize a stack called <code>nodes</code> and push <code>root</code> onto the stack.</li>
+<li>While the stack is not empty, perform the following steps:
+   a. Pop the top node from the stack and store it in a variable called <code>current</code>.
+   b. Add <code>current</code>'s value to the <code>result</code>.
+   c. Reverse iterate through <code>current</code>'s children, pushing them onto the stack.</li>
+<li>Once the stack is empty, return the <code>result</code>.</li>
+</ol>
+<p>The algorithm's time complexity is O(n), where n is the number of nodes in the tree. This is because each node gets pushed onto and popped from the stack exactly once. The space complexity is also O(n), as at worst, the stack will store all the nodes in the tree.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Intersection of Two Arrays</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/346/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/350/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two integer arrays <code>nums1</code> and <code>nums2</code>, return <em>an array of their intersection</em>. Each element in the result must be <strong>unique</strong> and you may return the result in <strong>any order</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums1 = [1,2,2,1], nums2 = [2,2]
+<strong>Output:</strong> [2]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+<strong>Output:</strong> [9,4]
+<strong>Explanation:</strong> [4,9] is also accepted.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums1.length, nums2.length &lt;= 1000</code></li>
+<li><code>0 &lt;= nums1[i], nums2[i] &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/intersection-of-two-arrays/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, dimension(n) :: nums1 = [1, 2, 2, 1]
+    integer, dimension(n) :: nums2 = [2, 2]
+    integer, dimension(:), allocatable :: intersection
+
+    intersection = get_intersection(nums1, nums2)
+    print '(A,*(I0,1X))', 'Intersection: ', intersection
+
+contains
+
+    function get_intersection(nums1, nums2) result(intersection)
+        implicit none
+        integer, intent(in) :: nums1(:), nums2(:)
+        integer, dimension(:), allocatable :: intersection
+        logical, dimension(size(nums1)) :: mask
+        integer :: i, j
+
+        intersection = []
+        mask = .false.
+
+        do i = 1, size(nums1)
+            if (any(nums1(i) == nums2)) then
+                mask(i) = .true.
+            end if
+        end do
+
+        do i = 1, size(nums1)
+            if (mask(i)) then
+                intersection = [intersection, nums1(i)]
+            end if
+        end do
+
+        intersection = unique(intersection)
+
+    end function get_intersection
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:34:
+
+    6 |     integer, dimension(n) :: nums2 = [2, 2]
+      |                                  1
+Error: Different shape for array assignment at (1) on dimension 1 (4 and 2)
+temp.f95:21:25:
+
+   21 |         intersection = []
+      |                         1
+Error: Empty array constructor at (1) is not allowed
+temp.f95:9:48:
+
+    9 |     intersection = get_intersection(nums1, nums2)
+      |                                                1
+Error: Symbol ‘nums2’ at (1) has no IMPLICIT type; did you mean ‘nums1’?
+temp.f95:36:23:
+
+   36 |         intersection = unique(intersection)
+      |                       1
+Error: Function ‘unique’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module intersection
+  implicit none
+contains
+  function intersection_array(nums1, nums2) result(intersection)
+    integer, intent(in) :: nums1(:), nums2(:)
+    integer :: intersection(size(nums1))
+    integer :: i, j
+
+    intersection = 0
+    do i = 1, size(nums1)
+      do j = 1, size(nums2)
+        if (nums1(i) == nums2(j)) then
+          intersection(i) = nums1(i)
+          exit
+        end if
+      end do
+    end do
+  end function intersection_array
+end module
+
+program main
+  use intersection
+  implicit none
+  integer, parameter :: nums1 = [1, 2, 2, 1], nums2 = [2, 2]
+  integer :: intersection(size(nums1))
+
+  intersection = intersection_array(nums1, nums2)
+  write (*, '(A, I0)') 'Intersection: ', intersection
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:24:29:
+
+   24 |   integer, parameter :: nums1 = [1, 2, 2, 1], nums2 = [2, 2]
+      |                             1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:25:31:
+
+   25 |   integer :: intersection(size(nums1))
+      |                               1
+Error: Symbol ‘nums1’ is used before it is typed at (1)
+temp.f95:27:15:
+
+   27 |   intersection = intersection_array(nums1, nums2)
+      |               1
+Error: ‘intersection’ at (1) is not a variable
+temp.f95:28:53:
+
+   28 |   write (*, '(A, I0)') 'Intersection: ', intersection
+      |                                                     1
+Error: Symbol at (1) is not appropriate for an expression
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def intersection(nums1, nums2):
+    set1 = set(nums1)
+    result = set1.intersection(nums2)
+    return list(result)
+</code></pre>
+<p>The function first creates a set <code>set1</code> from the first array <code>nums1</code>, which eliminates duplicate elements in it. Then, the function iterates through the second array <code>nums2</code>. For each element in <code>nums2</code>, it checks whether it exists in the <code>set1</code>. If so, this element is added to the result set <code>resultSet</code>. Finally, the result set is converted to an array and returned.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;set&gt;
+
+std::vector&lt;int&gt; intersection(std::vector&lt;int&gt;&amp; nums1, std::vector&lt;int&gt;&amp; nums2) {
+    std::set&lt;int&gt; set1(nums1.begin(), nums1.end());
+    std::set&lt;int&gt; result;
+    for (int num : nums2) {
+        if (set1.count(num)) {
+            result.insert(num);
+        }
+    }
+    return std::vector&lt;int&gt;(result.begin(), result.end());
+}
+</code></pre>
+<p>The function first creates a set <code>set1</code> from the first array <code>nums1</code>, which eliminates duplicate elements in it. Then, the function iterates through the second array <code>nums2</code>. For each element in <code>nums2</code>, it checks whether it exists in the <code>set1</code>. If so, this element is added to the result set <code>resultSet</code>. Finally, the result set is converted to an array and returned.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

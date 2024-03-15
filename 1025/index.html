@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Divisor Game</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1022/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1030/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Alice and Bob take turns playing a game, with Alice starting first.</p>
+<p>Initially, there is a number <code>n</code> on the chalkboard. On each player's turn, that player makes a move consisting of:</p>
+<ul>
+<li>Choosing any <code>x</code> with <code>0 &lt; x &lt; n</code> and <code>n % x == 0</code>.</li>
+<li>Replacing the number <code>n</code> on the chalkboard with <code>n - x</code>.</li>
+</ul>
+<p>Also, if a player cannot make a move, they lose the game.</p>
+<p>Return <code>true</code> <em>if and only if Alice wins the game, assuming both players play optimally</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 2
+<strong>Output:</strong> true
+<strong>Explanation:</strong> Alice chooses 1, and Bob has no more moves.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 3
+<strong>Output:</strong> false
+<strong>Explanation:</strong> Alice chooses 1, Bob chooses 1, and Alice has no more moves.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/divisor-game/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n, x
+    logical :: alice_wins
+
+    ! Example 1
+    n = 2
+    alice_wins = solve(n)
+    print '(L1)', alice_wins
+
+    ! Example 2
+    n = 3
+    alice_wins = solve(n)
+    print '(L1)', alice_wins
+
+contains
+
+    function solve(n) result(alice_wins)
+        implicit none
+        integer, intent(in) :: n
+        logical :: alice_wins
+
+        integer :: i
+        logical :: can_make_move
+
+        do while (n > 0)
+            can_make_move = .false.
+            do i = 2, n
+                if (mod(n,i) == 0) then
+                    can_make_move = .true.
+                    exit
+                end if
+            end do
+
+            if (.not. can_make_move) then
+                alice_wins = .false.
+                return
+            end if
+
+            call make_move(n, i)
+        end do
+
+        alice_wins = .true.
+
+    contains
+
+        subroutine make_move(n, x)
+            implicit none
+            integer, intent(inout) :: n
+            integer, intent(in) :: x
+
+            n = n - x
+        end subroutine make_move
+
+    end function solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:46:12:
+
+   46 |     contains
+      |            1
+Error: CONTAINS statement at (1) is already in a contained program unit
+temp.f95:49:25:
+
+   49 |             implicit none
+      |                         1
+Error: Duplicate IMPLICIT NONE statement at (1)
+temp.f95:50:39:
+
+   50 |             integer, intent(inout) :: n
+      |                                       1
+Error: Symbol ‘n’ at (1) already has basic type of INTEGER
+temp.f95:51:36:
+
+   51 |             integer, intent(in) :: x
+      |                                    1
+Error: Unexpected data declaration statement at (1)
+temp.f95:54:11:
+
+   54 |         end subroutine make_move
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:53:12:
+
+   53 |             n = n - x
+      |            1
+Error: Dummy argument ‘n’ with INTENT(IN) in variable definition context (assignment) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!include "stdio.h"
+
+integer :: n, x, y
+
+! Read the input
+read(*,*) n
+
+! Initialize the chalkboard
+x = 1
+y = n
+
+! Play the game
+do while (x <= y)
+    ! Check if x is a factor of n
+    if (mod(n, x) == 0) then
+        ! Replace the number on the chalkboard with n - x
+        n = n - x
+        ! Print the current state of the chalkboard
+        write(*,*) "Alice: ", x, ", Bob: ", y
+    end if
+    ! Update x and y
+    x = x + 1
+    y = y - 1
+end do
+
+! Check if Alice wins
+if (n == 0) then
+    write(*,*) "Alice wins!"
+else
+    write(*,*) "Bob wins!"
+end if
+
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 6 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7d978fcf4960 in ???
+#1  0x7d978fcf54d9 in ???
+#2  0x7d978ff4917b in ???
+#3  0x7d978ff42684 in ???
+#4  0x7d978ff432aa in ???
+#5  0x5a2b1fa04219 in MAIN__
+#6  0x5a2b1fa0444a in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def mincostTickets(days, costs):
+  travel_days = set(days)
+  dp = [0] * 366
+
+  for i in range(1, 366):
+    if i not in travel_days:
+      dp[i] = dp[i - 1]
+    else:
+      dp[i] = min(dp[i - 1] + costs[0],
+                  dp[max(0, i - 7)] + costs[1],
+                  dp[max(0, i - 30)] + costs[2])
+
+  return dp[365]
+</code></pre>
+<ol>
+<li>Create a set of travel days.</li>
+<li>Initialize a dynamic programming (dp) array of length 366, where dp[i] will represent the minimum cost to travel on the given days up to the i-th day of the year.</li>
+<li>Iterate through the days of the year (1 to 365).
+   a. If the current day is not a travel day, then there's no need to buy a pass for this day, therefore the minimum cost is the same as the previous day.
+   b. If the current day is a travel day, calculate the minimum cost to travel by considering the three options: buying a 1-day pass, buying a 7-day pass, or buying a 30-day pass.</li>
+<li>Return the minimum cost to travel on all given days (dp[365]).</li>
+</ol>
+<p>This algorithm leverages dynamic programming to calculate the minimum cost of traveling on the given days. By iterating through each day and updating the dp array based on previous results, the final minimum cost is obtained efficiently.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;unordered_set&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int mincostTickets(vector&lt;int&gt;&amp; days, vector&lt;int&gt;&amp; costs) {
+  unordered_set&lt;int&gt; travel_days(days.begin(), days.end());
+  vector&lt;int&gt; dp(366, 0);
+
+  for (int i = 1; i &lt;= 365; ++i) {
+    if (travel_days.count(i) == 0) {
+      dp[i] = dp[i - 1];
+    } else {
+      dp[i] = min({dp[i - 1] + costs[0],
+                   dp[max(0, i - 7)] + costs[1],
+                   dp[max(0, i - 30)] + costs[2]});
+    }
+  }
+
+  return dp[365];
+}
+</code></pre>
+<ol>
+<li>Create a set of travel days.</li>
+<li>Initialize a dynamic programming (dp) array of length 366, where dp[i] will represent the minimum cost to travel on the given days up to the i-th day of the year.</li>
+<li>Iterate through the days of the year (1 to 365).
+   a. If the current day is not a travel day, then there's no need to buy a pass for this day, therefore the minimum cost is the same as the previous day.
+   b. If the current day is a travel day, calculate the minimum cost to travel by considering the three options: buying a 1-day pass, buying a 7-day pass, or buying a 30-day pass.</li>
+<li>Return the minimum cost to travel on all given days (dp[365]).</li>
+</ol>
+<p>This algorithm leverages dynamic programming to calculate the minimum cost of traveling on the given days. By iterating through each day and updating the dp array based on previous results, the final minimum cost is obtained efficiently.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

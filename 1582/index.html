@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Special Positions in a Binary Matrix</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1576/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1588/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an <code>m x n</code> binary matrix <code>mat</code>, return <em>the number of special positions in</em> <code>mat</code><em>.</em></p>
+<p>A position <code>(i, j)</code> is called <strong>special</strong> if <code>mat[i][j] == 1</code> and all other elements in row <code>i</code> and column <code>j</code> are <code>0</code> (rows and columns are <strong>0-indexed</strong>).</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> mat = [[1,0,0],[0,0,1],[1,0,0]]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> (1, 2) is a special position because mat[1][2] == 1 and all other elements in row 1 and column 2 are 0.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> mat = [[1,0,0],[0,1,0],[0,0,1]]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> (0, 0), (1, 1) and (2, 2) are special positions.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>m == mat.length</code></li>
+<li><code>n == mat[i].length</code></li>
+<li><code>1 &lt;= m, n &lt;= 100</code></li>
+<li><code>mat[i][j]</code> is either <code>0</code> or <code>1</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/special-positions-in-a-binary-matrix/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: m = 3, n = 3
+    integer :: i, j
+    logical :: is_special(m, n)
+    integer :: num_special
+
+    ! Example 1
+    is_special(:, :) = .false.
+    is_special(1, 2) = .true.
+    write(*, '(I0)') count_special(is_special)
+
+    ! Example 2
+    is_special(:, :) = .false.
+    is_special(1, 1) = .true.
+    is_special(2, 2) = .true.
+    write(*, '(I0)') count_special(is_special)
+
+contains
+
+    function count_special(mat) result(num_special)
+        implicit none
+        logical, intent(in) :: mat(m, n)
+        integer :: i, j, num_special
+
+        do i = 1, m
+            do j = 1, n
+                if (mat(i, j)) then
+                    if (all(mat(i, :) == 0) .and. all(mat(:, j) == 0)) then
+                        num_special = num_special + 1
+                    end if
+                end if
+            end do
+        end do
+    end function count_special
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:30:54:
+
+   30 |                     if (all(mat(i, :) == 0) .and. all(mat(:, j) == 0)) then
+      |                                                      1
+Error: Operands of comparison operator ‘==’ at (1) are LOGICAL(4)/INTEGER(4)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program specialPositions
+      implicit none
+
+      integer, parameter :: m = 3, n = 3
+      integer :: mat(m, n)
+      integer :: i, j
+      integer :: specialPositions
+
+      ! Read the matrix from the input
+      read(*,*) mat
+
+      ! Initialize the number of special positions to 0
+      specialPositions = 0
+
+      ! Loop through each row and column
+      do i = 1, m
+         do j = 1, n
+            ! If the current element is 1 and all other elements in the row and column are 0, then it is a special position
+            if (mat(i, j) == 1 .and. all(mat(i, :) == 0) .and. all(mat(:, j) == 0)) then
+               specialPositions = specialPositions + 1
+            end if
+         end do
+      end do
+
+      ! Print the number of special positions
+      write(*,*) specialPositions
+
+      end program specialPositions
+
+This program uses a 2D array `mat` to store the input matrix. It then loops through each row and column, and checks if the current element is 1 and all other elements in the row and column are 0. If it is, then it is a special position, and the number of special positions is incremented. Finally, the number of special positions is printed to the console.
+
+Note that this program assumes that the input matrix is square, and that the rows and columns are 0-indexed. If the input matrix is not square, or if the rows and columns are 1-indexed, then the program will need to be modified accordingly.
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:33:
+
+    7 |       integer :: specialPositions
+      |                                 1
+Error: Symbol ‘specialpositions’ at (1) cannot have a type
+temp.f95:13:23:
+
+   13 |       specialPositions = 0
+      |                       1
+Error: ‘specialpositions’ at (1) is not a variable
+temp.f95:20:32:
+
+   20 |                specialPositions = specialPositions + 1
+      |                                1
+Error: ‘specialpositions’ at (1) is not a variable
+temp.f95:26:33:
+
+   26 |       write(*,*) specialPositions
+      |                                 1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:30:132:
+
+   30 | This program uses a 2D array `mat` to store the input matrix. It then loops through each row and column, and checks if the current element is 1 and all other elements in the row and column are 0. If it is, then it is a special position, and the number of special positions is incremented. Finally, the number of special positions is printed to the console.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:32:132:
+
+   32 | Note that this program assumes that the input matrix is square, and that the rows and columns are 0-indexed. If the input matrix is not square, or if the rows and columns are 1-indexed, then the program will need to be modified accordingly.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class BrowserHistory:
+
+    def __init__(self, homepage: str):
+        self.history = [homepage]
+        self.current_index = 0
+
+    def visit(self, url: str):
+        self.history = self.history[:self.current_index + 1]
+        self.history.append(url)
+        self.current_index += 1
+
+    def back(self, steps: int) -&gt; str:
+        self.current_index -= min(steps, self.current_index)
+        return self.history[self.current_index]
+
+    def forward(self, steps:int) -&gt; str:
+        self.current_index += min(steps, len(self.history) - 1 - self.current_index)
+        return self.history[self.current_index]
+</code></pre>
+<pre><code>We have a BrowserHistory class which will keep track of visited urls as well as the current index of the history.
+</code></pre>
+<p>Whenever the object of the class is instantiated, we pass the homepage and store it in the history (array, list or vector) at 0 index.</p>
+<p>For "visit(url)" function:
+- We will first resize the history (if needed) so that all the urls after the current index are removed, as whenever we visit a new URL, the forward history should be cleared. After that, we will append the new url and increment the current index.</p>
+<p>For the "back(steps)" function:
+- We move the current index by the minimum of <code>steps</code> and the current index which ensures that the current index never goes below 0. And then, the function returns the URL at the updated index.</p>
+<p>For the "forward(steps)" function:
+- We move the current index by the minimum of <code>steps</code> and the difference between the size of history and current index-1 (to ensure it doesn't exceed the index range). And then, return the URL at the updated index.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">class BrowserHistory {
+public:
+    int currentIndex;
+    vector&lt;string&gt; history;
+
+    BrowserHistory(string homepage) {
+        history.push_back(homepage);
+        currentIndex = 0;
+    }
+
+    void visit(string url) {
+        history.resize(currentIndex + 1);
+        history.push_back(url);
+        currentIndex++;
+    }
+
+    string back(int steps) {
+        currentIndex -= min(steps, currentIndex);
+        return history[currentIndex];
+    }
+
+    string forward(int steps) {
+        currentIndex += min(steps, (int)(history.size() - 1 - currentIndex));
+        return history[currentIndex];
+    }
+};
+</code></pre>
+<pre><code>We have a BrowserHistory class which will keep track of visited urls as well as the current index of the history.
+</code></pre>
+<p>Whenever the object of the class is instantiated, we pass the homepage and store it in the history (array, list or vector) at 0 index.</p>
+<p>For "visit(url)" function:
+- We will first resize the history (if needed) so that all the urls after the current index are removed, as whenever we visit a new URL, the forward history should be cleared. After that, we will append the new url and increment the current index.</p>
+<p>For the "back(steps)" function:
+- We move the current index by the minimum of <code>steps</code> and the current index which ensures that the current index never goes below 0. And then, the function returns the URL at the updated index.</p>
+<p>For the "forward(steps)" function:
+- We move the current index by the minimum of <code>steps</code> and the difference between the size of history and current index-1 (to ensure it doesn't exceed the index range). And then, return the URL at the updated index.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

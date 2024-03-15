@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Linked List Cycle</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/136/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/144/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given <code>head</code>, the head of a linked list, determine if the linked list has a cycle in it.</p>
+<p>There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the <code>next</code> pointer. Internally, <code>pos</code> is used to denote the index of the node that tail's <code>next</code> pointer is connected to. <strong>Note that <code>pos</code> is not passed as a parameter</strong>.</p>
+<p>Return <code>true</code> <em>if there is a cycle in the linked list</em>. Otherwise, return <code>false</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> head = [3,2,0,-4], pos = 1
+<strong>Output:</strong> true
+<strong>Explanation:</strong> There is a cycle in the linked list, where the tail connects to the 1st node (0-indexed).</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> head = [1,2], pos = 0
+<strong>Output:</strong> true
+<strong>Explanation:</strong> There is a cycle in the linked list, where the tail connects to the 0th node.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> head = [1], pos = -1
+<strong>Output:</strong> false
+<strong>Explanation:</strong> There is no cycle in the linked list.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of the nodes in the list is in the range <code>[0, 104]</code>.</li>
+<li><code>-105 &lt;= Node.val &lt;= 105</code></li>
+<li><code>pos</code> is <code>-1</code> or a <strong>valid index</strong> in the linked-list.</li>
+</ul>
+<p><strong>Follow up:</strong> Can you solve it using <code>O(1)</code> (i.e. constant) memory?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/linked-list-cycle/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    type :: Node
+        integer :: val
+        type(Node), pointer :: next => null()
+    end type
+
+    type(Node), target :: head
+    type(Node), pointer :: current
+    logical :: has_cycle
+
+    ! Example 1
+    allocate(current, source=Node(3))
+    allocate(current%next, source=Node(2))
+    allocate(current%next%next, source=Node(0))
+    allocate(current%next%next%next, source=Node(-4))
+    has_cycle = hasCycle(head)
+    print '(L1)', has_cycle
+
+    ! Example 2
+    deallocate(current)
+    allocate(current, source=Node(1))
+    allocate(current%next, source=Node(2))
+    has_cycle = hasCycle(head)
+    print '(L1)', has_cycle
+
+    ! Example 3
+    deallocate(current)
+    allocate(current, source=Node(1))
+    has_cycle = hasCycle(head)
+    print '(L1)', has_cycle
+
+contains
+
+    function hasCycle(head) result(has_cycle)
+        type(Node), target :: head
+        type(Node), pointer :: current
+        integer :: pos
+
+        current => head
+        pos = 1
+
+        do while (associated(current%next))
+            if (pos == current%next%val) then
+                has_cycle = .true.
+                exit
+            end if
+            current => current%next
+            pos = current%val
+        end do
+
+        has_cycle = .false.
+    end function
+
+end program</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:36:45:
+
+   36 |     function hasCycle(head) result(has_cycle)
+      |                                             1
+Error: Function result ‘has_cycle’ at (1) has no IMPLICIT type
+temp.f95:18:16:
+
+   18 |     has_cycle = hasCycle(head)
+      |                1
+Error: Cannot convert UNKNOWN to LOGICAL(4) at (1)
+temp.f95:25:16:
+
+   25 |     has_cycle = hasCycle(head)
+      |                1
+Error: Cannot convert UNKNOWN to LOGICAL(4) at (1)
+temp.f95:31:16:
+
+   31 |     has_cycle = hasCycle(head)
+      |                1
+Error: Cannot convert UNKNOWN to LOGICAL(4) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module linked_list_cycle
+
+implicit none
+
+contains
+
+function has_cycle(head) result(cycle)
+
+! Given the head of a linked list, determine if the linked list has a cycle in it.
+! Return true if there is a cycle, false otherwise.
+
+! head: the head of the linked list
+! cycle: true if there is a cycle, false otherwise
+
+type(node), pointer :: head
+logical :: cycle
+
+! Initialize the cycle flag to false
+cycle = .false.
+
+! If the list is empty, there is no cycle
+if (associated(head)) then
+
+! If the list has only one node, there is no cycle
+if (associated(head%next)) then
+
+! If the list has more than one node, check for a cycle
+cycle = has_cycle_helper(head)
+
+end if
+
+end function has_cycle
+
+recursive function has_cycle_helper(node) result(cycle)
+
+! Given a node in a linked list, determine if the linked list has a cycle in it.
+! Return true if there is a cycle, false otherwise.
+
+! node: the node to check for a cycle
+! cycle: true if there is a cycle, false otherwise
+
+type(node), pointer :: node
+logical :: cycle
+
+! If the node is null, there is no cycle
+if (.not. associated(node)) then
+cycle = .false.
+return
+end if
+
+! If the node's next pointer is null, there is no cycle
+if (.not. associated(node%next)) then
+cycle = .false.
+return
+end if
+
+! If the node's next pointer points back to the node, there is a cycle
+if (node%next == node) then
+cycle = .true.
+return
+end if
+
+! Recursively check the next node in the list
+cycle = has_cycle_helper(node%next)
+
+end function has_cycle_helper
+
+end module linked_list_cycle
+
+program test
+
+use linked_list_cycle
+implicit none
+
+! Test case 1:
+type(node), pointer :: head
+integer :: i
+
+! Create a linked list with a cycle
+do i = 1, 4
+head = new_node(i)
+end do
+head%next%next%next = head
+
+! Check if the linked list has a cycle
+if (has_cycle(head)) then
+write (*,*) "Linked list has a cycle"
+else
+write (*,*) "Linked list does not have a cycle"
+end if
+
+! Test case 2:
+head = new_node(1)
+head%next = new_node(2)
+
+! Check if the linked list has a cycle
+if (has_cycle(head)) then
+write (*,*) "Linked list has a cycle"
+else
+write (*,*) "Linked list does not have a cycle"
+end if
+
+! Test case 3:
+head = new_node(1)
+
+! Check if the linked list has a cycle
+if (has_cycle(head)) then
+write (*,*) "Linked list has a cycle"
+else
+write (*,*) "Linked list does not have a cycle"
+end if
+
+contains
+
+type(node), pointer function new_node(value)
+
+! Create a new node with the given value
+
+! value: the value to store in the node
+
+integer, intent(in) :: value
+type(node), pointer :: new_node
+
+allocate(new_node)
+new_node%value = value
+new_node%next => null()
+
+end function new_node
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:11:
+
+   15 | type(node), pointer :: head
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:25:21:
+
+   25 | if (associated(head%next)) then
+      |                     1
+Error: Symbol ‘head’ at (1) has no IMPLICIT type
+temp.f95:42:11:
+
+   42 | type(node), pointer :: node
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:52:27:
+
+   52 | if (.not. associated(node%next)) then
+      |                           1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:55:3:
+
+   55 | end if
+      |   1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:58:10:
+
+   58 | if (node%next == node) then
+      |          1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:61:3:
+
+   61 | end if
+      |   1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:64:6:
+
+   64 | cycle = has_cycle_helper(node%next)
+      |      1
+Error: Syntax error in CYCLE statement at (1)
+temp.f95:7:23:
+
+    7 | function has_cycle(head) result(cycle)
+      |                       1
+Error: Symbol ‘head’ at (1) has no IMPLICIT type
+temp.f95:34:40:
+
+   34 | recursive function has_cycle_helper(node) result(cycle)
+      |                                        1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:72:5:
+
+   72 | use linked_list_cycle
+      |     1
+Fatal Error: Cannot open module file ‘linked_list_cycle.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def hasCycle(head):
+    slow = fast = head
+    while fast is not None and fast.next is not None:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            return True
+    return False
+</code></pre>
+<p>The algorithm used is Floyd's cycle-finding algorithm, also known as the "tortoise and the hare" algorithm. There are two pointers, one slow (tortoise) and another fast (hare). The slow pointer moves one step at a time, and the fast pointer moves two steps. </p>
+<p>Initially, both pointers are set to the head of the linked list. The pointers are moved forward with their respective speeds until either the fast pointer reaches the end of the linked list or both pointers meet at the same node. </p>
+<p>If the fast pointer reaches the end, it means that there is no cycle and the function returns false. If the pointers meet at some point in the linked list, there is a cycle and the function returns true.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool hasCycle(ListNode *head) {
+    ListNode *slow = head, *fast = head;
+    while (fast != nullptr &amp;&amp; fast-&gt;next != nullptr) {
+        slow = slow-&gt;next;
+        fast = fast-&gt;next-&gt;next;
+        if (slow == fast) {
+            return true;
+        }
+    }
+    return false;
+}
+</code></pre>
+<p>The algorithm used is Floyd's cycle-finding algorithm, also known as the "tortoise and the hare" algorithm. There are two pointers, one slow (tortoise) and another fast (hare). The slow pointer moves one step at a time, and the fast pointer moves two steps. </p>
+<p>Initially, both pointers are set to the head of the linked list. The pointers are moved forward with their respective speeds until either the fast pointer reaches the end of the linked list or both pointers meet at the same node. </p>
+<p>If the fast pointer reaches the end, it means that there is no cycle and the function returns false. If the pointers meet at some point in the linked list, there is a cycle and the function returns true.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Check if String Is Decomposable Into Value-Equal Substrings</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1929/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1935/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A <strong>value-equal</strong> string is a string where <strong>all</strong> characters are the same.</p>
+<ul>
+<li>For example, <code>"1111 "</code> and <code>"33 "</code> are value-equal strings.</li>
+<li>In contrast, <code>"123 "</code> is not a value-equal string.</li>
+</ul>
+<p>Given a digit string <code>s</code>, decompose the string into some number of <strong>consecutive value-equal</strong> substrings where <strong>exactly one</strong> substring has a <strong>length of</strong> <code>2</code> and the remaining substrings have a <strong>length of</strong> <code>3</code>.</p>
+<p>Return <code>true</code> <em>if you can decompose</em> <code>s</code> <em>according to the above rules. Otherwise, return</em> <code>false</code>.</p>
+<p>A <strong>substring</strong> is a contiguous sequence of characters in a string.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "000111000 "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> s cannot be decomposed according to the rules because [ "000 ",  "111 ",  "000 "] does not have a substring of length 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "00011111222 "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> s can be decomposed into [ "000 ",  "111 ",  "11 ",  "222 "].</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "011100022233 "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> s cannot be decomposed according to the rules because of the first '0'.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 1000</code></li>
+<li><code>s</code> consists of only digits <code>'0'</code> through <code>'9'</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/check-if-string-is-decomposable-into-value-equal-substrings/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=100) :: s
+    logical :: result
+
+    ! Example 1
+    s = "000111000 "
+    write(*,*) s, "is", (result == .true.), "a value-equal string"
+
+    ! Example 2
+    s = "00011111222 "
+    write(*,*) s, "is", (result == .true.), "a value-equal string"
+
+    ! Example 3
+    s = "011100022233 "
+    write(*,*) s, "is", (result == .true.), "a value-equal string"
+
+contains
+
+    function value_equal(str) result(res)
+        implicit none
+        character(len=*), intent(in) :: str
+        integer :: i, j
+        logical :: res
+
+        res = .true.
+        do i = 1, len(str)-1
+            if (str(i:i+1) /= str(1:2)) then
+                res = .false.
+                exit
+            end if
+        end do
+    end function value_equal
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:25:
+
+    9 |     write(*,*) s, "is", (result == .true.), "a value-equal string"
+      |                         1
+Error: Logicals at (1) must be compared with .eqv. instead of ==
+temp.f95:13:25:
+
+   13 |     write(*,*) s, "is", (result == .true.), "a value-equal string"
+      |                         1
+Error: Logicals at (1) must be compared with .eqv. instead of ==
+temp.f95:17:25:
+
+   17 |     write(*,*) s, "is", (result == .true.), "a value-equal string"
+      |                         1
+Error: Logicals at (1) must be compared with .eqv. instead of ==
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+character(len=1000) :: s
+logical :: flag
+
+! Initialize variables
+i = 0
+j = 0
+k = 0
+l = 0
+m = 0
+n = 0
+o = 0
+p = 0
+q = 0
+r = 0
+s = 0
+t = 0
+u = 0
+v = 0
+w = 0
+x = 0
+y = 0
+z = 0
+flag = .false.
+
+! Read input string
+read(*,*) s
+
+! Check if input string is value-equal
+do i = 1, len(s) - 1
+    if (s(i:i+1) /= s(i+1:i+2)) then
+        flag = .false.
+        exit
+    end if
+end do
+
+! Check if input string has a length of 2
+if (len(s) == 2) then
+    flag = .true.
+else
+    ! Check if input string has a length of 3
+    if (len(s) == 3) then
+        ! Check if input string is value-equal
+        if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3)) then
+            flag = .true.
+        end if
+    else
+        ! Check if input string has a length of 4
+        if (len(s) == 4) then
+            ! Check if input string is value-equal
+            if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4)) then
+                flag = .true.
+            end if
+        else
+            ! Check if input string has a length of 5
+            if (len(s) == 5) then
+                ! Check if input string is value-equal
+                if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4) .and. s(4:4) == s(5:5)) then
+                    flag = .true.
+                end if
+            else
+                ! Check if input string has a length of 6
+                if (len(s) == 6) then
+                    ! Check if input string is value-equal
+                    if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4) .and. s(4:4) == s(5:5) .and. s(5:5) == s(6:6)) then
+                        flag = .true.
+                    end if
+                else
+                    ! Check if input string has a length of 7
+                    if (len(s) == 7) then
+                        ! Check if input string is value-equal
+                        if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4) .and. s(4:4) == s(5:5) .and. s(5:5) == s(6:6) .and. s(6:6) == s(7:7)) then
+                            flag = .true.
+                        end if
+                    else
+                        ! Check if input string has a length of 8
+                        if (len(s) == 8) then
+                            ! Check if input string is value-equal
+                            if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4) .and. s(4:4) == s(5:5) .and. s(5:5) == s(6:6) .and. s(6:6) == s(7:7) .and. s(7:7) == s(8:
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:3:24:
+
+    3 | character(len=1000) :: s
+      |                        1
+Error: Symbol ‘s’ at (1) already has basic type of INTEGER
+temp.f95:32:10:
+
+   32 |     if (s(i:i+1) /= s(i+1:i+2)) then
+      |          1
+Error: Syntax error in IF-expression at (1)
+temp.f95:35:7:
+
+   35 |     end if
+      |       1
+Error: Expecting END DO statement at (1)
+temp.f95:45:14:
+
+   45 |         if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3)) then
+      |              1
+Error: Syntax error in IF-expression at (1)
+temp.f95:41:4:
+
+   41 | else
+      |    1
+......
+   48 |     else
+      |        2
+Error: Duplicate ELSE statements at (1) and (2)
+temp.f95:52:18:
+
+   52 |             if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4)) then
+      |                  1
+Error: Syntax error in IF-expression at (1)
+temp.f95:41:4:
+
+   41 | else
+      |    1
+......
+   55 |         else
+      |            2
+Error: Duplicate ELSE statements at (1) and (2)
+temp.f95:59:22:
+
+   59 |                 if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4) .and. s(4:4) == s(5:5)) then
+      |                      1
+Error: Syntax error in IF-expression at (1)
+temp.f95:41:4:
+
+   41 | else
+      |    1
+......
+   62 |             else
+      |                2
+Error: Duplicate ELSE statements at (1) and (2)
+temp.f95:66:132:
+
+   66 |                     if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4) .and. s(4:4) == s(5:5) .and. s(5:5) == s(6:6)) then
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:66:132:
+
+   66 |                     if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4) .and. s(4:4) == s(5:5) .and. s(5:5) == s(6:6)) then
+      |                                                                                                                                    1
+Error: Missing ‘)’ in statement at or before (1)
+temp.f95:41:4:
+
+   41 | else
+      |    1
+......
+   69 |                 else
+      |                    2
+Error: Duplicate ELSE statements at (1) and (2)
+temp.f95:73:132:
+
+   73 |                         if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4) .and. s(4:4) == s(5:5) .and. s(5:5) == s(6:6) .and. s(6:6) == s(7:7)) then
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:73:132:
+
+   73 |                         if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4) .and. s(4:4) == s(5:5) .and. s(5:5) == s(6:6) .and. s(6:6) == s(7:7)) then
+      |                                                                                                                                    1
+Error: Missing ‘)’ in statement at or before (1)
+temp.f95:41:4:
+
+   41 | else
+      |    1
+......
+   76 |                     else
+      |                        2
+Error: Duplicate ELSE statements at (1) and (2)
+temp.f95:80:132:
+
+   80 |                             if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4) .and. s(4:4) == s(5:5) .and. s(5:5) == s(6:6) .and. s(6:6) == s(7:7) .and. s(7:7) == s(8:
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:80:132:
+
+   80 |                             if (s(1:1) == s(2:2) .and. s(2:2) == s(3:3) .and. s(3:3) == s(4:4) .and. s(4:4) == s(5:5) .and. s(5:5) == s(6:6) .and. s(6:6) == s(7:7) .and. s(7:7) == s(8:
+      |                                                                                                                                    1
+Error: Missing ‘)’ in statement at or before (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def num_different_integers(word):
+    for c in word:
+        if not c.isdigit():
+            word = word.replace(c, ' ')
+    nums = word.split()
+    unique_nums = set()
+    for num in nums:
+        num = num.lstrip('0') or '0'
+        unique_nums.add(num)
+    return len(unique_nums)
+</code></pre>
+<ol>
+<li>Replace all non-digit characters with a space in <code>word</code>.</li>
+<li>Split the modified <code>word</code> by spaces to get the list of integers.</li>
+<li>Initialize an empty Set named <code>uniqueNums</code> to store unique integers.</li>
+<li>For each integer in the list, remove leading zeros (if any) and add it to the <code>uniqueNums</code> set.</li>
+<li>Return the size of <code>uniqueNums</code> which is the count of unique integers.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;unordered_set&gt;
+
+int numDifferentIntegers(std::string word) {
+    for (char &amp;c : word) {
+        if (c &lt; '0' || c &gt; '9') {
+            c = ' ';
+        }
+    }
+    std::istringstream iss(word);
+    std::string num;
+    std::unordered_set&lt;std::string&gt; uniqueNums;
+    while (iss &gt;&gt; num) {
+        num.erase(0, num.find_first_not_of('0'));
+        uniqueNums.insert(num);
+    }
+    return uniqueNums.size();
+}
+</code></pre>
+<ol>
+<li>Replace all non-digit characters with a space in <code>word</code>.</li>
+<li>Split the modified <code>word</code> by spaces to get the list of integers.</li>
+<li>Initialize an empty Set named <code>uniqueNums</code> to store unique integers.</li>
+<li>For each integer in the list, remove leading zeros (if any) and add it to the <code>uniqueNums</code> set.</li>
+<li>Return the size of <code>uniqueNums</code> which is the count of unique integers.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Check If a Number Is Majority Element in a Sorted Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1137/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1154/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code> sorted in non-decreasing order and an integer <code>target</code>, return <code>true</code> <em>if</em> <code>target</code> <em>is a <strong>majority</strong> element, or</em> <code>false</code> <em>otherwise</em>.</p>
+<p>A <strong>majority</strong> element in an array <code>nums</code> is an element that appears more than <code>nums.length / 2</code> times in the array.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [2,4,5,5,5,5,5,6,6], target = 5
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The value 5 appears 5 times and the length of the array is 9.
+Thus, 5 is a majority element because 5 &gt; 9/2 is true.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [10,100,101,101], target = 101
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The value 101 appears 2 times and the length of the array is 4.
+Thus, 101 is not a majority element because 2 &gt; 4/2 is false.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 1000</code></li>
+<li><code>1 &lt;= nums[i], target &lt;= 109</code></li>
+<li><code>nums</code> is sorted in non-decreasing order.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/check-if-a-number-is-majority-element-in-a-sorted-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 9
+    integer, dimension(n) :: nums
+    integer :: i, target
+    logical :: result
+
+    ! Example 1
+    nums = [2, 4, 5, 5, 5, 5, 5, 6, 6]
+    target = 5
+    result = majorityElement(nums, target)
+    write (unit=*, fmt='(L1)') result
+
+    ! Example 2
+    nums = [10, 100, 101, 101]
+    target = 101
+    result = majorityElement(nums, target)
+    write (unit=*, fmt='(L1)') result
+
+contains
+
+    function majorityElement(nums, target) result(result_)
+        implicit none
+
+        integer, dimension(:), intent(in) :: nums
+        integer, intent(in) :: target
+        logical :: result_
+
+        integer :: count
+
+        count = 0
+        do i = 1, size(nums)
+            if (nums(i) == target) then
+                count = count + 1
+            end if
+        end do
+
+        result_ = count > size(nums) / 2
+    end function majorityElement
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:16:4:
+
+   16 |     nums = [10, 100, 101, 101]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (9 and 4)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module majority_element
+    implicit none
+
+contains
+
+    function is_majority_element(nums, target) result(is_majority)
+        integer, intent(in) :: nums(:)
+        integer, intent(in) :: target
+        logical :: is_majority
+
+        ! Local variables
+        integer :: i, count
+
+        ! Initialize variables
+        is_majority = .false.
+        count = 0
+
+        ! Loop through the array and count the number of occurrences of the target element
+        do i = 1, size(nums)
+            if (nums(i) == target) then
+                count = count + 1
+            end if
+        end do
+
+        ! Check if the target element is a majority element
+        if (count > size(nums) / 2) then
+            is_majority = .true.
+        end if
+
+    end function is_majority_element
+
+end module majority_element
+
+program main
+    use majority_element
+    implicit none
+
+    ! Test cases
+    integer, parameter :: nums1(8) = [2, 4, 5, 5, 5, 5, 5, 6]
+    integer, parameter :: target1 = 5
+    integer, parameter :: nums2(4) = [10, 100, 101, 101]
+    integer, parameter :: target2 = 101
+    integer, parameter :: nums3(10) = [3, 3, 4, 5, 5, 5, 5, 6, 6]
+    integer, parameter :: target3 = 5
+
+    ! Output
+    logical :: is_majority
+
+    ! Test case 1
+    is_majority = is_majority_element(nums1, target1)
+    if (is_majority) then
+        write (*,*) "Test case 1: Pass"
+    else
+        write (*,*) "Test case 1: Fail"
+    end if
+
+    ! Test case 2
+    is_majority = is_majority_element(nums2, target2)
+    if (.not. is_majority) then
+        write (*,*) "Test case 2: Pass"
+    else
+        write (*,*) "Test case 2: Fail"
+    end if
+
+    ! Test case 3
+    is_majority = is_majority_element(nums3, target3)
+    if (is_majority) then
+        write (*,*) "Test case 3: Pass"
+    else
+        write (*,*) "Test case 3: Fail"
+    end if
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:43:35:
+
+   43 |     integer, parameter :: nums3(10) = [3, 3, 4, 5, 5, 5, 5, 6, 6]
+      |                                   1
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 9)
+temp.f95:66:43:
+
+   66 |     is_majority = is_majority_element(nums3, target3)
+      |                                           1
+Error: Symbol ‘nums3’ at (1) has no IMPLICIT type; did you mean ‘nums2’?
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_majority_element(nums, target):
+    count = 0
+    for num in nums:
+        if num == target: count += 1
+        if count &gt; len(nums) / 2: return True
+    return False
+</code></pre>
+<p>The algorithm is simple, we iterate through the array, and when we find the target number, we increment the count variable. If the count variable ever becomes greater than <code>nums.length / 2</code>, we return true because the target is a majority element. Otherwise, after iterating through the array, we return false because the target is not a majority element. This approach has a linear time complexity of O(n), where n is the length of the array.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool isMajorityElement(vector&lt;int&gt;&amp; nums, int target) {
+    int count = 0;
+    for (int num : nums) {
+        if (num == target) count++;
+        if (count &gt; nums.size() / 2) return true;
+    }
+    return false;
+}
+</code></pre>
+<p>The algorithm is simple, we iterate through the array, and when we find the target number, we increment the count variable. If the count variable ever becomes greater than <code>nums.length / 2</code>, we return true because the target is a majority element. Otherwise, after iterating through the array, we return false because the target is not a majority element. This approach has a linear time complexity of O(n), where n is the length of the array.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

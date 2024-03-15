@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Two Sum IV - Input is a BST</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/645/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/657/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of a binary search tree and an integer <code>k</code>, return <code>true</code> <em>if there exist two elements in the BST such that their sum is equal to</em> <code>k</code>, <em>or</em> <code>false</code> <em>otherwise</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [5,3,6,2,4,null,7], k = 9
+<strong>Output:</strong> true</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [5,3,6,2,4,null,7], k = 28
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[1, 104]</code>.</li>
+<li><code>-104 &lt;= Node.val &lt;= 104</code></li>
+<li><code>root</code> is guaranteed to be a <strong>valid</strong> binary search tree.</li>
+<li><code>-105 &lt;= k &lt;= 105</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/two-sum-iv-input-is-a-bst/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: n = 10
+    type(DP), dimension(n) :: x, y
+    logical :: res
+
+    ! Example 1
+    x = (/ 5._DP, 3._DP, 6._DP, 2._DP, 4._DP, -1._DP, 7._DP /)
+    y = (/ 5._DP, 3._DP, 6._DP, 2._DP, 4._DP, -1._DP, 7._DP /)
+    call solve(x, y, 9._DP, res)
+    write (unit=error_unit, fmt='(L1)') res
+
+    ! Example 2
+    x = (/ 5._DP, 3._DP, 6._DP, 2._DP, 4._DP, -1._DP, 7._DP /)
+    y = (/ 5._DP, 3._DP, 6._DP, 2._DP, 4._DP, -1._DP, 7._DP /)
+    call solve(x, y, 28._DP, res)
+    write (unit=error_unit, fmt='(L1)') res
+
+contains
+
+    subroutine solve(root, k, res)
+        implicit none
+        type(DP), dimension(:), intent(in) :: root
+        real(kind=DP), intent(in) :: k
+        logical, intent(out) :: res
+        integer :: i, j
+
+        res = .false.
+        do i = 1, size(root)-1
+            do j = i+1, size(root)
+                if (root(i)+root(j) == k) then
+                    res = .true.
+                    exit
+                end if
+            end do
+            if (res) exit
+        end do
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:13:
+
+    2 |     use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+      |                     2
+......
+    5 |     type(DP), dimension(n) :: x, y
+      |             1
+Error: Type name ‘dp’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:24:17:
+
+    2 |     use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+      |                     2
+......
+   24 |         type(DP), dimension(:), intent(in) :: root
+      |                 1
+Error: Type name ‘dp’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:22:25:
+
+   22 |     subroutine solve(root, k, res)
+      |                         1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:9:5:
+
+    9 |     x = (/ 5._DP, 3._DP, 6._DP, 2._DP, 4._DP, -1._DP, 7._DP /)
+      |     1
+Error: Symbol ‘x’ at (1) has no IMPLICIT type
+temp.f95:10:5:
+
+   10 |     y = (/ 5._DP, 3._DP, 6._DP, 2._DP, 4._DP, -1._DP, 7._DP /)
+      |     1
+Error: Symbol ‘y’ at (1) has no IMPLICIT type
+temp.f95:32:32:
+
+   32 |                 if (root(i)+root(j) == k) then
+      |                                1
+Error: Function ‘root’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module BSTSum
+    implicit none
+    private
+    public :: main
+
+contains
+
+    logical function sumExists(root, k) result(exists)
+        type(Node), pointer, intent(in) :: root
+        integer, intent(in) :: k
+        logical :: left, right
+
+        exists = .false.
+
+        if (root%left /= null()) then
+            left = sumExists(root%left, k)
+        else
+            left = .false.
+        end if
+
+        if (root%right /= null()) then
+            right = sumExists(root%right, k)
+        else
+            right = .false.
+        end if
+
+        if (left .or. right) then
+            exists = .true.
+        else
+            if (root%val == k) then
+                exists = .true.
+            end if
+        end if
+    end function sumExists
+
+    subroutine main
+        type(Node), pointer :: root
+        integer :: k
+        logical :: exists
+
+        ! Read the root node and the value k
+        read *, root
+        read *, k
+
+        ! Call the sumExists function and print the result
+        exists = sumExists(root, k)
+        write (*, '(A)', advance='no') merge('True', 'False', exists)
+    end subroutine main
+
+    type :: Node
+        integer :: val
+        type(Node), pointer :: left
+        type(Node), pointer :: right
+    end type Node
+end module BSTSum
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:19:
+
+    9 |         type(Node), pointer, intent(in) :: root
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:15:18:
+
+   15 |         if (root%left /= null()) then
+      |                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:16:35:
+
+   16 |             left = sumExists(root%left, k)
+      |                                   1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:17:12:
+
+   17 |         else
+      |            1
+Error: Unexpected ELSE statement at (1)
+temp.f95:19:11:
+
+   19 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:21:18:
+
+   21 |         if (root%right /= null()) then
+      |                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:22:36:
+
+   22 |             right = sumExists(root%right, k)
+      |                                    1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:23:12:
+
+   23 |         else
+      |            1
+Error: Unexpected ELSE statement at (1)
+temp.f95:25:11:
+
+   25 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:30:22:
+
+   30 |             if (root%val == k) then
+      |                      1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:33:11:
+
+   33 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:37:19:
+
+   37 |         type(Node), pointer :: root
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:50:16:
+
+   50 |     type :: Node
+      |                1
+Error: Unexpected derived type declaration statement in CONTAINS section at (1)
+temp.f95:51:22:
+
+   51 |         integer :: val
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:52:19:
+
+   52 |         type(Node), pointer :: left
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:53:19:
+
+   53 |         type(Node), pointer :: right
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:54:7:
+
+   54 |     end type Node
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:8:35:
+
+    8 |     logical function sumExists(root, k) result(exists)
+      |                                   1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:42:20:
+
+   42 |         read *, root
+      |                    1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:47:45:
+
+   47 |         write (*, '(A)', advance='no') merge('True', 'False', exists)
+      |                                             1
+Error: Unequal character lengths (4/5) in MERGE intrinsic at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def findTarget(root, k):
+    nodes = set()
+    return findNode(root, k, nodes)
+
+def findNode(root, k, nodes):
+    if not root:
+        return False
+    if k - root.val in nodes:
+        return True
+    nodes.add(root.val)
+    return findNode(root.left, k, nodes) or findNode(root.right, k, nodes)
+</code></pre>
+<p>The function takes the root of a binary search tree and a target number <code>k</code>. The purpose is to see if there are two elements in the tree that sum up to <code>k</code>. We start by initializing a set called <code>nodes</code> to keep track of visited values. Then, we create a recursive helper function called <code>findNode</code>. </p>
+<p>In the <code>findNode</code> function, the base case is when the current root is null, meaning we've reached the end of a branch, and we return false as no such pair of elements found yet. If <code>k - root.val</code> is found in our set, that means we've found a pair of elements that sum up to <code>k</code>, and we can return true. Otherwise, we proceed with the left and right children of the current root, passing the <code>nodes</code> set along to keep track of visited values. This is done using a depth-first search strategy. </p>
+<p>The result is a boolean indicating whether or not two elements in the tree sum up to <code>k</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool findTarget(TreeNode* root, int k) {
+    unordered_set&lt;int&gt; nodes;
+    return findNode(root, k, nodes);
+}
+
+bool findNode(TreeNode* root, int k, unordered_set&lt;int&gt;&amp; nodes) {
+    if (!root) return false;
+    if (nodes.count(k - root-&gt;val)) return true;
+    nodes.insert(root-&gt;val);
+    return findNode(root-&gt;left, k, nodes) || findNode(root-&gt;right, k, nodes);
+}
+</code></pre>
+<p>The function takes the root of a binary search tree and a target number <code>k</code>. The purpose is to see if there are two elements in the tree that sum up to <code>k</code>. We start by initializing a set called <code>nodes</code> to keep track of visited values. Then, we create a recursive helper function called <code>findNode</code>. </p>
+<p>In the <code>findNode</code> function, the base case is when the current root is null, meaning we've reached the end of a branch, and we return false as no such pair of elements found yet. If <code>k - root.val</code> is found in our set, that means we've found a pair of elements that sum up to <code>k</code>, and we can return true. Otherwise, we proceed with the left and right children of the current root, passing the <code>nodes</code> set along to keep track of visited values. This is done using a depth-first search strategy. </p>
+<p>The result is a boolean indicating whether or not two elements in the tree sum up to <code>k</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

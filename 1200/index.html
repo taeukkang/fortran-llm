@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Absolute Difference</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1196/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1207/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of <strong>distinct</strong> integers <code>arr</code>, find all pairs of elements with the minimum absolute difference of any two elements.</p>
+<p>Return a list of pairs in ascending order(with respect to pairs), each pair <code>[a, b]</code> follows</p>
+<ul>
+<li><code>a, b</code> are from <code>arr</code></li>
+<li><code>a &lt; b</code></li>
+<li><code>b - a</code> equals to the minimum absolute difference of any two elements in <code>arr</code></li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [4,2,1,3]
+<strong>Output:</strong> [[1,2],[2,3],[3,4]]
+<strong>Explanation:</strong> The minimum absolute difference is 1. List all pairs with difference equal to 1 in ascending order.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [1,3,6,10,15]
+<strong>Output:</strong> [[1,3]]</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> arr = [3,8,-10,23,19,-4,-14,27]
+<strong>Output:</strong> [[-14,-10],[19,23],[23,27]]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= arr.length &lt;= 105</code></li>
+<li><code>-106 &lt;= arr[i] &lt;= 106</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-absolute-difference/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 5
+    integer, dimension(n) :: arr
+    integer, dimension(:, :), allocatable :: pairs
+    integer :: i, j, k
+
+    ! Example 1
+    arr = [4, 2, 1, 3]
+    call solve(arr, pairs)
+    write (*, '(A)') 'Example 1:'
+    do i = 1, size(pairs, 1)
+        write (*, '(2I5)') pairs(i, :)
+    end do
+    deallocate (pairs)
+
+    ! Example 2
+    arr = [1, 3, 6, 10, 15]
+    call solve(arr, pairs)
+    write (*, '(A)') 'Example 2:'
+    do i = 1, size(pairs, 1)
+        write (*, '(2I5)') pairs(i, :)
+    end do
+    deallocate (pairs)
+
+    ! Example 3
+    arr = [3, 8, -10, 23, 19, -4, -14, 27]
+    call solve(arr, pairs)
+    write (*, '(A)') 'Example 3:'
+    do i = 1, size(pairs, 1)
+        write (*, '(2I5)') pairs(i, :)
+    end do
+    deallocate (pairs)
+
+contains
+
+    subroutine solve(arr, pairs)
+        implicit none
+        integer, intent(in) :: arr(:)
+        integer, allocatable, intent(out) :: pairs(:, :)
+        integer :: min_diff, diff, i, j, k
+
+        allocate (pairs(size(arr), 2))
+
+        min_diff = huge(min_diff)
+        do i = 1, size(arr) - 1
+            do j = i + 1, size(arr)
+                diff = abs(arr(j) - arr(i))
+                if (diff < min_diff) then
+                    min_diff = diff
+                    pairs(:, :) = reshape(</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:52:42:
+
+   52 |                     pairs(:, :) = reshape(
+      |                                          1
+Error: Syntax error in argument list at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module pair_with_min_abs_diff
+
+implicit none
+
+contains
+
+subroutine solve(arr, pairs)
+
+! arr: array of distinct integers
+! pairs: list of pairs with minimum absolute difference
+
+integer, intent(in) :: arr(:)
+integer, allocatable, intent(out) :: pairs(:, :)
+
+! local variables
+integer :: i, j, n, min_diff, min_diff_idx
+
+! initialize variables
+n = size(arr)
+allocate(pairs(n, 2))
+
+! loop through all pairs
+do i = 1, n - 1
+    do j = i + 1, n
+        ! calculate absolute difference
+        min_diff = abs(arr(i) - arr(j))
+        ! check if minimum absolute difference is found
+        if (min_diff < min_diff_idx) then
+            min_diff_idx = min_diff
+            pairs(i, :) = [arr(i), arr(j)]
+        end if
+    end do
+end do
+
+! sort pairs in ascending order
+call sort(pairs)
+
+end subroutine solve
+
+end module pair_with_min_abs_diff
+
+program test
+
+use pair_with_min_abs_diff
+
+implicit none
+
+! test cases
+integer, parameter :: arr1(4) = [4, 2, 1, 3]
+integer, parameter :: arr2(5) = [1, 3, 6, 10, 15]
+integer, parameter :: arr3(8) = [3, 8, -10, 23, 19, -4, -14, 27]
+
+! expected output
+integer, parameter :: pairs1(3, 2) = reshape([1, 2, 2, 3, 3, 4], [3, 2])
+integer, parameter :: pairs2(1, 2) = reshape([1, 3], [1, 2])
+integer, parameter :: pairs3(3, 2) = reshape([-14, -10, 19, 23, 23, 27], [3, 2])
+
+! test variables
+integer, allocatable :: pairs(:, :)
+
+! test case 1
+call solve(arr1, pairs)
+if (any(pairs .ne. pairs1)) error stop "Test case 1 failed"
+
+! test case 2
+call solve(arr2, pairs)
+if (any(pairs .ne. pairs2)) error stop "Test case 2 failed"
+
+! test case 3
+call solve(arr3, pairs)
+if (any(pairs .ne. pairs3)) error stop "Test case 3 failed"
+
+print *, "All tests passed!"
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>/usr/bin/ld: /tmp/ccfWAVeU.o: in function `__pair_with_min_abs_diff_MOD_solve':
+temp.f95:(.text+0x4ac): undefined reference to `sort_'
+collect2: error: ld returned 1 exit status
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from typing import List
+
+def minimumAbsDifference(arr: List[int]) -&gt; List[List[int]]:
+    arr.sort()
+    min_diff = min(arr[i] - arr[i - 1] for i in range(1, len(arr)))
+
+    result = []
+    for i in range(1, len(arr)):
+        if arr[i] - arr[i - 1] == min_diff:
+            result.append([arr[i - 1], arr[i]])
+
+    return result
+</code></pre>
+<ol>
+<li>Sort the input array in ascending order.</li>
+<li>Iterate through the sorted array and find the minimum absolute difference between adjacent elements. This value will be the minimum difference between any two elements in the array.</li>
+<li>Iterate through the sorted array again and construct the output list by adding pairs of elements with an absolute difference equal to the minimum difference found in step 2.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+vector&lt;vector&lt;int&gt;&gt; minimumAbsDifference(vector&lt;int&gt;&amp; arr) {
+    sort(arr.begin(), arr.end());
+    int minDiff = INT_MAX;
+    for (int i = 1; i &lt; arr.size(); i++) {
+        minDiff = min(minDiff, arr[i] - arr[i - 1]);
+    }
+
+    vector&lt;vector&lt;int&gt;&gt; result;
+    for (int i = 1; i &lt; arr.size(); i++) {
+        if (arr[i] - arr[i - 1] == minDiff) {
+            result.push_back({arr[i - 1], arr[i]});
+        }
+    }
+
+    return result;
+}
+</code></pre>
+<ol>
+<li>Sort the input array in ascending order.</li>
+<li>Iterate through the sorted array and find the minimum absolute difference between adjacent elements. This value will be the minimum difference between any two elements in the array.</li>
+<li>Iterate through the sorted array again and construct the output list by adding pairs of elements with an absolute difference equal to the minimum difference found in step 2.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

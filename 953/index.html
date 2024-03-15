@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Verifying an Alien Dictionary</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/944/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/961/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>In an alien language, surprisingly, they also use English lowercase letters, but possibly in a different <code>order</code>. The <code>order</code> of the alphabet is some permutation of lowercase letters.</p>
+<p>Given a sequence of <code>words</code> written in the alien language, and the <code>order</code> of the alphabet, return <code>true</code> if and only if the given <code>words</code> are sorted lexicographically in this alien language.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> words = [ "hello ", "leetcode "], order =  "hlabcdefgijkmnopqrstuvwxyz "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> As 'h' comes before 'l' in this language, then the sequence is sorted.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> words = [ "word ", "world ", "row "], order =  "worldabcefghijkmnpqstuvxyz "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> As 'd' comes after 'l' in this language, then words[0] &gt; words[1], hence the sequence is unsorted.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> words = [ "apple ", "app "], order =  "abcdefghijklmnopqrstuvwxyz "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The first three characters  "app " match, and the second string is shorter (in size.) According to lexicographical rules  "apple " &gt;  "app ", because 'l' &gt; '∅', where '∅' is defined as the blank character which is less than any other character (<a href="https://en.wikipedia.org/wiki/Lexicographical_order">More info</a>).</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= words.length &lt;= 100</code></li>
+<li><code>1 &lt;= words[i].length &lt;= 20</code></li>
+<li><code>order.length == 26</code></li>
+<li>All characters in <code>words[i]</code> and <code>order</code> are English lowercase letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/verifying-an-alien-dictionary/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j
+    character(len=26) :: order
+    character(len=20), allocatable :: words(:)
+
+    ! read input
+    read(*,*) order
+    allocate(words(size(order)))
+    do i = 1, size(words)
+        read(*,*) words(i)
+    end do
+
+    ! solve problem
+    call solve(words, order)
+
+contains
+
+    subroutine solve(words, order)
+        implicit none
+        character(len=*), intent(in) :: words(:), order
+        logical :: sorted
+
+        sorted = .true.
+        do i = 1, size(words)-1
+            if (words(i+1) < words(i)) then
+                sorted = .false.
+                exit
+            end if
+        end do
+
+        write(*,*) sorted
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:10:24:
+
+   10 |     allocate(words(size(order)))
+      |                        1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module main
+
+implicit none
+
+interface
+
+function isAlienSorted(words, order) result(sorted)
+    character(len=*), intent(in) :: words(:)
+    character(len=*), intent(in) :: order
+    logical :: sorted
+end function isAlienSorted
+
+end interface
+
+contains
+
+subroutine run()
+    character(len=26) :: order
+    character(len=*), parameter :: words(3) = ["hello ", "leetcode ", "word "]
+    logical :: sorted
+
+    ! Initialize the order of the alphabet
+    order = "hlabcdefgijkmnopqrstuvwxyz "
+
+    ! Check if the words are sorted in the alien language
+    sorted = isAlienSorted(words, order)
+
+    ! Print the result
+    if (sorted) then
+        print *, "The words are sorted in the alien language."
+    else
+        print *, "The words are not sorted in the alien language."
+    end if
+
+end subroutine run
+
+function isAlienSorted(words, order) result(sorted)
+    character(len=*), intent(in) :: words(:)
+    character(len=*), intent(in) :: order
+    logical :: sorted
+    integer :: i, j, k
+
+    ! Initialize the result
+    sorted = .true.
+
+    ! Check if the words are sorted lexicographically in the alien language
+    do i = 1, size(words) - 1
+        do j = 1, len_trim(words(i))
+            do k = 1, len_trim(words(i + 1))
+                if (words(i)(j:j) > words(i + 1)(k:k)) then
+                    sorted = .false.
+                    exit
+                else if (words(i)(j:j) < words(i + 1)(k:k)) then
+                    exit
+                end if
+            end do
+            if (.not. sorted) exit
+        end do
+        if (.not. sorted) exit
+    end do
+
+end function isAlienSorted
+
+end module main
+
+! Test the function with the given examples
+program test
+    use main
+    implicit none
+
+    character(len=26) :: order
+    character(len=*), parameter :: words(3) = ["hello ", "leetcode ", "word "]
+    logical :: sorted
+
+    ! Initialize the order of the alphabet
+    order = "hlabcdefgijkmnopqrstuvwxyz "
+
+    ! Check if the words are sorted in the alien language
+    sorted = isAlienSorted(words, order)
+
+    ! Print the result
+    if (sorted) then
+        print *, "The words are sorted in the alien language."
+    else
+        print *, "The words are not sorted in the alien language."
+    end if
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:19:56:
+
+   19 |     character(len=*), parameter :: words(3) = ["hello ", "leetcode ", "word "]
+      |                                                        1
+Error: Different CHARACTER lengths (6/9) in array constructor at (1)
+temp.f95:37:23:
+
+    7 | function isAlienSorted(words, order) result(sorted)
+      |                        
+......
+   37 | function isAlienSorted(words, order) result(sorted)
+      |                       1
+Error: Procedure ‘isaliensorted’ at (1) is already defined at (2)
+temp.f95:38:44:
+
+   38 |     character(len=*), intent(in) :: words(:)
+      |                                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:39:41:
+
+   39 |     character(len=*), intent(in) :: order
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:40:21:
+
+   40 |     logical :: sorted
+      |                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:41:22:
+
+   41 |     integer :: i, j, k
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:44:19:
+
+   44 |     sorted = .true.
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:47:29:
+
+   47 |     do i = 1, size(words) - 1
+      |                             1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:48:36:
+
+   48 |         do j = 1, len_trim(words(i))
+      |                                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:49:44:
+
+   49 |             do k = 1, len_trim(words(i + 1))
+      |                                            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:50:29:
+
+   50 |                 if (words(i)(j:j) > words(i + 1)(k:k)) then
+      |                             1
+Error: Syntax error in IF-expression at (1)
+temp.f95:51:36:
+
+   51 |                     sorted = .false.
+      |                                    1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:52:24:
+
+   52 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:53:34:
+
+   53 |                 else if (words(i)(j:j) < words(i + 1)(k:k)) then
+      |                                  1
+Error: Missing ‘)’ in ELSE IF expression at (1)
+temp.f95:54:24:
+
+   54 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:55:19:
+
+   55 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:56:15:
+
+   56 |             end do
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:57:34:
+
+   57 |             if (.not. sorted) exit
+      |                                  1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:58:11:
+
+   58 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:59:30:
+
+   59 |         if (.not. sorted) exit
+      |                              1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:60:7:
+
+   60 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:62:3:
+
+   62 | end function isAlienSorted
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:32:
+
+   26 |     sorted = isAlienSorted(words, order)
+      |                                1
+Error: Symbol ‘words’ at (1) has no IMPLICIT type
+temp.f95:68:9:
+
+   68 |     use main
+      |         1
+Fatal Error: Cannot open module file ‘main.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def reverse_string(s):
+    return s[::-1]
+</code></pre>
+<pre><code>The algorithm to reverse a string is simple. It takes the input string, iterates from the last character to the first, and appends each character to a new string, which is then returned.
+</code></pre>
+<p>In each of the provided implementations, the language's standard library, or a built-in method, is utilized to achieve the goal, rather than manually writing a loop to iterate over the string.</p>
+<p>In C++, the <code>std::reverse</code> function from the <code>&lt;algorithm&gt;</code> library is used to reverse the input string.</p>
+<p>In Java, a <code>StringBuilder</code> is created from the input string, and then its built-in <code>reverse</code> method is called. Finally, the reversed <code>StringBuilder</code> is converted back to a <code>String</code>.</p>
+<p>In Python, slicing is used to reverse the string with the syntax <code>s[::-1]</code>.</p>
+<p>In JavaScript, the <code>split</code> method is used to convert the string into an array of characters. Then, the <code>reverse</code> method is called on the array, which reverses the order of the elements. Finally, the <code>join</code> method is called on the reversed array to convert it back to a string.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;algorithm&gt;
+
+std::string reverseString(const std::string&amp; s) {
+    std::string result = s;
+    std::reverse(result.begin(), result.end());
+    return result;
+}
+</code></pre>
+<pre><code>The algorithm to reverse a string is simple. It takes the input string, iterates from the last character to the first, and appends each character to a new string, which is then returned.
+</code></pre>
+<p>In each of the provided implementations, the language's standard library, or a built-in method, is utilized to achieve the goal, rather than manually writing a loop to iterate over the string.</p>
+<p>In C++, the <code>std::reverse</code> function from the <code>&lt;algorithm&gt;</code> library is used to reverse the input string.</p>
+<p>In Java, a <code>StringBuilder</code> is created from the input string, and then its built-in <code>reverse</code> method is called. Finally, the reversed <code>StringBuilder</code> is converted back to a <code>String</code>.</p>
+<p>In Python, slicing is used to reverse the string with the syntax <code>s[::-1]</code>.</p>
+<p>In JavaScript, the <code>split</code> method is used to convert the string into an array of characters. Then, the <code>reverse</code> method is called on the array, which reverses the order of the elements. Finally, the <code>join</code> method is called on the reversed array to convert it back to a string.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

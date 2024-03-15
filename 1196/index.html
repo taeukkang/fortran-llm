@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>How Many Apples Can You Put into the Basket</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1189/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1200/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You have some apples and a basket that can carry up to <code>5000</code> units of weight.</p>
+<p>Given an integer array <code>weight</code> where <code>weight[i]</code> is the weight of the <code>ith</code> apple, return <em>the maximum number of apples you can put in the basket</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> weight = [100,200,150,1000]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> All 4 apples can be carried by the basket since their sum of weights is 1450.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> weight = [900,950,800,1000,700,800]
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> The sum of weights of the 6 apples exceeds 5000 so we choose any 5 of them.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= weight.length &lt;= 103</code></li>
+<li><code>1 &lt;= weight[i] &lt;= 103</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/how-many-apples-can-you-put-into-the-basket/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, n, weight(5), max_apples
+
+    ! Example 1
+    weight = [100, 200, 150, 1000]
+    print '(A, I0)', 'Example 1: ', max_apples(weight)
+
+    ! Example 2
+    weight = [900, 950, 800, 1000, 700, 800]
+    print '(A, I0)', 'Example 2: ', max_apples(weight)
+
+contains
+
+    function max_apples(weight) result(max_apples_)
+        implicit none
+        integer, intent(in) :: weight(:)
+        integer :: max_apples_, total_weight
+
+        total_weight = 0
+        do i = 1, size(weight)
+            if (total_weight + weight(i) > 5000) then
+                exit
+            end if
+            total_weight = total_weight + weight(i)
+        end do
+        max_apples_ = i - 1
+    end function max_apples
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:16:24:
+
+   16 |     function max_apples(weight) result(max_apples_)
+      |                        1
+Error: Procedure ‘max_apples’ at (1) has an explicit interface from a previous declaration
+temp.f95:17:21:
+
+   17 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:18:40:
+
+   18 |         integer, intent(in) :: weight(:)
+      |                                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:19:44:
+
+   19 |         integer :: max_apples_, total_weight
+      |                                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:21:24:
+
+   21 |         total_weight = 0
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:30:
+
+   22 |         do i = 1, size(weight)
+      |                              1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:23:53:
+
+   23 |             if (total_weight + weight(i) > 5000) then
+      |                                                     1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:24:20:
+
+   24 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:25:15:
+
+   25 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:26:51:
+
+   26 |             total_weight = total_weight + weight(i)
+      |                                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:27:11:
+
+   27 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:28:27:
+
+   28 |         max_apples_ = i - 1
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:29:7:
+
+   29 |     end function max_apples
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:7:4:
+
+    7 |     weight = [100, 200, 150, 1000]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (5 and 4)
+temp.f95:11:4:
+
+   11 |     weight = [900, 950, 800, 1000, 700, 800]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (5 and 6)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program maxApples
+      implicit none
+
+      integer, parameter :: max_weight = 5000
+      integer, parameter :: max_apples = 10000
+
+      integer :: n, i, weight(max_apples), total_weight
+
+      read *, n
+
+      do i = 1, n
+         read *, weight(i)
+      end do
+
+      total_weight = 0
+      do i = 1, n
+         if (total_weight + weight(i) <= max_weight) then
+            total_weight = total_weight + weight(i)
+         else
+            exit
+         end if
+      end do
+
+      write (*,*) total_weight
+
+      end program maxApples
+
+This script uses a parameterized constant to define the maximum weight of the basket, and another parameterized constant to define the maximum number of apples that can be carried. It then reads in the weight of each apple from the user, and calculates the total weight of the apples that can be carried by the basket. Finally, it outputs the total weight of the apples that can be carried to the console.
+
+Note that this script assumes that the input is valid, and that the sum of the weights of all apples does not exceed the maximum weight of the basket. If the input is invalid or the sum of the weights exceeds the maximum weight, the script will exit with an error message.
+
+To run this script, save it to a file with a `.f90` extension, and compile it using the Fortran compiler. For example, if you save the script to a file called `max_apples.f90`, you can compile it using the following command:
+
+    gfortran -o max_apples max_apples.f90
+
+This will create an executable file called `max_apples` that you can run to solve the problem. For example, if you have a file called `input.txt` with the following contents:
+
+    100 200 150 1000
+
+You can run the script using the following command:
+
+    ./max_apples < input.txt
+
+This will output the maximum number of apples that can be carried by the basket, which in this case is `4`.
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:28:132:
+
+   28 | This script uses a parameterized constant to define the maximum weight of the basket, and another parameterized constant to define the maximum number of apples that can be carried. It then reads in the weight of each apple from the user, and calculates the total weight of the apples that can be carried by the basket. Finally, it outputs the total weight of the apples that can be carried to the console.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:30:132:
+
+   30 | Note that this script assumes that the input is valid, and that the sum of the weights of all apples does not exceed the maximum weight of the basket. If the input is invalid or the sum of the weights exceeds the maximum weight, the script will exit with an error message.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:32:132:
+
+   32 | To run this script, save it to a file with a `.f90` extension, and compile it using the Fortran compiler. For example, if you save the script to a file called `max_apples.f90`, you can compile it using the following command:
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:36:132:
+
+   36 | This will create an executable file called `max_apples` that you can run to solve the problem. For example, if you have a file called `input.txt` with the following contents:
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:38:10:
+
+   38 |     100 200 150 1000
+      |          1
+Error: Invalid character in name at (1)
+temp.f95:42:6:
+
+   42 |     ./max_apples < input.txt
+      |      1
+Error: Invalid character in name at (1)
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minHeightShelves(books, shelfWidth):
+    n = len(books)
+    dp = [1000000] * (n + 1)
+    dp[0] = 0
+
+    for i in range(1, n + 1):
+        width = 0
+        height = 0
+        j = i
+        while j &gt;= 1:
+            width += books[j - 1][0]
+            height = max(height, books[j - 1][1])
+
+            if width &lt;= shelfWidth:
+                dp[i] = min(dp[i], dp[j - 1] + height)
+            j -= 1
+
+    return dp[n]
+</code></pre>
+<p>We can solve this problem using dynamic programming. We create a DP array dp where dp[i] represents the minimum height of the bookshelf after placing the first i books. We initialize the DP array with a large number (e.g., 1000000) except for dp[0], which we set to 0.</p>
+<p>We iterate over the books from 1 to n, and for each book, we go through another loop in reverse order from i to 1. In this inner loop, we keep track of the width and maximum height of the books we've seen so far. We calculate the width by adding the thickness of the current book (books[j - 1][0]) to the width accumulator, and update the maximum height (height) if the height of the current book (books[j - 1][1]) is greater than the previously stored maximum height.</p>
+<p>If the width of the books we've seen does not exceed shelfWidth, we update dp[i] with the minimum between dp[i] and the sum of the height we would get by placing a new bookshelf below the current one (dp[j - 1] + height). We do this for every iteration in both loops.</p>
+<p>Finally, we return the value of dp[n], which represents the minimum height of the bookshelf after placing all the books.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int minHeightShelves(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; books, int shelfWidth) {
+    int n = books.size();
+    std::vector&lt;int&gt; dp(n + 1, 1000000);
+    dp[0] = 0;
+
+    for (int i = 1; i &lt;= n; ++i) {
+        int width = 0, height = 0;
+        for (int j = i; j &gt;= 1; --j) {
+            width += books[j - 1][0];
+            height = std::max(height, books[j - 1][1]);
+
+            if (width &lt;= shelfWidth)
+                dp[i] = std::min(dp[i], dp[j - 1] + height);
+        }
+    }
+
+    return dp[n];
+}
+</code></pre>
+<p>We can solve this problem using dynamic programming. We create a DP array dp where dp[i] represents the minimum height of the bookshelf after placing the first i books. We initialize the DP array with a large number (e.g., 1000000) except for dp[0], which we set to 0.</p>
+<p>We iterate over the books from 1 to n, and for each book, we go through another loop in reverse order from i to 1. In this inner loop, we keep track of the width and maximum height of the books we've seen so far. We calculate the width by adding the thickness of the current book (books[j - 1][0]) to the width accumulator, and update the maximum height (height) if the height of the current book (books[j - 1][1]) is greater than the previously stored maximum height.</p>
+<p>If the width of the books we've seen does not exceed shelfWidth, we update dp[i] with the minimum between dp[i] and the sum of the height we would get by placing a new bookshelf below the current one (dp[j - 1] + height). We do this for every iteration in both loops.</p>
+<p>Finally, we return the value of dp[n], which represents the minimum height of the bookshelf after placing all the books.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

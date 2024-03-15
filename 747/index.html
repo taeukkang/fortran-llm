@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Largest Number At Least Twice of Others</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/746/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/748/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer array <code>nums</code> where the largest integer is <strong>unique</strong>.</p>
+<p>Determine whether the largest element in the array is <strong>at least twice</strong> as much as every other number in the array. If it is, return <em>the <strong>index</strong> of the largest element, or return</em> <code>-1</code> <em>otherwise</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [3,6,1,0]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> 6 is the largest integer.
+For every other number in the array x, 6 is at least twice as big as x.
+The index of value 6 is 1, so we return 1.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,3,4]
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> 4 is less than twice the value of 3, so we return -1.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= nums.length &lt;= 50</code></li>
+<li><code>0 &lt;= nums[i] &lt;= 100</code></li>
+<li>The largest element in <code>nums</code> is unique.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/largest-number-at-least-twice-of-others/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, dimension(n) :: nums
+    integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+
+    ! Example 1
+    nums = [3, 6, 1, 0]
+    print '(I0)', largest_element_at_least_twice(nums)
+
+    ! Example 2
+    nums = [1, 2, 3, 4]
+    print '(I0)', largest_element_at_least_twice(nums)
+
+contains
+
+    function largest_element_at_least_twice(nums) result(largest_index)
+        implicit none
+        integer, dimension(:), intent(in) :: nums
+        integer :: largest_index
+        integer :: i
+
+        largest_index = -1
+        do i = 1, size(nums)
+            if (nums(i) >= 2 * nums(size(nums))) then
+                largest_index = i
+                exit
+            end if
+        end do
+    end function largest_element_at_least_twice
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:31:
+
+    6 |     integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+      |                               1
+Error: Symbol ‘n’ at (1) already has basic type of INTEGER
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module largest_integer
+    implicit none
+    private
+    public :: largest_integer
+contains
+    function largest_integer(nums) result(largest)
+        integer, intent(in) :: nums(:)
+        integer :: largest
+        integer :: i, j
+        logical :: found
+
+        largest = -1
+        found = .false.
+
+        ! Find the largest integer in the array
+        do i = 1, size(nums)
+            if (nums(i) > largest) then
+                largest = nums(i)
+            end if
+        end do
+
+        ! Check if the largest integer is at least twice as much as every other number in the array
+        do i = 1, size(nums)
+            if (largest /= nums(i)) then
+                if (largest /= 2 * nums(i)) then
+                    found = .true.
+                    exit
+                end if
+            end if
+        end do
+
+        ! If the largest integer is at least twice as much as every other number in the array, return its index
+        if (.not. found) then
+            largest = largest_integer_index(nums)
+        end if
+    end function
+
+    function largest_integer_index(nums) result(index)
+        integer, intent(in) :: nums(:)
+        integer :: index
+        integer :: i
+
+        index = -1
+
+        ! Find the index of the largest integer in the array
+        do i = 1, size(nums)
+            if (nums(i) == largest_integer(nums)) then
+                index = i
+                exit
+            end if
+        end do
+    end function
+end module
+
+program test_largest_integer
+    use largest_integer
+    implicit none
+    integer, parameter :: nums1(4) = [3, 6, 1, 0]
+    integer, parameter :: nums2(4) = [1, 2, 3, 4]
+    integer, parameter :: nums3(4) = [1, 2, 3, 4]
+    integer, parameter :: nums4(4) = [1, 2, 3, 4]
+    integer, parameter :: nums5(4) = [1, 2, 3, 4]
+    integer, parameter :: nums6(4) = [1, 2, 3, 4]
+    integer, parameter :: nums7(4) = [1, 2, 3, 4]
+    integer, parameter :: nums8(4) = [1, 2, 3, 4]
+    integer, parameter :: nums9(4) = [1, 2, 3, 4]
+    integer, parameter :: nums10(4) = [1, 2, 3, 4]
+
+    write (*, '(A)') 'Test 1: ' // num2str(largest_integer(nums1))
+    write (*, '(A)') 'Test 2: ' // num2str(largest_integer(nums2))
+    write (*, '(A)') 'Test 3: ' // num2str(largest_integer(nums3))
+    write (*, '(A)') 'Test 4: ' // num2str(largest_integer(nums4))
+    write (*, '(A)') 'Test 5: ' // num2str(largest_integer(nums5))
+    write (*, '(A)') 'Test 6: ' // num2str(largest_integer(nums6))
+    write (*, '(A)') 'Test 7: ' // num2str(largest_integer(nums7))
+    write (*, '(A)') 'Test 8: ' // num2str(largest_integer(nums8))
+    write (*, '(A)') 'Test 9: ' // num2str(largest_integer(nums9))
+    write (*, '(A)') 'Test 10: ' // num2str(largest_integer(nums10))
+
+contains
+
+    function num2str(num) result(str)
+        integer, intent(in) :: num
+        character(len=20) :: str
+
+        write (str, '(I20)') num
+    end function
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:29:
+
+    4 |     public :: largest_integer
+      |                             1
+Error: PUBLIC attribute applied to MODULE largest_integer at (1)
+temp.f95:6:28:
+
+    6 |     function largest_integer(nums) result(largest)
+      |                            1
+Error: MODULE attribute of ‘largest_integer’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:38:
+
+    7 |         integer, intent(in) :: nums(:)
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:26:
+
+    8 |         integer :: largest
+      |                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:23:
+
+    9 |         integer :: i, j
+      |                       1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:24:
+
+   10 |         logical :: found
+      |                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:20:
+
+   12 |         largest = -1
+      |                    1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:13:23:
+
+   13 |         found = .false.
+      |                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:28:
+
+   16 |         do i = 1, size(nums)
+      |                            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:17:39:
+
+   17 |             if (nums(i) > largest) then
+      |                                       1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:18:33:
+
+   18 |                 largest = nums(i)
+      |                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:15:
+
+   19 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:20:11:
+
+   20 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:28:
+
+   23 |         do i = 1, size(nums)
+      |                            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:24:40:
+
+   24 |             if (largest /= nums(i)) then
+      |                                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:25:48:
+
+   25 |                 if (largest /= 2 * nums(i)) then
+      |                                                1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:26:34:
+
+   26 |                     found = .true.
+      |                                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:27:24:
+
+   27 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:28:19:
+
+   28 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:15:
+
+   29 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:11:
+
+   30 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:33:29:
+
+   33 |         if (.not. found) then
+      |                             1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:34:49:
+
+   34 |             largest = largest_integer_index(nums)
+      |                                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:35:11:
+
+   35 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:36:7:
+
+   36 |     end function
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:47:43:
+
+   47 |             if (nums(i) == largest_integer(nums)) then
+      |                                           1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:50:15:
+
+   50 |             end if
+      |               1
+Error: Expecting END DO statement at (1)
+temp.f95:56:9:
+
+   56 |     use largest_integer
+      |         1
+Fatal Error: Cannot open module file ‘largest_integer.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minCostClimbingStairs(cost):
+    for i in range(2, len(cost)):
+        cost[i] += min(cost[i-1], cost[i-2])
+    return min(cost[-1], cost[-2])
+</code></pre>
+<p>The algorithm is based on dynamic programming. We loop through the array starting from index 2 (since we can start from step 0 or 1 without any cost), and at each step, we add the minimum of the costs of the previous two steps to the current step. We do this to find the optimal path at each step, which eventually leads to the minimum cost to reach the top. After processing the whole array, we return the minimum of the costs of the last two steps as the result.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minCostClimbingStairs(vector&lt;int&gt;&amp; cost) {
+    int n = cost.size();
+    for(int i=2; i&lt;n; i++)
+        cost[i] += min(cost[i-1], cost[i-2]);
+    return min(cost[n-1], cost[n-2]);
+}
+</code></pre>
+<p>The algorithm is based on dynamic programming. We loop through the array starting from index 2 (since we can start from step 0 or 1 without any cost), and at each step, we add the minimum of the costs of the previous two steps to the current step. We do this to find the optimal path at each step, which eventually leads to the minimum cost to reach the top. After processing the whole array, we return the minimum of the costs of the last two steps as the result.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

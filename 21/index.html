@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Merge Two Sorted Lists</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/20/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/26/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given the heads of two sorted linked lists <code>list1</code> and <code>list2</code>.</p>
+<p>Merge the two lists in a one <strong>sorted</strong> list. The list should be made by splicing together the nodes of the first two lists.</p>
+<p>Return <em>the head of the merged linked list</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> list1 = [1,2,4], list2 = [1,3,4]
+<strong>Output:</strong> [1,1,2,3,4,4]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> list1 = [], list2 = []
+<strong>Output:</strong> []</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> list1 = [], list2 = [0]
+<strong>Output:</strong> [0]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in both lists is in the range <code>[0, 50]</code>.</li>
+<li><code>-100 &lt;= Node.val &lt;= 100</code></li>
+<li>Both <code>list1</code> and <code>list2</code> are sorted in <strong>non-decreasing</strong> order.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/merge-two-sorted-lists/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solves the problem of merging two sorted linked lists into one sorted list
+    implicit none
+
+    type :: node
+        integer :: val
+        type(node), pointer :: next => null()
+    end type
+
+    type(node), pointer :: list1, list2, current, new_head
+    integer :: i
+
+    ! Example 1
+    allocate(list1)
+    list1%val = 1
+    allocate(list1%next)
+    list1%next%val = 2
+    allocate(list1%next%next)
+    list1%next%next%val = 4
+    allocate(list2)
+    list2%val = 1
+    allocate(list2%next)
+    list2%next%val = 3
+    allocate(list2%next%next)
+    list2%next%next%val = 4
+    call merge_lists(list1, list2, new_head)
+    do while (associated(new_head))
+        write (*, '(I0)', advance='no') new_head%val
+        new_head => new_head%next
+    end do
+    write (*, *) ''
+
+    ! Example 2
+    deallocate(list1)
+    deallocate(list2)
+    allocate(list1)
+    list1%val = -1
+    allocate(list1%next)
+    list1%next%val = 0
+    allocate(list2)
+    list2%val = 1
+    allocate(list2%next)
+    list2%next%val = 2
+    allocate(list2%next%next)
+    list2%next%next%val = 3
+    allocate(list2%next%next%next)
+    list2%next%next%next%val = 4
+    call merge_lists(list1, list2, new_head)
+    do while (associated(new_head))
+        write (*, '(I0)', advance='no') new_head%val
+        new_head => new_head%next
+    end do
+    write (*, *) ''
+
+    ! Example 3
+    deallocate(list1)
+    deallocate(list2)
+    allocate(list1)
+    list1%val = -1
+    allocate(list2)
+    list2%val = 0
+    call merge_lists(list1, list2, new_head)
+    do while (associated(new_head))
+        write (*, '(I0)', advance='no') new_head%val
+        new_head => new_head%next
+    end do
+    write (*, *) ''
+
+contains
+
+    subroutine merge_lists(list1, list2, new_head)
+        ! Merges the two lists in a one sorted list
+        implicit none
+        type(node), pointer :: list1, list2, new_head
+        type(node), pointer :: current1, current2
+
+        if (.not. associated(list1)) then
+            ! If list1 is empty, return list2
+            new_head => list2
+            return
+        else if (.not. associated(list2)) then
+            ! If list2 is empty, return list1
+            new_head => list1
+            return
+        end if
+
+        ! Set up pointers for the first elements of each list
+        current1 => list1
+        current2 => list2
+
+        ! Loop until we reach the end of either list
+        do while (associated(current1%next) .or. associated(current2%next))
+            ! Check if the current element of list1 is less than or equal to the current element of list2
+            if (current1%val <= current2%val) then
+                ! Splice the current element of list1 into the new list
+                new_head => current1
+                current1 => current1%next
+            else
+                ! Splice the current element of list2 into the new list
+                new_head => current2
+                current2 => current2%next
+            end if
+            ! Move on to the next element of the new list
+            new_head => new_head%next
+        end do
+
+        ! If there are still elements left in list1, add them to the end of the new list
+        if (associated(current1)) then
+            new_head%next => current1
+        end if
+
+        ! If there are</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module merge_sorted_lists
+
+implicit none
+
+contains
+
+type(list_node) function merge_lists(list1, list2) result(merged_list)
+
+type(list_node), pointer :: list1, list2
+
+! Create a new list to store the merged nodes
+type(list_node), pointer :: current_node, new_node
+
+! Initialize the head of the merged list
+merged_list => null()
+
+! Loop through both lists and merge them
+do while (associated(list1) .and. associated(list2))
+
+! Check if the current node in list1 is less than the current node in list2
+if (list1%data < list2%data) then
+
+! Create a new node to store the current node from list1
+allocate(new_node)
+new_node%data = list1%data
+new_node%next => list1%next
+
+! If the merged list is empty, set the head of the merged list to the current node
+if (.not. associated(merged_list)) then
+merged_list => new_node
+else
+! Otherwise, set the next pointer of the current node to the current node
+current_node%next => new_node
+end if
+
+! Move to the next node in list1
+list1 => list1%next
+
+else
+
+! Create a new node to store the current node from list2
+allocate(new_node)
+new_node%data = list2%data
+new_node%next => list2%next
+
+! If the merged list is empty, set the head of the merged list to the current node
+if (.not. associated(merged_list)) then
+merged_list => new_node
+else
+! Otherwise, set the next pointer of the current node to the current node
+current_node%next => new_node
+end if
+
+! Move to the next node in list2
+list2 => list2%next
+
+end if
+
+! Set the current node to the next node in the merged list
+current_node => merged_list
+
+end do
+
+! Loop through the remaining nodes in list1
+do while (associated(list1))
+
+! Create a new node to store the current node from list1
+allocate(new_node)
+new_node%data = list1%data
+new_node%next => list1%next
+
+! If the merged list is empty, set the head of the merged list to the current node
+if (.not. associated(merged_list)) then
+merged_list => new_node
+else
+! Otherwise, set the next pointer of the current node to the current node
+current_node%next => new_node
+end if
+
+! Move to the next node in list1
+list1 => list1%next
+
+! Set the current node to the next node in the merged list
+current_node => merged_list
+
+end do
+
+! Loop through the remaining nodes in list2
+do while (associated(list2))
+
+! Create a new node to store the current node from list2
+allocate(new_node)
+new_node%data = list2%data
+new_node%next => list2%next
+
+! If the merged list is empty, set the head of the merged list to the current node
+if (.not. associated(merged_list)) then
+merged_list => new_node
+else
+! Otherwise, set the next pointer of the current node to the current node
+current_node%next => new_node
+end if
+
+! Move to the next node in list2
+list2 => list2%next
+
+! Set the current node to the next node in the merged list
+current_node => merged_list
+
+end do
+
+end function merge_lists
+
+type list_node
+integer :: data
+type(list_node), pointer :: next => null()
+end type list_node
+
+end module merge_sorted_lists
+
+program test_merge_sorted_lists
+
+use merge_sorted_lists
+implicit none
+
+! Test case 1:
+type(list_node), pointer :: list1, list2, merged_list
+
+! Create the first list
+allocate(list1)
+list1%data = 1
+allocate(list1%next)
+list1%next%data = 2
+allocate(list1%next%next)
+list1%next%next%data = 4
+
+! Create the second list
+allocate(list2)
+list2%data =
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:16:
+
+    9 | type(list_node), pointer :: list1, list2
+      |                1
+Error: Derived type ‘list_node’ at (1) is being used before it is defined
+temp.f95:12:16:
+
+   12 | type(list_node), pointer :: current_node, new_node
+      |                1
+Error: Derived type ‘list_node’ at (1) is being used before it is defined
+temp.f95:7:0:
+
+    7 | type(list_node) function merge_lists(list1, list2) result(merged_list)
+      | 
+Error: The type for function ‘merge_lists’ at (1) is not accessible
+temp.f95:7:70:
+
+    7 | type(list_node) function merge_lists(list1, list2) result(merged_list)
+      |                                                                      1
+Error: Function result ‘merged_list’ at (1) has no IMPLICIT type
+temp.f95:21:11:
+
+   21 | if (list1%data < list2%data) then
+      |           1
+Error: Symbol ‘list1’ at (1) has no IMPLICIT type
+temp.f95:24:9:
+
+   24 | allocate(new_node)
+      |         1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:25:10:
+
+   25 | new_node%data = list1%data
+      |          1
+Error: Symbol ‘new_node’ at (1) has no IMPLICIT type
+temp.f95:26:10:
+
+   26 | new_node%next => list1%next
+      |          1
+Error: Symbol ‘new_node’ at (1) has no IMPLICIT type
+temp.f95:33:14:
+
+   33 | current_node%next => new_node
+      |              1
+Error: Symbol ‘current_node’ at (1) has no IMPLICIT type
+temp.f95:37:16:
+
+   37 | list1 => list1%next
+      |                1
+Error: Symbol ‘list1’ at (1) has no IMPLICIT type
+temp.f95:39:4:
+
+   39 | else
+      |    1
+Error: Unexpected ELSE statement at (1)
+temp.f95:42:9:
+
+   42 | allocate(new_node)
+      |         1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:43:10:
+
+   43 | new_node%data = list2%data
+      |          1
+Error: Symbol ‘new_node’ at (1) has no IMPLICIT type
+temp.f95:44:10:
+
+   44 | new_node%next => list2%next
+      |          1
+Error: Symbol ‘new_node’ at (1) has no IMPLICIT type
+temp.f95:51:14:
+
+   51 | current_node%next => new_node
+      |              1
+Error: Symbol ‘current_node’ at (1) has no IMPLICIT type
+temp.f95:55:16:
+
+   55 | list2 => list2%next
+      |                1
+Error: Symbol ‘list2’ at (1) has no IMPLICIT type
+temp.f95:57:3:
+
+   57 | end if
+      |   1
+Error: Expecting END DO statement at (1)
+temp.f95:68:9:
+
+   68 | allocate(new_node)
+      |         1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:69:10:
+
+   69 | new_node%data = list1%data
+      |          1
+Error: Symbol ‘new_node’ at (1) has no IMPLICIT type
+temp.f95:70:10:
+
+   70 | new_node%next => list1%next
+      |          1
+Error: Symbol ‘new_node’ at (1) has no IMPLICIT type
+temp.f95:77:14:
+
+   77 | current_node%next => new_node
+      |              1
+Error: Symbol ‘current_node’ at (1) has no IMPLICIT type
+temp.f95:81:16:
+
+   81 | list1 => list1%next
+      |                1
+Error: Symbol ‘list1’ at (1) has no IMPLICIT type
+temp.f95:92:9:
+
+   92 | allocate(new_node)
+      |         1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:93:10:
+
+   93 | new_node%data = list2%data
+      |          1
+Error: Symbol ‘new_node’ at (1) has no IMPLICIT type
+temp.f95:94:10:
+
+   94 | new_node%next => list2%next
+      |          1
+Error: Symbol ‘new_node’ at (1) has no IMPLICIT type
+temp.f95:101:14:
+
+  101 | current_node%next => new_node
+      |              1
+Error: Symbol ‘current_node’ at (1) has no IMPLICIT type
+temp.f95:105:16:
+
+  105 | list2 => list2%next
+      |                1
+Error: Symbol ‘list2’ at (1) has no IMPLICIT type
+temp.f95:114:14:
+
+  114 | type list_node
+      |              1
+Error: Unexpected derived type declaration statement in CONTAINS section at (1)
+temp.f95:115:15:
+
+  115 | integer :: data
+      |               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:116:16:
+
+  116 | type(list_node), pointer :: next => null()
+      |                1
+Error: Derived type ‘list_node’ at (1) is being used before it is defined
+temp.f95:117:3:
+
+  117 | end type list_node
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:7:42:
+
+    7 | type(list_node) function merge_lists(list1, list2) result(merged_list)
+      |                                          1
+Error: Symbol ‘list1’ at (1) has no IMPLICIT type
+temp.f95:7:49:
+
+    7 | type(list_node) function merge_lists(list1, list2) result(merged_list)
+      |                                                 1
+Error: Symbol ‘list2’ at (1) has no IMPLICIT type
+temp.f95:60:12:
+
+   60 | current_node => merged_list
+      |            1
+Error: Symbol ‘current_node’ at (1) has no IMPLICIT type
+temp.f95:30:23:
+
+   30 | merged_list => new_node
+      |                       1
+Error: Symbol ‘new_node’ at (1) has no IMPLICIT type
+temp.f95:123:5:
+
+  123 | use merge_sorted_lists
+      |     1
+Fatal Error: Cannot open module file ‘merge_sorted_lists.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+def merge_two_lists(list1, list2):
+    if list1 is None:
+        return list2
+    if list2 is None:
+        return list1
+
+    if list1.val &lt; list2.val:
+        list1.next = merge_two_lists(list1.next, list2)
+        return list1
+    else:
+        list2.next = merge_two_lists(list1, list2.next)
+        return list2
+</code></pre>
+<p>The algorithm is a recursive solution:
+1. If either <code>list1</code> or <code>list2</code> is null, return the other list as the result.
+2. Compare the values of the nodes in <code>list1</code> and <code>list2</code>.
+3. If <code>list1</code> node value is smaller, set <code>list1.next</code> to the result of recursively calling the function with <code>list1.next</code> and <code>list2</code>.
+4. Otherwise, set <code>list2.next</code> to the result of recursively calling the function with <code>list1</code> and <code>list2.next</code>.
+5. Return the current node as the new head of the merged list.</p>
+<p>This process is repeated until one of the lists becomes null, then the other list is returned as the remainder of the merged list.</p>
+<p>Please note that each language has some differences in syntax, like defining a class in Python or using the <code>nullptr</code> keyword in C++. However, the core logic of the solution remains the same for all languages.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+    if (list1 == nullptr) return list2;
+    if (list2 == nullptr) return list1;
+
+    if (list1-&gt;val &lt; list2-&gt;val) {
+        list1-&gt;next = mergeTwoLists(list1-&gt;next, list2);
+        return list1;
+    } else {
+        list2-&gt;next = mergeTwoLists(list1, list2-&gt;next);
+        return list2;
+    }
+}
+</code></pre>
+<p>The algorithm is a recursive solution:
+1. If either <code>list1</code> or <code>list2</code> is null, return the other list as the result.
+2. Compare the values of the nodes in <code>list1</code> and <code>list2</code>.
+3. If <code>list1</code> node value is smaller, set <code>list1.next</code> to the result of recursively calling the function with <code>list1.next</code> and <code>list2</code>.
+4. Otherwise, set <code>list2.next</code> to the result of recursively calling the function with <code>list1</code> and <code>list2.next</code>.
+5. Return the current node as the new head of the merged list.</p>
+<p>This process is repeated until one of the lists becomes null, then the other list is returned as the remainder of the merged list.</p>
+<p>Please note that each language has some differences in syntax, like defining a class in Python or using the <code>nullptr</code> keyword in C++. However, the core logic of the solution remains the same for all languages.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

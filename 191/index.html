@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Number of 1 Bits</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/190/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/202/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Write a function that takes the binary representation of an unsigned integer and returns the number of '1' bits it has (also known as the <a href="http://en.wikipedia.org/wiki/Hamming_weight">Hamming weight</a>).</p>
+<p><strong>Note:</strong></p>
+<ul>
+<li>Note that in some languages, such as Java, there is no unsigned integer type. In this case, the input will be given as a signed integer type. It should not affect your implementation, as the integer's internal binary representation is the same, whether it is signed or unsigned.</li>
+<li>In Java, the compiler represents the signed integers using <a href="https://en.wikipedia.org/wiki/Two%27s_complement">2's complement notation</a>. Therefore, in <strong>Example 3</strong>, the input represents the signed integer. <code>-3</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 00000000000000000000000000001011
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The input binary string <strong>00000000000000000000000000001011</strong> has a total of three '1' bits.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 00000000000000000000000010000000
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> The input binary string <strong>00000000000000000000000010000000</strong> has a total of one '1' bit.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> n = 11111111111111111111111111111101
+<strong>Output:</strong> 31
+<strong>Explanation:</strong> The input binary string <strong>11111111111111111111111111111101</strong> has a total of thirty one '1' bits.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The input must be a <strong>binary string</strong> of length <code>32</code>.</li>
+</ul>
+<p><strong>Follow up:</strong> If this function is called many times, how would you optimize it?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/number-of-1-bits/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    call test_hamming_weight()
+
+contains
+
+    subroutine test_hamming_weight()
+        implicit none
+
+        integer :: i
+        character(len=32) :: bin_str
+        integer :: num_ones
+
+        ! Example 1
+        bin_str = "00000000000000000000000000001011"
+        num_ones = hamming_weight(bin_str)
+        write (*,*) "Example 1:"
+        write (*,'(*(g0))') "Input: ", trim(bin_str)
+        write (*,'(*(g0))') "Output:", num_ones
+
+        ! Example 2
+        bin_str = "00000000000000000000000010000000"
+        num_ones = hamming_weight(bin_str)
+        write (*,*) "Example 2:"
+        write (*,'(*(g0))') "Input: ", trim(bin_str)
+        write (*,'(*(g0))') "Output:", num_ones
+
+        ! Example 3
+        bin_str = "11111111111111111111111111111101"
+        num_ones = hamming_weight(bin_str)
+        write (*,*) "Example 3:"
+        write (*,'(*(g0))') "Input: ", trim(bin_str)
+        write (*,'(*(g0))') "Output:", num_ones
+
+    end subroutine test_hamming_weight
+
+end program main
+
+function hamming_weight(n) result(num_ones)
+    implicit none
+    character(len=*), intent(in) :: n
+    integer :: num_ones
+
+    integer :: i
+    logical :: is_one
+
+    num_ones = 0
+    do i = 1, len(n)
+        is_one = n(i:i) == '1'
+        if (is_one) then
+            num_ones = num_ones + 1
+        end if
+    end do
+
+end function hamming_weight</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:17:33:
+
+   17 |         num_ones = hamming_weight(bin_str)
+      |                                 1
+Error: Return type mismatch of function ‘hamming_weight’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:17:19:
+
+   17 |         num_ones = hamming_weight(bin_str)
+      |                   1
+Error: Function ‘hamming_weight’ at (1) has no IMPLICIT type
+temp.f95:17:33:
+
+   17 |         num_ones = hamming_weight(bin_str)
+      |                                 1
+Error: Return type mismatch of function ‘hamming_weight’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:24:19:
+
+   24 |         num_ones = hamming_weight(bin_str)
+      |                   1
+Error: Function ‘hamming_weight’ at (1) has no IMPLICIT type
+temp.f95:17:33:
+
+   17 |         num_ones = hamming_weight(bin_str)
+      |                                 1
+Error: Return type mismatch of function ‘hamming_weight’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:31:19:
+
+   31 |         num_ones = hamming_weight(bin_str)
+      |                   1
+Error: Function ‘hamming_weight’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! This function takes a binary representation of an unsigned integer and returns the number of '1' bits it has.
+
+integer function hammingWeight(n)
+    implicit none
+    character(len=32), intent(in) :: n
+    integer :: i, count
+
+    count = 0
+    do i = 1, 32
+        if (n(i:i) == '1') then
+            count = count + 1
+        end if
+    end do
+
+    hammingWeight = count
+end function
+
+! Test the function with some examples
+program main
+    implicit none
+    integer :: n, result
+    character(len=32) :: binary
+
+    ! Example 1
+    binary = "00000000000000000000000000001011"
+    n = binaryToInt(binary)
+    result = hammingWeight(n)
+    write (*,*) "Example 1:", result
+
+    ! Example 2
+    binary = "00000000000000000000000001000000"
+    n = binaryToInt(binary)
+    result = hammingWeight(n)
+    write (*,*) "Example 2:", result
+
+    ! Example 3
+    binary = "11111111111111111111111111111101"
+    n = binaryToInt(binary)
+    result = hammingWeight(n)
+    write (*,*) "Example 3:", result
+end program
+
+! Convert a binary string to an unsigned integer
+integer function binaryToInt(binary)
+    implicit none
+    character(len=32), intent(in) :: binary
+    integer :: i, n
+
+    n = 0
+    do i = 1, 32
+        if (binary(i:i) == '1') then
+            n = n + 2**(31-i)
+        end if
+    end do
+
+    binaryToInt = n
+end function
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:26:19:
+
+   26 |     n = binaryToInt(binary)
+      |                   1
+Error: Return type mismatch of function ‘binarytoint’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:26:8:
+
+   26 |     n = binaryToInt(binary)
+      |        1
+Error: Function ‘binarytoint’ at (1) has no IMPLICIT type
+temp.f95:27:26:
+
+   27 |     result = hammingWeight(n)
+      |                          1
+Error: Return type mismatch of function ‘hammingweight’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:27:13:
+
+   27 |     result = hammingWeight(n)
+      |             1
+Error: Function ‘hammingweight’ at (1) has no IMPLICIT type
+temp.f95:26:19:
+
+   26 |     n = binaryToInt(binary)
+      |                   1
+Error: Return type mismatch of function ‘binarytoint’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:32:8:
+
+   32 |     n = binaryToInt(binary)
+      |        1
+Error: Function ‘binarytoint’ at (1) has no IMPLICIT type
+temp.f95:27:26:
+
+   27 |     result = hammingWeight(n)
+      |                          1
+Error: Return type mismatch of function ‘hammingweight’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:33:13:
+
+   33 |     result = hammingWeight(n)
+      |             1
+Error: Function ‘hammingweight’ at (1) has no IMPLICIT type
+temp.f95:26:19:
+
+   26 |     n = binaryToInt(binary)
+      |                   1
+Error: Return type mismatch of function ‘binarytoint’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:38:8:
+
+   38 |     n = binaryToInt(binary)
+      |        1
+Error: Function ‘binarytoint’ at (1) has no IMPLICIT type
+temp.f95:27:26:
+
+   27 |     result = hammingWeight(n)
+      |                          1
+Error: Return type mismatch of function ‘hammingweight’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:39:13:
+
+   39 |     result = hammingWeight(n)
+      |             1
+Error: Function ‘hammingweight’ at (1) has no IMPLICIT type
+temp.f95:27:13:
+
+   27 |     result = hammingWeight(n)
+      |             1
+Error: Type mismatch in argument ‘n’ at (1); passed INTEGER(4) to CHARACTER(32)
+temp.f95:33:13:
+
+   33 |     result = hammingWeight(n)
+      |             1
+Error: Type mismatch in argument ‘n’ at (1); passed INTEGER(4) to CHARACTER(32)
+temp.f95:39:13:
+
+   39 |     result = hammingWeight(n)
+      |             1
+Error: Type mismatch in argument ‘n’ at (1); passed INTEGER(4) to CHARACTER(32)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def hamming_weight(n):
+    count = 0
+    while n:
+        count += n &amp; 1
+        n &gt;&gt;= 1
+    return count
+</code></pre>
+<p>The algorithm for this problem is straightforward. We use a bitwise AND operation with 1 to check the rightmost bit of the input integer <code>n</code>. If the result is 1, then the rightmost bit is a '1', and we increment the <code>count</code>. We continue to check the rest of the bits by shifting <code>n</code> to the right (<code>&gt;&gt;</code> in C++/Python or <code>&gt;&gt;&gt;</code> in Java/JavaScript, since Java/JavaScript use signed right shift) to remove the rightmost bit. The loop continues until <code>n</code> becomes 0, which means there are no more '1' bits. Finally, we return the <code>count</code> of 1 bits.</p>
+<p>Note that the '&gt;&gt;&gt;=' unary operator in Java and JavaScript is used to avoid sign extension when shifting right. This ensures that the shift is done in an unsigned manner.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int hammingWeight(uint32_t n) {
+    int count = 0;
+    while (n != 0) {
+        count += n &amp; 1;
+        n &gt;&gt;= 1;
+    }
+    return count;
+}
+</code></pre>
+<p>The algorithm for this problem is straightforward. We use a bitwise AND operation with 1 to check the rightmost bit of the input integer <code>n</code>. If the result is 1, then the rightmost bit is a '1', and we increment the <code>count</code>. We continue to check the rest of the bits by shifting <code>n</code> to the right (<code>&gt;&gt;</code> in C++/Python or <code>&gt;&gt;&gt;</code> in Java/JavaScript, since Java/JavaScript use signed right shift) to remove the rightmost bit. The loop continues until <code>n</code> becomes 0, which means there are no more '1' bits. Finally, we return the <code>count</code> of 1 bits.</p>
+<p>Note that the '&gt;&gt;&gt;=' unary operator in Java and JavaScript is used to avoid sign extension when shifting right. This ensures that the shift is done in an unsigned manner.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

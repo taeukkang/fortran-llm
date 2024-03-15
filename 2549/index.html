@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count Distinct Numbers on Board</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2544/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2553/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a positive integer <code>n</code>, that is initially placed on a board. Every day, for <code>109</code> days, you perform the following procedure:</p>
+<ul>
+<li>For each number <code>x</code> present on the board, find all numbers <code>1 &lt;= i &lt;= n</code> such that <code>x % i == 1</code>.</li>
+<li>Then, place those numbers on the board.</li>
+</ul>
+<p>Return <em>the number of <strong>distinct</strong> integers present on the board after</em> <code>109</code> <em>days have elapsed</em>.</p>
+<p><strong>Note:</strong></p>
+<ul>
+<li>Once a number is placed on the board, it will remain on it until the end.</li>
+<li><code>%</code> stands for the modulo operation. For example, <code>14 % 3</code> is <code>2</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 5
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> Initially, 5 is present on the board. 
+The next day, 2 and 4 will be added since 5 % 2 == 1 and 5 % 4 == 1. 
+After that day, 3 will be added to the board because 4 % 3 == 1. 
+At the end of a billion days, the distinct numbers on the board will be 2, 3, 4, and 5. </p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 3
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> 
+Since 3 % 2 == 1, 2 will be added to the board. 
+After a billion days, the only two distinct numbers on the board are 2 and 3. </p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-distinct-numbers-on-board/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n, x, i, num_distinct
+
+    ! read input
+    read(*,*) n
+
+    ! initialize board
+    call init_board(n)
+
+    ! perform procedure every day
+    do i = 1, 109
+        call perform_procedure()
+    end do
+
+    ! count distinct numbers on board
+    num_distinct = count_distinct()
+
+    ! print result
+    write(*,'(I0)') num_distinct
+
+contains
+
+    subroutine init_board(n)
+        implicit none
+        integer, intent(in) :: n
+        integer :: x
+
+        do x = 1, n
+            if (mod(x, n) == 0) then
+                call add_to_board(x)
+            end if
+        end do
+    end subroutine init_board
+
+    subroutine perform_procedure()
+        implicit none
+        integer :: x, i
+
+        do x = 1, size(board)
+            do i = 1, n
+                if (mod(x, i) == 1) then
+                    call add_to_board(i)
+                end if
+            end do
+        end do
+    end subroutine perform_procedure
+
+    function count_distinct() result(num_distinct)
+        implicit none
+        integer :: num_distinct
+
+        num_distinct = size(unique(board))
+    end function count_distinct
+
+    subroutine add_to_board(x)
+        implicit none
+        integer, intent(in) :: x
+
+        if (.not. any(board == x)) then
+            board = [board, x]
+        end if
+    end subroutine add_to_board
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:61:27:
+
+   61 |         if (.not. any(board == x)) then
+      |                           1
+Error: Symbol ‘board’ at (1) has no IMPLICIT type
+temp.f95:54:40:
+
+   54 |         num_distinct = size(unique(board))
+      |                                        1
+Error: Symbol ‘board’ at (1) has no IMPLICIT type
+temp.f95:41:28:
+
+   41 |         do x = 1, size(board)
+      |                            1
+Error: Symbol ‘board’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module mod_problem_109
+
+implicit none
+
+contains
+
+integer function solve(n) result(res)
+
+integer, intent(in) :: n
+
+integer :: i, j, x, y, z, count
+
+! Initialize the board with the given number
+res = 1
+
+! Perform the procedure for 109 days
+do i = 2, 109
+
+    ! Find all numbers x such that x % i == 1
+    count = 0
+    do j = 1, n
+        x = j
+        y = i
+        z = x / y
+        if (z == 1) then
+            count = count + 1
+        end if
+    end do
+
+    ! Place the found numbers on the board
+    res = res + count
+
+end do
+
+end function solve
+
+end module mod_problem_109
+
+program test
+
+use mod_problem_109
+
+implicit none
+
+integer :: n, res
+
+! Test case 1
+n = 5
+res = solve(n)
+print *, "Test case 1: ", res
+
+! Test case 2
+n = 3
+res = solve(n)
+print *, "Test case 2: ", res
+
+end program test
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Test case 1:            9
+ Test case 2:            4
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def distinct_numbers(n):
+    return n - 1
+</code></pre>
+<pre><code>For a given `n`, we only calculate the count of distinct integers that can be added to the board because of `n`.
+</code></pre>
+<p>It can be observed that only the numbers in the range <code>[2, n]</code> will satisfy the condition <code>x % i == 1</code>, where <code>x = n</code>. It is because when <code>i</code> is 1, we have <code>n % 1 == 0</code>. So, the numbers <code>[2, n-1]</code>, inclusive, will be added to the board, making the count of distinct integers on the board equal to <code>n - 1</code>.</p>
+<p>Since we are only concerned about the count of distinct integers and not the actual integers on the board, this algorithm works regardless of the value of <code>10^9</code> days.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int distinctNumbers(int n) {
+    return n - 1;
+}
+</code></pre>
+<pre><code>For a given `n`, we only calculate the count of distinct integers that can be added to the board because of `n`.
+</code></pre>
+<p>It can be observed that only the numbers in the range <code>[2, n]</code> will satisfy the condition <code>x % i == 1</code>, where <code>x = n</code>. It is because when <code>i</code> is 1, we have <code>n % 1 == 0</code>. So, the numbers <code>[2, n-1]</code>, inclusive, will be added to the board, making the count of distinct integers on the board equal to <code>n - 1</code>.</p>
+<p>Since we are only concerned about the count of distinct integers and not the actual integers on the board, this algorithm works regardless of the value of <code>10^9</code> days.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

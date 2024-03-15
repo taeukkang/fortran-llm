@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Same Tree</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/94/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/101/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the roots of two binary trees <code>p</code> and <code>q</code>, write a function to check if they are the same or not.</p>
+<p>Two binary trees are considered the same if they are structurally identical, and the nodes have the same value.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> p = [1,2,3], q = [1,2,3]
+<strong>Output:</strong> true</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> p = [1,2], q = [1,null,2]
+<strong>Output:</strong> false</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> p = [1,2,1], q = [1,1,2]
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in both trees is in the range <code>[0, 100]</code>.</li>
+<li><code>-104 &lt;= Node.val &lt;= 104</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/same-tree/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 3
+    type(node), target :: p(n)
+    type(node), target :: q(n)
+
+    call init_nodes(p)
+    call init_nodes(q)
+
+    print '(L1)', same_tree(p, q)
+
+contains
+
+    subroutine init_nodes(nodes)
+        implicit none
+        type(node), intent(inout) :: nodes(:)
+        integer :: i
+
+        do i = 1, size(nodes)
+            allocate(nodes(i)%left)
+            allocate(nodes(i)%right)
+            nodes(i)%val = i
+        end do
+    end subroutine init_nodes
+
+    logical function same_tree(p, q) result(same)
+        implicit none
+        type(node), intent(in) :: p(:)
+        type(node), intent(in) :: q(:)
+        integer :: i
+
+        same = .true.
+
+        do i = 1, size(p)
+            if (associated(p(i)%left)) then
+                if (.not. associated(q(i)%left)) return
+                same = same .and. same_tree(p(i)%left, q(i)%left)
+            else
+                if (associated(q(i)%left)) return
+            end if
+
+            if (associated(p(i)%right)) then
+                if (.not. associated(q(i)%right)) return
+                same = same .and. same_tree(p(i)%right, q(i)%right)
+            else
+                if (associated(q(i)%right)) return
+            end if
+
+            if (p(i)%val /= q(i)%val) return
+        end do
+    end function same_tree
+
+end program main
+
+type node
+    integer :: val
+    class(node), pointer :: left => null()
+    class(node), pointer :: right => null()
+end type node</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:15:
+
+    5 |     type(node), target :: p(n)
+      |               1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:6:15:
+
+    6 |     type(node), target :: q(n)
+      |               1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:17:19:
+
+   17 |         type(node), intent(inout) :: nodes(:)
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:21:21:
+
+   21 |             allocate(nodes(i)%left)
+      |                     1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:22:21:
+
+   22 |             allocate(nodes(i)%right)
+      |                     1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:29:19:
+
+   29 |         type(node), intent(in) :: p(:)
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:30:19:
+
+   30 |         type(node), intent(in) :: q(:)
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:36:33:
+
+   36 |             if (associated(p(i)%left)) then
+      |                                 1
+Error: Symbol ‘p’ at (1) has no IMPLICIT type
+temp.f95:37:43:
+
+   37 |                 if (.not. associated(q(i)%left)) return
+      |                                           1
+Error: Symbol ‘q’ at (1) has no IMPLICIT type
+temp.f95:38:50:
+
+   38 |                 same = same .and. same_tree(p(i)%left, q(i)%left)
+      |                                                  1
+Error: Symbol ‘p’ at (1) has no IMPLICIT type
+temp.f95:39:16:
+
+   39 |             else
+      |                1
+Error: Unexpected ELSE statement at (1)
+temp.f95:40:37:
+
+   40 |                 if (associated(q(i)%left)) return
+      |                                     1
+Error: Symbol ‘q’ at (1) has no IMPLICIT type
+temp.f95:41:15:
+
+   41 |             end if
+      |               1
+Error: Expecting END DO statement at (1)
+temp.f95:43:33:
+
+   43 |             if (associated(p(i)%right)) then
+      |                                 1
+Error: Symbol ‘p’ at (1) has no IMPLICIT type
+temp.f95:44:43:
+
+   44 |                 if (.not. associated(q(i)%right)) return
+      |                                           1
+Error: Symbol ‘q’ at (1) has no IMPLICIT type
+temp.f95:45:50:
+
+   45 |                 same = same .and. same_tree(p(i)%right, q(i)%right)
+      |                                                  1
+Error: Symbol ‘p’ at (1) has no IMPLICIT type
+temp.f95:46:16:
+
+   46 |             else
+      |                1
+Error: Unexpected ELSE statement at (1)
+temp.f95:47:37:
+
+   47 |                 if (associated(q(i)%right)) return
+      |                                     1
+Error: Symbol ‘q’ at (1) has no IMPLICIT type
+temp.f95:48:15:
+
+   48 |             end if
+      |               1
+Error: Expecting END DO statement at (1)
+temp.f95:50:22:
+
+   50 |             if (p(i)%val /= q(i)%val) return
+      |                      1
+Error: Symbol ‘p’ at (1) has no IMPLICIT type
+temp.f95:1:12:
+
+    1 | program main
+      |            1
+......
+   56 | type node
+      |         2   
+Error: Two main PROGRAMs at (1) and (2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module same_tree
+
+contains
+
+function is_same_tree(p, q) result(same)
+
+! Declare the variables
+integer :: p, q
+logical :: same
+
+! Check if the roots are the same
+if (p == q) then
+    same = .true.
+else
+    same = .false.
+endif
+
+! Check if the left subtrees are the same
+if (associated(p%left) .and. associated(q%left)) then
+    if (is_same_tree(p%left, q%left)) then
+        same = .true.
+    else
+        same = .false.
+    endif
+elseif (associated(p%left) .or. associated(q%left)) then
+    same = .false.
+endif
+
+! Check if the right subtrees are the same
+if (associated(p%right) .and. associated(q%right)) then
+    if (is_same_tree(p%right, q%right)) then
+        same = .true.
+    else
+        same = .false.
+    endif
+elseif (associated(p%right) .or. associated(q%right)) then
+    same = .false.
+endif
+
+end function is_same_tree
+
+end module same_tree
+
+program main
+
+use same_tree
+
+implicit none
+
+! Declare the variables
+type(tree_node), pointer :: p, q
+logical :: same
+
+! Create the first tree
+p = tree_node(1, tree_node(2, tree_node(3), null()), null())
+
+! Create the second tree
+q = tree_node(1, tree_node(2, tree_node(3), null()), null())
+
+! Check if the trees are the same
+same = is_same_tree(p, q)
+
+! Print the result
+if (same) then
+    write (*,*) "The trees are the same"
+else
+    write (*,*) "The trees are not the same"
+endif
+
+end program main
+
+! Define the tree node structure
+type tree_node
+    integer :: val
+    type(tree_node), pointer :: left, right
+end type tree_node
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:19:18:
+
+   19 | if (associated(p%left) .and. associated(q%left)) then
+      |                  1
+Error: Unexpected ‘%’ for nonderived-type variable ‘p’ at (1)
+temp.f95:20:24:
+
+   20 |     if (is_same_tree(p%left, q%left)) then
+      |                        1
+Error: Unexpected ‘%’ for nonderived-type variable ‘p’ at (1)
+temp.f95:22:8:
+
+   22 |     else
+      |        1
+Error: Unexpected ELSE statement at (1)
+temp.f95:24:7:
+
+   24 |     endif
+      |       1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:25:22:
+
+   25 | elseif (associated(p%left) .or. associated(q%left)) then
+      |                      1
+Error: Unexpected ‘%’ for nonderived-type variable ‘p’ at (1)
+temp.f95:27:3:
+
+   27 | endif
+      |   1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:30:18:
+
+   30 | if (associated(p%right) .and. associated(q%right)) then
+      |                  1
+Error: Unexpected ‘%’ for nonderived-type variable ‘p’ at (1)
+temp.f95:31:24:
+
+   31 |     if (is_same_tree(p%right, q%right)) then
+      |                        1
+Error: Unexpected ‘%’ for nonderived-type variable ‘p’ at (1)
+temp.f95:33:8:
+
+   33 |     else
+      |        1
+Error: Unexpected ELSE statement at (1)
+temp.f95:35:7:
+
+   35 |     endif
+      |       1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:36:22:
+
+   36 | elseif (associated(p%right) .or. associated(q%right)) then
+      |                      1
+Error: Unexpected ‘%’ for nonderived-type variable ‘p’ at (1)
+temp.f95:38:3:
+
+   38 | endif
+      |   1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:46:5:
+
+   46 | use same_tree
+      |     1
+Fatal Error: Cannot open module file ‘same_tree.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def is_same_tree(p, q):
+    if p is None and q is None:
+        return True
+    if p is None or q is None:
+        return False
+    if p.val != q.val:
+        return False
+    return is_same_tree(p.left, q.left) and is_same_tree(p.right, q.right)
+</code></pre>
+<pre><code>The algorithm used is a recursive depth-first traversal of both trees. It will compare the nodes at each level of the tree, and return false if the nodes have different values or if one node is missing in one of the trees. The algorithm will only return true if all nodes in both trees are the same.
+</code></pre>
+<p>At each level, the function checks if both nodes are null, indicating we've reached the end of both trees and they must be the same. Then it checks if either node is null, indicating that one tree is missing a node and they cannot be the same. If both nodes have the same value, we then recursively check their left and right children. If both children are the same, the function returns true. If at any point nodes are found to be different, the function returns false.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+};
+
+bool isSameTree(TreeNode* p, TreeNode* q) {
+    if (p == nullptr &amp;&amp; q == nullptr) {
+        return true;
+    }
+    if (p == nullptr || q == nullptr) {
+        return false;
+    }
+    if (p-&gt;val != q-&gt;val) {
+        return false;
+    }
+    return isSameTree(p-&gt;left, q-&gt;left) &amp;&amp; isSameTree(p-&gt;right, q-&gt;right);
+}
+</code></pre>
+<pre><code>The algorithm used is a recursive depth-first traversal of both trees. It will compare the nodes at each level of the tree, and return false if the nodes have different values or if one node is missing in one of the trees. The algorithm will only return true if all nodes in both trees are the same.
+</code></pre>
+<p>At each level, the function checks if both nodes are null, indicating we've reached the end of both trees and they must be the same. Then it checks if either node is null, indicating that one tree is missing a node and they cannot be the same. If both nodes have the same value, we then recursively check their left and right children. If both children are the same, the function returns true. If at any point nodes are found to be different, the function returns false.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

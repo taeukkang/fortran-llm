@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Common Value</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2535/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2544/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two integer arrays <code>nums1</code> and <code>nums2</code>, sorted in non-decreasing order, return <em>the <strong>minimum integer common</strong> to both arrays</em>. If there is no common integer amongst <code>nums1</code> and <code>nums2</code>, return <code>-1</code>.</p>
+<p>Note that an integer is said to be <strong>common</strong> to <code>nums1</code> and <code>nums2</code> if both arrays have <strong>at least one</strong> occurrence of that integer.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums1 = [1,2,3], nums2 = [2,4]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The smallest element common to both arrays is 2, so we return 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums1 = [1,2,3,6], nums2 = [2,3,4,5]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> There are two common elements in the array 2 and 3 out of which 2 is the smallest, so 2 is returned.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums1.length, nums2.length &lt;= 105</code></li>
+<li><code>1 &lt;= nums1[i], nums2[j] &lt;= 109</code></li>
+<li>Both <code>nums1</code> and <code>nums2</code> are sorted in <strong>non-decreasing</strong> order.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-common-value/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program min_integer_common
+    implicit none
+
+    integer, parameter :: n1 = 3, n2 = 4
+    integer, dimension(n1) :: nums1 = [1, 2, 3]
+    integer, dimension(n2) :: nums2 = [2, 4]
+    integer :: i, j, k, l, m, n, result
+
+    ! Example 1
+    write (*, '(A, I0)') 'Example 1: ', min_integer_common(nums1, nums2)
+
+    ! Example 2
+    nums1 = [1, 2, 3, 6]
+    nums2 = [2, 3, 4, 5]
+    write (*, '(A, I0)') 'Example 2: ', min_integer_common(nums1, nums2)
+
+contains
+
+    function min_integer_common(nums1, nums2) result(result)
+        implicit none
+        integer, intent(in) :: nums1(:), nums2(:)
+        integer :: result
+        logical :: found
+
+        result = -1
+        do i = 1, size(nums1)
+            found = .false.
+            do j = 1, size(nums2)
+                if (nums1(i) == nums2(j)) then
+                    found = .true.
+                    exit
+                end if
+            end do
+            if (found) then
+                result = max(result, nums1(i))
+            end if
+        end do
+    end function min_integer_common
+
+end program min_integer_common</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:35:
+
+    6 |     integer, dimension(n2) :: nums2 = [2, 4]
+      |                                   1
+Error: Different shape for array assignment at (1) on dimension 1 (4 and 2)
+temp.f95:10:59:
+
+   10 |     write (*, '(A, I0)') 'Example 1: ', min_integer_common(nums1, nums2)
+      |                                                           1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:15:59:
+
+   15 |     write (*, '(A, I0)') 'Example 2: ', min_integer_common(nums1, nums2)
+      |                                                           1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:19:60:
+
+   19 |     function min_integer_common(nums1, nums2) result(result)
+      |                                                            1
+Error: PROGRAM attribute of ‘min_integer_common’ conflicts with PROCEDURE attribute at (1)
+temp.f95:20:21:
+
+   20 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:21:49:
+
+   21 |         integer, intent(in) :: nums1(:), nums2(:)
+      |                                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:22:25:
+
+   22 |         integer :: result
+      |                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:23:24:
+
+   23 |         logical :: found
+      |                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:25:19:
+
+   25 |         result = -1
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:29:
+
+   26 |         do i = 1, size(nums1)
+      |                             1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:27:27:
+
+   27 |             found = .false.
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:28:33:
+
+   28 |             do j = 1, size(nums2)
+      |                                 1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:29:38:
+
+   29 |                 if (nums1(i) == nums2(j)) then
+      |                                      1
+Error: Syntax error in IF-expression at (1)
+temp.f95:30:34:
+
+   30 |                     found = .true.
+      |                                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:31:24:
+
+   31 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:32:19:
+
+   32 |                 end if
+      |                   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:33:15:
+
+   33 |             end do
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:34:27:
+
+   34 |             if (found) then
+      |                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:35:46:
+
+   35 |                 result = max(result, nums1(i))
+      |                                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:36:15:
+
+   36 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:37:11:
+
+   37 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:38:7:
+
+   38 |     end function min_integer_common
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:14:9:
+
+   14 |     nums2 = [2, 3, 4, 5]
+      |         1
+Error: Symbol ‘nums2’ at (1) has no IMPLICIT type; did you mean ‘nums1’?
+temp.f95:13:4:
+
+   13 |     nums1 = [1, 2, 3, 6]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (3 and 4)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare the input and output variables
+integer, dimension(100000) :: nums1, nums2
+integer :: n1, n2, i, j, common
+
+! Read the input
+read(*,*) n1, nums1
+read(*,*) n2, nums2
+
+! Initialize the output
+common = -1
+
+! Loop through the arrays and find the common elements
+do i = 1, n1
+    do j = 1, n2
+        if (nums1(i) == nums2(j)) then
+            common = nums1(i)
+            exit
+        end if
+    end do
+end do
+
+! Output the result
+write(*,*) common
+
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 6 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7842ceda3960 in ???
+#1  0x7842ceda44d9 in ???
+#2  0x7842ceff817b in ???
+#3  0x7842ceff1684 in ???
+#4  0x7842ceff22aa in ???
+#5  0x5b3da5bb4219 in MAIN__
+#6  0x5b3da5bb44fd in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_common_number(nums1, nums2):
+    i, j = 0, 0
+    while i &lt; len(nums1) and j &lt; len(nums2):
+        if nums1[i] == nums2[j]:
+            return nums1[i]
+        elif nums1[i] &lt; nums2[j]:
+            i += 1
+        else:
+            j += 1
+    return -1
+</code></pre>
+<p>The algorithm is pretty simple. We use two pointers i and j to iterate through nums1 and nums2. As they are sorted in non-decreasing order, we can simply compare the elements at i and j. If nums1[i] is equal to nums2[j], we return the current element as it is the minimum common integer. If nums1[i] is less than nums2[j], we increment i. Otherwise, we increment j. If we reach the end of any array, we break the loop and return -1 as no common integer was found.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minCommonNumber(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+    int i = 0, j = 0;
+    while (i &lt; nums1.size() &amp;&amp; j &lt; nums2.size()) {
+        if (nums1[i] == nums2[j]) {
+            return nums1[i];
+        } else if (nums1[i] &lt; nums2[j]) {
+            i++;
+        } else {
+            j++;
+        }
+    }
+    return -1;
+}
+</code></pre>
+<p>The algorithm is pretty simple. We use two pointers i and j to iterate through nums1 and nums2. As they are sorted in non-decreasing order, we can simply compare the elements at i and j. If nums1[i] is equal to nums2[j], we return the current element as it is the minimum common integer. If nums1[i] is less than nums2[j], we increment i. Otherwise, we increment j. If we reach the end of any array, we break the loop and return -1 as no common integer was found.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

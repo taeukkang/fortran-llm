@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Take Gifts From the Richest Pile</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2553/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2562/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer array <code>gifts</code> denoting the number of gifts in various piles. Every second, you do the following:</p>
+<ul>
+<li>Choose the pile with the maximum number of gifts.</li>
+<li>If there is more than one pile with the maximum number of gifts, choose any.</li>
+<li>Leave behind the floor of the square root of the number of gifts in the pile. Take the rest of the gifts.</li>
+</ul>
+<p>Return <em>the number of gifts remaining after</em> <code>k</code> <em>seconds.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> gifts = [25,64,9,4,100], k = 4
+<strong>Output:</strong> 29
+<strong>Explanation:</strong> 
+The gifts are taken in the following way:
+- In the first second, the last pile is chosen and 10 gifts are left behind.
+- Then the second pile is chosen and 8 gifts are left behind.
+- After that the first pile is chosen and 5 gifts are left behind.
+- Finally, the last pile is chosen again and 3 gifts are left behind.
+The final remaining gifts are [5,8,9,4,3], so the total number of gifts remaining is 29.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> gifts = [1,1,1,1], k = 4
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> 
+In this case, regardless which pile you choose, you have to leave behind 1 gift in each pile. 
+That is, you can't take any pile with you. 
+So, the total gifts remaining are 4.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= gifts.length &lt;= 103</code></li>
+<li><code>1 &lt;= gifts[i] &lt;= 109</code></li>
+<li><code>1 &lt;= k &lt;= 103</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/take-gifts-from-the-richest-pile/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 5
+    integer, dimension(n) :: gifts
+    integer :: k
+    integer :: i
+
+    gifts = [25, 64, 9, 4, 100]
+    k = 4
+    call solve(gifts, k)
+
+    gifts = [1, 1, 1, 1]
+    k = 4
+    call solve(gifts, k)
+
+contains
+
+subroutine solve(gifts, k)
+    implicit none
+    integer, intent(inout) :: gifts(:)
+    integer, intent(in) :: k
+    integer :: max_gifts
+    integer :: i
+
+    do i = 1, k
+        max_gifts = maxval(gifts)
+        where (gifts == max_gifts)
+            gifts = gifts - floor(sqrt(real(max_gifts)))
+        end where
+    end do
+
+    print '(I0)', sum(gifts)
+end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:13:4:
+
+   13 |     gifts = [1, 1, 1, 1]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (5 and 4)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module gifts
+  implicit none
+contains
+  function solve(gifts, k) result(remaining)
+    integer, intent(in) :: gifts(:), k
+    integer :: remaining
+    integer :: i, j, max_gifts, num_gifts
+
+    remaining = 0
+    do i = 1, k
+      ! Find the maximum number of gifts in any pile
+      max_gifts = 0
+      do j = 1, size(gifts)
+        if (gifts(j) > max_gifts) then
+          max_gifts = gifts(j)
+        end if
+      end do
+
+      ! Leave behind the floor of the square root of the maximum number of gifts
+      num_gifts = int(sqrt(real(max_gifts)))
+      remaining = remaining + max_gifts - num_gifts
+
+      ! Take the rest of the gifts
+      gifts = gifts - num_gifts
+    end do
+  end function solve
+end module gifts
+
+program test
+  use gifts
+  implicit none
+  integer, parameter :: k = 4
+  integer, parameter :: gifts(5) = [25, 64, 9, 4, 100]
+  integer :: remaining
+
+  remaining = solve(gifts, k)
+  write (*,*) 'Remaining gifts:', remaining
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:24:6:
+
+   24 |       gifts = gifts - num_gifts
+      |      1
+Error: Dummy argument ‘gifts’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:30:7:
+
+   30 |   use gifts
+      |       1
+Fatal Error: Cannot open module file ‘gifts.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">import math
+
+def giftsRemaining(gifts, k):
+    for i in range(k):
+        gifts.sort()
+        max_index = len(gifts) - 1
+        gifts[max_index] -= int(math.sqrt(gifts[max_index]))
+    return sum(gifts)
+</code></pre>
+<p>The algorithm iterates <code>k</code> times, in each iteration:
+1. Sort the array <code>gifts</code> in non-decreasing order.
+2. Find the maximum number of gifts in the pile (last element after sorting).
+3. Update the maximum pile by removing the taken gifts from it, which is the number of gifts minus the floor of its square root.
+4. After the <code>k</code> iterations, calculate the sum of the elements in the <code>gifts</code> array and return it.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;cmath&gt;
+
+int giftsRemaining(std::vector&lt;int&gt;&amp; gifts, int k) {
+    for (int i = 0; i &lt; k; i++) {
+        std::sort(gifts.begin(), gifts.end());
+        int maxIndex = gifts.size() - 1;
+        gifts[maxIndex] -= (int)(sqrt(gifts[maxIndex]));
+    }
+    int remaining_gifts = 0;
+    for (int gift : gifts) remaining_gifts += gift;
+    return remaining_gifts;
+}
+</code></pre>
+<p>The algorithm iterates <code>k</code> times, in each iteration:
+1. Sort the array <code>gifts</code> in non-decreasing order.
+2. Find the maximum number of gifts in the pile (last element after sorting).
+3. Update the maximum pile by removing the taken gifts from it, which is the number of gifts minus the floor of its square root.
+4. After the <code>k</code> iterations, calculate the sum of the elements in the <code>gifts</code> array and return it.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

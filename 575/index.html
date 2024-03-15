@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Distribute Candies</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/572/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/589/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Alice has <code>n</code> candies, where the <code>ith</code> candy is of type <code>candyType[i]</code>. Alice noticed that she started to gain weight, so she visited a doctor.</p>
+<p>The doctor advised Alice to only eat <code>n / 2</code> of the candies she has (<code>n</code> is always even). Alice likes her candies very much, and she wants to eat the maximum number of different types of candies while still following the doctor's advice.</p>
+<p>Given the integer array <code>candyType</code> of length <code>n</code>, return <em>the <strong>maximum</strong> number of different types of candies she can eat if she only eats</em> <code>n / 2</code> <em>of them</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> candyType = [1,1,2,2,3,3]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> Alice can only eat 6 / 2 = 3 candies. Since there are only 3 types, she can eat one of each type.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> candyType = [1,1,2,3]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> Alice can only eat 4 / 2 = 2 candies. Whether she eats types [1,2], [1,3], or [2,3], she still can only eat 2 different types.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> candyType = [6,6,6,6]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> Alice can only eat 4 / 2 = 2 candies. Even though she can eat 2 candies, she only has 1 type.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == candyType.length</code></li>
+<li><code>2 &lt;= n &lt;= 104</code></li>
+<li><code>n</code> is even.</li>
+<li><code>-105 &lt;= candyType[i] &lt;= 105</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/distribute-candies/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n, i
+    integer, allocatable :: candyType(:)
+    integer :: maxTypes
+
+    ! read input
+    read(*,*) n
+    allocate(candyType(n))
+    do i = 1, n
+        read(*,*) candyType(i)
+    end do
+
+    ! solve problem
+    maxTypes = solve(n, candyType)
+
+    ! print output
+    write(*,*) maxTypes
+
+contains
+
+    function solve(n, candyType) result(maxTypes)
+        implicit none
+        integer, intent(in) :: n
+        integer, intent(in) :: candyType(:)
+        integer :: maxTypes
+        integer :: i, j, count
+
+        maxTypes = 0
+        do i = 1, n - 1
+            count = 0
+            do j = i + 1, n
+                if (candyType(j) /= candyType(i)) then
+                    count = count + 1
+                end if
+            end do
+            maxTypes = max(maxTypes, count)
+        end do
+    end function solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 9 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7cc6862ab960 in ???
+#1  0x7cc6862ac4d9 in ???
+#2  0x7cc68650017b in ???
+#3  0x7cc6864f9684 in ???
+#4  0x7cc6864fa2aa in ???
+#5  0x5ba7b52b737f in MAIN__
+#6  0x5ba7b52b7646 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module MaxCandyTypes
+    implicit none
+    private
+    public :: max_candy_types
+contains
+    function max_candy_types(candy_type) result(max_types)
+        integer, intent(in) :: candy_type(:)
+        integer :: max_types
+        integer :: i, j, n, count
+        logical :: seen(size(candy_type))
+
+        n = size(candy_type)
+        max_types = 0
+        count = 0
+        seen = .false.
+
+        do i = 1, n
+            if (mod(i, 2) == 0) then
+                if (.not. seen(candy_type(i))) then
+                    count = count + 1
+                    seen(candy_type(i)) = .true.
+                end if
+            end if
+        end do
+
+        max_types = count
+    end function max_candy_types
+end module MaxCandyTypes
+
+program test_max_candy_types
+    use MaxCandyTypes
+    implicit none
+    integer :: candy_type(6)
+
+    candy_type = [1, 1, 2, 2, 3, 3]
+    write (*, '(A, I0)') 'Max candy types: ', max_candy_types(candy_type)
+
+    candy_type = [1, 1, 2, 3]
+    write (*, '(A, I0)') 'Max candy types: ', max_candy_types(candy_type)
+
+    candy_type = [6, 6, 6, 6]
+    write (*, '(A, I0)') 'Max candy types: ', max_candy_types(candy_type)
+end program test_max_candy_types
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:38:4:
+
+   38 |     candy_type = [1, 1, 2, 3]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (6 and 4)
+temp.f95:41:4:
+
+   41 |     candy_type = [6, 6, 6, 6]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (6 and 4)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def maxNumberOfCandies(candyType):
+    uniqueCandies = set(candyType)
+    return min(len(uniqueCandies), len(candyType) // 2)
+</code></pre>
+<pre><code>The algorithm starts by first creating a set of unique candy types using a hash set (in C++ and Java) or a set (in Python and JavaScript). The uniqueCandies set will only store each type of candy once, no matter how many times it appears in the candyType array. After creating this set, the algorithm compares the number of unique types of candies (size of the set) with half the total number of candies (n / 2). The minimum of these two values is returned as the maximum number of different types of candies Alice can eat. This is because Alice can eat at most n / 2 candies, but if there are fewer unique candies than that, she will eat all the unique types available.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;unordered_set&gt;
+using namespace std;
+
+int maxNumberOfCandies(vector&lt;int&gt;&amp; candyType) {
+    unordered_set&lt;int&gt; uniqueCandies(candyType.begin(), candyType.end());
+    return min(uniqueCandies.size(), candyType.size() / 2);
+}
+</code></pre>
+<pre><code>The algorithm starts by first creating a set of unique candy types using a hash set (in C++ and Java) or a set (in Python and JavaScript). The uniqueCandies set will only store each type of candy once, no matter how many times it appears in the candyType array. After creating this set, the algorithm compares the number of unique types of candies (size of the set) with half the total number of candies (n / 2). The minimum of these two values is returned as the maximum number of different types of candies Alice can eat. This is because Alice can eat at most n / 2 candies, but if there are fewer unique candies than that, she will eat all the unique types available.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

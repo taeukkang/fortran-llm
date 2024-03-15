@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Two Sum III - Data structure design</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/169/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/171/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Design a data structure that accepts a stream of integers and checks if it has a pair of integers that sum up to a particular value.</p>
+<p>Implement the <code>TwoSum</code> class:</p>
+<ul>
+<li><code>TwoSum()</code> Initializes the <code>TwoSum</code> object, with an empty array initially.</li>
+<li><code>void add(int number)</code> Adds <code>number</code> to the data structure.</li>
+<li><code>boolean find(int value)</code> Returns <code>true</code> if there exists any pair of numbers whose sum is equal to <code>value</code>, otherwise, it returns <code>false</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input</strong>
+[ "TwoSum ",  "add ",  "add ",  "add ",  "find ",  "find "]
+[[], [1], [3], [5], [4], [7]]
+<strong>Output</strong>
+[null, null, null, null, true, false]</p>
+<p><strong>Explanation</strong>
+TwoSum twoSum = new TwoSum();
+twoSum.add(1);   // [] --&gt; [1]
+twoSum.add(3);   // [1] --&gt; [1,3]
+twoSum.add(5);   // [1,3] --&gt; [1,3,5]
+twoSum.find(4);  // 1 + 3 = 4, return true
+twoSum.find(7);  // No two integers sum up to 7, return false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>-105 &lt;= number &lt;= 105</code></li>
+<li><code>-231 &lt;= value &lt;= 231 - 1</code></li>
+<li>At most <code>104</code> calls will be made to <code>add</code> and <code>find</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/two-sum-iii-data-structure-design/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use :: two_sum_mod
+    implicit none
+
+    type(TwoSum) :: two_sum
+    integer :: i
+    integer, parameter :: n = 6
+    integer, parameter :: nums(n) = [1, 3, 5, 4, 7, 2]
+    logical, parameter :: expected(n) = [.false., .true., .true., .true., .false., .false.]
+
+    do i = 1, n
+        call two_sum%add(nums(i))
+        write(*, '(A, L1)') 'find(', nums(i), ') = ', two_sum%find(nums(i))
+    end do
+
+end program main
+
+module two_sum_mod
+    implicit none
+
+    private
+    public :: TwoSum
+
+    type :: TwoSum
+        private
+        integer, allocatable :: numbers(:)
+    contains
+        procedure, pass :: add
+        procedure, pass :: find
+    end type TwoSum
+
+contains
+
+    subroutine add(this, number)
+        class(TwoSum), intent(inout) :: this
+        integer, intent(in) :: number
+
+        allocate(this%numbers(size(this%numbers)+1))
+        this%numbers(size(this%numbers)) = number
+    end subroutine add
+
+    function find(this, value) result(has_pair)
+        class(TwoSum), intent(in) :: this
+        integer, intent(in) :: value
+        logical :: has_pair
+        integer :: i, j
+
+        has_pair = .false.
+        do i = 1, size(this%numbers)-1
+            do j = i+1, size(this%numbers)
+                if (this%numbers(i) + this%numbers(j) == value) then
+                    has_pair = .true.
+                    exit
+                end if
+            end do
+            if (has_pair) exit
+        end do
+    end function find
+
+end module two_sum_mod</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:2:11:
+
+    2 |     use :: two_sum_mod
+      |           1
+Fatal Error: Cannot open module file ‘two_sum_mod.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare the TwoSum class
+module TwoSum
+
+! Declare the data structure
+type :: TwoSum
+    integer, allocatable :: numbers(:)
+end type TwoSum
+
+! Declare the constructor
+interface TwoSum
+    module procedure :: createTwoSum
+end interface TwoSum
+
+! Declare the add method
+interface add
+    module procedure :: addNumber
+end interface add
+
+! Declare the find method
+interface find
+    module procedure :: findSum
+end interface find
+
+contains
+
+! Create a new TwoSum object
+function createTwoSum() result(this)
+    type(TwoSum) :: this
+
+    ! Allocate the array
+    allocate(this%numbers(0))
+end function createTwoSum
+
+! Add a number to the data structure
+subroutine addNumber(this, number)
+    class(TwoSum), intent(inout) :: this
+    integer, intent(in) :: number
+
+    ! Allocate more space in the array if necessary
+    if (size(this%numbers) == 0) then
+        allocate(this%numbers(1))
+    else if (size(this%numbers) == size(this%numbers, 1)) then
+        allocate(this%numbers(2 * size(this%numbers)))
+        this%numbers(1:size(this%numbers) - 1) = this%numbers
+    end if
+
+    ! Add the number to the end of the array
+    this%numbers(size(this%numbers)) = number
+end subroutine addNumber
+
+! Check if there exists any pair of numbers that sum up to a particular value
+function findSum(this, value) result(exists)
+    class(TwoSum), intent(in) :: this
+    integer, intent(in) :: value
+    logical :: exists
+    integer :: i, j
+
+    ! Initialize the result
+    exists = .false.
+
+    ! Loop through the array
+    do i = 1, size(this%numbers)
+        ! Check if the current number is equal to the value
+        if (this%numbers(i) == value) then
+            exists = .true.
+            exit
+        end if
+
+        ! Check if the current number is less than the value
+        if (this%numbers(i) < value) then
+            ! Loop through the rest of the array
+            do j = i + 1, size(this%numbers)
+                ! Check if the current number plus the previous number is equal to the value
+                if (this%numbers(i) + this%numbers(j) == value) then
+                    exists = .true.
+                    exit
+                end if
+            end do
+            if (exists) exit
+        end if
+    end do
+end function findSum
+
+end module TwoSum
+
+! Test the TwoSum class
+program testTwoSum
+    use TwoSum
+    implicit none
+
+    ! Create a new TwoSum object
+    type(TwoSum) :: twoSum
+
+    ! Add some numbers to the data structure
+    call twoSum%add(1)
+    call twoSum%add(3)
+    call twoSum%add(5)
+
+    ! Check if there exists any pair of numbers that sum up to 4
+    write(*,*) twoSum%find(4)
+
+    ! Check if there exists any pair of numbers that sum up to 7
+    write(*,*) twoSum%find(7)
+end program testTwoSum
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:14:
+
+    5 | type :: TwoSum
+      |              1
+Error: MODULE attribute of ‘twosum’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:3:
+
+    7 | end type TwoSum
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:10:16:
+
+   10 | interface TwoSum
+      |                1
+Error: MODULE attribute of ‘twosum’ conflicts with PROCEDURE attribute at (1)
+temp.f95:11:21:
+
+   11 |     module procedure :: createTwoSum
+      |                     1
+Error: MODULE PROCEDURE at (1) must be in a generic module interface
+temp.f95:12:3:
+
+   12 | end interface TwoSum
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:17:
+
+    2 | module TwoSum
+      |             2    
+......
+   28 |     type(TwoSum) :: this
+      |                 1
+Error: Type name ‘twosum’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:31:19:
+
+   31 |     allocate(this%numbers(0))
+      |                   1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:36:18:
+
+    2 | module TwoSum
+      |             2     
+......
+   36 |     class(TwoSum), intent(inout) :: this
+      |                  1
+Error: Type name ‘twosum’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:40:19:
+
+   40 |     if (size(this%numbers) == 0) then
+      |                   1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:41:23:
+
+   41 |         allocate(this%numbers(1))
+      |                       1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:42:24:
+
+   42 |     else if (size(this%numbers) == size(this%numbers, 1)) then
+      |                        1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:43:23:
+
+   43 |         allocate(this%numbers(2 * size(this%numbers)))
+      |                       1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:44:14:
+
+   44 |         this%numbers(1:size(this%numbers) - 1) = this%numbers
+      |              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:45:7:
+
+   45 |     end if
+      |       1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:48:10:
+
+   48 |     this%numbers(size(this%numbers)) = number
+      |          1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:53:18:
+
+    2 | module TwoSum
+      |             2     
+......
+   53 |     class(TwoSum), intent(in) :: this
+      |                  1
+Error: Type name ‘twosum’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:62:25:
+
+   62 |     do i = 1, size(this%numbers)
+      |                         1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:64:18:
+
+   64 |         if (this%numbers(i) == value) then
+      |                  1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:66:16:
+
+   66 |             exit
+      |                1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:67:11:
+
+   67 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:70:18:
+
+   70 |         if (this%numbers(i) < value) then
+      |                  1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:72:37:
+
+   72 |             do j = i + 1, size(this%numbers)
+      |                                     1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:74:26:
+
+   74 |                 if (this%numbers(i) + this%numbers(j) == value) then
+      |                          1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:76:24:
+
+   76 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:77:19:
+
+   77 |                 end if
+      |                   1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:78:15:
+
+   78 |             end do
+      |               1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:79:28:
+
+   79 |             if (exists) exit
+      |                            1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:80:11:
+
+   80 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:81:7:
+
+   81 |     end do
+      |       1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:88:9:
+
+   88 |     use TwoSum
+      |         1
+Fatal Error: Cannot open module file ‘twosum.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TwoSum:
+
+    def __init__(self):
+        self.nums = {}
+
+    def add(self, number: int) -&gt; None:
+        if number in self.nums:
+            self.nums[number] += 1
+        else:
+            self.nums[number] = 1
+
+    def find(self, value: int) -&gt; bool:
+        for num in self.nums:
+            target = value - num
+            if target in self.nums:
+                if target != num or self.nums[num] &gt; 1:
+                    return True
+        return False
+</code></pre>
+<p>We create a class <code>TwoSum</code> to represent the data structure. We use a hashmap (<code>unordered_map</code> in C++, <code>HashMap</code> in Java, dictionary in Python, and object in JavaScript) to store the numbers as keys and their counts as values. </p>
+<p>In the <code>add</code> method, we simply increment the count of the number in the hashmap. </p>
+<p>In the <code>find</code> method, we iterate through the keys of the hashmap. For each number, we calculate its complement (<code>value - number</code>). If the complement is present in the hashmap, we check two cases:
+1. If <code>number</code> and <code>complement</code> are the same, we need at least two occurrences of the number in the hashmap to form a pair.
+2. If <code>number</code> and <code>complement</code> are different, we have our required pair and return <code>true</code>.</p>
+<p>If we go through the entire hashmap and don't find any pair that satisfies one of the above conditions, we return <code>false</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">class TwoSum {
+public:
+    unordered_map&lt;int, int&gt; m;
+
+    TwoSum() {
+
+    }
+
+    void add(int number) {
+        m[number]++;
+    }
+
+    bool find(int value) {
+        for (auto &amp;pair : m) {
+            int num1 = pair.first;
+            int num2 = value - num1;
+            if (num1 == num2 &amp;&amp; pair.second &gt; 1 || num1 != num2 &amp;&amp; m.count(num2)) {
+                return true;
+            }
+        }
+        return false;
+    }
+};
+</code></pre>
+<p>We create a class <code>TwoSum</code> to represent the data structure. We use a hashmap (<code>unordered_map</code> in C++, <code>HashMap</code> in Java, dictionary in Python, and object in JavaScript) to store the numbers as keys and their counts as values. </p>
+<p>In the <code>add</code> method, we simply increment the count of the number in the hashmap. </p>
+<p>In the <code>find</code> method, we iterate through the keys of the hashmap. For each number, we calculate its complement (<code>value - number</code>). If the complement is present in the hashmap, we check two cases:
+1. If <code>number</code> and <code>complement</code> are the same, we need at least two occurrences of the number in the hashmap to form a pair.
+2. If <code>number</code> and <code>complement</code> are different, we have our required pair and return <code>true</code>.</p>
+<p>If we go through the entire hashmap and don't find any pair that satisfies one of the above conditions, we return <code>false</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

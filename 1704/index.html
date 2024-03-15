@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Determine if String Halves Are Alike</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1700/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1708/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>s</code> of even length. Split this string into two halves of equal lengths, and let <code>a</code> be the first half and <code>b</code> be the second half.</p>
+<p>Two strings are <strong>alike</strong> if they have the same number of vowels (<code>'a'</code>, <code>'e'</code>, <code>'i'</code>, <code>'o'</code>, <code>'u'</code>, <code>'A'</code>, <code>'E'</code>, <code>'I'</code>, <code>'O'</code>, <code>'U'</code>). Notice that <code>s</code> contains uppercase and lowercase letters.</p>
+<p>Return <code>true</code> <em>if</em> <code>a</code> <em>and</em> <code>b</code> <em>are <strong>alike</strong></em>. Otherwise, return <code>false</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "book "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> a =  "bo " and b =  "ok ". a has 1 vowel and b has 1 vowel. Therefore, they are alike.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "textbook "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> a =  "text " and b =  "book ". a has 1 vowel whereas b has 2. Therefore, they are not alike.
+Notice that the vowel o is counted twice.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= s.length &lt;= 1000</code></li>
+<li><code>s.length</code> is even.</li>
+<li><code>s</code> consists of <strong>uppercase and lowercase</strong> letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/determine-if-string-halves-are-alike/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: s
+    logical :: result
+
+    ! Example 1
+    s = "book "
+    write(*,*) "Example 1:"
+    write(*,*) "Input: ", s
+    result = alike(s)
+    write(*,*) "Output: ", result
+    write(*,*) ""
+
+    ! Example 2
+    s = "textbook "
+    write(*,*) "Example 2:"
+    write(*,*) "Input: ", s
+    result = alike(s)
+    write(*,*) "Output: ", result
+    write(*,*) ""
+
+contains
+
+logical function alike(s)
+    implicit none
+    character(len=*), intent(in) :: s
+    integer :: nvowels
+    integer :: i
+
+    nvowels = 0
+    do i = 1, len(s)/2
+        select case (s(i:i))
+            case ("a", "e", "i", "o", "u", "A", "E", "I", "O", "U")
+                nvowels = nvowels + 1
+        end select
+    end do
+
+    alike = (nvowels == nvowels(s(len(s)/2+1:)))
+end function alike
+
+integer function nvowels(s)
+    implicit none
+    character(len=*), intent(in) :: s
+    integer :: i
+
+    nvowels = 0
+    do i = 1, len(s)
+        select case (s(i:i))
+            case ("a", "e", "i", "o", "u", "A", "E", "I", "O", "U")
+                nvowels = nvowels + 1
+        end select
+    end do
+end function nvowels
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:39:32:
+
+   39 |     alike = (nvowels == nvowels(s(len(s)/2+1:)))
+      |                                1
+Error: Expected a right parenthesis in expression at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module alike_strings
+
+implicit none
+
+contains
+
+function alike_strings(s) result(alike)
+
+! Given a string s of even length, split it into two halves of equal lengths,
+! and let a be the first half and b be the second half.
+! Two strings are alike if they have the same number of vowels ('a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U').
+! Notice that s contains uppercase and lowercase letters.
+
+character(len=*), intent(in) :: s
+logical :: alike
+
+integer :: n, i, j, vowels_a, vowels_b
+character(len=1) :: c
+
+! Initialize variables
+n = len(s) / 2
+vowels_a = 0
+vowels_b = 0
+
+! Count the number of vowels in each half
+do i = 1, n
+    c = s(i:i)
+    if (c == 'a' .or. c == 'e' .or. c == 'i' .or. c == 'o' .or. c == 'u' .or. &
+        c == 'A' .or. c == 'E' .or. c == 'I' .or. c == 'O' .or. c == 'U') then
+        vowels_a = vowels_a + 1
+    end if
+end do
+
+do j = n + 1, len(s)
+    c = s(j:j)
+    if (c == 'a' .or. c == 'e' .or. c == 'i' .or. c == 'o' .or. c == 'u' .or. &
+        c == 'A' .or. c == 'E' .or. c == 'I' .or. c == 'O' .or. c == 'U') then
+        vowels_b = vowels_b + 1
+    end if
+end do
+
+! Check if the number of vowels in each half is the same
+if (vowels_a == vowels_b) then
+    alike = .true.
+else
+    alike = .false.
+end if
+
+end function alike_strings
+
+end module alike_strings
+
+program test_alike_strings
+
+use alike_strings
+
+implicit none
+
+! Examples
+print *, alike_strings("book")
+print *, alike_strings("textbook")
+print *, alike_strings("aa")
+print *, alike_strings("aeiou")
+print *, alike_strings("aaeeeioouu")
+
+end program test_alike_strings
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:22:
+
+    7 | function alike_strings(s) result(alike)
+      |                      1
+Error: MODULE attribute of ‘alike_strings’ conflicts with PROCEDURE attribute at (1)
+temp.f95:14:33:
+
+   14 | character(len=*), intent(in) :: s
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:16:
+
+   15 | logical :: alike
+      |                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:17:38:
+
+   17 | integer :: n, i, j, vowels_a, vowels_b
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:18:21:
+
+   18 | character(len=1) :: c
+      |                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:21:14:
+
+   21 | n = len(s) / 2
+      |              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:12:
+
+   22 | vowels_a = 0
+      |            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:12:
+
+   23 | vowels_b = 0
+      |            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:11:
+
+   26 | do i = 1, n
+      |           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:27:12:
+
+   27 |     c = s(i:i)
+      |            1
+Error: Syntax error in argument list at (1)
+temp.f95:29:78:
+
+   29 |         c == 'A' .or. c == 'E' .or. c == 'I' .or. c == 'O' .or. c == 'U') then
+      |                                                                              1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:30:31:
+
+   30 |         vowels_a = vowels_a + 1
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:31:7:
+
+   31 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:32:3:
+
+   32 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:20:
+
+   34 | do j = n + 1, len(s)
+      |                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:35:12:
+
+   35 |     c = s(j:j)
+      |            1
+Error: Syntax error in argument list at (1)
+temp.f95:37:78:
+
+   37 |         c == 'A' .or. c == 'E' .or. c == 'I' .or. c == 'O' .or. c == 'U') then
+      |                                                                              1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:38:31:
+
+   38 |         vowels_b = vowels_b + 1
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:39:7:
+
+   39 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:40:3:
+
+   40 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:43:30:
+
+   43 | if (vowels_a == vowels_b) then
+      |                              1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:44:18:
+
+   44 |     alike = .true.
+      |                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:45:4:
+
+   45 | else
+      |    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:46:19:
+
+   46 |     alike = .false.
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:47:3:
+
+   47 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:49:3:
+
+   49 | end function alike_strings
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:55:5:
+
+   55 | use alike_strings
+      |     1
+Fatal Error: Cannot open module file ‘alike_strings.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def numSpecial(mat):
+    m, n = len(mat), len(mat[0])
+    row, col = [0] * m, [0] * n
+
+    for i in range(m):
+        for j in range(n):
+            if mat[i][j] == 1:
+                row[i] += 1
+                col[j] += 1
+
+    special_positions = 0
+    for i in range(m):
+        for j in range(n):
+            if mat[i][j] == 1 and row[i] == 1 and col[j] == 1:
+                special_positions += 1
+
+    return special_positions
+</code></pre>
+<ol>
+<li>First, initialize variables <code>m</code> and <code>n</code> to be the number of rows and columns of the given matrix <code>mat</code>. Also, create two vectors <code>row</code> and <code>col</code> of size <code>m</code> and <code>n</code> respectively, and initialize them with all zeros. These vectors will be used to store the one's count of each row and column in the matrix.</li>
+<li>For each cell of the matrix, add 1 to the corresponding row and column vectors' elements if the cell value is 1. Thus, by the end of the nested loop, we'll have the count of one's in each row and column in our <code>row</code> and <code>col</code> vectors.</li>
+<li>Now, iterate over each cell of the matrix once again. If the cell value is 1, and the corresponding row and column count in <code>row</code> and <code>col</code> vectors are both 1, increment the special_positions count.</li>
+<li>Finally, return the special_positions count, which represents the number of special positions in the matrix <code>mat</code>.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int numSpecial(vector&lt;vector&lt;int&gt;&gt;&amp; mat) {
+    int m = mat.size(), n = mat[0].size();
+    vector&lt;int&gt; row(m, 0), col(n, 0);
+
+    for (int i = 0; i &lt; m; ++i) {
+        for (int j = 0; j &lt; n; ++j) {
+            if (mat[i][j] == 1) {
+                ++row[i];
+                ++col[j];
+            }
+        }
+    }
+
+    int special_positions = 0;
+    for (int i = 0; i &lt; m; ++i) {
+        for (int j = 0; j &lt; n; ++j) {
+            if (mat[i][j] == 1 &amp;&amp; row[i] == 1 &amp;&amp; col[j] == 1) {
+                ++special_positions;
+            }
+        }
+    }
+
+    return special_positions;
+}
+</code></pre>
+<ol>
+<li>First, initialize variables <code>m</code> and <code>n</code> to be the number of rows and columns of the given matrix <code>mat</code>. Also, create two vectors <code>row</code> and <code>col</code> of size <code>m</code> and <code>n</code> respectively, and initialize them with all zeros. These vectors will be used to store the one's count of each row and column in the matrix.</li>
+<li>For each cell of the matrix, add 1 to the corresponding row and column vectors' elements if the cell value is 1. Thus, by the end of the nested loop, we'll have the count of one's in each row and column in our <code>row</code> and <code>col</code> vectors.</li>
+<li>Now, iterate over each cell of the matrix once again. If the cell value is 1, and the corresponding row and column count in <code>row</code> and <code>col</code> vectors are both 1, increment the special_positions count.</li>
+<li>Finally, return the special_positions count, which represents the number of special positions in the matrix <code>mat</code>.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

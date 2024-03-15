@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Design HashSet</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/704/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/706/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Design a HashSet without using any built-in hash table libraries.</p>
+<p>Implement <code>MyHashSet</code> class:</p>
+<ul>
+<li><code>void add(key)</code> Inserts the value <code>key</code> into the HashSet.</li>
+<li><code>bool contains(key)</code> Returns whether the value <code>key</code> exists in the HashSet or not.</li>
+<li><code>void remove(key)</code> Removes the value <code>key</code> in the HashSet. If <code>key</code> does not exist in the HashSet, do nothing.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input</strong>
+[ "MyHashSet ",  "add ",  "add ",  "contains ",  "contains ",  "add ",  "contains ",  "remove ",  "contains "]
+[[], [1], [2], [1], [3], [2], [2], [2], [2]]
+<strong>Output</strong>
+[null, null, null, true, false, null, true, null, false]</p>
+<p><strong>Explanation</strong>
+MyHashSet myHashSet = new MyHashSet();
+myHashSet.add(1);      // set = [1]
+myHashSet.add(2);      // set = [1, 2]
+myHashSet.contains(1); // return True
+myHashSet.contains(3); // return False, (not found)
+myHashSet.add(2);      // set = [1, 2]
+myHashSet.contains(2); // return True
+myHashSet.remove(2);   // set = [1]
+myHashSet.contains(2); // return False, (already removed)</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= key &lt;= 106</code></li>
+<li>At most <code>104</code> calls will be made to <code>add</code>, <code>remove</code>, and <code>contains</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/design-hashset/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use hashset_mod
+    implicit none
+
+    type(MyHashSet) :: myHashSet
+
+    call myHashSet%add(1)
+    call myHashSet%add(2)
+    print '(L1)', myHashSet%contains(1) ! true
+    print '(L1)', myHashSet%contains(3) ! false
+    call myHashSet%add(2)
+    print '(L1)', myHashSet%contains(2) ! true
+    call myHashSet%remove(2)
+    print '(L1)', myHashSet%contains(2) ! false
+
+end program main
+
+module hashset_mod
+    implicit none
+
+    private
+    public :: MyHashSet
+
+    type :: MyHashSet
+        integer, allocatable :: keys(:)
+    contains
+        procedure :: add => add_impl
+        procedure :: contains => contains_impl
+        procedure :: remove => remove_impl
+    end type MyHashSet
+
+contains
+
+    subroutine add_impl(this, key)
+        class(MyHashSet), intent(inout) :: this
+        integer, intent(in) :: key
+
+        if (.not. allocated(this%keys)) then
+            allocate(this%keys(1))
+            this%keys(1) = key
+        else
+            allocate(this%keys(size(this%keys)+1))
+            this%keys(1:size(this%keys)-1) = this%keys(1:size(this%keys)-1)
+            this%keys(size(this%keys)) = key
+        end if
+    end subroutine add_impl
+
+    logical function contains_impl(this, key) result(res)
+        class(MyHashSet), intent(in) :: this
+        integer, intent(in) :: key
+
+        res = any(this%keys == key)
+    end function contains_impl
+
+    subroutine remove_impl(this, key)
+        class(MyHashSet), intent(inout) :: this
+        integer, intent(in) :: key
+
+        integer :: i
+
+        do i=1, size(this%keys)
+            if (this%keys(i) == key) exit
+        end do
+
+        if (i <= size(this%keys)) then
+            this%keys(i:size(this%keys)-1) = this%keys(i+1:size(this%keys))
+            deallocate(this%keys)
+        end if
+    end subroutine remove_impl
+
+end module hashset_mod</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:2:9:
+
+    2 |     use hashset_mod
+      |         1
+Fatal Error: Cannot open module file ‘hashset_mod.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module MyHashSet
+
+  implicit none
+
+  private
+  integer, parameter :: INITIAL_SIZE = 10000
+  integer, parameter :: MAX_LOAD_FACTOR = 2
+
+  type :: MyHashSet
+    private
+    integer, allocatable :: keys(:)
+    integer :: size
+    integer :: count
+  contains
+    procedure, public :: add
+    procedure, public :: contains
+    procedure, public :: remove
+  end type MyHashSet
+
+contains
+
+  subroutine add(this, key)
+    class(MyHashSet), intent(inout) :: this
+    integer, intent(in) :: key
+
+    integer :: i
+
+    if (this%count == 0) then
+      allocate(this%keys(INITIAL_SIZE))
+      this%size = INITIAL_SIZE
+    else if (this%count == this%size) then
+      allocate(this%keys(this%size * MAX_LOAD_FACTOR))
+      this%size = this%size * MAX_LOAD_FACTOR
+    end if
+
+    do i = 1, this%count
+      if (this%keys(i) == key) then
+        return
+      end if
+    end do
+
+    this%keys(this%count + 1) = key
+    this%count = this%count + 1
+
+  end subroutine add
+
+  function contains(this, key) result(res)
+    class(MyHashSet), intent(in) :: this
+    integer, intent(in) :: key
+    logical :: res
+
+    integer :: i
+
+    res = .false.
+
+    do i = 1, this%count
+      if (this%keys(i) == key) then
+        res = .true.
+        exit
+      end if
+    end do
+
+  end function contains
+
+  subroutine remove(this, key)
+    class(MyHashSet), intent(inout) :: this
+    integer, intent(in) :: key
+
+    integer :: i
+
+    do i = 1, this%count
+      if (this%keys(i) == key) then
+        this%keys(i) = this%keys(this%count)
+        this%count = this%count - 1
+        exit
+      end if
+    end do
+
+  end subroutine remove
+
+end module MyHashSet
+
+program test
+  use MyHashSet
+  implicit none
+
+  type(MyHashSet) :: myHashSet
+
+  call myHashSet%add(1)
+  call myHashSet%add(2)
+  print *, myHashSet%contains(1)
+  print *, myHashSet%contains(3)
+  call myHashSet%add(2)
+  print *, myHashSet%contains(2)
+  call myHashSet%remove(2)
+  print *, myHashSet%contains(2)
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:19:
+
+    9 |   type :: MyHashSet
+      |                   1
+Error: MODULE attribute of ‘myhashset’ conflicts with PROCEDURE attribute at (1)
+temp.f95:10:11:
+
+   10 |     private
+      |           1
+Error: PRIVATE statement at (1) follows another accessibility specification
+temp.f95:18:5:
+
+   18 |   end type MyHashSet
+      |     1
+Error: Expecting END MODULE statement at (1)
+temp.f95:20:8:
+
+   20 | contains
+      |        1
+Error: Unexpected CONTAINS statement in CONTAINS section at (1)
+temp.f95:23:21:
+
+    1 | module MyHashSet
+      |                2     
+......
+   23 |     class(MyHashSet), intent(inout) :: this
+      |                     1
+Error: Type name ‘myhashset’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:28:14:
+
+   28 |     if (this%count == 0) then
+      |              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:29:21:
+
+   29 |       allocate(this%keys(INITIAL_SIZE))
+      |                     1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:30:12:
+
+   30 |       this%size = INITIAL_SIZE
+      |            1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:31:19:
+
+   31 |     else if (this%count == this%size) then
+      |                   1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:32:21:
+
+   32 |       allocate(this%keys(this%size * MAX_LOAD_FACTOR))
+      |                     1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:33:12:
+
+   33 |       this%size = this%size * MAX_LOAD_FACTOR
+      |            1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:34:7:
+
+   34 |     end if
+      |       1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:36:20:
+
+   36 |     do i = 1, this%count
+      |                    1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:37:16:
+
+   37 |       if (this%keys(i) == key) then
+      |                1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:39:9:
+
+   39 |       end if
+      |         1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:40:7:
+
+   40 |     end do
+      |       1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:42:10:
+
+   42 |     this%keys(this%count + 1) = key
+      |          1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:43:10:
+
+   43 |     this%count = this%count + 1
+      |          1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:48:21:
+
+    1 | module MyHashSet
+      |                2     
+......
+   48 |     class(MyHashSet), intent(in) :: this
+      |                     1
+Error: Type name ‘myhashset’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:56:20:
+
+   56 |     do i = 1, this%count
+      |                    1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:57:16:
+
+   57 |       if (this%keys(i) == key) then
+      |                1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:59:12:
+
+   59 |         exit
+      |            1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:60:9:
+
+   60 |       end if
+      |         1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:61:7:
+
+   61 |     end do
+      |       1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:66:21:
+
+    1 | module MyHashSet
+      |                2     
+......
+   66 |     class(MyHashSet), intent(inout) :: this
+      |                     1
+Error: Type name ‘myhashset’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:71:20:
+
+   71 |     do i = 1, this%count
+      |                    1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:72:16:
+
+   72 |       if (this%keys(i) == key) then
+      |                1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:73:14:
+
+   73 |         this%keys(i) = this%keys(this%count)
+      |              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:74:14:
+
+   74 |         this%count = this%count - 1
+      |              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:75:12:
+
+   75 |         exit
+      |            1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:76:9:
+
+   76 |       end if
+      |         1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:77:7:
+
+   77 |     end do
+      |       1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:22:21:
+
+   22 |   subroutine add(this, key)
+      |                     1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:47:24:
+
+   47 |   function contains(this, key) result(res)
+      |                        1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:65:24:
+
+   65 |   subroutine remove(this, key)
+      |                        1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:84:7:
+
+   84 |   use MyHashSet
+      |       1
+Fatal Error: Cannot open module file ‘myhashset.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class MyHashSet:
+
+    def __init__(self):
+        self.storage = [False] * 1000001
+
+    def add(self, key: int):
+        self.storage[key] = True
+
+    def remove(self, key: int):
+        self.storage[key] = False
+
+    def contains(self, key: int) -&gt; bool:
+        return self.storage[key]
+</code></pre>
+<pre><code>The simplest way to implement a HashSet without using any built-in hash table libraries is to use an array of boolean values. The index of the array represents the key and the value at that index represents whether the key is present in the HashSet or not. In this case, we know the key range is `0 &lt;= key &lt;= 10^6`, so we can create an array with a length of `1000001`.
+</code></pre>
+<p>For the <code>add(key)</code> method, we set the value at the index of the key to be <code>true</code>.
+For the <code>remove(key)</code> method, we set the value at the index of the key to be <code>false</code>.
+For the <code>contains(key)</code> method, we check the value at the index of the key and return it.</p>
+<p>The implementations of these methods are straightforward, and they are similar in each language. We create a storage array (vector in C++, boolean array in Java, list in Python, and array in JavaScript), and then we use simple array operations to manipulate the data.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">class MyHashSet {
+public:
+    vector&lt;bool&gt; storage;
+
+    MyHashSet() : storage(1000001, false) { }
+
+    void add(int key) {
+        storage[key] = true;
+    }
+
+    void remove(int key) {
+        storage[key] = false;
+    }
+
+    bool contains(int key) {
+        return storage[key];
+    }
+};
+</code></pre>
+<pre><code>The simplest way to implement a HashSet without using any built-in hash table libraries is to use an array of boolean values. The index of the array represents the key and the value at that index represents whether the key is present in the HashSet or not. In this case, we know the key range is `0 &lt;= key &lt;= 10^6`, so we can create an array with a length of `1000001`.
+</code></pre>
+<p>For the <code>add(key)</code> method, we set the value at the index of the key to be <code>true</code>.
+For the <code>remove(key)</code> method, we set the value at the index of the key to be <code>false</code>.
+For the <code>contains(key)</code> method, we check the value at the index of the key and return it.</p>
+<p>The implementations of these methods are straightforward, and they are similar in each language. We create a storage array (vector in C++, boolean array in Java, list in Python, and array in JavaScript), and then we use simple array operations to manipulate the data.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

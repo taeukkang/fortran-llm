@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Range Sum of BST</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/933/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/941/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> node of a binary search tree and two integers <code>low</code> and <code>high</code>, return <em>the sum of values of all nodes with a value in the <strong>inclusive</strong> range</em> <code>[low, high]</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [10,5,15,3,7,null,18], low = 7, high = 15
+<strong>Output:</strong> 32
+<strong>Explanation:</strong> Nodes 7, 10, and 15 are in the range [7, 15]. 7 + 10 + 15 = 32.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [10,5,15,3,7,13,18,1,null,6], low = 6, high = 10
+<strong>Output:</strong> 23
+<strong>Explanation:</strong> Nodes 6, 7, and 10 are in the range [6, 10]. 6 + 7 + 10 = 23.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[1, 2 * 104]</code>.</li>
+<li><code>1 &lt;= Node.val &lt;= 105</code></li>
+<li><code>1 &lt;= low &lt;= high &lt;= 105</code></li>
+<li>All <code>Node.val</code> are <strong>unique</strong>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/range-sum-of-bst/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, iostat_end, DP => REAL64
+    implicit none
+    integer, parameter :: unit_write = 10
+    type :: node_t
+        real(kind=DP) :: val
+        type(node_t), pointer :: left => null(), right => null()
+    end type
+    type(node_t), target :: root
+    real(kind=DP) :: low, high
+    integer :: status
+
+    call get_args(root, low, high)
+
+    if (root%left /= null()) then
+        write (unit=unit_write, fmt='(A)', iomsg=status) 'Left child exists'
+        stop 1
+    end if
+    if (root%right /= null()) then
+        write (unit=unit_write, fmt='(A)', iomsg=status) 'Right child exists'
+        stop 1
+    end if
+
+    if (root%val < low .or. root%val > high) then
+        write (unit=unit_write, fmt='(A)', iomsg=status) 'Root value out of range'
+        stop 1
+    end if
+
+    write (unit=unit_write, fmt='(F0.2)') root%val
+
+contains
+
+    subroutine get_args(root, low, high)
+        type(node_t), intent(out) :: root
+        real(kind=DP), intent(out) :: low, high
+        character(len=1024) :: buffer
+        integer :: iarg, arg_count
+
+        arg_count = command_argument_count()
+        if (arg_count /= 3) then
+            write (unit=error_unit, fmt='(A)') 'Usage: ./a.out root low high'
+            stop 1
+        end if
+
+        iarg = 1
+        call get_command_argument(iarg, buffer)
+        read (buffer, fmt=*, iomsg=status) root
+        if (status /= 0) then
+            write (unit=error_unit, fmt='(2A)') 'Error reading root: ', trim(buffer)
+            stop 1
+        end if
+
+        iarg = iarg + 1
+        call get_command_argument(iarg, buffer)
+        read (buffer, fmt=*, iomsg=status) low
+        if (status /= 0) then
+            write (unit=error_unit, fmt='(2A)') 'Error reading low: ', trim(buffer)
+            stop 1
+        end if
+
+        iarg = iarg + 1
+        call get_command_argument(iarg, buffer)
+        read (buffer, fmt=*, iomsg=status) high
+        if (status /= 0) then
+            write (unit=error_unit, fmt='(2A)') 'Error reading high: ', trim(buffer)
+            stop 1
+        end if
+    end subroutine get_args
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:47:47:
+
+   47 |         read (buffer, fmt=*, iomsg=status) root
+      |                                               1
+Error: Data transfer element at (1) cannot have POINTER components unless it is processed by a defined input/output procedure
+temp.f95:47:35:
+
+   47 |         read (buffer, fmt=*, iomsg=status) root
+      |                                   1
+Error: IOMSG tag at (1) must be of type CHARACTER
+temp.f95:55:35:
+
+   55 |         read (buffer, fmt=*, iomsg=status) low
+      |                                   1
+Error: IOMSG tag at (1) must be of type CHARACTER
+temp.f95:63:35:
+
+   63 |         read (buffer, fmt=*, iomsg=status) high
+      |                                   1
+Error: IOMSG tag at (1) must be of type CHARACTER
+temp.f95:15:8:
+
+   15 |     if (root%left /= null()) then
+      |        1
+Error: Invalid context for NULL() pointer at (1)
+temp.f95:16:49:
+
+   16 |         write (unit=unit_write, fmt='(A)', iomsg=status) 'Left child exists'
+      |                                                 1
+Error: IOMSG tag at (1) must be of type CHARACTER
+temp.f95:19:8:
+
+   19 |     if (root%right /= null()) then
+      |        1
+Error: Invalid context for NULL() pointer at (1)
+temp.f95:20:49:
+
+   20 |         write (unit=unit_write, fmt='(A)', iomsg=status) 'Right child exists'
+      |                                                 1
+Error: IOMSG tag at (1) must be of type CHARACTER
+temp.f95:25:49:
+
+   25 |         write (unit=unit_write, fmt='(A)', iomsg=status) 'Root value out of range'
+      |                                                 1
+Error: IOMSG tag at (1) must be of type CHARACTER
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program sum_range_binary_search_tree
+      implicit none
+
+      integer, parameter :: max_nodes = 2 * 104
+      integer, parameter :: max_val = 105
+
+      type node
+          integer :: val
+          type(node), pointer :: left
+          type(node), pointer :: right
+      end type node
+
+      type(node), target :: root
+      integer :: low, high
+      integer :: i, j, sum
+
+      ! Read the root node of the binary search tree
+      read(*,*) root%val
+
+      ! Read the low and high bounds
+      read(*,*) low, high
+
+      ! Initialize the sum to 0
+      sum = 0
+
+      ! Traverse the tree in order
+      call traverse_tree(root, low, high, sum)
+
+      ! Print the sum
+      write(*,*) sum
+
+      contains
+
+      recursive subroutine traverse_tree(node, low, high, sum)
+          type(node), intent(in) :: node
+          integer, intent(in) :: low, high
+          integer, intent(inout) :: sum
+
+          ! Base case: if the node is null, return
+          if (associated(node, null())) then
+              return
+          end if
+
+          ! Recursive case: if the node value is in the range, add it to the sum and recurse
+          if (node%val >= low .and. node%val <= high) then
+              sum = sum + node%val
+          end if
+
+          ! Recurse on the left subtree
+          call traverse_tree(node%left, low, high, sum)
+
+          ! Recurse on the right subtree
+          call traverse_tree(node%right, low, high, sum)
+      end subroutine traverse_tree
+      end program sum_range_binary_search_tree
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:35:21:
+
+   35 |           type(node), intent(in) :: node
+      |                     1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:45:20:
+
+   45 |           if (node%val >= low .and. node%val <= high) then
+      |                    1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:46:32:
+
+   46 |               sum = sum + node%val
+      |                                1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:47:13:
+
+   47 |           end if
+      |             1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:50:35:
+
+   50 |           call traverse_tree(node%left, low, high, sum)
+      |                                   1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:53:35:
+
+   53 |           call traverse_tree(node%right, low, high, sum)
+      |                                   1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:34:45:
+
+   34 |       recursive subroutine traverse_tree(node, low, high, sum)
+      |                                             1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:27:46:
+
+   27 |       call traverse_tree(root, low, high, sum)
+      |                                              1
+Error: Type mismatch in argument ‘node’ at (1); passed TYPE(node) to UNKNOWN
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from bisect import bisect_right
+
+def num_digits_less_than_n(digits: List[int], n: int) -&gt; int:
+    ans = 0
+    factor = 1
+    n_str = str(n)
+    for i in range(len(n_str) - 1, -1, -1):
+        ans += bisect_right(digits, int(n_str[i])) * factor
+        factor *= len(digits)
+    return ans
+</code></pre>
+<ol>
+<li>Initialize the answer as 0 and a factor as 1.</li>
+<li>Convert n into a string so that we can traverse each digit easily.</li>
+<li>Iterate over the digits of n from right to left.</li>
+<li>For each digit, find the number of digits less than or equal to the current digit of n using binary search, and add this number multiplied by the current factor to the answer.</li>
+<li>Multiply the factor by the number of given digits for every iteration to account for the combinations of smaller digits.</li>
+<li>Return the answer after all iterations.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+using namespace std;
+
+int num_digits_less_than_n(vector&lt;int&gt;&amp; digits, int n) {
+    int ans = 0, factor = 1;
+    string n_str = to_string(n);
+    for (int i = n_str.size() - 1; i &gt;= 0; --i) {
+        ans += (upper_bound(digits.begin(), digits.end(), n_str[i] - '0') - digits.begin()) * factor;
+        factor *= digits.size();
+    }
+    return ans;
+}
+</code></pre>
+<ol>
+<li>Initialize the answer as 0 and a factor as 1.</li>
+<li>Convert n into a string so that we can traverse each digit easily.</li>
+<li>Iterate over the digits of n from right to left.</li>
+<li>For each digit, find the number of digits less than or equal to the current digit of n using binary search, and add this number multiplied by the current factor to the answer.</li>
+<li>Multiply the factor by the number of given digits for every iteration to account for the combinations of smaller digits.</li>
+<li>Return the answer after all iterations.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

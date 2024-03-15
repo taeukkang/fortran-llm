@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Third Maximum Number</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/412/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/415/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code>, return <em>the <strong>third distinct maximum</strong> number in this array. If the third maximum does not exist, return the <strong>maximum</strong> number</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [3,2,1]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong>
+The first distinct maximum is 3.
+The second distinct maximum is 2.
+The third distinct maximum is 1.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,2]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong>
+The first distinct maximum is 2.
+The second distinct maximum is 1.
+The third distinct maximum does not exist, so the maximum (2) is returned instead.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [2,2,3,1]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong>
+The first distinct maximum is 3.
+The second distinct maximum is 2 (both 2's are counted together since they have the same value).
+The third distinct maximum is 1.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 104</code></li>
+<li><code>-231 &lt;= nums[i] &lt;= 231 - 1</code></li>
+</ul>
+<p><strong>Follow up:</strong> Can you find an <code>O(n)</code> solution?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/third-maximum-number/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 3 ! number of elements in the array
+    integer, dimension(n) :: nums = (/ 3, 2, 1 /) ! input array
+    integer :: max_val, sec_max_val, thrd_max_val ! variables to store the values
+
+    call get_distinct_max(nums, max_val, sec_max_val, thrd_max_val)
+
+    write (*, '(A, I0)') 'Maximum value: ', max_val
+    write (*, '(A, I0)') 'Second maximum value: ', sec_max_val
+    write (*, '(A, I0)') 'Third maximum value: ', thrd_max_val
+
+contains
+
+    subroutine get_distinct_max(nums, max_val, sec_max_val, thrd_max_val)
+        implicit none
+        integer, intent(in) :: nums(:) ! input array
+        integer, intent(out) :: max_val, sec_max_val, thrd_max_val ! output values
+        integer :: i, j, k ! loop counters
+
+        ! initialize variables
+        max_val = nums(1)
+        sec_max_val = max_val
+        thrd_max_val = max_val
+
+        ! loop through the array and find the distinct maxima
+        do i = 2, size(nums)
+            if (nums(i) > max_val) then
+                thrd_max_val = sec_max_val
+                sec_max_val = max_val
+                max_val = nums(i)
+            else if (nums(i) > sec_max_val) then
+                thrd_max_val = sec_max_val
+                sec_max_val = nums(i)
+            end if
+        end do
+
+        ! check if the third maximum exists
+        k = 0
+        do j = 1, size(nums)
+            if (nums(j) == sec_max_val) then
+                k = k + 1
+            end if
+        end do
+
+        if (k < 2) then
+            thrd_max_val = max_val
+        end if
+
+    end subroutine get_distinct_max
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Maximum value: 3
+Second maximum value: 3
+Third maximum value: 3
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module third_distinct_maximum
+    implicit none
+    private
+    public :: third_distinct_maximum
+
+contains
+
+    function third_distinct_maximum(nums) result(third_max)
+        integer, intent(in) :: nums(:)
+        integer :: third_max, max_count, max_val, i
+
+        ! Initialize variables
+        max_count = 0
+        max_val = -huge(max_val)
+        third_max = -huge(third_max)
+
+        ! Loop through the array and find the maximum and maximum count
+        do i = 1, size(nums)
+            if (nums(i) > max_val) then
+                max_count = max_count + 1
+                if (max_count == 3) then
+                    third_max = max_val
+                    exit
+                end if
+                max_val = nums(i)
+            end if
+        end do
+
+        ! If the third maximum does not exist, return the maximum
+        if (third_max == -huge(third_max)) then
+            third_max = max_val
+        end if
+
+    end function third_distinct_maximum
+end module third_distinct_maximum
+
+program test_third_distinct_maximum
+    use third_distinct_maximum
+    implicit none
+    integer :: nums(3)
+
+    ! Test case 1:
+    nums = [3, 2, 1]
+    write (*,*) "Third distinct maximum of ", nums, " is ", third_distinct_maximum(nums)
+
+    ! Test case 2:
+    nums = [1, 2]
+    write (*,*) "Third distinct maximum of ", nums, " is ", third_distinct_maximum(nums)
+
+    ! Test case 3:
+    nums = [2, 2, 3, 1]
+    write (*,*) "Third distinct maximum of ", nums, " is ", third_distinct_maximum(nums)
+end program test_third_distinct_maximum
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:36:
+
+    4 |     public :: third_distinct_maximum
+      |                                    1
+Error: PUBLIC attribute applied to MODULE third_distinct_maximum at (1)
+temp.f95:8:35:
+
+    8 |     function third_distinct_maximum(nums) result(third_max)
+      |                                   1
+Error: MODULE attribute of ‘third_distinct_maximum’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:38:
+
+    9 |         integer, intent(in) :: nums(:)
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:51:
+
+   10 |         integer :: third_max, max_count, max_val, i
+      |                                                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:21:
+
+   13 |         max_count = 0
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:14:32:
+
+   14 |         max_val = -huge(max_val)
+      |                                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:36:
+
+   15 |         third_max = -huge(third_max)
+      |                                    1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:18:28:
+
+   18 |         do i = 1, size(nums)
+      |                            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:19:39:
+
+   19 |             if (nums(i) > max_val) then
+      |                                       1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:20:41:
+
+   20 |                 max_count = max_count + 1
+      |                                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:21:40:
+
+   21 |                 if (max_count == 3) then
+      |                                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:22:39:
+
+   22 |                     third_max = max_val
+      |                                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:24:
+
+   23 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:24:19:
+
+   24 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:33:
+
+   25 |                 max_val = nums(i)
+      |                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:15:
+
+   26 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:27:11:
+
+   27 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:47:
+
+   30 |         if (third_max == -huge(third_max)) then
+      |                                               1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:31:31:
+
+   31 |             third_max = max_val
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:32:11:
+
+   32 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:7:
+
+   34 |     end function third_distinct_maximum
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:38:9:
+
+   38 |     use third_distinct_maximum
+      |         1
+Fatal Error: Cannot open module file ‘third_distinct_maximum.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def third_max(nums):
+    top3 = set()
+    for num in nums:
+        top3.add(num)
+        if len(top3) &gt; 3:
+            top3.remove(min(top3))
+    return min(top3) if len(top3) == 3 else max(top3)
+</code></pre>
+<p>The algorithm to solve the problem is as follows:
+1. Initialize an empty set called <code>top3</code> to keep track of the top 3 distinct maximum numbers in the array.
+2. Iterate through the input array, <code>nums</code>.
+3. For each number in <code>nums</code>, insert it into <code>top3</code>.
+4. If the size of <code>top3</code> becomes greater than 3, remove the smallest number in <code>top3</code>.
+5. If the size of <code>top3</code> is 3, which means there are three distinct maximum numbers, return the smallest number in <code>top3</code>. Otherwise, return the largest number in <code>top3</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;set&gt;
+
+int thirdMax(vector&lt;int&gt;&amp; nums) {
+    set&lt;int&gt; top3;
+    for (int num : nums) {
+        top3.insert(num);
+        if (top3.size() &gt; 3) {
+            top3.erase(top3.begin());
+        }
+    }
+    return top3.size() == 3 ? *top3.begin() : *top3.rbegin();
+}
+</code></pre>
+<p>The algorithm to solve the problem is as follows:
+1. Initialize an empty set called <code>top3</code> to keep track of the top 3 distinct maximum numbers in the array.
+2. Iterate through the input array, <code>nums</code>.
+3. For each number in <code>nums</code>, insert it into <code>top3</code>.
+4. If the size of <code>top3</code> becomes greater than 3, remove the smallest number in <code>top3</code>.
+5. If the size of <code>top3</code> is 3, which means there are three distinct maximum numbers, return the smallest number in <code>top3</code>. Otherwise, return the largest number in <code>top3</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

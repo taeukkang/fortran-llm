@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Shortest Word Distance</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/242/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/246/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of strings <code>wordsDict</code> and two different strings that already exist in the array <code>word1</code> and <code>word2</code>, return <em>the shortest distance between these two words in the list</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> wordsDict = [ "practice ",  "makes ",  "perfect ",  "coding ",  "makes "], word1 =  "coding ", word2 =  "practice "
+<strong>Output:</strong> 3</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> wordsDict = [ "practice ",  "makes ",  "perfect ",  "coding ",  "makes "], word1 =  "makes ", word2 =  "coding "
+<strong>Output:</strong> 1</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= wordsDict.length &lt;= 3 * 104</code></li>
+<li><code>1 &lt;= wordsDict[i].length &lt;= 10</code></li>
+<li><code>wordsDict[i]</code> consists of lowercase English letters.</li>
+<li><code>word1</code> and <code>word2</code> are in <code>wordsDict</code>.</li>
+<li><code>word1 != word2</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/shortest-word-distance/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 5
+    character(len=10), dimension(n) :: wordsDict = ["practice ", "makes ", "perfect ", "coding ", "makes "]
+    character(len=10), intent(in) :: word1, word2
+    integer :: dist
+
+    call solve(wordsDict, word1, word2, dist)
+    print '(I0)', dist
+
+contains
+
+    subroutine solve(wordsDict, word1, word2, dist)
+        implicit none
+        character(len=10), dimension(:), intent(in) :: wordsDict
+        character(len=10), intent(in) :: word1, word2
+        integer, intent(out) :: dist
+        integer :: i, j, k
+
+        do i = 1, size(wordsDict)
+            if (wordsDict(i) == word1) then
+                do j = 1, size(wordsDict)
+                    if (wordsDict(j) == word2) then
+                        dist = min(dist, i - j)
+                    end if
+                end do
+            end if
+        end do
+    end subroutine solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:64:
+
+    5 |     character(len=10), dimension(n) :: wordsDict = ["practice ", "makes ", "perfect ", "coding ", "makes "]
+      |                                                                1
+Error: Different CHARACTER lengths (9/6) in array constructor at (1)
+temp.f95:6:42:
+
+    6 |     character(len=10), intent(in) :: word1, word2
+      |                                          1
+Error: Symbol at (1) is not a DUMMY variable
+temp.f95:6:49:
+
+    6 |     character(len=10), intent(in) :: word1, word2
+      |                                                 1
+Error: Symbol at (1) is not a DUMMY variable
+temp.f95:9:24:
+
+    9 |     call solve(wordsDict, word1, word2, dist)
+      |                        1
+Error: Symbol ‘wordsdict’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module shortest_distance
+
+implicit none
+
+contains
+
+function shortest_distance(wordsDict, word1, word2) result(shortest_dist)
+
+! Declare variables
+integer :: i, j, k, shortest_dist
+character(len=10) :: wordsDict(100000)
+character(len=10) :: word1, word2
+
+! Initialize variables
+shortest_dist = 0
+
+! Loop through the array of strings
+do i = 1, size(wordsDict)
+
+    ! Check if the current string is equal to word1
+    if (wordsDict(i) == word1) then
+
+        ! Set the starting index of word1
+        j = i
+
+    end if
+
+    ! Check if the current string is equal to word2
+    if (wordsDict(i) == word2) then
+
+        ! Set the ending index of word2
+        k = i
+
+    end if
+
+end do
+
+! Check if both word1 and word2 were found in the array
+if (j /= 0 .and. k /= 0) then
+
+    ! Calculate the shortest distance between word1 and word2
+    shortest_dist = abs(j - k)
+
+end if
+
+end function shortest_distance
+
+end module
+
+program main
+
+use shortest_distance
+
+implicit none
+
+! Declare variables
+integer :: i, j, k
+character(len=10) :: wordsDict(100000)
+character(len=10) :: word1, word2
+integer :: shortest_dist
+
+! Initialize variables
+i = 1
+j = 1
+k = 1
+
+! Read the input
+read (*, *) wordsDict
+read (*, *) word1
+read (*, *) word2
+
+! Call the shortest_distance function
+shortest_dist = shortest_distance(wordsDict, word1, word2)
+
+! Print the output
+write (*, *) shortest_dist
+
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:26:
+
+    7 | function shortest_distance(wordsDict, word1, word2) result(shortest_dist)
+      |                          1
+Error: MODULE attribute of ‘shortest_distance’ conflicts with PROCEDURE attribute at (1)
+temp.f95:10:33:
+
+   10 | integer :: i, j, k, shortest_dist
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:38:
+
+   11 | character(len=10) :: wordsDict(100000)
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:33:
+
+   12 | character(len=10) :: word1, word2
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:17:
+
+   15 | shortest_dist = 0
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:18:25:
+
+   18 | do i = 1, size(wordsDict)
+      |                         1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:21:35:
+
+   21 |     if (wordsDict(i) == word1) then
+      |                                   1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:24:13:
+
+   24 |         j = i
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:7:
+
+   26 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:35:
+
+   29 |     if (wordsDict(i) == word2) then
+      |                                   1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:32:13:
+
+   32 |         k = i
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:34:7:
+
+   34 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:36:3:
+
+   36 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:39:29:
+
+   39 | if (j /= 0 .and. k /= 0) then
+      |                             1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:42:30:
+
+   42 |     shortest_dist = abs(j - k)
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:44:3:
+
+   44 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:46:3:
+
+   46 | end function shortest_distance
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:52:5:
+
+   52 | use shortest_distance
+      |     1
+Fatal Error: Cannot open module file ‘shortest_distance.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def shortestDistance(wordsDict, word1, word2):
+    idx1, idx2, minDistance = -1, -1, float('inf')
+    for i, word in enumerate(wordsDict):
+        if word == word1:
+            idx1 = i
+        if word == word2:
+            idx2 = i
+        if idx1 != -1 and idx2 != -1:
+            minDistance = min(minDistance, abs(idx1 - idx2))
+    return minDistance
+</code></pre>
+<p>The algorithm iterates through the <code>wordsDict</code> list and uses two variables <code>idx1</code> and <code>idx2</code> to store the indices of the occurrences of <code>word1</code> and <code>word2</code>. Initially, both indices are set to <code>-1</code>. In each iteration, if <code>word1</code> or <code>word2</code> is found, the corresponding index variable will be updated to store the current index.</p>
+<p>After each index update, we check if both indices are not <code>-1</code>. If both indices are valid, the difference between the indices is computed, and <code>minDistance</code> is updated with the minimum value between the previously-stored minimum distance and the new distance.</p>
+<p>Finally, the algorithm returns the value of <code>minDistance</code>, which represents the shortest distance between <code>word1</code> and <code>word2</code> in the <code>wordsDict</code> list.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;climits&gt;
+
+int shortestDistance(std::vector&lt;std::string&gt; wordsDict, std::string word1, std::string word2) {
+    int idx1 = -1, idx2 = -1, minDistance = INT_MAX;
+    for (int i = 0; i &lt; wordsDict.size(); i++) {
+        if (wordsDict[i] == word1) idx1 = i;
+        if (wordsDict[i] == word2) idx2 = i;
+        if (idx1 != -1 &amp;&amp; idx2 != -1)
+            minDistance = std::min(minDistance, std::abs(idx1 - idx2));
+    }
+    return minDistance;
+}
+</code></pre>
+<p>The algorithm iterates through the <code>wordsDict</code> list and uses two variables <code>idx1</code> and <code>idx2</code> to store the indices of the occurrences of <code>word1</code> and <code>word2</code>. Initially, both indices are set to <code>-1</code>. In each iteration, if <code>word1</code> or <code>word2</code> is found, the corresponding index variable will be updated to store the current index.</p>
+<p>After each index update, we check if both indices are not <code>-1</code>. If both indices are valid, the difference between the indices is computed, and <code>minDistance</code> is updated with the minimum value between the previously-stored minimum distance and the new distance.</p>
+<p>Finally, the algorithm returns the value of <code>minDistance</code>, which represents the shortest distance between <code>word1</code> and <code>word2</code> in the <code>wordsDict</code> list.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

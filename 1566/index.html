@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Detect Pattern of Length M Repeated K or More Times</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1560/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1572/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of positive integers <code>arr</code>, find a pattern of length <code>m</code> that is repeated <code>k</code> or more times.</p>
+<p>A <strong>pattern</strong> is a subarray (consecutive sub-sequence) that consists of one or more values, repeated multiple times <strong>consecutively</strong> without overlapping. A pattern is defined by its length and the number of repetitions.</p>
+<p>Return <code>true</code> <em>if there exists a pattern of length</em> <code>m</code> <em>that is repeated</em> <code>k</code> <em>or more times, otherwise return</em> <code>false</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [1,2,4,4,4,4], m = 1, k = 3
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The pattern <strong>(4)</strong> of length 1 is repeated 4 consecutive times. Notice that pattern can be repeated k or more times but not less.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [1,2,1,2,1,1,1,3], m = 2, k = 2
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The pattern <strong>(1,2)</strong> of length 2 is repeated 2 consecutive times. Another valid pattern <strong>(2,1) is</strong> also repeated 2 times.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> arr = [1,2,1,2,1,3], m = 2, k = 3
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The pattern (1,2) is of length 2 but is repeated only 2 times. There is no pattern of length 2 that is repeated 3 or more times.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= arr.length &lt;= 100</code></li>
+<li><code>1 &lt;= arr[i] &lt;= 100</code></li>
+<li><code>1 &lt;= m &lt;= 100</code></li>
+<li><code>2 &lt;= k &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/detect-pattern-of-length-m-repeated-k-or-more-times/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 7
+    integer, parameter :: m = 1
+    integer, parameter :: k = 3
+    integer, dimension(n) :: arr = (/ 1, 2, 4, 4, 4, 4, 3 /)
+    logical :: result
+
+    result = repeatedPattern(arr, m, k)
+    if (result) then
+        print *, "True"
+    else
+        print *, "False"
+    end if
+
+contains
+
+    function repeatedPattern(arr, m, k) result(repeated)
+        implicit none
+        integer, intent(in) :: arr(:), m, k
+        logical :: repeated
+        integer :: i, j, count
+
+        repeated = .false.
+        do i = 1, size(arr)-m+1
+            count = 0
+            do j = i, i+m-1
+                if (arr(j) == arr(i)) then
+                    count = count + 1
+                else
+                    exit
+                end if
+            end do
+            if (count >= k) then
+                repeated = .true.
+                exit
+            end if
+        end do
+    end function repeatedPattern
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> False
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module repeated_pattern
+
+implicit none
+
+contains
+
+function repeated_pattern(arr, m, k) result(output)
+
+integer, intent(in) :: arr(:)
+integer, intent(in) :: m
+integer, intent(in) :: k
+logical :: output
+
+integer :: i, j, count
+
+output = .false.
+
+! loop through the array
+do i = 1, size(arr) - m + 1
+
+! check if the pattern is repeated k or more times
+count = 0
+do j = i, i + m - 1
+if (arr(j) == arr(j + 1)) then
+count = count + 1
+else
+exit
+end if
+end do
+
+if (count >= k) then
+output = .true.
+exit
+end if
+
+end do
+
+end function repeated_pattern
+
+end module repeated_pattern
+
+program test
+
+use repeated_pattern
+
+implicit none
+
+integer, parameter :: arr = [1, 2, 4, 4, 4, 4]
+integer, parameter :: m = 1
+integer, parameter :: k = 3
+
+write (*, *) repeated_pattern(arr, m, k)
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:25:
+
+    7 | function repeated_pattern(arr, m, k) result(output)
+      |                         1
+Error: MODULE attribute of ‘repeated_pattern’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:29:
+
+    9 | integer, intent(in) :: arr(:)
+      |                             1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:24:
+
+   10 | integer, intent(in) :: m
+      |                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:24:
+
+   11 | integer, intent(in) :: k
+      |                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:17:
+
+   12 | logical :: output
+      |                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:22:
+
+   14 | integer :: i, j, count
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:16:16:
+
+   16 | output = .false.
+      |                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:27:
+
+   19 | do i = 1, size(arr) - m + 1
+      |                           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:22:9:
+
+   22 | count = 0
+      |         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:19:
+
+   23 | do j = i, i + m - 1
+      |                   1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:24:30:
+
+   24 | if (arr(j) == arr(j + 1)) then
+      |                              1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:25:17:
+
+   25 | count = count + 1
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:4:
+
+   26 | else
+      |    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:27:4:
+
+   27 | exit
+      |    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:28:3:
+
+   28 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:3:
+
+   29 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:31:20:
+
+   31 | if (count >= k) then
+      |                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:32:15:
+
+   32 | output = .true.
+      |               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:33:4:
+
+   33 | exit
+      |    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:34:3:
+
+   34 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:36:3:
+
+   36 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:38:3:
+
+   38 | end function repeated_pattern
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:44:5:
+
+   44 | use repeated_pattern
+      |     1
+Fatal Error: Cannot open module file ‘repeated_pattern.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_prefix_of_word(sentence: str, search_word: str) -&gt; int:
+    words = sentence.split(' ')
+    for index, word in enumerate(words, start=1):
+        if word.startswith(search_word):
+            return index
+    return -1
+</code></pre>
+<p>The algorithm for solving this problem consists of the following steps:
+1. Split the given sentence into words based on the space delimiter.
+2. Iterate over the list of words.
+3. For each word, check if the searchWord is a prefix (using substring in C++, <code>startsWith()</code> in Java and JavaScript, and <code>startswith()</code> in Python).
+4. If the searchWord is a prefix of the current word, return the current index (1-indexed).
+5. If no word has searchWord as a prefix, return -1.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;sstream&gt;
+
+int isPrefixOfWord(std::string sentence, std::string searchWord) {
+    std::istringstream iss(sentence);
+    std::string word;
+    int index = 1;
+    while (iss &gt;&gt; word) {
+        if (word.substr(0, searchWord.size()) == searchWord) {
+            return index;
+        }
+        index++;
+    }
+    return -1;
+}
+</code></pre>
+<p>The algorithm for solving this problem consists of the following steps:
+1. Split the given sentence into words based on the space delimiter.
+2. Iterate over the list of words.
+3. For each word, check if the searchWord is a prefix (using substring in C++, <code>startsWith()</code> in Java and JavaScript, and <code>startswith()</code> in Python).
+4. If the searchWord is a prefix of the current word, return the current index (1-indexed).
+5. If no word has searchWord as a prefix, return -1.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

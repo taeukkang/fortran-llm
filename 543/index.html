@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Diameter of Binary Tree</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/541/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/551/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of a binary tree, return <em>the length of the <strong>diameter</strong> of the tree</em>.</p>
+<p>The <strong>diameter</strong> of a binary tree is the <strong>length</strong> of the longest path between any two nodes in a tree. This path may or may not pass through the <code>root</code>.</p>
+<p>The <strong>length</strong> of a path between two nodes is represented by the number of edges between them.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [1,2,3,4,5]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> 3 is the length of the path [4,2,1,3] or [5,2,1,3].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [1,2]
+<strong>Output:</strong> 1</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[1, 104]</code>.</li>
+<li><code>-100 &lt;= Node.val &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/diameter-of-binary-tree/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, iostat_end, DP => REAL64
+    implicit none
+    integer, parameter :: unit_in = 10, unit_out = 20
+    character(len=1024) :: line
+    type :: node
+        real(kind=DP), allocatable :: val(:)
+        class(node), pointer :: left, right
+    end type node
+    type(node), pointer :: root
+    integer :: n, i, j, status
+
+    ! read input
+    open(newunit=unit_in, file='input.txt', status='old', action='read', iostat=status)
+    if (status /= 0) then
+        write(error_unit, '(*(G0))') 'error: could not open input file'
+        stop 1
+    end if
+    read(unit=unit_in, fmt=*, iostat=status) n
+    allocate(root%val(n))
+    do i = 1, n
+        read(unit=unit_in, fmt=*, iostat=status) root%val(i)
+        if (status /= 0) exit
+    end do
+    close(unit=unit_in)
+
+    ! solve problem
+    call solve(root)
+
+    ! output solution
+    open(newunit=unit_out, file='output.txt', status='replace', action='write', iostat=status)
+    if (status /= 0) then
+        write(error_unit, '(*(G0))') 'error: could not open output file'
+        stop 1
+    end if
+    write(unit=unit_out, fmt='(I0)') diameter(root)
+    close(unit=unit_out)
+
+contains
+
+    subroutine solve(root)
+        class(node), intent(inout) :: root
+        integer :: i
+
+        ! TODO: solve the problem here
+
+    end subroutine solve
+
+    function diameter(root) result(res)
+        class(node), intent(in) :: root
+        integer :: res
+
+        ! TODO: compute the diameter of the tree
+
+    end function diameter
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:14:17:
+
+   14 |     open(newunit=unit_in, file='input.txt', status='old', action='read', iostat=status)
+      |                 1
+Error: Named constant ‘unit_in’ in variable definition context (NEWUNIT tag) at (1)
+temp.f95:31:17:
+
+   31 |     open(newunit=unit_out, file='output.txt', status='replace', action='write', iostat=status)
+      |                 1
+Error: Named constant ‘unit_out’ in variable definition context (NEWUNIT tag) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module binary_tree_diameter
+
+implicit none
+
+private
+public :: binary_tree_diameter
+
+type :: binary_tree_node
+    integer :: val
+    type(binary_tree_node), pointer :: left
+    type(binary_tree_node), pointer :: right
+end type binary_tree_node
+
+interface binary_tree_diameter
+    module procedure :: binary_tree_diameter_recursive
+end interface
+
+contains
+
+function binary_tree_diameter_recursive(root) result(diameter)
+    type(binary_tree_node), pointer, intent(in) :: root
+    integer :: diameter
+
+    if (.not. associated(root)) then
+        diameter = 0
+        return
+    end if
+
+    ! Recursively compute the diameter of the left and right subtrees
+    ! and store the maximum of these values
+    diameter = max(binary_tree_diameter_recursive(root%left), binary_tree_diameter_recursive(root%right))
+
+    ! Add the length of the path from the root to the leaf nodes
+    ! to the maximum diameter
+    diameter = max(diameter, binary_tree_depth(root) + binary_tree_depth(root%left) + binary_tree_depth(root%right))
+end function binary_tree_diameter_recursive
+
+function binary_tree_depth(root) result(depth)
+    type(binary_tree_node), pointer, intent(in) :: root
+    integer :: depth
+
+    if (.not. associated(root)) then
+        depth = 0
+        return
+    end if
+
+    ! Recursively compute the depth of the left and right subtrees
+    ! and store the maximum of these values
+    depth = max(binary_tree_depth(root%left), binary_tree_depth(root%right)) + 1
+end function binary_tree_depth
+
+end module binary_tree_diameter
+
+program main
+    use binary_tree_diameter
+    implicit none
+
+    ! Create a binary tree with the given values
+    type(binary_tree_node), pointer :: root
+    root => binary_tree_node(1, null(), null())
+    root%left => binary_tree_node(2, null(), null())
+    root%right => binary_tree_node(3, null(), null())
+    root%left%left => binary_tree_node(4, null(), null())
+    root%left%right => binary_tree_node(5, null(), null())
+
+    ! Print the diameter of the tree
+    write (*,*) binary_tree_diameter(root)
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:30:
+
+    6 | public :: binary_tree_diameter
+      |                              1
+Error: PUBLIC attribute applied to MODULE binary_tree_diameter at (1)
+temp.f95:14:30:
+
+   14 | interface binary_tree_diameter
+      |                              1
+Error: MODULE attribute of ‘binary_tree_diameter’ conflicts with PROCEDURE attribute at (1)
+temp.f95:15:21:
+
+   15 |     module procedure :: binary_tree_diameter_recursive
+      |                     1
+Error: MODULE PROCEDURE at (1) must be in a generic module interface
+temp.f95:16:3:
+
+   16 | end interface
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:49:16:
+
+   49 |     depth = max(binary_tree_depth(root%left), binary_tree_depth(root%right)) + 1
+      |                1
+Error: Function ‘binary_tree_depth’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:31:19:
+
+   31 |     diameter = max(binary_tree_diameter_recursive(root%left), binary_tree_diameter_recursive(root%right))
+      |                   1
+Error: Function ‘binary_tree_diameter_recursive’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:55:9:
+
+   55 |     use binary_tree_diameter
+      |         1
+Fatal Error: Cannot open module file ‘binary_tree_diameter.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def diameter_of_binary_tree(root):
+    def _diameter_of_binary_tree(node):
+        if not node:
+            return 0, 0
+        left_height, left_diameter = _diameter_of_binary_tree(node.left)
+        right_height, right_diameter = _diameter_of_binary_tree(node.right)
+        height = 1 + max(left_height, right_height)
+        diameter = max(left_height + right_height, max(left_diameter, right_diameter))
+        return height, diameter
+
+    return _diameter_of_binary_tree(root)[1]
+</code></pre>
+<ol>
+<li>Create a helper function to return a tuple/array with two values:</li>
+<li>The height of the subtree rooted at the given node</li>
+<li>The largest diameter among the subtree's nodes</li>
+<li>If the node is null/None, return (0, 0), as the height and diameter are both 0.</li>
+<li>Recurse on the left and right children, obtaining their heights and diameters.</li>
+<li>The height at the current node is 1 + the maximum of the left and right heights.</li>
+<li>The diameter at the current node is the maximum of the following three values:</li>
+<li>The sum of the left and right heights (the path goes through the root)</li>
+<li>The left child's diameter</li>
+<li>The right child's diameter</li>
+<li>Return the diameter of the tree as the second element in the output tuple/array of the helper function called with the root node.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
+};
+
+int diameterOfBinaryTree(TreeNode* root, int* height) {
+    int leftHeight = 0, rightHeight = 0;
+    if (root == nullptr) {
+        *height = 0;
+        return 0;
+    }
+    int leftDiameter = diameterOfBinaryTree(root-&gt;left, &amp;leftHeight);
+    int rightDiameter = diameterOfBinaryTree(root-&gt;right, &amp;rightHeight);
+    *height = std::max(leftHeight, rightHeight) + 1;
+    return std::max(std::max(leftDiameter, rightDiameter), leftHeight + rightHeight);
+}
+</code></pre>
+<ol>
+<li>Create a helper function to return a tuple/array with two values:</li>
+<li>The height of the subtree rooted at the given node</li>
+<li>The largest diameter among the subtree's nodes</li>
+<li>If the node is null/None, return (0, 0), as the height and diameter are both 0.</li>
+<li>Recurse on the left and right children, obtaining their heights and diameters.</li>
+<li>The height at the current node is 1 + the maximum of the left and right heights.</li>
+<li>The diameter at the current node is the maximum of the following three values:</li>
+<li>The sum of the left and right heights (the path goes through the root)</li>
+<li>The left child's diameter</li>
+<li>The right child's diameter</li>
+<li>Return the diameter of the tree as the second element in the output tuple/array of the helper function called with the root node.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

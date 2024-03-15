@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Binary Tree Tilt</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/561/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/566/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of a binary tree, return <em>the sum of every tree node's <strong>tilt</strong>.</em></p>
+<p>The <strong>tilt</strong> of a tree node is the <strong>absolute difference</strong> between the sum of all left subtree node <strong>values</strong> and all right subtree node <strong>values</strong>. If a node does not have a left child, then the sum of the left subtree node <strong>values</strong> is treated as <code>0</code>. The rule is similar if the node does not have a right child.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [1,2,3]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> 
+Tilt of node 2 : |0-0| = 0 (no children)
+Tilt of node 3 : |0-0| = 0 (no children)
+Tilt of node 1 : |2-3| = 1 (left subtree is just left child, so sum is 2; right subtree is just right child, so sum is 3)
+Sum of every tilt : 0 + 0 + 1 = 1</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [4,2,9,3,5,null,7]
+<strong>Output:</strong> 15
+<strong>Explanation:</strong> 
+Tilt of node 3 : |0-0| = 0 (no children)
+Tilt of node 5 : |0-0| = 0 (no children)
+Tilt of node 7 : |0-0| = 0 (no children)
+Tilt of node 2 : |3-5| = 2 (left subtree is just left child, so sum is 3; right subtree is just right child, so sum is 5)
+Tilt of node 9 : |0-7| = 7 (no left child, so sum is 0; right subtree is just right child, so sum is 7)
+Tilt of node 4 : |(3+5+2)-(9+7)| = |10-16| = 6 (left subtree values are 3, 5, and 2, which sums to 10; right subtree values are 9 and 7, which sums to 16)
+Sum of every tilt : 0 + 0 + 0 + 2 + 7 + 6 = 15</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> root = [21,7,14,1,1,2,2,3,3]
+<strong>Output:</strong> 9</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[0, 104]</code>.</li>
+<li><code>-1000 &lt;= Node.val &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/binary-tree-tilt/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: unit_in = 10, unit_out = 20
+    character(len=*), parameter :: filename_in = "example_input.txt"
+    character(len=*), parameter :: filename_out = "example_output.txt"
+    type :: node_type
+        real(kind=DP) :: val
+        type(node_type), pointer :: left, right
+    end type node_type
+    type(node_type), pointer :: root
+    integer :: i, n
+    real(kind=DP) :: tilt
+
+    ! Read input from file
+    open(newunit=unit_in, file=filename_in, status='old', action='read')
+    read(unit=unit_in, fmt=*) n
+    allocate(root)
+    do i = 1, n
+        read(unit=unit_in, fmt=*) root%val
+        call solve(root)
+    end do
+    close(unit=unit_in)
+
+    ! Write output to file
+    open(newunit=unit_out, file=filename_out, status='replace', action='write')
+    write(unit=unit_out, fmt=*) tilt
+    close(unit=unit_out)
+
+contains
+
+    recursive subroutine solve(this)
+        class(node_type), intent(inout) :: this
+        if (.not. associated(this)) return
+        call solve(this%left)
+        call solve(this%right)
+        tilt = abs(sum(this%left%val) - sum(this%right%val))
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:34:29:
+
+   34 |         if (.not. associated(this)) return
+      |                             1
+Error: ‘pointer’ argument of ‘associated’ intrinsic at (1) must be a POINTER
+temp.f95:37:44:
+
+   37 |         tilt = abs(sum(this%left%val) - sum(this%right%val))
+      |                                            1
+Error: ‘array’ argument of ‘sum’ intrinsic at (1) must be an array
+temp.f95:16:17:
+
+   16 |     open(newunit=unit_in, file=filename_in, status='old', action='read')
+      |                 1
+Error: Named constant ‘unit_in’ in variable definition context (NEWUNIT tag) at (1)
+temp.f95:26:17:
+
+   26 |     open(newunit=unit_out, file=filename_out, status='replace', action='write')
+      |                 1
+Error: Named constant ‘unit_out’ in variable definition context (NEWUNIT tag) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module tilt
+
+implicit none
+
+contains
+
+function tilt_sum(root) result(sum)
+
+! Given the root of a binary tree, return the sum of every tree node's tilt.
+! The tilt of a tree node is the absolute difference between the sum of all left subtree node values and all right subtree node values.
+! If a node does not have a left child, then the sum of the left subtree node values is treated as 0. The rule is similar if the node does not have a right child.
+
+type(node), pointer, intent(in) :: root
+integer :: sum
+
+sum = tilt_sum_helper(root)
+
+end function tilt_sum
+
+recursive function tilt_sum_helper(node) result(sum)
+
+! Helper function to calculate the tilt sum of a node and its children.
+
+type(node), pointer, intent(in) :: node
+integer :: sum
+
+if (associated(node)) then
+    sum = abs(tilt_sum_helper(node%left) - tilt_sum_helper(node%right))
+    if (associated(node%left)) sum = sum + tilt_sum_helper(node%left)
+    if (associated(node%right)) sum = sum + tilt_sum_helper(node%right)
+else
+    sum = 0
+endif
+
+end function tilt_sum_helper
+
+end module tilt
+
+! Test cases
+program test
+
+use tilt
+implicit none
+
+! Test case 1
+type(node), pointer :: root
+integer :: sum
+
+root => node(1, node(2, node(3), node(4)), node(5))
+sum = tilt_sum(root)
+write (*,*) "Tilt sum of the tree:", sum
+
+! Test case 2
+root => node(4, node(2, node(3), node(5)), node(7))
+sum = tilt_sum(root)
+write (*,*) "Tilt sum of the tree:", sum
+
+! Test case 3
+root => node(21, node(7), node(14, node(1), node(1, node(2), node(2)), node(3, node(3))), node(2, node(2)))
+sum = tilt_sum(root)
+write (*,*) "Tilt sum of the tree:", sum
+
+end program test
+
+! Node structure
+type node
+integer :: val
+type(node), pointer :: left
+type(node), pointer :: right
+
+contains
+
+! Constructor
+type(node) function node(val, left, right)
+
+integer, intent(in) :: val
+type(node), pointer, optional :: left
+type(node), pointer, optional :: right
+
+node%val = val
+if (present(left)) then
+    node%left => left
+else
+    nullify(node%left)
+endif
+if (present(right)) then
+    node%right => right
+else
+    nullify(node%right)
+endif
+
+end function node
+
+end type node
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:13:11:
+
+   13 | type(node), pointer, intent(in) :: root
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:24:11:
+
+   24 | type(node), pointer, intent(in) :: node
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:28:36:
+
+   28 |     sum = abs(tilt_sum_helper(node%left) - tilt_sum_helper(node%right))
+      |                                    1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:29:25:
+
+   29 |     if (associated(node%left)) sum = sum + tilt_sum_helper(node%left)
+      |                         1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:30:25:
+
+   30 |     if (associated(node%right)) sum = sum + tilt_sum_helper(node%right)
+      |                         1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:7:22:
+
+    7 | function tilt_sum(root) result(sum)
+      |                      1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:20:39:
+
+   20 | recursive function tilt_sum_helper(node) result(sum)
+      |                                       1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:42:5:
+
+   42 | use tilt
+      |     1
+Fatal Error: Cannot open module file ‘tilt.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def findTilt(self, root):
+    def findTiltUtil(node):
+        if not node: return 0, 0
+
+        leftSum, leftTilt = findTiltUtil(node.left)
+        rightSum, rightTilt = findTiltUtil(node.right)
+
+        return (node.val + leftSum + rightSum, abs(leftSum - rightSum) + leftTilt + rightTilt)
+
+    return findTiltUtil(root)[1]
+</code></pre>
+<pre><code>The problem can be solved using a bottom-uprecursive algorithm. The helper function `findTiltUtil` should return two values: the sum of the current node and its descendants and the tilt value of the current node and its descendants.
+</code></pre>
+<p>The base case is when the current node is null, in this case, return [0, 0].</p>
+<p>If the current node is not null, recursively call the <code>findTiltUtil</code> for left and right children. Then add the sum of the left child and the right child's sum, plus the value of the current node to get the new sum. For the new tilt value, add the absolute difference between the left and right child's sum to the tilt value of both children.</p>
+<p>Finally, return the new sum and tilt value as a tuple or a list. When calling this helper function for the root, the tilt value of the whole tree will be in the second element of the result list.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int findTiltUtil(TreeNode* root, int&amp; tiltSum) {
+    if (!root) return 0;
+
+    int leftSum = findTiltUtil(root-&gt;left, tiltSum);
+    int rightSum = findTiltUtil(root-&gt;right, tiltSum);
+
+    tiltSum += abs(leftSum - rightSum);
+    return root-&gt;val + leftSum + rightSum;
+}
+
+int findTilt(TreeNode* root) {
+    int tiltSum = 0;
+    findTiltUtil(root, tiltSum);
+    return tiltSum;
+}
+</code></pre>
+<pre><code>The problem can be solved using a bottom-uprecursive algorithm. The helper function `findTiltUtil` should return two values: the sum of the current node and its descendants and the tilt value of the current node and its descendants.
+</code></pre>
+<p>The base case is when the current node is null, in this case, return [0, 0].</p>
+<p>If the current node is not null, recursively call the <code>findTiltUtil</code> for left and right children. Then add the sum of the left child and the right child's sum, plus the value of the current node to get the new sum. For the new tilt value, add the absolute difference between the left and right child's sum to the tilt value of both children.</p>
+<p>Finally, return the new sum and tilt value as a tuple or a list. When calling this helper function for the root, the tilt value of the whole tree will be in the second element of the result list.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

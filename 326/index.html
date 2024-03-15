@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Power of Three</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/303/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/338/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer <code>n</code>, return <em><code>true</code> if it is a power of three. Otherwise, return <code>false</code></em>.</p>
+<p>An integer <code>n</code> is a power of three, if there exists an integer <code>x</code> such that <code>n == 3x</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 27
+<strong>Output:</strong> true
+<strong>Explanation:</strong> 27 = 33</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 0
+<strong>Output:</strong> false
+<strong>Explanation:</strong> There is no x where 3x = 0.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> n = -1
+<strong>Output:</strong> false
+<strong>Explanation:</strong> There is no x where 3x = (-1).</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>-231 &lt;= n &lt;= 231 - 1</code></li>
+</ul>
+<p><strong>Follow up:</strong> Could you solve it without loops/recursion?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/power-of-three/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n
+    logical :: result
+
+    print '(L1)', solve_power_of_three(27, result)
+    print '(L1)', solve_power_of_three(0, result)
+    print '(L1)', solve_power_of_three(-1, result)
+
+contains
+
+    function solve_power_of_three(n, result) result (result)
+        implicit none
+        integer, intent(in) :: n
+        logical, intent(out) :: result
+        integer :: x
+
+        result = .false.
+        do while (n > 0)
+            x = n / 3
+            if (x * 3 == n) then
+                result = .true.
+                exit
+            end if
+            n = x
+        end do
+    end function solve_power_of_three
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:13:60:
+
+   13 |     function solve_power_of_three(n, result) result (result)
+      |                                                            1
+Error: DUMMY attribute conflicts with RESULT attribute in ‘result’ at (1)
+temp.f95:14:21:
+
+   14 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:15:32:
+
+   15 |         integer, intent(in) :: n
+      |                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:16:38:
+
+   16 |         logical, intent(out) :: result
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:17:20:
+
+   17 |         integer :: x
+      |                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:19:24:
+
+   19 |         result = .false.
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:24:
+
+   20 |         do while (n > 0)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:21:21:
+
+   21 |             x = n / 3
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:32:
+
+   22 |             if (x * 3 == n) then
+      |                                1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:23:31:
+
+   23 |                 result = .true.
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:20:
+
+   24 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:25:15:
+
+   25 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:26:17:
+
+   26 |             n = x
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:27:11:
+
+   27 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:28:7:
+
+   28 |     end function solve_power_of_three
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:7:17:
+
+    7 |     print '(L1)', solve_power_of_three(27, result)
+      |                 1
+Error: Function ‘solve_power_of_three’ at (1) has no IMPLICIT type
+temp.f95:8:17:
+
+    8 |     print '(L1)', solve_power_of_three(0, result)
+      |                 1
+Error: Function ‘solve_power_of_three’ at (1) has no IMPLICIT type
+temp.f95:9:17:
+
+    9 |     print '(L1)', solve_power_of_three(-1, result)
+      |                 1
+Error: Function ‘solve_power_of_three’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module power_of_three
+implicit none
+private
+public :: is_power_of_three
+interface
+    function is_power_of_three(n) result(res)
+        integer, intent(in) :: n
+        logical :: res
+    end function is_power_of_three
+end interface
+contains
+function is_power_of_three(n) result(res)
+    integer, intent(in) :: n
+    logical :: res
+    integer :: x
+    res = .false.
+    if (n == 0) return
+    x = 1
+    do while (x <= n)
+        if (n == 3*x) then
+            res = .true.
+            exit
+        end if
+        x = x * 3
+    end do
+end function is_power_of_three
+end module power_of_three
+
+program power_of_three_test
+use power_of_three, only : is_power_of_three
+implicit none
+integer :: n
+logical :: res
+
+n = 27
+res = is_power_of_three(n)
+write (*,*) "n = ", n, "is power of three: ", res
+
+n = 0
+res = is_power_of_three(n)
+write (*,*) "n = ", n, "is power of three: ", res
+
+n = -1
+res = is_power_of_three(n)
+write (*,*) "n = ", n, "is power of three: ", res
+
+n = 9
+res = is_power_of_three(n)
+write (*,*) "n = ", n, "is power of three: ", res
+
+n = 27
+res = is_power_of_three(n)
+write (*,*) "n = ", n, "is power of three: ", res
+
+n = 81
+res = is_power_of_three(n)
+write (*,*) "n = ", n, "is power of three: ", res
+
+n = 243
+res = is_power_of_three(n)
+write (*,*) "n = ", n, "is power of three: ", res
+
+n = 729
+res = is_power_of_three(n)
+write (*,*) "n = ", n, "is power of three: ", res
+end program power_of_three_test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:12:27:
+
+    6 |     function is_power_of_three(n) result(res)
+      |    2                       
+......
+   12 | function is_power_of_three(n) result(res)
+      |                           1
+Error: Procedure ‘is_power_of_three’ at (1) is already defined at (2)
+temp.f95:13:28:
+
+   13 |     integer, intent(in) :: n
+      |                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:18:
+
+   14 |     logical :: res
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:16:
+
+   15 |     integer :: x
+      |                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:16:17:
+
+   16 |     res = .false.
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:22:
+
+   17 |     if (n == 0) return
+      |                      1
+Error: Unexpected simple IF statement in CONTAINS section at (1)
+temp.f95:18:9:
+
+   18 |     x = 1
+      |         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:21:
+
+   19 |     do while (x <= n)
+      |                     1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:20:26:
+
+   20 |         if (n == 3*x) then
+      |                          1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:21:24:
+
+   21 |             res = .true.
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:16:
+
+   22 |             exit
+      |                1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:23:11:
+
+   23 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:24:17:
+
+   24 |         x = x * 3
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:25:7:
+
+   25 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:3:
+
+   26 | end function is_power_of_three
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:5:
+
+   30 | use power_of_three, only : is_power_of_three
+      |     1
+Fatal Error: Cannot open module file ‘power_of_three.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_power_of_three(n: int) -&gt; bool:
+    if n &lt; 1:
+        return False
+
+    while n % 3 == 0:
+        n //= 3
+
+    return n == 1
+</code></pre>
+<p>The solution checks if the given number, n, is a power of three as follows:</p>
+<ol>
+<li>If n is less than 1, return false because powers of 3 are positive integers.</li>
+<li>Use a while loop, and keep dividing n by 3 while n is divisible by 3 without a remainder.</li>
+<li>After the loop, check if n is equal to 1. If n is 1, it means the original n was a power of 3; otherwise, it was not a power of 3. Return the result accordingly.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool isPowerOfThree(int n) {
+    if (n &lt; 1) {
+        return false;
+    }
+
+    while (n % 3 == 0) {
+        n /= 3;
+    }
+
+    return n == 1;
+}
+</code></pre>
+<p>The solution checks if the given number, n, is a power of three as follows:</p>
+<ol>
+<li>If n is less than 1, return false because powers of 3 are positive integers.</li>
+<li>Use a while loop, and keep dividing n by 3 while n is divisible by 3 without a remainder.</li>
+<li>After the loop, check if n is equal to 1. If n is 1, it means the original n was a power of 3; otherwise, it was not a power of 3. Return the result accordingly.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

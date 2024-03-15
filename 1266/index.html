@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Time Visiting All Points</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1260/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1271/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>On a 2D plane, there are <code>n</code> points with integer coordinates <code>points[i] = [xi, yi]</code>. Return <em>the <strong>minimum time</strong> in seconds to visit all the points in the order given by</em> <code>points</code>.</p>
+<p>You can move according to these rules:</p>
+<ul>
+<li>In <code>1</code> second, you can either:<ul>
+<li>move vertically by one unit,</li>
+<li>move horizontally by one unit, or</li>
+<li>move diagonally <code>sqrt(2)</code> units (in other words, move one unit vertically then one unit horizontally in <code>1</code> second).</li>
+</ul>
+</li>
+<li>You have to visit the points in the same order as they appear in the array.</li>
+<li>You are allowed to pass through points that appear later in the order, but these do not count as visits.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> points = [[1,1],[3,4],[-1,0]]
+<strong>Output:</strong> 7
+<strong>Explanation:</strong> One optimal path is <strong>[1,1]</strong> -&gt; [2,2] -&gt; [3,3] -&gt; <strong>[3,4]</strong> -&gt; [2,3] -&gt; [1,2] -&gt; [0,1] -&gt; <strong>[-1,0]</strong> <br />
+Time from [1,1] to [3,4] = 3 seconds 
+Time from [3,4] to [-1,0] = 4 seconds
+Total time = 7 seconds</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> points = [[3,2],[-2,2]]
+<strong>Output:</strong> 5</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>points.length == n</code></li>
+<li><code>1 &lt;= n &lt;= 100</code></li>
+<li><code>points[i].length == 2</code></li>
+<li><code>-1000 &lt;= points[i][0], points[i][1] &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-time-visiting-all-points/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+
+! This program solves the following problem:
+!
+! On a 2D plane, there are n points with integer coordinates points[i] = [xi, yi].
+! Return the minimum time in seconds to visit all the points in the order given by points.
+!
+! You can move according to these rules:
+!
+! - In 1 second, you can either:
+!   - move vertically by one unit,
+!   - move horizontally by one unit, or
+!   - move diagonally sqrt(2) units (in other words, move one unit vertically then one unit horizontally in 1 second).
+! - You have to visit the points in the same order as they appear in the array.
+! - You are allowed to pass through points that appear later in the order, but these do not count as visits.
+!
+! Example 1:
+! Input: points = [[1,1], [3,4], [-1,0]]
+! Output: 7
+! Explanation: One optimal path is [1,1] -> [2,2] -> [3,3] -> [3,4] -> [2,3] -> [1,2] -> [0,1] -> [-1,0]
+! Time from [1,1] to [3,4] = 3 seconds
+! Time from [3,4] to [-1,0] = 4 seconds
+! Total time = 7 seconds
+!
+! Example 2:
+! Input: points = [[3,2], [-2,2]]
+! Output: 5
+!
+! Constraints:
+! - points.length == n
+! - 1 <= n <= 100
+! - points[i].length == 2
+! - -1000 <= points[i][0], points[i][1] <= 1000
+
+implicit none
+
+integer :: i, j, k, n, xi, yi, xj, yj, xk, yk, t, t_min
+real :: d, d_min
+logical :: visited(100, 100)
+integer, allocatable :: points(:, :)
+
+print '(A)', 'Enter number of points:'
+read(*,*) n
+allocate(points(n, 2))
+
+do i = 1, n
+    print '(A, I0, A)', 'Enter point ', i, ':'
+    read(*,*) xi, yi
+    points(i, :) = [xi, yi]
+end do
+
+t_min = huge(t_min)
+
+do i = 1, n
+    do j = i + 1, n
+        if (.not. visited(i, j)) then
+            d = sqrt((points(i, 1) - points(j, 1))**2 + (points(i, 2) - points(j, 2))**2)
+            if (d < d_min) then
+                d_min = d
+                t = int(d_min)
+            end if
+        end if
+    end do
+end do
+
+if (t > t_min) then
+    print '(A, I0)', 'Minimum time: ', t
+else
+    print '(A)', 'No solution'
+end if
+
+deallocate(points)
+
+contains
+
+function distance(x1, y1, x2, y2) result(d)
+implicit none
+integer, intent(in) :: x1, y1, x2, y2
+real :: d
+
+d = sqrt((x2 - x1)**2 + (y2 - y1)**2)
+
+end function distance
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:81:9:
+
+   81 | d = sqrt((x2 - x1)**2 + (y2 - y1)**2)
+      |         1
+Error: ‘x’ argument of ‘sqrt’ intrinsic at (1) must be REAL or COMPLEX
+temp.f95:57:21:
+
+   57 |             d = sqrt((points(i, 1) - points(j, 1))**2 + (points(i, 2) - points(j, 2))**2)
+      |                     1
+Error: ‘x’ argument of ‘sqrt’ intrinsic at (1) must be REAL or COMPLEX
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module min_time_to_visit_all_points
+
+implicit none
+
+contains
+
+real(kind=8) function min_time_to_visit_all_points(points) result(min_time)
+
+! Declare variables
+integer, intent(in) :: points(:, :)
+integer :: n, i, j, xi, yi, xj, yj, dx, dy, d, t
+real(kind=8) :: sqrt_2
+
+! Initialize variables
+n = size(points, 1)
+sqrt_2 = sqrt(2.0d0)
+min_time = 0.0d0
+
+! Loop through all points
+do i = 1, n - 1
+
+    ! Get coordinates of current point
+    xi = points(i, 1)
+    yi = points(i, 2)
+
+    ! Loop through all remaining points
+    do j = i + 1, n
+
+        ! Get coordinates of next point
+        xj = points(j, 1)
+        yj = points(j, 2)
+
+        ! Calculate distance between current and next point
+        dx = abs(xj - xi)
+        dy = abs(yj - yi)
+        d = max(dx, dy)
+
+        ! Calculate time to move to next point
+        if (d == 0) then
+            t = 0
+        else if (d == 1) then
+            t = 1
+        else
+            t = sqrt_2
+        end if
+
+        ! Update minimum time
+        min_time = max(min_time, t)
+
+    end do
+
+end do
+
+end function min_time_to_visit_all_points
+
+end module min_time_to_visit_all_points
+
+program test_min_time_to_visit_all_points
+
+use min_time_to_visit_all_points, only: min_time_to_visit_all_points
+implicit none
+
+! Test case 1:
+print *, min_time_to_visit_all_points([[1, 1], [3, 4], [-1, 0]])
+! Expected output: 7
+
+! Test case 2:
+print *, min_time_to_visit_all_points([[3, 2], [-2, 2]])
+! Expected output: 5
+
+end program test_min_time_to_visit_all_points
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:50:
+
+    7 | real(kind=8) function min_time_to_visit_all_points(points) result(min_time)
+      |                                                  1
+Error: MODULE attribute of ‘min_time_to_visit_all_points’ conflicts with PROCEDURE attribute at (1)
+temp.f95:10:35:
+
+   10 | integer, intent(in) :: points(:, :)
+      |                                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:48:
+
+   11 | integer :: n, i, j, xi, yi, xj, yj, dx, dy, d, t
+      |                                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:22:
+
+   12 | real(kind=8) :: sqrt_2
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:19:
+
+   15 | n = size(points, 1)
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:20:
+
+   16 | sqrt_2 = sqrt(2.0d0)
+      |                    1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:16:
+
+   17 | min_time = 0.0d0
+      |                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:15:
+
+   20 | do i = 1, n - 1
+      |               1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:23:21:
+
+   23 |     xi = points(i, 1)
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:21:
+
+   24 |     yi = points(i, 2)
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:27:19:
+
+   27 |     do j = i + 1, n
+      |                   1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:30:25:
+
+   30 |         xj = points(j, 1)
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:31:25:
+
+   31 |         yj = points(j, 2)
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:34:25:
+
+   34 |         dx = abs(xj - xi)
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:35:25:
+
+   35 |         dy = abs(yj - yi)
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:36:23:
+
+   36 |         d = max(dx, dy)
+      |                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:39:24:
+
+   39 |         if (d == 0) then
+      |                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:40:17:
+
+   40 |             t = 0
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:41:29:
+
+   41 |         else if (d == 1) then
+      |                             1
+Error: Unexpected ELSE IF statement in CONTAINS section at (1)
+temp.f95:42:17:
+
+   42 |             t = 1
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:43:12:
+
+   43 |         else
+      |            1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:44:22:
+
+   44 |             t = sqrt_2
+      |                      1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:45:11:
+
+   45 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:48:35:
+
+   48 |         min_time = max(min_time, t)
+      |                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:50:7:
+
+   50 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:52:3:
+
+   52 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:54:3:
+
+   54 | end function min_time_to_visit_all_points
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:60:68:
+
+   60 | use min_time_to_visit_all_points, only: min_time_to_visit_all_points
+      |                                                                    1
+Error: The name ‘min_time_to_visit_all_points’ at (1) has already been used as an external module name
+temp.f95:64:8:
+
+    1 | module min_time_to_visit_all_points
+      |                                   2
+......
+   64 | print *, min_time_to_visit_all_points([[1, 1], [3, 4], [-1, 0]])
+      |        1
+Error: Global name ‘min_time_to_visit_all_points’ at (1) is already being used as a MODULE at (2)
+temp.f95:64:37:
+
+   64 | print *, min_time_to_visit_all_points([[1, 1], [3, 4], [-1, 0]])
+      |                                     1
+Warning: Interface mismatch in global procedure ‘min_time_to_visit_all_points’ at (1): 'min_time_to_visit_all_points' is not a function
+temp.f95:64:8:
+
+   64 | print *, min_time_to_visit_all_points([[1, 1], [3, 4], [-1, 0]])
+      |        1
+Error: Function ‘min_time_to_visit_all_points’ at (1) has no IMPLICIT type
+temp.f95:68:8:
+
+    1 | module min_time_to_visit_all_points
+      |                                   2
+......
+   68 | print *, min_time_to_visit_all_points([[3, 2], [-2, 2]])
+      |        1
+Error: Global name ‘min_time_to_visit_all_points’ at (1) is already being used as a MODULE at (2)
+temp.f95:64:37:
+
+   64 | print *, min_time_to_visit_all_points([[1, 1], [3, 4], [-1, 0]])
+      |                                     1
+Warning: Interface mismatch in global procedure ‘min_time_to_visit_all_points’ at (1): 'min_time_to_visit_all_points' is not a function
+temp.f95:68:8:
+
+   68 | print *, min_time_to_visit_all_points([[3, 2], [-2, 2]])
+      |        1
+Error: Function ‘min_time_to_visit_all_points’ at (1) has no IMPLICIT type
+temp.f95:64:8:
+
+   64 | print *, min_time_to_visit_all_points([[1, 1], [3, 4], [-1, 0]])
+      |        1
+Error: More actual than formal arguments in procedure call at (1)
+temp.f95:68:8:
+
+   68 | print *, min_time_to_visit_all_points([[3, 2], [-2, 2]])
+      |        1
+Error: More actual than formal arguments in procedure call at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minTimeToVisitAllPoints(points):
+    time = 0
+    for i in range(1, len(points)):
+        dx = abs(points[i][0] - points[i - 1][0])
+        dy = abs(points[i][1] - points[i - 1][1])
+        time += max(dx, dy)
+    return time
+</code></pre>
+<p>We iterate through every point in the given order. At each point, we calculate the horizontal distance <code>dx</code> and the vertical distance <code>dy</code> between the current point and the previous point. The minimum time to move between these two points is the maximum of <code>dx</code> and <code>dy</code>. This is because the diagonal movement can shorten both distances simultaneously. We add this value to the total time and continue until all points are visited.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minTimeToVisitAllPoints(vector&lt;vector&lt;int&gt;&gt;&amp; points) {
+    int time = 0;
+    for (int i = 1; i &lt; points.size(); i++) {
+        int dx = abs(points[i][0] - points[i - 1][0]);
+        int dy = abs(points[i][1] - points[i - 1][1]);
+        time += max(dx, dy);
+    }
+    return time;
+}
+</code></pre>
+<pre><code>We iterate through every point in the given order. At each point, we calculate the horizontal distance `dx` and the vertical distance `dy` between the current point and the previous point. The minimum time to move between these two points is the maximum of `dx` and `dy`. This is because the diagonal movement can shorten both distances simultaneously. We add this value to the total time and continue until all points are visited.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

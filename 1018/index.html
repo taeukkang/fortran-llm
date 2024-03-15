@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Binary Prefix Divisible By 5</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1013/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1021/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a binary array <code>nums</code> (<strong>0-indexed</strong>).</p>
+<p>We define <code>xi</code> as the number whose binary representation is the subarray <code>nums[0..i]</code> (from most-significant-bit to least-significant-bit).</p>
+<ul>
+<li>For example, if <code>nums = [1,0,1]</code>, then <code>x0 = 1</code>, <code>x1 = 2</code>, and <code>x2 = 5</code>.</li>
+</ul>
+<p>Return <em>an array of booleans</em> <code>answer</code> <em>where</em> <code>answer[i]</code> <em>is</em> <code>true</code> <em>if</em> <code>xi</code> <em>is divisible by</em> <code>5</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [0,1,1]
+<strong>Output:</strong> [true,false,false]
+<strong>Explanation:</strong> The input numbers in binary are 0, 01, 011; which are 0, 1, and 3 in base-10.
+Only the first number is divisible by 5, so answer[0] is true.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,1,1]
+<strong>Output:</strong> [false,false,false]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 105</code></li>
+<li><code>nums[i]</code> is either <code>0</code> or <code>1</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/binary-prefix-divisible-by-5/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 3
+    integer, dimension(n) :: nums
+    logical, dimension(n) :: answer
+
+    ! Example 1
+    nums = [0, 1, 1]
+    answer = solve(nums)
+    write (*, '(A, L1)') 'Example 1: ', answer
+
+    ! Example 2
+    nums = [1, 1, 1]
+    answer = solve(nums)
+    write (*, '(A, L1)') 'Example 2: ', answer
+
+contains
+
+    function solve(nums) result(answer)
+        implicit none
+        integer, dimension(:), intent(in) :: nums
+        logical, dimension(size(nums)) :: answer
+        integer :: i
+
+        do i = 1, size(nums)
+            answer(i) = mod(xi(nums, i), 5) == 0
+        end do
+    end function solve
+
+    function xi(nums, i) result(xi)
+        implicit none
+        integer, dimension(:), intent(in) :: nums
+        integer, value :: i
+        integer :: xi
+
+        xi = 0
+        do while (i > 0)
+            xi = xi * 2 + nums(i)
+            i = i - 1
+        end do
+    end function xi
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:31:35:
+
+   31 |     function xi(nums, i) result(xi)
+      |                                   1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:32:21:
+
+   32 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:33:49:
+
+   33 |         integer, dimension(:), intent(in) :: nums
+      |                                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:34:27:
+
+   34 |         integer, value :: i
+      |                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:35:21:
+
+   35 |         integer :: xi
+      |                     1
+Error: Symbol ‘xi’ at (1) has already been host associated
+temp.f95:37:11:
+
+   37 |         xi = 0
+      |           1
+Error: Symbol ‘xi’ at (1) has already been host associated
+temp.f95:38:24:
+
+   38 |         do while (i > 0)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:39:15:
+
+   39 |             xi = xi * 2 + nums(i)
+      |               1
+Error: Symbol ‘xi’ at (1) has already been host associated
+temp.f95:40:21:
+
+   40 |             i = i - 1
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:41:11:
+
+   41 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:42:7:
+
+   42 |     end function xi
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:27:28:
+
+   27 |             answer(i) = mod(xi(nums, i), 5) == 0
+      |                            1
+Error: Function ‘xi’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module is_divisible_by_5
+implicit none
+contains
+
+function is_divisible_by_5(nums) result(answer)
+integer, intent(in) :: nums(:)
+logical :: answer(size(nums))
+integer :: i, xi
+
+do i = 1, size(nums)
+    xi = 0
+    do j = i, size(nums)
+        xi = xi * 2 + nums(j)
+    end do
+    answer(i) = mod(xi, 5) == 0
+end do
+
+end function is_divisible_by_5
+
+end module is_divisible_by_5
+
+program test_is_divisible_by_5
+use is_divisible_by_5
+implicit none
+integer, parameter :: nums1(3) = [0, 1, 1]
+integer, parameter :: nums2(3) = [1, 1, 1]
+integer, parameter :: nums3(3) = [0, 0, 1]
+integer, parameter :: nums4(3) = [1, 0, 1]
+integer, parameter :: nums5(3) = [0, 1, 0]
+integer, parameter :: nums6(3) = [1, 1, 0]
+integer, parameter :: nums7(3) = [0, 0, 0]
+integer, parameter :: nums8(3) = [1, 0, 0]
+integer, parameter :: nums9(3) = [0, 1, 1]
+integer, parameter :: nums10(3) = [1, 1, 1]
+
+write (*,*) "Test 1:"
+write (*,*) "Input: ", nums1
+write (*,*) "Output: ", is_divisible_by_5(nums1)
+write (*,*) "Expected: ", .true.
+write (*,*) "Test 2:"
+write (*,*) "Input: ", nums2
+write (*,*) "Output: ", is_divisible_by_5(nums2)
+write (*,*) "Expected: ", .false.
+write (*,*) "Test 3:"
+write (*,*) "Input: ", nums3
+write (*,*) "Output: ", is_divisible_by_5(nums3)
+write (*,*) "Expected: ", .false.
+write (*,*) "Test 4:"
+write (*,*) "Input: ", nums4
+write (*,*) "Output: ", is_divisible_by_5(nums4)
+write (*,*) "Expected: ", .true.
+write (*,*) "Test 5:"
+write (*,*) "Input: ", nums5
+write (*,*) "Output: ", is_divisible_by_5(nums5)
+write (*,*) "Expected: ", .false.
+write (*,*) "Test 6:"
+write (*,*) "Input: ", nums6
+write (*,*) "Output: ", is_divisible_by_5(nums6)
+write (*,*) "Expected: ", .false.
+write (*,*) "Test 7:"
+write (*,*) "Input: ", nums7
+write (*,*) "Output: ", is_divisible_by_5(nums7)
+write (*,*) "Expected: ", .false.
+write (*,*) "Test 8:"
+write (*,*) "Input: ", nums8
+write (*,*) "Output: ", is_divisible_by_5(nums8)
+write (*,*) "Expected: ", .true.
+write (*,*) "Test 9:"
+write (*,*) "Input: ", nums9
+write (*,*) "Output: ", is_divisible_by_5(nums9)
+write (*,*) "Expected: ", .false.
+write (*,*) "Test 10:"
+write (*,*) "Input: ", nums10
+write (*,*) "Output: ", is_divisible_by_5(nums10)
+write (*,*) "Expected: ", .true.
+
+end program test_is_divisible_by_5
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:26:
+
+    5 | function is_divisible_by_5(nums) result(answer)
+      |                          1
+Error: MODULE attribute of ‘is_divisible_by_5’ conflicts with PROCEDURE attribute at (1)
+temp.f95:6:30:
+
+    6 | integer, intent(in) :: nums(:)
+      |                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:7:23:
+
+    7 | logical :: answer(size(nums))
+      |                       1
+Error: Symbol ‘nums’ is used before it is typed at (1)
+temp.f95:8:16:
+
+    8 | integer :: i, xi
+      |                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:20:
+
+   10 | do i = 1, size(nums)
+      |                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:11:10:
+
+   11 |     xi = 0
+      |          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:12:24:
+
+   12 |     do j = i, size(nums)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:13:29:
+
+   13 |         xi = xi * 2 + nums(j)
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:14:7:
+
+   14 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:15:31:
+
+   15 |     answer(i) = mod(xi, 5) == 0
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:3:
+
+   16 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:18:3:
+
+   18 | end function is_divisible_by_5
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:5:
+
+   23 | use is_divisible_by_5
+      |     1
+Fatal Error: Cannot open module file ‘is_divisible_by_5.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def largestPerimeter(nums):
+    nums.sort(reverse=True)
+
+    for i in range(len(nums) - 2):
+        if nums[i] &lt; nums[i + 1] + nums[i + 2]:
+            return nums[i] + nums[i + 1] + nums[i + 2]
+
+    return 0
+</code></pre>
+<p>To find the largest perimeter of a triangle with a non-zero area, we first sort the array in descending order. This allows us to check if a triangle can be formed by taking the longest possible sides first. Then, we iterate through the sorted array and check if the current element and the next two elements form a triangle of non-zero area. To check if a triangle can be formed, we use the triangle inequality theorem, which states that for any triangle with sides a, b, and c, the sum of any two sides must be greater than the third side (a + b &gt; c, a + c &gt; b, b + c &gt; a). Since we have the array sorted in descending order, we only need to check one case of the inequality (nums[i] &lt; nums[i + 1] + nums[i + 2]) for each iteration. If we find a valid triangle, we return the sum of its sides as the largest perimeter. If no valid triangle is found, we return 0.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int largestPerimeter(std::vector&lt;int&gt;&amp; nums) {
+    std::sort(nums.begin(), nums.end(), std::greater&lt;int&gt;());
+
+    for (size_t i = 0; i &lt; nums.size() - 2; ++i) {
+        if (nums[i] &lt; nums[i + 1] + nums[i + 2]) {
+            return nums[i] + nums[i + 1] + nums[i + 2];
+        }
+    }
+
+    return 0;
+}
+</code></pre>
+<p>To find the largest perimeter of a triangle with a non-zero area, we first sort the array in descending order. This allows us to check if a triangle can be formed by taking the longest possible sides first. Then, we iterate through the sorted array and check if the current element and the next two elements form a triangle of non-zero area. To check if a triangle can be formed, we use the triangle inequality theorem, which states that for any triangle with sides a, b, and c, the sum of any two sides must be greater than the third side (a + b &gt; c, a + c &gt; b, b + c &gt; a). Since we have the array sorted in descending order, we only need to check one case of the inequality (nums[i] &lt; nums[i + 1] + nums[i + 2]) for each iteration. If we find a valid triangle, we return the sum of its sides as the largest perimeter. If no valid triangle is found, we return 0.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Missing Number</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/266/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/270/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array <code>nums</code> containing <code>n</code> distinct numbers in the range <code>[0, n]</code>, return <em>the only number in the range that is missing from the array.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [3,0,1]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> n = 3 since there are 3 numbers, so all numbers are in the range [0,3]. 2 is the missing number in the range since it does not appear in nums.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [0,1]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> n = 2 since there are 2 numbers, so all numbers are in the range [0,2]. 2 is the missing number in the range since it does not appear in nums.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [9,6,4,2,3,5,7,0,1]
+<strong>Output:</strong> 8
+<strong>Explanation:</strong> n = 9 since there are 9 numbers, so all numbers are in the range [0,9]. 8 is the missing number in the range since it does not appear in nums.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == nums.length</code></li>
+<li><code>1 &lt;= n &lt;= 104</code></li>
+<li><code>0 &lt;= nums[i] &lt;= n</code></li>
+<li>All the numbers of <code>nums</code> are <strong>unique</strong>.</li>
+</ul>
+<p><strong>Follow up:</strong> Could you implement a solution using only <code>O(1)</code> extra space complexity and <code>O(n)</code> runtime complexity?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/missing-number/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 9
+    integer, dimension(n) :: nums = (/ 3, 0, 1, 2, 4, 5, 6, 7, 8 /)
+    integer :: i, j, k, l, m, n_missing
+
+    ! Test case 1
+    write (*, '(A)') 'Test case 1:'
+    call solve(nums, n_missing)
+    write (*, '(I0)') n_missing
+    if (n_missing /= 2) then
+        write (*, '(A)') 'Error: Incorrect result.'
+        stop 1
+    end if
+
+    ! Test case 2
+    write (*, '(A)') 'Test case 2:'
+    nums = (/ 0, 1 /)
+    call solve(nums, n_missing)
+    write (*, '(I0)') n_missing
+    if (n_missing /= 2) then
+        write (*, '(A)') 'Error: Incorrect result.'
+        stop 1
+    end if
+
+    ! Test case 3
+    write (*, '(A)') 'Test case 3:'
+    nums = (/ 9, 6, 4, 2, 3, 5, 7, 0, 1 /)
+    call solve(nums, n_missing)
+    write (*, '(I0)') n_missing
+    if (n_missing /= 8) then
+        write (*, '(A)') 'Error: Incorrect result.'
+        stop 1
+    end if
+
+contains
+
+    subroutine solve(nums, n_missing)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer, intent(out) :: n_missing
+        integer :: i, j, k, l, m, n
+
+        n = size(nums)
+        do i = 0, n - 1
+            do j = i + 1, n - 1
+                if (nums(i) == nums(j)) then
+                    write (*, '(A)') 'Error: Duplicate value found.'
+                    stop 1
+                end if
+            end do
+        end do
+
+        do i = 0, n - 1
+            if (.not. any(nums == i)) then
+                n_missing = i
+                return
+            end if
+        end do
+
+        write (*, '(A)') 'Error: No missing value found.'
+        stop 1
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:19:4:
+
+   19 |     nums = (/ 0, 1 /)
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (9 and 2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! This script solves the problem of finding the missing number in a range of numbers.
+! The program takes an array of integers as input, and returns the only number in the range that is missing from the array.
+! The program runs with all provided examples and outputs to stdout.
+
+integer, parameter :: n = 1000000
+integer :: i, j, nums(n), missing
+
+! Read the input array from stdin
+read (*,*) nums
+
+! Initialize the missing number to 0
+missing = 0
+
+! Iterate over the range of numbers
+do i = 1, n
+    ! Check if the current number is in the input array
+    if (any(nums == i)) then
+        ! If the number is in the array, set the missing number to 0
+        missing = 0
+    else
+        ! If the number is not in the array, set the missing number to the current number
+        missing = i
+    end if
+end do
+
+! Output the missing number to stdout
+write (*,*) missing
+
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 9 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7b0d24f72960 in ???
+#1  0x7b0d24f734d9 in ???
+#2  0x7b0d251c717b in ???
+#3  0x7b0d251c0684 in ???
+#4  0x7b0d251c12aa in ???
+#5  0x7b0d251c6b7a in ???
+#6  0x575c88136282 in MAIN__
+#7  0x575c881363a7 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def missingNumber(nums):
+    n = len(nums)
+    expected_sum = (n * (n + 1)) // 2
+    actual_sum = sum(nums)
+    return expected_sum - actual_sum
+</code></pre>
+<p>The algorithm calculates the expected sum of integers in the range [0, n] using the formula n * (n + 1) / 2. Then, it calculates the actual sum of the integers in the given array. Finally, it returns the difference between the expected sum and the actual sum, which represents the missing number in the range.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int missingNumber(vector&lt;int&gt;&amp; nums) {
+    int n = nums.size();
+    int expected_sum = (n * (n + 1)) / 2;
+    int actual_sum = 0;
+    for (int num : nums) {
+        actual_sum += num;
+    }
+    return expected_sum - actual_sum;
+}
+</code></pre>
+<p>The algorithm calculates the expected sum of integers in the range [0, n] using the formula n * (n + 1) / 2. Then, it calculates the actual sum of the integers in the given array. Finally, it returns the difference between the expected sum and the actual sum, which represents the missing number in the range.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

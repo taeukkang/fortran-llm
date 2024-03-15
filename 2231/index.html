@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Largest Number After Digit Swaps by Parity</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2229/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2235/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a positive integer <code>num</code>. You may swap any two digits of <code>num</code> that have the same <strong>parity</strong> (i.e. both odd digits or both even digits).</p>
+<p>Return <em>the <strong>largest</strong> possible value of</em> <code>num</code> <em>after <strong>any</strong> number of swaps.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num = 1234
+<strong>Output:</strong> 3412
+<strong>Explanation:</strong> Swap the digit 3 with the digit 1, this results in the number 3214.
+Swap the digit 2 with the digit 4, this results in the number 3412.
+Note that there may be other sequences of swaps but it can be shown that 3412 is the largest possible number.
+Also note that we may not swap the digit 4 with the digit 1 since they are of different parities.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num = 65875
+<strong>Output:</strong> 87655
+<strong>Explanation:</strong> Swap the digit 8 with the digit 6, this results in the number 85675.
+Swap the first digit 5 with the digit 7, this results in the number 87655.
+Note that there may be other sequences of swaps but it can be shown that 87655 is the largest possible number.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= num &lt;= 109</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/largest-number-after-digit-swaps-by-parity/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: num
+
+    print '(A)', solve(1234)
+    print '(A)', solve(65875)
+
+contains
+
+    function solve(num) result(max_value)
+        implicit none
+        integer, intent(in) :: num
+        integer :: max_value
+        integer :: i, j, temp
+
+        do i = 1, len(num) - 1
+            do j = i + 1, len(num)
+                if (mod(num(i), 2) == mod(num(j), 2)) then
+                    temp = num(i)
+                    num(i) = num(j)
+                    num(j) = temp
+                end if
+            end do
+        end do
+
+        max_value = num
+    end function solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:27:23:
+
+   27 |         max_value = num
+      |                       1
+Error: Function ‘num’ requires an argument list at (1)
+temp.f95:11:22:
+
+   11 |     function solve(num) result(max_value)
+      |                      1
+Error: PROCEDURE attribute conflicts with INTENT attribute in ‘num’ at (1)
+temp.f95:21:20:
+
+   21 |                     num(i) = num(j)
+      |                    1
+Error: The function result on the lhs of the assignment at (1) must have the pointer attribute.
+temp.f95:22:20:
+
+   22 |                     num(j) = temp
+      |                    1
+Error: The function result on the lhs of the assignment at (1) must have the pointer attribute.
+temp.f95:18:30:
+
+   18 |             do j = i + 1, len(num)
+      |                              1
+Error: ‘string’ argument of ‘len’ intrinsic at (1) must be CHARACTER
+temp.f95:17:22:
+
+   17 |         do i = 1, len(num) - 1
+      |                      1
+Error: ‘string’ argument of ‘len’ intrinsic at (1) must be CHARACTER
+temp.f95:6:23:
+
+    6 |     print '(A)', solve(1234)
+      |                       1
+Error: Expected a procedure for argument ‘num’ at (1)
+temp.f95:7:23:
+
+    7 |     print '(A)', solve(65875)
+      |                       1
+Error: Expected a procedure for argument ‘num’ at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM LARGEST_NUMBER
+      IMPLICIT NONE
+
+      INTEGER, PARAMETER :: MAX_NUM = 109
+      INTEGER :: num, max_num, i, j, temp
+
+      READ(*,*) num
+
+      max_num = num
+
+      DO i = 1, MAX_NUM
+         DO j = i + 1, MAX_NUM
+            IF (MOD(num, i) == MOD(num, j)) THEN
+               temp = num / 10**(i-1)
+               temp = temp - (temp / 10) * 10
+               temp = temp + (temp / 10) * 10
+               num = num - temp * 10**(i-1) + temp * 10**(j-1)
+               max_num = MAX(max_num, num)
+            END IF
+         END DO
+      END DO
+
+      WRITE(*,*) max_num
+
+      END PROGRAM LARGEST_NUMBER
+
+This script uses a brute force approach to solve the problem. It iterates through all possible swaps of digits in the input number, and checks if the resulting number is larger than the current largest number. If it is, it updates the largest number. The script uses the `MOD` function to check if two digits have the same parity, and the `MAX` function to compare and update the largest number.
+
+The script uses the `IMPLICIT NONE` statement to disable the use of implicit typing, and the `PARAMETER` statement to define a constant for the maximum value of the input number.
+
+The script reads the input number from the standard input, and stores it in the `num` variable. It then initializes the `max_num` variable to the input number, and starts the brute force search for the largest possible number.
+
+The script uses a nested loop to iterate through all possible swaps of digits in the input number. The outer loop iterates through the digits of the input number, and the inner loop iterates through the remaining digits of the input number. The `IF` statement checks if the two digits have the same parity, and if they do, it swaps them and updates the `num` variable. The `MAX` function is used to compare and update the largest number.
+
+The script writes the largest possible number to the standard output.
+
+Note that this script assumes that the input number is a positive integer between 1 and 109, inclusive. If the input number is outside of this range, the script will not work correctly.
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:29:
+
+    5 |       INTEGER :: num, max_num, i, j, temp
+      |                             1
+Error: Symbol ‘max_num’ at (1) already has basic type of INTEGER
+temp.f95:27:132:
+
+   27 | This script uses a brute force approach to solve the problem. It iterates through all possible swaps of digits in the input number, and checks if the resulting number is larger than the current largest number. If it is, it updates the largest number. The script uses the `MOD` function to check if two digits have the same parity, and the `MAX` function to compare and update the largest number.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:29:132:
+
+   29 | The script uses the `IMPLICIT NONE` statement to disable the use of implicit typing, and the `PARAMETER` statement to define a constant for the maximum value of the input number.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:31:132:
+
+   31 | The script reads the input number from the standard input, and stores it in the `num` variable. It then initializes the `max_num` variable to the input number, and starts the brute force search for the largest possible number.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:33:132:
+
+   33 | The script uses a nested loop to iterate through all possible swaps of digits in the input number. The outer loop iterates through the digits of the input number, and the inner loop iterates through the remaining digits of the input number. The `IF` statement checks if the two digits have the same parity, and if they do, it swaps them and updates the `num` variable. The `MAX` function is used to compare and update the largest number.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:37:132:
+
+   37 | Note that this script assumes that the input number is a positive integer between 1 and 109, inclusive. If the input number is outside of this range, the script will not work correctly.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:11:10:
+
+   11 |       DO i = 1, MAX_NUM
+      |          1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:12:13:
+
+   12 |          DO j = i + 1, MAX_NUM
+      |             1
+Error: Symbol ‘j’ at (1) has no IMPLICIT type
+temp.f95:7:19:
+
+    7 |       READ(*,*) num
+      |                   1
+Error: Symbol ‘num’ at (1) has no IMPLICIT type
+temp.f95:14:19:
+
+   14 |                temp = num / 10**(i-1)
+      |                   1
+Error: Symbol ‘temp’ at (1) has no IMPLICIT type
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def first_palindrome(words):
+    for word in words:
+        if word == word[::-1]:
+            return word
+    return &quot;&quot;
+</code></pre>
+<pre><code>The algorithm used in each function iterates through the given array of strings, and for each string, it checks if it's a palindrome by comparing it to its reversed version. If a palindrome is found, it immediately returns that string. If no palindromes are found after iterating through the entire array, an empty string is returned. Each language's implementation follows similar logic, with some differences:
+</code></pre>
+<ul>
+<li>C++: We use a range-based loop to iterate through the words, and the <code>std::reverse()</code> function to reverse the string.</li>
+<li>Java: We use a <code>StringBuilder</code> to reverse the string, and the <code>equals()</code> method to compare the strings.</li>
+<li>Python: A Pythonic approach is used with slicing to reverse the string.</li>
+<li>JavaScript: We use the <code>split()</code>, <code>reverse()</code>, and <code>join()</code> methods to reverse the string.</li>
+</ul>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;vector&gt;
+
+std::string firstPalindrome(const std::vector&lt;std::string&gt;&amp; words) {
+    for (const std::string&amp; word : words) {
+        std::string reversedWord = word;
+        std::reverse(reversedWord.begin(), reversedWord.end());
+        if (word == reversedWord) {
+            return word;
+        }
+    }
+    return &quot;&quot;;
+}
+</code></pre>
+<pre><code>The algorithm used in each function iterates through the given array of strings, and for each string, it checks if it's a palindrome by comparing it to its reversed version. If a palindrome is found, it immediately returns that string. If no palindromes are found after iterating through the entire array, an empty string is returned. Each language's implementation follows similar logic, with some differences:
+</code></pre>
+<ul>
+<li>C++: We use a range-based loop to iterate through the words, and the <code>std::reverse()</code> function to reverse the string.</li>
+<li>Java: We use a <code>StringBuilder</code> to reverse the string, and the <code>equals()</code> method to compare the strings.</li>
+<li>Python: A Pythonic approach is used with slicing to reverse the string.</li>
+<li>JavaScript: We use the <code>split()</code>, <code>reverse()</code>, and <code>join()</code> methods to reverse the string.</li>
+</ul>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

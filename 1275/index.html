@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find Winner on a Tic Tac Toe Game</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1271/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1281/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p><strong>Tic-tac-toe</strong> is played by two players <code>A</code> and <code>B</code> on a <code>3 x 3</code> grid. The rules of Tic-Tac-Toe are:</p>
+<ul>
+<li>Players take turns placing characters into empty squares <code>' '</code>.</li>
+<li>The first player <code>A</code> always places <code>'X'</code> characters, while the second player <code>B</code> always places <code>'O'</code> characters.</li>
+<li><code>'X'</code> and <code>'O'</code> characters are always placed into empty squares, never on filled ones.</li>
+<li>The game ends when there are <strong>three</strong> of the same (non-empty) character filling any row, column, or diagonal.</li>
+<li>The game also ends if all squares are non-empty.</li>
+<li>No more moves can be played if the game is over.</li>
+</ul>
+<p>Given a 2D integer array <code>moves</code> where <code>moves[i] = [rowi, coli]</code> indicates that the <code>ith</code> move will be played on <code>grid[rowi][coli]</code>. return <em>the winner of the game if it exists</em> (<code>A</code> or <code>B</code>). In case the game ends in a draw return <code>"Draw "</code>. If there are still movements to play return <code>"Pending "</code>.</p>
+<p>You can assume that <code>moves</code> is valid (i.e., it follows the rules of <strong>Tic-Tac-Toe</strong>), the grid is initially empty, and <code>A</code> will play first.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> moves = [[0,0],[2,0],[1,1],[2,1],[2,2]]
+<strong>Output:</strong>  "A "
+<strong>Explanation:</strong> A wins, they always play first.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> moves = [[0,0],[1,1],[0,1],[0,2],[1,0],[2,0]]
+<strong>Output:</strong>  "B "
+<strong>Explanation:</strong> B wins.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> moves = [[0,0],[1,1],[2,0],[1,0],[1,2],[2,1],[0,1],[0,2],[2,2]]
+<strong>Output:</strong>  "Draw "
+<strong>Explanation:</strong> The game ends in a draw since there are no moves to make.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= moves.length &lt;= 9</code></li>
+<li><code>moves[i].length == 2</code></li>
+<li><code>0 &lt;= rowi, coli &lt;= 2</code></li>
+<li>There are no repeated elements on <code>moves</code>.</li>
+<li><code>moves</code> follow the rules of tic tac toe.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-winner-on-a-tic-tac-toe-game/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program tictactoe
+    implicit none
+
+    integer :: i, j, k, l, m, n
+    integer :: moves(9, 2)
+    character(len=1) :: grid(3, 3)
+    character(len=1) :: winner
+
+    ! Examples
+    moves(:, :) = reshape([&
+        & [0, 0], [2, 0], [1, 1], [2, 1], [2, 2],&
+        & [0, 0], [1, 1], [0, 1], [0, 2], [1, 0], [2, 0]], shape(moves))
+
+    do i = 1, size(moves, 1)
+        call solve(moves(i, :), grid, winner)
+        write(*, *) 'Move ', i, ':', moves(i, :)
+        write(*, *) 'Grid:'
+        do j = 1, size(grid, 1)
+            write(*, '(3A)') ((grid(j, k), k = 1, size(grid, 2)), new_line(''))
+        end do
+        write(*, *) 'Winner: ', winner
+    end do
+
+contains
+
+    subroutine solve(move, grid, winner)
+        implicit none
+        integer, intent(in) :: move(2)
+        character(len=1), intent(inout) :: grid(3, 3)
+        character(len=1), intent(out) :: winner
+
+        integer :: row, col
+        logical :: found
+
+        row = move(1)
+        col = move(2)
+
+        if (grid(row, col) /= ' ') then
+            stop 'Invalid move'
+        end if
+
+        grid(row, col) = 'X'
+
+        found = .false.
+        do i = 1, size(grid, 1)
+            if (all(grid(i, :) == 'X')) then
+                winner = 'A'
+                found = .true.
+                exit
+            else if (all(grid(:, i) == 'X')) then
+                winner = 'A'
+                found = .true.
+                exit
+            end if
+        end do
+
+        if (.not. found) then
+            do i = 1, size(grid, 1) - 2
+                if (grid(i, i) == 'X' .and. grid(i + 1, i + 1) == 'X' .and. grid(i + 2, i + 2) == 'X') then
+                    winner = 'A'
+                    found = .true.
+                    exit
+                else if (grid(i, i) == 'X' .and. grid(i + 1, i + 1) == 'X' .and. grid(i + 2, i + 2) == 'X') then
+                    winner = 'A'
+                    found = .true.
+                    exit
+                end if
+            end do
+        end if
+
+        if (.not. found) then
+            do i = 1, size(grid, 1)
+                if (all(grid(i, :) == 'O')) then
+                    winner = 'B'
+                    found = .true.
+                    exit
+                else if (all(grid(:, i) == 'O')) then
+                    winner = 'B'
+                    found = .true.
+                    exit
+                end if
+            end do
+        end if
+
+        if (.not. found) then
+            do i = 1, size(grid, 1) - 2
+                if (grid(i, i) == 'O' .and. grid(i + 1, i + 1) == 'O' .and. grid(i + 2, i + 2) == 'O') then
+                    winner = 'B'
+                    found = .true.
+                    exit
+                else if (grid(i, i) == 'O' .and. grid(i + 1, i + 1) == 'O' .and. grid(i + 2, i + 2) == 'O') then
+                    winner = 'B'
+                    found = .true.
+                    exit
+                end if
+            end do
+        end if
+
+        if (.not. found) then
+            if (all</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:19:42:
+
+   19 |             write(*, '(3A)') ((grid(j, k), k = 1, size(grid, 2)), new_line(''))
+      |                                          1
+Error: Expected a right parenthesis in expression at (1)
+temp.f95:100:19:
+
+  100 |             if (all
+      |                   1
+Error: Function ‘all’ requires an argument list at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM TIC_TAC_TOE
+  IMPLICIT NONE
+
+  INTEGER, PARAMETER :: N = 3
+  INTEGER, DIMENSION(N, N) :: grid
+  INTEGER, DIMENSION(N, N) :: moves
+  INTEGER :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+  INTEGER :: row, col
+  INTEGER :: count
+  INTEGER :: winner
+
+  ! Initialize the grid
+  grid = 0
+
+  ! Read the moves
+  DO i = 1, SIZE(moves, DIM=1)
+    row = moves(i, 1)
+    col = moves(i, 2)
+    grid(row, col) = i
+  END DO
+
+  ! Check for a winner
+  winner = 0
+  DO i = 1, N
+    ! Check rows
+    count = 0
+    DO j = 1, N
+      IF (grid(i, j) /= 0) THEN
+        count = count + 1
+        IF (count == 3) THEN
+          winner = grid(i, j)
+          EXIT
+        END IF
+      END IF
+    END DO
+    IF (winner /= 0) EXIT
+
+    ! Check columns
+    count = 0
+    DO j = 1, N
+      IF (grid(j, i) /= 0) THEN
+        count = count + 1
+        IF (count == 3) THEN
+          winner = grid(j, i)
+          EXIT
+        END IF
+      END IF
+    END DO
+    IF (winner /= 0) EXIT
+
+    ! Check diagonals
+    count = 0
+    DO j = 1, N
+      IF (grid(j, j) /= 0) THEN
+        count = count + 1
+        IF (count == 3) THEN
+          winner = grid(j, j)
+          EXIT
+        END IF
+      END IF
+    END DO
+    IF (winner /= 0) EXIT
+
+    count = 0
+    DO j = 1, N
+      IF (grid(j, N-j+1) /= 0) THEN
+        count = count + 1
+        IF (count == 3) THEN
+          winner = grid(j, N-j+1)
+          EXIT
+        END IF
+      END IF
+    END DO
+    IF (winner /= 0) EXIT
+  END DO
+
+  ! Check for a draw
+  IF (winner == 0) THEN
+    count = 0
+    DO i = 1, N
+      DO j = 1, N
+        IF (grid(i, j) == 0) THEN
+          count = count + 1
+        END IF
+      END DO
+    END DO
+    IF (count == 0) winner = -1
+  END IF
+
+  ! Print the winner
+  IF (winner == 1) THEN
+    PRINT *, "A "
+  ELSE IF (winner == 2) THEN
+    PRINT *, "B "
+  ELSE IF (winner == -1) THEN
+    PRINT *, "Draw "
+  ELSE
+    PRINT *, "Pending "
+  END IF
+
+END PROGRAM TIC_TAC_TOE
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:29:
+
+    7 |   INTEGER :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+      |                             1
+Error: Symbol ‘n’ at (1) already has basic type of INTEGER
+temp.f95:16:6:
+
+   16 |   DO i = 1, SIZE(moves, DIM=1)
+      |      1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:27:8:
+
+   27 |     DO j = 1, N
+      |        1
+Error: Symbol ‘j’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def validateBinaryTreeNodes(n, leftChild, rightChild):
+    parent = [-1] * n
+    for i in range(n):
+        if leftChild[i] != -1:
+            if parent[leftChild[i]] != -1:
+                return False
+            parent[leftChild[i]] = i
+        if rightChild[i] != -1:
+            if parent[rightChild[i]] != -1:
+                return False
+            parent[rightChild[i]] = i
+
+    root = -1
+    for i in range(n):
+        if parent[i] == -1:
+            if root != -1:
+                return False
+            root = i
+
+    return root != -1
+</code></pre>
+<ol>
+<li>Create an array <code>parent</code> to keep track of the parent of each node. Initialize each element to -1.</li>
+<li>Iterate through each node i:
+   a. Check the left child of i. If it's not -1, check if it already has a parent. If it does, return false (two parents for a node makes it an invalid tree). Set the parent of the left child to i.
+   b. Do the same for the right child.</li>
+<li>Iterate through the parent array to find a node without a parent (root). If a root is found and another node without a parent is found later, return false (more than one tree).</li>
+<li>If a root is found, return true (a valid tree). Otherwise, return false (no tree found).</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool validateBinaryTreeNodes(int n, vector&lt;int&gt;&amp; leftChild, vector&lt;int&gt;&amp; rightChild) {
+    vector&lt;int&gt; parent(n, -1);
+    for (int i = 0; i &lt; n; ++i) {
+        if (leftChild[i] != -1) {
+            if (parent[leftChild[i]] != -1) return false;
+            parent[leftChild[i]] = i;
+        }
+        if (rightChild[i] != -1) {
+            if (parent[rightChild[i]] != -1) return false;
+            parent[rightChild[i]] = i;
+        }
+    }
+    int root = -1;
+    for (int i = 0; i &lt; n; ++i) {
+        if (parent[i] == -1) {
+            if (root != -1) return false;
+            root = i;
+        }
+    }
+    return root != -1;
+}
+</code></pre>
+<ol>
+<li>Create an array <code>parent</code> to keep track of the parent of each node. Initialize each element to -1.</li>
+<li>Iterate through each node i:
+   a. Check the left child of i. If it's not -1, check if it already has a parent. If it does, return false (two parents for a node makes it an invalid tree). Set the parent of the left child to i.
+   b. Do the same for the right child.</li>
+<li>Iterate through the parent array to find a node without a parent (root). If a root is found and another node without a parent is found later, return false (more than one tree).</li>
+<li>If a root is found, return true (a valid tree). Otherwise, return false (no tree found).</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

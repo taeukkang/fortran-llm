@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Best Poker Hand</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2341/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2351/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer array <code>ranks</code> and a character array <code>suits</code>. You have <code>5</code> cards where the <code>ith</code> card has a rank of <code>ranks[i]</code> and a suit of <code>suits[i]</code>.</p>
+<p>The following are the types of <strong>poker hands</strong> you can make from best to worst:</p>
+<ol>
+<li><code>"Flush "</code>: Five cards of the same suit.</li>
+<li><code>"Three of a Kind "</code>: Three cards of the same rank.</li>
+<li><code>"Pair "</code>: Two cards of the same rank.</li>
+<li><code>"High Card "</code>: Any single card.</li>
+</ol>
+<p>Return <em>a string representing the <strong>best</strong> type of <strong>poker hand</strong> you can make with the given cards.</em></p>
+<p><strong>Note</strong> that the return values are <strong>case-sensitive</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> ranks = [13,2,3,1,9], suits = [ "a ", "a ", "a ", "a ", "a "]
+<strong>Output:</strong>  "Flush "
+<strong>Explanation:</strong> The hand with all the cards consists of 5 cards with the same suit, so we have a  "Flush ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> ranks = [4,4,2,4,4], suits = [ "d ", "a ", "a ", "b ", "c "]
+<strong>Output:</strong>  "Three of a Kind "
+<strong>Explanation:</strong> The hand with the first, second, and fourth card consists of 3 cards with the same rank, so we have a  "Three of a Kind ".
+Note that we could also make a  "Pair " hand but  "Three of a Kind " is a better hand.
+Also note that other cards could be used to make the  "Three of a Kind " hand.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> ranks = [10,10,2,12,9], suits = [ "a ", "b ", "c ", "a ", "d "]
+<strong>Output:</strong>  "Pair "
+<strong>Explanation:</strong> The hand with the first and second card consists of 2 cards with the same rank, so we have a  "Pair ".
+Note that we cannot make a  "Flush " or a  "Three of a Kind ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>ranks.length == suits.length == 5</code></li>
+<li><code>1 &lt;= ranks[i] &lt;= 13</code></li>
+<li><code>'a' &lt;= suits[i] &lt;= 'd'</code></li>
+<li>No two cards have the same rank and suit.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/best-poker-hand/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program poker_hands
+    implicit none
+
+    integer, parameter :: ncards = 5
+    integer, dimension(ncards) :: ranks
+    character(len=1), dimension(ncards) :: suits
+
+    call get_input(ranks, suits)
+
+    print '(A)', get_best_hand(ranks, suits)
+
+contains
+
+    subroutine get_input(ranks, suits)
+        implicit none
+        integer, dimension(:), intent(out) :: ranks
+        character(len=1), dimension(:), intent(out) :: suits
+
+        integer :: i
+
+        do i = 1, ncards
+            read *, ranks(i), suits(i)
+        end do
+    end subroutine get_input
+
+    function get_best_hand(ranks, suits) result(best_hand)
+        implicit none
+        integer, dimension(:), intent(in) :: ranks
+        character(len=1), dimension(:), intent(in) :: suits
+        character(len=*) :: best_hand
+
+        integer :: i, j, k, l, m
+        integer :: flush_count, three_kind_count, pair_count
+        integer :: high_card
+        logical :: flush
+
+        flush_count = 0
+        three_kind_count = 0
+        pair_count = 0
+        high_card = -1
+
+        ! Count the number of cards of each type
+        do i = 1, ncards
+            if (flush_count < 1 .and. all(suits(i) == suits(1))) then
+                flush_count = flush_count + 1
+            else if (three_kind_count < 1 .and. count(ranks(i) == ranks(1)) == 3) then
+                three_kind_count = three_kind_count + 1
+            else if (pair_count < 1 .and. count(ranks(i) == ranks(1)) == 2) then
+                pair_count = pair_count + 1
+            else if (high_card < 1 .or. ranks(i) > high_card) then
+                high_card = ranks(i)
+            end if
+        end do
+
+        ! Check for flush
+        if (flush_count >= 1) then
+            best_hand = "Flush "
+        ! Check for three of a kind
+        else if (three_kind_count >= 1) then
+            best_hand = "Three of a Kind "
+        ! Check for pair
+        else if (pair_count >= 1) then
+            best_hand = "Pair "
+        ! Otherwise it's a high card
+        else
+            best_hand = "High Card "
+        end if
+
+    end function get_best_hand
+
+end program poker_hands</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:26:4:
+
+   26 |     function get_best_hand(ranks, suits) result(best_hand)
+      |    1
+Error: Character-valued internal function ‘get_best_hand’ at (1) must not be assumed length
+temp.f95:44:42:
+
+   44 |             if (flush_count < 1 .and. all(suits(i) == suits(1))) then
+      |                                          1
+Error: ‘mask’ argument of ‘all’ intrinsic at (1) must be a logical array
+temp.f95:46:54:
+
+   46 |             else if (three_kind_count < 1 .and. count(ranks(i) == ranks(1)) == 3) then
+      |                                                      1
+Error: ‘mask’ argument of ‘count’ intrinsic at (1) must be a logical array
+temp.f95:48:48:
+
+   48 |             else if (pair_count < 1 .and. count(ranks(i) == ranks(1)) == 2) then
+      |                                                1
+Error: ‘mask’ argument of ‘count’ intrinsic at (1) must be a logical array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program poker_hands
+      implicit none
+
+      integer, parameter :: MAX_CARDS = 5
+
+      integer :: ranks(MAX_CARDS)
+      character :: suits(MAX_CARDS)
+
+      character(len=10) :: best_hand
+
+      integer :: i
+
+      read(*,*) ranks
+      read(*,*) suits
+
+      ! Check for flush
+      if (all(suits == suits(1))) then
+        best_hand = "Flush "
+      ! Check for three of a kind
+      else if (count(ranks == ranks(1)) == 3) then
+        best_hand = "Three of a Kind "
+      ! Check for pair
+      else if (count(ranks == ranks(1)) == 2) then
+        best_hand = "Pair "
+      ! Check for high card
+      else
+        best_hand = "High Card "
+      end if
+
+      write(*,*) best_hand
+
+      end program poker_hands
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 13 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7c6751ee0960 in ???
+#1  0x7c6751ee14d9 in ???
+#2  0x7c675213517b in ???
+#3  0x7c675212e684 in ???
+#4  0x7c675212f2aa in ???
+#5  0x7c6752134b7a in ???
+#6  0x573c1125b27f in MAIN__
+#7  0x573c1125b505 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def best_poker_hand(ranks, suits):
+    rank_count = {}
+    suit_count = {}
+    for rank, suit in zip(ranks, suits):
+        rank_count[rank] = rank_count.get(rank, 0) + 1
+        suit_count[suit] = suit_count.get(suit, 0) + 1
+    if len(suit_count) == 1:
+        return &quot;Flush &quot;
+    if len(rank_count) == 3:
+        return &quot;Three of a Kind &quot;
+    for value in rank_count.values():
+        if value == 2:
+            return &quot;Pair &quot;
+    return &quot;High Card &quot;
+</code></pre>
+<pre><code>We first iterate through the `ranks` and `suits` arrays and store the count of each rank and suit in two separate hash maps (`rank_count` and `suit_count` respectively). Then we check the following to determine the best poker hand:
+</code></pre>
+<ol>
+<li>If <code>suit_count</code> has only one key, it means all cards have the same suit, so the result is a "Flush ".</li>
+<li>If <code>rank_count</code> has only three keys, it means there's a "Three of a Kind ", because there are either 3 of one rank and 1 each of two other ranks or 2 of one rank and 1 each of three other ranks.</li>
+<li>If we find a value of 2 in <code>rank_count</code>, it implies there's a "Pair ".</li>
+<li>If none of the above conditions are met, the result is a "High Card ".</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;map&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+std::string bestPokerHand(std::vector&lt;int&gt; &amp;ranks, std::vector&lt;char&gt; &amp;suits) {
+    std::map&lt;int, int&gt; rank_count;
+    std::map&lt;char, int&gt; suit_count;
+    for (int i = 0; i &lt; ranks.size(); ++i) {
+        rank_count[ranks[i]]++;
+        suit_count[suits[i]]++;
+    }
+    if (suit_count.size() == 1) return &quot;Flush &quot;;
+    if (rank_count.size() == 3) return &quot;Three of a Kind &quot;;
+    for (const auto &amp;pair : rank_count) {
+        if (pair.second == 2) return &quot;Pair &quot;;
+    }
+    return &quot;High Card &quot;;
+}
+</code></pre>
+<pre><code>We first iterate through the `ranks` and `suits` arrays and store the count of each rank and suit in two separate hash maps (`rank_count` and `suit_count` respectively). Then we check the following to determine the best poker hand:
+</code></pre>
+<ol>
+<li>If <code>suit_count</code> has only one key, it means all cards have the same suit, so the result is a "Flush ".</li>
+<li>If <code>rank_count</code> has only three keys, it means there's a "Three of a Kind ", because there are either 3 of one rank and 1 each of two other ranks or 2 of one rank and 1 each of three other ranks.</li>
+<li>If we find a value of 2 in <code>rank_count</code>, it implies there's a "Pair ".</li>
+<li>If none of the above conditions are met, the result is a "High Card ".</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

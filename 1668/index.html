@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Maximum Repeating Substring</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1662/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1672/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>For a string <code>sequence</code>, a string <code>word</code> is <strong><code>k</code>-repeating</strong> if <code>word</code> concatenated <code>k</code> times is a substring of <code>sequence</code>. The <code>word</code>'s <strong>maximum <code>k</code>-repeating value</strong> is the highest value <code>k</code> where <code>word</code> is <code>k</code>-repeating in <code>sequence</code>. If <code>word</code> is not a substring of <code>sequence</code>, <code>word</code>'s maximum <code>k</code>-repeating value is <code>0</code>.</p>
+<p>Given strings <code>sequence</code> and <code>word</code>, return <em>the <strong>maximum <code>k</code>-repeating value</strong> of <code>word</code> in <code>sequence</code></em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> sequence =  "ababc ", word =  "ab "
+<strong>Output:</strong> 2
+**Explanation: ** "abab " is a substring in  "ababc ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> sequence =  "ababc ", word =  "ba "
+<strong>Output:</strong> 1
+**Explanation: ** "ba " is a substring in  "ababc ".  "baba " is not a substring in  "ababc ".</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> sequence =  "ababc ", word =  "ac "
+<strong>Output:</strong> 0
+**Explanation: ** "ac " is not a substring in  "ababc ". </p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= sequence.length &lt;= 100</code></li>
+<li><code>1 &lt;= word.length &lt;= 100</code></li>
+<li><code>sequence</code> and <code>word</code> contains only lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/maximum-repeating-substring/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=*) :: sequence, word
+    integer :: k_repeating
+
+    ! Example 1
+    sequence = 'ababc '
+    word = 'ab '
+    print *, max_k_repeating(sequence, word)
+
+    ! Example 2
+    sequence = 'ababc '
+    word = 'ba '
+    print *, max_k_repeating(sequence, word)
+
+    ! Example 3
+    sequence = 'ababc '
+    word = 'ac '
+    print *, max_k_repeating(sequence, word)
+
+contains
+
+    function max_k_repeating(sequence, word) result(k_repeating)
+        implicit none
+        character(len=*), intent(in) :: sequence, word
+        integer :: k_repeating
+
+        integer :: i, j, k
+
+        k_repeating = 0
+        do k = 1, len(sequence)-len(word)+1
+            do i = 1, len(word)
+                j = k + (i-1)*k
+                if (sequence(j:j+len(word)-1) /= word) exit
+            end do
+            if (i == len(word)+1) then
+                k_repeating = max(k_repeating, k)
+            end if
+        end do
+    end function max_k_repeating
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:32:
+
+    4 |     character(len=*) :: sequence, word
+      |                                1
+Error: Entity with assumed character length at (1) must be a dummy argument or a PARAMETER
+temp.f95:4:38:
+
+    4 |     character(len=*) :: sequence, word
+      |                                      1
+Error: Entity with assumed character length at (1) must be a dummy argument or a PARAMETER
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module k_repeating_word
+
+implicit none
+
+contains
+
+integer function k_repeating_word(sequence, word) result(max_k_repeating)
+
+character(len=*), intent(in) :: sequence
+character(len=*), intent(in) :: word
+
+integer :: i, j, k
+logical :: found
+
+max_k_repeating = 0
+
+do k = 1, len(sequence) - len(word) + 1
+
+    found = .false.
+
+    do i = 1, k
+
+        do j = 1, len(word)
+
+            if (sequence(i + j - 1:i + j - 1) /= word(j:j)) then
+                exit
+            end if
+
+            if (j == len(word)) then
+                found = .true.
+                exit
+            end if
+
+        end do
+
+        if (found) exit
+
+    end do
+
+    if (found) then
+        max_k_repeating = max(max_k_repeating, k)
+    end if
+
+end do
+
+end function k_repeating_word
+
+end module k_repeating_word
+
+program test
+
+use k_repeating_word
+
+implicit none
+
+character(len=100) :: sequence, word
+integer :: max_k_repeating
+
+sequence = "ababc "
+word = "ab "
+max_k_repeating = k_repeating_word(sequence, word)
+write (*,*) "Maximum k-repeating value of '", word, "' in '", sequence, "' is ", max_k_repeating
+
+sequence = "ababc "
+word = "ba "
+max_k_repeating = k_repeating_word(sequence, word)
+write (*,*) "Maximum k-repeating value of '", word, "' in '", sequence, "' is ", max_k_repeating
+
+sequence = "ababc "
+word = "ac "
+max_k_repeating = k_repeating_word(sequence, word)
+write (*,*) "Maximum k-repeating value of '", word, "' in '", sequence, "' is ", max_k_repeating
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:33:
+
+    7 | integer function k_repeating_word(sequence, word) result(max_k_repeating)
+      |                                 1
+Error: MODULE attribute of ‘k_repeating_word’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:40:
+
+    9 | character(len=*), intent(in) :: sequence
+      |                                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:36:
+
+   10 | character(len=*), intent(in) :: word
+      |                                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:18:
+
+   12 | integer :: i, j, k
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:16:
+
+   13 | logical :: found
+      |                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:19:
+
+   15 | max_k_repeating = 0
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:39:
+
+   17 | do k = 1, len(sequence) - len(word) + 1
+      |                                       1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:19:19:
+
+   19 |     found = .false.
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:21:15:
+
+   21 |     do i = 1, k
+      |               1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:23:27:
+
+   23 |         do j = 1, len(word)
+      |                           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:25:35:
+
+   25 |             if (sequence(i + j - 1:i + j - 1) /= word(j:j)) then
+      |                                   1
+Error: Syntax error in argument list at (1)
+temp.f95:26:20:
+
+   26 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:27:15:
+
+   27 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:36:
+
+   29 |             if (j == len(word)) then
+      |                                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:30:30:
+
+   30 |                 found = .true.
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:31:20:
+
+   31 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:32:15:
+
+   32 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:11:
+
+   34 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:36:23:
+
+   36 |         if (found) exit
+      |                       1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:38:7:
+
+   38 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:40:19:
+
+   40 |     if (found) then
+      |                   1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:41:49:
+
+   41 |         max_k_repeating = max(max_k_repeating, k)
+      |                                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:42:7:
+
+   42 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:44:3:
+
+   44 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:46:3:
+
+   46 | end function k_repeating_word
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:52:5:
+
+   52 | use k_repeating_word
+      |     1
+Fatal Error: Cannot open module file ‘k_repeating_word.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def longestAwesomeSubstring(s):
+    n = len(s)
+    maxLen = 0
+    for i in range(n):
+        for j in range(i + 1, n + 1):
+            substr = s[i:j]
+            if isAwesome(substr):
+                maxLen = max(maxLen, j - i)
+    return maxLen
+
+def isAwesome(s):
+    odd_count = 0
+    freq = [0] * 26
+    for c in s:
+        freq[ord(c) - ord('a')] += 1
+    for i in range(26):
+        if freq[i] % 2 == 1:
+            odd_count += 1
+    return odd_count &lt;= 1
+</code></pre>
+<p>The algorithm starts by checking all possible substrings of the given string s. For each substring, it checks whether it's an awesome substring or not by calling the isAwesome function.
+The isAwesome function calculates the frequency of each character in the string and counts the number of characters that have an odd frequency. If there are more than one characters with odd frequency, it returns false, otherwise, it returns true.
+Finally, the algorithm returns the length of the longest awesome substring found.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int longestAwesomeSubstring(std::string s) {
+    int n = s.length();
+    int maxLen = 0;
+    for (int i = 0; i &lt; n; ++i) {
+        for (int j = i + 1; j &lt;= n; ++j) {
+            std::string substr = s.substr(i, j - i);
+            if (isAwesome(substr)) {
+                maxLen = std::max(maxLen, j - i);
+            }
+        }
+    }
+    return maxLen;
+}
+
+bool isAwesome(std::string s) {
+    int odd_count = 0;
+    int freq[26] = {0};
+    for (char c : s) {
+        freq[c - 'a']++;
+    }
+    for (int i = 0; i &lt; 26; i++) {
+        if (freq[i] % 2 == 1) {
+            odd_count++;
+        }
+    }
+    return (odd_count &lt;= 1);
+}
+</code></pre>
+<p>The algorithm starts by checking all possible substrings of the given string s. For each substring, it checks whether it's an awesome substring or not by calling the isAwesome function.
+The isAwesome function calculates the frequency of each character in the string and counts the number of characters that have an odd frequency. If there are more than one characters with odd frequency, it returns false, otherwise, it returns true.
+Finally, the algorithm returns the length of the longest awesome substring found.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

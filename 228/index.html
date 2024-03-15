@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Summary Ranges</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/226/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/231/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>sorted unique</strong> integer array <code>nums</code>.</p>
+<p>A <strong>range</strong> <code>[a,b]</code> is the set of all integers from <code>a</code> to <code>b</code> (inclusive).</p>
+<p>Return <em>the <strong>smallest sorted</strong> list of ranges that <strong>cover all the numbers in the array exactly</strong></em>. That is, each element of <code>nums</code> is covered by exactly one of the ranges, and there is no integer <code>x</code> such that <code>x</code> is in one of the ranges but not in <code>nums</code>.</p>
+<p>Each range <code>[a,b]</code> in the list should be output as:</p>
+<ul>
+<li><code>"a-&gt;b "</code> if <code>a != b</code></li>
+<li><code>"a "</code> if <code>a == b</code></li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [0,1,2,4,5,7]
+<strong>Output:</strong> [ "0-&gt;2 ", "4-&gt;5 ", "7 "]
+<strong>Explanation:</strong> The ranges are:
+[0,2] --&gt;  "0-&gt;2 "
+[4,5] --&gt;  "4-&gt;5 "
+[7,7] --&gt;  "7 "</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [0,2,3,4,6,8,9]
+<strong>Output:</strong> [ "0 ", "2-&gt;4 ", "6 ", "8-&gt;9 "]
+<strong>Explanation:</strong> The ranges are:
+[0,0] --&gt;  "0 "
+[2,4] --&gt;  "2-&gt;4 "
+[6,6] --&gt;  "6 "
+[8,9] --&gt;  "8-&gt;9 "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= nums.length &lt;= 20</code></li>
+<li><code>-231 &lt;= nums[i] &lt;= 231 - 1</code></li>
+<li>All the values of <code>nums</code> are <strong>unique</strong>.</li>
+<li><code>nums</code> is sorted in ascending order.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/summary-ranges/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 7
+    integer, dimension(n) :: nums = (/ 0, 1, 2, 4, 5, 7 /)
+    type(range_t), allocatable :: ranges(:)
+
+    call solve(nums, ranges)
+
+    do i = 1, size(ranges)
+        write (*, '(A)') ranges(i)%to_string()
+    end do
+
+contains
+
+    subroutine solve(nums, ranges)
+        implicit none
+        integer, intent(in) :: nums(:)
+        type(range_t), allocatable, intent(out) :: ranges(:)
+        integer :: i, j, k
+
+        allocate(ranges(size(nums)))
+
+        k = 1
+        do i = 1, size(nums)-1
+            if (nums(i+1) > nums(i)+1) then
+                ranges(k)%start = nums(i)
+                ranges(k)%end = nums(i)
+                k = k + 1
+            end if
+        end do
+        ranges(k)%start = nums(size(nums))
+        ranges(k)%end = nums(size(nums))
+
+    end subroutine solve
+
+    type range_t
+        integer :: start
+        integer :: end
+    contains
+        procedure :: to_string => to_string_range
+    end type range_t
+
+    character(len=100) function to_string_range(self) result(str)
+        implicit none
+        class(range_t), intent(in) :: self
+
+        if (self%start /= self%end) then
+            str = trim(adjustl(str)) // trim(adjustl(str(self%start))) // "->" // &
+                  trim(adjustl(str(self%end))) // " "
+        else
+            str = trim(adjustl(str)) // trim(adjustl(str(self%start))) // " "
+        end if
+
+    end function to_string_range
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:33:
+
+    5 |     integer, dimension(n) :: nums = (/ 0, 1, 2, 4, 5, 7 /)
+      |                                 1
+Error: Different shape for array assignment at (1) on dimension 1 (7 and 6)
+temp.f95:6:18:
+
+    6 |     type(range_t), allocatable :: ranges(:)
+      |                  1
+Error: Derived type ‘range_t’ at (1) is being used before it is defined
+temp.f95:11:36:
+
+   11 |         write (*, '(A)') ranges(i)%to_string()
+      |                                    1
+Error: Symbol ‘ranges’ at (1) has no IMPLICIT type
+temp.f95:19:22:
+
+   19 |         type(range_t), allocatable, intent(out) :: ranges(:)
+      |                      1
+Error: Derived type ‘range_t’ at (1) is being used before it is defined
+temp.f95:22:17:
+
+   22 |         allocate(ranges(size(nums)))
+      |                 1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:37:16:
+
+   37 |     type range_t
+      |                1
+Error: Unexpected derived type declaration statement in CONTAINS section at (1)
+temp.f95:38:24:
+
+   38 |         integer :: start
+      |                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:39:22:
+
+   39 |         integer :: end
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:40:12:
+
+   40 |     contains
+      |            1
+Error: Unexpected CONTAINS statement in CONTAINS section at (1)
+temp.f95:42:7:
+
+   42 |     end type range_t
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:46:23:
+
+   46 |         class(range_t), intent(in) :: self
+      |                       1
+Error: Derived type ‘range_t’ at (1) is being used before it is defined
+temp.f95:48:18:
+
+   48 |         if (self%start /= self%end) then
+      |                  1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:49:57:
+
+   49 |             str = trim(adjustl(str)) // trim(adjustl(str(self%start))) // "->" // &
+      |                                                         1
+Error: Syntax error in argument list at (1)
+temp.f95:51:12:
+
+   51 |         else
+      |            1
+Error: Unexpected ELSE statement at (1)
+temp.f95:52:57:
+
+   52 |             str = trim(adjustl(str)) // trim(adjustl(str(self%start))) // " "
+      |                                                         1
+Error: Syntax error in argument list at (1)
+temp.f95:53:11:
+
+   53 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:16:33:
+
+   16 |     subroutine solve(nums, ranges)
+      |                                 1
+Error: Symbol ‘ranges’ at (1) has no IMPLICIT type
+temp.f95:44:52:
+
+   44 |     character(len=100) function to_string_range(self) result(str)
+      |                                                    1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:10:8:
+
+   10 |     do i = 1, size(ranges)
+      |        1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:8:19:
+
+    8 |     call solve(nums, ranges)
+      |                   1
+Error: Symbol ‘nums’ at (1) has no IMPLICIT type
+temp.f95:8:27:
+
+    8 |     call solve(nums, ranges)
+      |                           1
+Error: Symbol ‘ranges’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module range_cover
+    implicit none
+    private
+    public :: range_cover_main
+
+contains
+
+    subroutine range_cover_main()
+        integer, parameter :: nums(7) = [0, 1, 2, 4, 5, 7, 9]
+        integer :: i, j, k
+        integer :: ranges(size(nums), 2)
+
+        ! Initialize the ranges array with the first element of nums
+        do i = 1, size(nums)
+            ranges(i, 1) = nums(i)
+            ranges(i, 2) = nums(i)
+        end do
+
+        ! Sort the ranges array by the first element of each range
+        call sort_ranges(ranges)
+
+        ! Merge the ranges
+        do i = 2, size(nums)
+            if (ranges(i, 1) == ranges(i - 1, 2) + 1) then
+                ranges(i - 1, 2) = ranges(i, 2)
+            else
+                ranges(i, :) = ranges(i, :)
+            end if
+        end do
+
+        ! Print the ranges
+        do i = 1, size(nums)
+            if (ranges(i, 1) == ranges(i, 2)) then
+                write (*, '(A, I0, A)') ' ', ranges(i, 1), ' '
+            else
+                write (*, '(A, I0, A, I0, A)') ' ', ranges(i, 1), '->', ranges(i, 2), ' '
+            end if
+        end do
+
+    contains
+
+        subroutine sort_ranges(ranges)
+            integer, intent(inout) :: ranges(:, :)
+            integer :: i, j
+
+            do i = 2, size(ranges, 1)
+                do j = i, 1, -1
+                    if (ranges(j, 1) > ranges(i, 1)) then
+                        ranges(j + 1, :) = ranges(j, :)
+                    else
+                        exit
+                    end if
+                end do
+                ranges(j + 1, :) = ranges(i, :)
+            end do
+        end subroutine sort_ranges
+
+end subroutine range_cover_main
+end module range_cover
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>/usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o: in function `_start':
+(.text+0x1b): undefined reference to `main'
+collect2: error: ld returned 1 exit status
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from typing import List
+
+def find_ranges(nums: List[int]) -&gt; List[str]:
+    result = []
+    n = len(nums)
+    if n == 0: 
+        return result
+
+    start = nums[0]
+    for i in range(1, n):
+        if nums[i] &gt; nums[i-1] + 1:
+            if start == nums[i-1]:
+                result.append(str(start))
+            else:
+                result.append(str(start) + &quot;-&gt;&quot; + str(nums[i-1]))
+            start = nums[i]
+
+    if start == nums[n-1]:
+        result.append(str(start))
+    else:
+        result.append(str(start) + &quot;-&gt;&quot; + str(nums[n-1]))
+
+    return result
+</code></pre>
+<p>The algorithm involves iterating through the input array and using a variable named <code>start</code> to keep track of the beginning of the current range. For each element, we compare it with the previous element to check if they form a continuous range by verifying if the current element is greater than the previous element plus 1. If they don't form a continuous range, we know that the current range has ended and a new range starts at the current element. So, we add the current range to the result in the required format and update the start variable to the current element. This process continues until all elements are processed. Finally, we add the last range to the result in the required format.</p>
+<p>Since the input array is sorted and unique, this greedy approach ensures that we find the smallest sorted list of ranges that cover all the numbers in the array.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+
+std::vector&lt;std::string&gt; find_ranges(std::vector&lt;int&gt;&amp; nums) {
+    std::vector&lt;std::string&gt; result;
+    int n = nums.size();
+    if (n == 0) return result;
+
+    int start = nums[0];
+    for (int i = 1; i &lt; n; ++i) {
+        if (nums[i] &gt; nums[i-1] + 1) {
+            if (start == nums[i-1])
+                result.push_back(std::to_string(start));
+            else
+                result.push_back(std::to_string(start) + &quot;-&gt;&quot; + std::to_string(nums[i-1]));
+            start = nums[i];
+        }
+    }
+
+    if (start == nums[n-1])
+        result.push_back(std::to_string(start));
+    else
+        result.push_back(std::to_string(start) + &quot;-&gt;&quot; + std::to_string(nums[n-1]));
+
+    return result;
+}
+</code></pre>
+<p>The algorithm involves iterating through the input array and using a variable named <code>start</code> to keep track of the beginning of the current range. For each element, we compare it with the previous element to check if they form a continuous range by verifying if the current element is greater than the previous element plus 1. If they don't form a continuous range, we know that the current range has ended and a new range starts at the current element. So, we add the current range to the result in the required format and update the start variable to the current element. This process continues until all elements are processed. Finally, we add the last range to the result in the required format.</p>
+<p>Since the input array is sorted and unique, this greedy approach ensures that we find the smallest sorted list of ranges that cover all the numbers in the array.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

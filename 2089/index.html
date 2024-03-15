@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find Target Indices After Sorting Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2085/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2094/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>0-indexed</strong> integer array <code>nums</code> and a target element <code>target</code>.</p>
+<p>A <strong>target index</strong> is an index <code>i</code> such that <code>nums[i] == target</code>.</p>
+<p>Return <em>a list of the target indices of</em> <code>nums</code> after <em>sorting</em> <code>nums</code> <em>in <strong>non-decreasing</strong> order</em>. If there are no target indices, return <em>an <strong>empty</strong> list</em>. The returned list must be sorted in <strong>increasing</strong> order.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,5,2,3], target = 2
+<strong>Output:</strong> [1,2]
+<strong>Explanation:</strong> After sorting, nums is [1,<strong>2</strong>,<strong>2</strong>,3,5].
+The indices where nums[i] == 2 are 1 and 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,5,2,3], target = 3
+<strong>Output:</strong> [3]
+<strong>Explanation:</strong> After sorting, nums is [1,2,2,<strong>3</strong>,5].
+The index where nums[i] == 3 is 3.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,5,2,3], target = 5
+<strong>Output:</strong> [4]
+<strong>Explanation:</strong> After sorting, nums is [1,2,2,3,<strong>5</strong>].
+The index where nums[i] == 5 is 4.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+<li><code>1 &lt;= nums[i], target &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-target-indices-after-sorting-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 5
+    integer, dimension(n) :: nums
+    integer :: i, j, target
+    integer, allocatable, dimension(:) :: targetIndices
+
+    ! Examples
+    nums = [1, 2, 5, 2, 3]
+    target = 2
+    call solve(nums, target, targetIndices)
+    write (*, '(A, *(I0, A))') 'Example 1: ', targetIndices
+
+    nums = [1, 2, 5, 2, 3]
+    target = 3
+    call solve(nums, target, targetIndices)
+    write (*, '(A, *(I0, A))') 'Example 2: ', targetIndices
+
+    nums = [1, 2, 5, 2, 3]
+    target = 5
+    call solve(nums, target, targetIndices)
+    write (*, '(A, *(I0, A))') 'Example 3: ', targetIndices
+
+contains
+
+    subroutine solve(nums, target, targetIndices)
+        implicit none
+        integer, intent(in) :: nums(:), target
+        integer, allocatable, intent(out) :: targetIndices(:)
+        integer :: i, j
+
+        allocate(targetIndices(size(nums)))
+        targetIndices = -1
+
+        do i = 1, size(nums)
+            if (nums(i) == target) then
+                targetIndices(i) = i
+            end if
+        end do
+
+        call sort(targetIndices)
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>/usr/bin/ld: /tmp/cc7Uxzji.o: in function `solve.0':
+temp.f95:(.text+0x3ef): undefined reference to `sort_'
+collect2: error: ld returned 1 exit status
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module TargetIndices
+    implicit none
+    private
+    public :: target_indices
+contains
+    function target_indices(nums, target) result(indices)
+        integer, intent(in) :: nums(:)
+        integer, intent(in) :: target
+        integer :: indices(size(nums))
+        integer :: i, j
+
+        ! Sort the array in non-decreasing order
+        call sort(nums)
+
+        ! Find the indices of the target elements
+        i = 1
+        j = 1
+        do while (i <= size(nums))
+            if (nums(i) == target) then
+                indices(j) = i
+                j = j + 1
+            end if
+            i = i + 1
+        end do
+
+        ! Return the sorted indices
+        indices = indices(1:j-1)
+    end function target_indices
+end module TargetIndices
+
+! Test the function with some examples
+program test_target_indices
+    use TargetIndices
+    implicit none
+    integer, parameter :: nums1(5) = [1, 2, 5, 2, 3]
+    integer, parameter :: nums2(5) = [1, 2, 5, 2, 3]
+    integer, parameter :: nums3(5) = [1, 2, 5, 2, 3]
+    integer, parameter :: target = 2
+    integer :: indices1(size(nums1))
+    integer :: indices2(size(nums2))
+    integer :: indices3(size(nums3))
+
+    indices1 = target_indices(nums1, target)
+    indices2 = target_indices(nums2, target)
+    indices3 = target_indices(nums3, target)
+
+    write (*,*) "Indices of target = 2 in nums1:", indices1
+    write (*,*) "Indices of target = 2 in nums2:", indices2
+    write (*,*) "Indices of target = 2 in nums3:", indices3
+end program test_target_indices
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>/usr/bin/ld: /tmp/cctbKega.o: in function `__targetindices_MOD_target_indices':
+temp.f95:(.text+0x1c9): undefined reference to `sort_'
+collect2: error: ld returned 1 exit status
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def maxMatrixSum(matrix):
+    n = len(matrix)
+    minValue, negativeCount, total = float('inf'), 0, 0
+
+    for i in range(n):
+        for j in range(n):
+            total += abs(matrix[i][j])
+            minValue = min(minValue, abs(matrix[i][j]))
+            if matrix[i][j] &lt; 0:
+                negativeCount += 1
+
+    if negativeCount % 2 == 0:
+        return total
+    else:
+        return total - 2 * minValue
+</code></pre>
+<p>To maximize the summation of the matrix's elements, we can follow these steps: 
+1. Calculate the sum of the absolute values of all elements.
+2. Count the number of negative elements in the matrix.
+3. Determine the minimum absolute value of all elements in the matrix.
+4. If the number of negative values is even, the sum remains the same.
+5. If the number of negative values is odd, subtract twice the minimum absolute value from the sum, which accounts for turning an adjacent element from positive to negative, thereby increasing the overall sum.</p>
+<p>In each language implementation, we create a function called <code>maxMatrixSum</code> that takes an n x n integer matrix as input and loops through the matrix to calculate the values described in the steps above. The function then returns either the sum of elements or the sum minus twice the minimum absolute value depending on the number of negative values. This way, we maximize the summation of the matrix's elements.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int maxMatrixSum(vector&lt;vector&lt;int&gt;&gt;&amp; matrix) {
+    int n = matrix.size();
+    int minValue = INT_MAX, negativeCount = 0, sum = 0;
+
+    for (int i = 0; i &lt; n; ++i) {
+        for (int j = 0; j &lt; n; ++j) {
+            sum += abs(matrix[i][j]);
+            minValue = min(minValue, abs(matrix[i][j]));
+            if (matrix[i][j] &lt; 0) {
+                negativeCount++;
+            }
+        }
+    }
+
+    if (negativeCount % 2 == 0) {
+        return sum;
+    } else {
+        return sum - 2 * minValue;
+    }
+}
+</code></pre>
+<p>To maximize the summation of the matrix's elements, we can follow these steps: 
+1. Calculate the sum of the absolute values of all elements.
+2. Count the number of negative elements in the matrix.
+3. Determine the minimum absolute value of all elements in the matrix.
+4. If the number of negative values is even, the sum remains the same.
+5. If the number of negative values is odd, subtract twice the minimum absolute value from the sum, which accounts for turning an adjacent element from positive to negative, thereby increasing the overall sum.</p>
+<p>In each language implementation, we create a function called <code>maxMatrixSum</code> that takes an n x n integer matrix as input and loops through the matrix to calculate the values described in the steps above. The function then returns either the sum of elements or the sum minus twice the minimum absolute value depending on the number of negative values. This way, we maximize the summation of the matrix's elements.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

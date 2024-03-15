@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Maximum Ascending Subarray Sum</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1796/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1805/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of positive integers <code>nums</code>, return the <em>maximum possible sum of an <strong>ascending</strong> subarray in</em> <code>nums</code>.</p>
+<p>A subarray is defined as a contiguous sequence of numbers in an array.</p>
+<p>A subarray <code>[numsl, numsl+1, ..., numsr-1, numsr]</code> is <strong>ascending</strong> if for all <code>i</code> where <code>l &lt;= i &lt; r</code>, <code>numsi &lt; numsi+1</code>. Note that a subarray of size <code>1</code> is <strong>ascending</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [10,20,30,5,10,50]
+<strong>Output:</strong> 65
+<strong>Explanation:</strong> [5,10,50] is the ascending subarray with the maximum sum of 65.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [10,20,30,40,50]
+<strong>Output:</strong> 150
+<strong>Explanation:</strong> [10,20,30,40,50] is the ascending subarray with the maximum sum of 150.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [12,17,15,13,10,11,12]
+<strong>Output:</strong> 33
+<strong>Explanation:</strong> [10,11,12] is the ascending subarray with the maximum sum of 33.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/maximum-ascending-subarray-sum/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program max_ascending_subarray_sum
+    implicit none
+
+    integer, parameter :: n = 6
+    integer, dimension(n) :: nums
+    integer :: i, j, k, l, r, max_sum
+
+    ! Examples
+    nums = reshape([10, 20, 30, 5, 10, 50], shape=[n])
+    write(*, '(a, i0)') 'Example 1: ', max_ascending_subarray_sum(nums)
+    nums = reshape([10, 20, 30, 40, 50], shape=[n])
+    write(*, '(a, i0)') 'Example 2: ', max_ascending_subarray_sum(nums)
+    nums = reshape([12, 17, 15, 13, 10, 11, 12], shape=[n])
+    write(*, '(a, i0)') 'Example 3: ', max_ascending_subarray_sum(nums)
+
+contains
+
+    function max_ascending_subarray_sum(nums) result(max_sum)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: max_sum, current_sum, i, j
+
+        max_sum = 0
+        do i = 1, size(nums) - 1
+            current_sum = 0
+            do j = i, size(nums)
+                if (current_sum >= 0 .and. nums(j) > nums(j-1)) then
+                    current_sum = current_sum + nums(j)
+                else
+                    exit
+                end if
+                max_sum = max(max_sum, current_sum)
+            end do
+        end do
+    end function max_ascending_subarray_sum
+
+end program max_ascending_subarray_sum</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:10:66:
+
+   10 |     write(*, '(a, i0)') 'Example 1: ', max_ascending_subarray_sum(nums)
+      |                                                                  1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:12:66:
+
+   12 |     write(*, '(a, i0)') 'Example 2: ', max_ascending_subarray_sum(nums)
+      |                                                                  1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:14:66:
+
+   14 |     write(*, '(a, i0)') 'Example 3: ', max_ascending_subarray_sum(nums)
+      |                                                                  1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:18:61:
+
+   18 |     function max_ascending_subarray_sum(nums) result(max_sum)
+      |                                                             1
+Error: PROGRAM attribute of ‘max_ascending_subarray_sum’ conflicts with PROCEDURE attribute at (1)
+temp.f95:19:21:
+
+   19 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:20:38:
+
+   20 |         integer, intent(in) :: nums(:)
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:21:45:
+
+   21 |         integer :: max_sum, current_sum, i, j
+      |                                             1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:23:19:
+
+   23 |         max_sum = 0
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:32:
+
+   24 |         do i = 1, size(nums) - 1
+      |                                1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:25:27:
+
+   25 |             current_sum = 0
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:32:
+
+   26 |             do j = i, size(nums)
+      |                                1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:27:68:
+
+   27 |                 if (current_sum >= 0 .and. nums(j) > nums(j-1)) then
+      |                                                                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:28:55:
+
+   28 |                     current_sum = current_sum + nums(j)
+      |                                                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:29:20:
+
+   29 |                 else
+      |                    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:30:24:
+
+   30 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:31:19:
+
+   31 |                 end if
+      |                   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:32:51:
+
+   32 |                 max_sum = max(max_sum, current_sum)
+      |                                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:33:15:
+
+   33 |             end do
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:34:11:
+
+   34 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:35:7:
+
+   35 |     end function max_ascending_subarray_sum
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:11:19:
+
+   11 |     nums = reshape([10, 20, 30, 40, 50], shape=[n])
+      |                   1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module max_ascending_subarray_sum
+    implicit none
+    private
+    public :: max_ascending_subarray_sum
+
+contains
+
+    function max_ascending_subarray_sum(nums) result(max_sum)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: max_sum, i, j, sum
+
+        max_sum = 0
+        do i = 1, size(nums)
+            sum = 0
+            do j = i, size(nums)
+                if (nums(j) >= nums(j-1)) then
+                    sum = sum + nums(j)
+                else
+                    exit
+                end if
+            end do
+            if (sum > max_sum) then
+                max_sum = sum
+            end if
+        end do
+    end function max_ascending_subarray_sum
+end module max_ascending_subarray_sum
+
+program test_max_ascending_subarray_sum
+    use max_ascending_subarray_sum
+    implicit none
+    integer :: nums(6)
+
+    nums = [10, 20, 30, 5, 10, 50]
+    write (*,*) 'Maximum ascending subarray sum in [10, 20, 30, 5, 10, 50] is', &
+        max_ascending_subarray_sum(nums)
+
+    nums = [10, 20, 30, 40, 50]
+    write (*,*) 'Maximum ascending subarray sum in [10, 20, 30, 40, 50] is', &
+        max_ascending_subarray_sum(nums)
+
+    nums = [12, 17, 15, 13, 10, 11, 12]
+    write (*,*) 'Maximum ascending subarray sum in [12, 17, 15, 13, 10, 11, 12] is', &
+        max_ascending_subarray_sum(nums)
+end program test_max_ascending_subarray_sum
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:40:
+
+    4 |     public :: max_ascending_subarray_sum
+      |                                        1
+Error: PUBLIC attribute applied to MODULE max_ascending_subarray_sum at (1)
+temp.f95:8:39:
+
+    8 |     function max_ascending_subarray_sum(nums) result(max_sum)
+      |                                       1
+Error: MODULE attribute of ‘max_ascending_subarray_sum’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:21:
+
+    9 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:10:38:
+
+   10 |         integer, intent(in) :: nums(:)
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:37:
+
+   11 |         integer :: max_sum, i, j, sum
+      |                                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:19:
+
+   13 |         max_sum = 0
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:14:28:
+
+   14 |         do i = 1, size(nums)
+      |                            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:15:19:
+
+   15 |             sum = 0
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:32:
+
+   16 |             do j = i, size(nums)
+      |                                1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:17:46:
+
+   17 |                 if (nums(j) >= nums(j-1)) then
+      |                                              1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:18:39:
+
+   18 |                     sum = sum + nums(j)
+      |                                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:20:
+
+   19 |                 else
+      |                    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:20:24:
+
+   20 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:21:19:
+
+   21 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:22:15:
+
+   22 |             end do
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:35:
+
+   23 |             if (sum > max_sum) then
+      |                                   1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:24:29:
+
+   24 |                 max_sum = sum
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:25:15:
+
+   25 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:11:
+
+   26 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:27:7:
+
+   27 |     end function max_ascending_subarray_sum
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:31:9:
+
+   31 |     use max_ascending_subarray_sum
+      |         1
+Fatal Error: Cannot open module file ‘max_ascending_subarray_sum.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def concatenated_binary(n: int) -&gt; int:
+    result = 0
+    mod = 1000000007
+    for i in range(1, n + 1):
+        length = len(bin(i)) - 2
+        result = ((result &lt;&lt; length) % mod + i) % mod
+    return result
+</code></pre>
+<pre><code>The algorithm iterates through all integers from 1 to `n`. For each integer, it first calculates its binary length (i.e. number of bits) using log base 2. This can be done using logarithm internally with floating point representation, followed by flooring and adding 1. In C++, you can use `log2`, in Java you can do `Math.log(i) / Math.log(2)`, and in JavaScript – `Math.log2`.
+</code></pre>
+<p>Then, the result is shifted left by the calculated length (integer arithmetic is mostly used), and the current integer is added to the result. The whole operation is performed under modulo 109 + 7 to prevent overflow. In the end, the result is returned.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+int concatenatedBinary(int n) {
+    long long result = 0;
+    for (int i = 1; i &lt;= n; ++i) {
+        int length = log2(i) + 1;
+        result = ((result &lt;&lt; length) % 1000000007 + i) % 1000000007;
+    }
+    return result;
+}
+</code></pre>
+<pre><code>The algorithm iterates through all integers from 1 to `n`. For each integer, it first calculates its binary length (i.e. number of bits) using log base 2. This can be done using logarithm internally with floating point representation, followed by flooring and adding 1. In C++, you can use `log2`, in Java you can do `Math.log(i) / Math.log(2)`, and in JavaScript – `Math.log2`.
+</code></pre>
+<p>Then, the result is shifted left by the calculated length (integer arithmetic is mostly used), and the current integer is added to the result. The whole operation is performed under modulo 109 + 7 to prevent overflow. In the end, the result is returned.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

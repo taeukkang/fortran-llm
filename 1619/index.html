@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Mean of Array After Removing Some Elements</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1614/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1624/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>arr</code>, return <em>the mean of the remaining integers after removing the smallest <code>5%</code> and the largest <code>5%</code> of the elements.</em></p>
+<p>Answers within <code>10-5</code> of the <strong>actual answer</strong> will be considered accepted.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3]
+<strong>Output:</strong> 2.00000
+<strong>Explanation:</strong> After erasing the minimum and the maximum values of this array, all elements are equal to 2, so the mean is 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [6,2,7,5,1,2,0,3,10,2,5,0,5,5,0,8,7,6,8,0]
+<strong>Output:</strong> 4.00000</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> arr = [6,0,7,0,7,5,7,8,3,4,0,7,8,1,6,8,1,1,2,4,8,1,9,5,4,3,8,5,10,8,6,6,1,0,6,10,8,2,3,4]
+<strong>Output:</strong> 4.77778</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>20 &lt;= arr.length &lt;= 1000</code></li>
+<li><code>arr.length</code> <strong>is a multiple</strong> of <code>20</code>.</li>
+<li><code>0 &lt;= arr[i] &lt;= 105</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/mean-of-array-after-removing-some-elements/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: dp = selected_real_kind(15)
+
+    integer, dimension(:), allocatable :: arr
+    real(dp) :: mean
+
+    call get_array(arr)
+    call solve(arr, mean)
+    write (*, '(F10.5)') mean
+
+contains
+
+    subroutine get_array(arr)
+        implicit none
+        integer, dimension(:), allocatable, intent(out) :: arr
+        integer :: i, n
+
+        read (*, *) n
+        allocate (arr(n))
+        do i = 1, n
+            read (*, *) arr(i)
+        end do
+    end subroutine get_array
+
+    subroutine solve(arr, mean)
+        implicit none
+        integer, dimension(:), intent(in) :: arr
+        real(dp), intent(out) :: mean
+        integer :: n, i, j, k, l, m, nl, nr
+        real(dp) :: sum
+
+        n = size(arr)
+        if (n < 10) then
+            stop "Array too small"
+        end if
+
+        ! Find the smallest 5% of the elements
+        k = int(n * 0.05)
+        l = 1
+        m = 1
+        do while (m <= k .and. l < n)
+            if (arr(l) < arr(m)) then
+                m = m + 1
+            else
+                swap(arr(l), arr(m))
+                m = m + 1
+            end if
+            l = l + 1
+        end do
+
+        ! Find the largest 5% of the elements
+        k = int(n * 0.95)
+        l = n
+        m = n
+        do while (m >= k .and. l > 1)
+            if (arr(l) > arr(m)) then
+                m = m - 1
+            else
+                swap(arr(l), arr(m))
+                m = m - 1
+            end if
+            l = l - 1
+        end do
+
+        ! Calculate the mean of the remaining elements
+        nl = l - 1
+        nr = n - m
+        sum = 0.0_dp
+        do i = 1, nl
+            sum = sum + arr(i)
+        end do
+        do i = 1, nr
+            sum = sum + arr(nl + i + 1)
+        end do
+        mean = sum / (nl + nr)
+    end subroutine solve
+
+    subroutine swap(a, b)
+        implicit none
+        integer, intent(inout) :: a, b
+        integer :: temp
+
+        temp = a
+        a = b
+        b = temp
+    end subroutine swap
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:47:17:
+
+   47 |                 swap(arr(l), arr(m))
+      |                 1
+Error: Unclassifiable statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module mean_of_remaining_integers
+    implicit none
+    private
+    public :: mean_of_remaining_integers
+
+contains
+
+    subroutine mean_of_remaining_integers(arr, n, mean)
+        implicit none
+        integer, intent(in) :: arr(n)
+        integer, intent(in) :: n
+        real(kind=8), intent(out) :: mean
+
+        integer :: i, j, k
+        real(kind=8) :: sum
+
+        ! Sort the array in ascending order
+        do i = 1, n - 1
+            do j = i + 1, n
+                if (arr(i) > arr(j)) then
+                    k = arr(i)
+                    arr(i) = arr(j)
+                    arr(j) = k
+                end if
+            end do
+        end do
+
+        ! Calculate the sum of the elements in the middle 5% of the array
+        sum = 0.0d0
+        i = int(0.05d0 * n) + 1
+        j = int(0.95d0 * n)
+        do while (i <= j)
+            sum = sum + arr(i)
+            i = i + 1
+        end do
+
+        ! Calculate the mean
+        mean = sum / (j - i + 1)
+
+    end subroutine mean_of_remaining_integers
+
+end module mean_of_remaining_integers
+
+program test_mean_of_remaining_integers
+    use mean_of_remaining_integers
+    implicit none
+    integer, parameter :: n = 20
+    integer :: arr(n) = [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3]
+    real(kind=8) :: mean
+
+    call mean_of_remaining_integers(arr, n, mean)
+    write (*,*) mean
+
+    arr = [6, 2, 7, 5, 1, 2, 0, 3, 10, 2, 5, 0, 5, 5, 0, 8, 7, 6, 8, 0]
+    call mean_of_remaining_integers(arr, n, mean)
+    write (*,*) mean
+
+    arr = [6, 0, 7, 0, 7, 5, 7, 8, 3, 4, 0, 7, 8, 1, 6, 8, 1, 1, 2, 4, 8, 1, 9, 5, 4, 3, 8, 5, 10, 8, 6, 6, 1, 0, 6, 10, 8, 2, 3, 4]
+    call mean_of_remaining_integers(arr, n, mean)
+    write (*,*) mean
+
+end program test_mean_of_remaining_integers
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:40:
+
+    4 |     public :: mean_of_remaining_integers
+      |                                        1
+Error: PUBLIC attribute applied to MODULE mean_of_remaining_integers at (1)
+temp.f95:8:41:
+
+    8 |     subroutine mean_of_remaining_integers(arr, n, mean)
+      |                                         1
+Error: MODULE attribute of ‘mean_of_remaining_integers’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:21:
+
+    9 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:10:37:
+
+   10 |         integer, intent(in) :: arr(n)
+      |                                     1
+Error: Explicit array shape at (1) must be constant of INTEGER type and not UNKNOWN type
+temp.f95:11:32:
+
+   11 |         integer, intent(in) :: n
+      |                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:41:
+
+   12 |         real(kind=8), intent(out) :: mean
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:26:
+
+   14 |         integer :: i, j, k
+      |                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:27:
+
+   15 |         real(kind=8) :: sum
+      |                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:18:23:
+
+   18 |         do i = 1, n - 1
+      |                       1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:19:27:
+
+   19 |             do j = i + 1, n
+      |                           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:20:41:
+
+   20 |                 if (arr(i) > arr(j)) then
+      |                                         1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:21:30:
+
+   21 |                     k = arr(i)
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:35:
+
+   22 |                     arr(i) = arr(j)
+      |                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:30:
+
+   23 |                     arr(j) = k
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:19:
+
+   24 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:15:
+
+   25 |             end do
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:11:
+
+   26 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:19:
+
+   29 |         sum = 0.0d0
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:30:31:
+
+   30 |         i = int(0.05d0 * n) + 1
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:31:27:
+
+   31 |         j = int(0.95d0 * n)
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:32:25:
+
+   32 |         do while (i <= j)
+      |                         1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:33:30:
+
+   33 |             sum = sum + arr(i)
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:34:21:
+
+   34 |             i = i + 1
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:35:11:
+
+   35 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:38:32:
+
+   38 |         mean = sum / (j - i + 1)
+      |                                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:40:7:
+
+   40 |     end subroutine mean_of_remaining_integers
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:45:9:
+
+   45 |     use mean_of_remaining_integers
+      |         1
+Fatal Error: Cannot open module file ‘mean_of_remaining_integers.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_path_crossing(path: str) -&gt; bool:
+    visited = {(0, 0)}
+    x, y = 0, 0
+    for dir in path:
+        if dir == 'N': y += 1
+        elif dir == 'S': y -= 1
+        elif dir == 'E': x += 1
+        elif dir == 'W': x -= 1
+        if (x, y) in visited: return True
+        visited.add((x, y))
+    return False
+</code></pre>
+<ol>
+<li>Initialize a visited set including the starting location (0,0).</li>
+<li>Iterate through each character in the <code>path</code>.</li>
+<li>Update the coordinates (x, y) as per the direction.</li>
+<li>Check if the updated location is already in the visited set, then return true.</li>
+<li>Add the updated location to the visited set.</li>
+<li>After iterating through the entire path return false if no crossing has occurred.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool isPathCrossing(string path) {
+    set&lt;pair&lt;int, int&gt;&gt; visited;
+    int x = 0, y = 0;
+    visited.insert({x, y});
+    for (char dir : path) {
+        if (dir == 'N') y++;
+        else if (dir == 'S') y--;
+        else if (dir == 'E') x++;
+        else if (dir == 'W') x--;
+        if (visited.count({x, y})) return true;
+        visited.insert({x, y});
+    }
+    return false;
+}
+</code></pre>
+<ol>
+<li>Initialize a visited set including the starting location (0,0).</li>
+<li>Iterate through each character in the <code>path</code>.</li>
+<li>Update the coordinates (x, y) as per the direction.</li>
+<li>Check if the updated location is already in the visited set, then return true.</li>
+<li>Add the updated location to the visited set.</li>
+<li>After iterating through the entire path return false if no crossing has occurred.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

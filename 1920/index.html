@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Build Array from Permutation</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1913/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1925/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a <strong>zero-based permutation</strong> <code>nums</code> (<strong>0-indexed</strong>), build an array <code>ans</code> of the <strong>same length</strong> where <code>ans[i] = nums[nums[i]]</code> for each <code>0 &lt;= i &lt; nums.length</code> and return it.</p>
+<p>A <strong>zero-based permutation</strong> <code>nums</code> is an array of <strong>distinct</strong> integers from <code>0</code> to <code>nums.length - 1</code> (<strong>inclusive</strong>).</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [0,2,1,5,3,4]
+<strong>Output:</strong> [0,1,2,4,5,3]
+<strong>Explanation:</strong> The array ans is built as follows: 
+ans = [nums[nums[0]], nums[nums[1]], nums[nums[2]], nums[nums[3]], nums[nums[4]], nums[nums[5]]]
+    = [nums[0], nums[2], nums[1], nums[5], nums[3], nums[4]]
+    = [0,1,2,4,5,3]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [5,0,1,2,3,4]
+<strong>Output:</strong> [4,5,0,1,2,3]
+<strong>Explanation:</strong> The array ans is built as follows:
+ans = [nums[nums[0]], nums[nums[1]], nums[nums[2]], nums[nums[3]], nums[nums[4]], nums[nums[5]]]
+    = [nums[5], nums[0], nums[1], nums[2], nums[3], nums[4]]
+    = [4,5,0,1,2,3]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 1000</code></li>
+<li><code>0 &lt;= nums[i] &lt; nums.length</code></li>
+<li>The elements in <code>nums</code> are <strong>distinct</strong>.</li>
+</ul>
+<p><strong>Follow-up:</strong> Can you solve it without using an extra space (i.e., <code>O(1)</code> memory)?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/build-array-from-permutation/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+
+! This program solves the problem of building an array "ans" of the same length
+! as the input array "nums", where ans[i] = nums[nums[i]] for each 0 <= i < nums.length.
+! The input array "nums" is a zero-based permutation, meaning that its elements are
+! distinct integers from 0 to nums.length - 1 (inclusive).
+!
+! Example 1:
+! Input: nums = [0,2,1,5,3,4]
+! Output: [0,1,2,4,5,3]
+! Explanation: The array ans is built as follows:
+! ans = [nums[nums[0]], nums[nums[1]], nums[nums[2]], nums[nums[3]], nums[nums[4]], nums[nums[5]]]
+!         = [nums[0], nums[2], nums[1], nums[5], nums[3], nums[4]]
+!         = [0,1,2,4,5,3]
+!
+! Example 2:
+! Input: nums = [5,0,1,2,3,4]
+! Output: [4,5,0,1,2,3]
+! Explanation: The array ans is built as follows:
+! ans = [nums[nums[0]], nums[nums[1]], nums[nums[2]], nums[nums[3]], nums[nums[4]], nums[nums[5]]]
+!         = [nums[5], nums[0], nums[1], nums[2], nums[3], nums[4]]
+!         = [4,5,0,1,2,3]
+!
+! Constraints:
+! 1 <= nums.length <= 1000
+! 0 <= nums[i] < nums.length
+! All the elements of nums are unique.
+
+implicit none
+integer :: i, j, k, n
+integer, dimension(:), allocatable :: nums, ans
+
+n = 6 ! number of elements in nums
+allocate(nums(n))
+allocate(ans(n))
+
+nums = (/ 0, 2, 1, 5, 3, 4 /) ! example 1
+! nums = (/ 5, 0, 1, 2, 3, 4 /) ! example 2
+
+do i = 1, n
+  ans(i) = nums(nums(i))
+end do
+
+print '(A)', 'ans ='
+do i = 1, n
+  print '(*(I0, 1X))', ans(i)
+end do
+
+deallocate(nums)
+deallocate(ans)
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>ans =
+0
+2
+0
+3
+1
+5
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module permutation_array
+
+implicit none
+
+contains
+
+function permutation_array(nums) result(ans)
+
+integer, intent(in) :: nums(:)
+integer :: ans(size(nums))
+
+! Local variables
+integer :: i, j
+
+! Initialize the answer array
+ans = 0
+
+! Loop through the input array
+do i = 1, size(nums)
+
+    ! Get the index of the current element
+    j = nums(i)
+
+    ! Set the current element in the answer array
+    ans(i) = nums(j)
+
+end do
+
+end function permutation_array
+
+end module permutation_array
+
+program test_permutation_array
+
+use permutation_array, only : permutation_array
+implicit none
+
+! Test case 1
+print *, permutation_array([0, 2, 1, 5, 3, 4])
+
+! Test case 2
+print *, permutation_array([5, 0, 1, 2, 3, 4])
+
+end program test_permutation_array
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:26:
+
+    7 | function permutation_array(nums) result(ans)
+      |                          1
+Error: MODULE attribute of ‘permutation_array’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:30:
+
+    9 | integer, intent(in) :: nums(:)
+      |                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:20:
+
+   10 | integer :: ans(size(nums))
+      |                    1
+Error: Symbol ‘nums’ is used before it is typed at (1)
+temp.f95:13:15:
+
+   13 | integer :: i, j
+      |               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:16:7:
+
+   16 | ans = 0
+      |       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:20:
+
+   19 | do i = 1, size(nums)
+      |                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:22:15:
+
+   22 |     j = nums(i)
+      |               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:25:20:
+
+   25 |     ans(i) = nums(j)
+      |                    1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:27:3:
+
+   27 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:3:
+
+   29 | end function permutation_array
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:35:47:
+
+   35 | use permutation_array, only : permutation_array
+      |                                               1
+Error: The name ‘permutation_array’ at (1) has already been used as an external module name
+temp.f95:39:8:
+
+    1 | module permutation_array
+      |                        2
+......
+   39 | print *, permutation_array([0, 2, 1, 5, 3, 4])
+      |        1
+Error: Global name ‘permutation_array’ at (1) is already being used as a MODULE at (2)
+temp.f95:39:26:
+
+   39 | print *, permutation_array([0, 2, 1, 5, 3, 4])
+      |                          1
+Warning: Interface mismatch in global procedure ‘permutation_array’ at (1): 'permutation_array' is not a function
+temp.f95:39:8:
+
+   39 | print *, permutation_array([0, 2, 1, 5, 3, 4])
+      |        1
+Error: Function ‘permutation_array’ at (1) has no IMPLICIT type
+temp.f95:42:8:
+
+    1 | module permutation_array
+      |                        2
+......
+   42 | print *, permutation_array([5, 0, 1, 2, 3, 4])
+      |        1
+Error: Global name ‘permutation_array’ at (1) is already being used as a MODULE at (2)
+temp.f95:39:26:
+
+   39 | print *, permutation_array([0, 2, 1, 5, 3, 4])
+      |                          1
+Warning: Interface mismatch in global procedure ‘permutation_array’ at (1): 'permutation_array' is not a function
+temp.f95:42:8:
+
+   42 | print *, permutation_array([5, 0, 1, 2, 3, 4])
+      |        1
+Error: Function ‘permutation_array’ at (1) has no IMPLICIT type
+temp.f95:39:8:
+
+   39 | print *, permutation_array([0, 2, 1, 5, 3, 4])
+      |        1
+Error: More actual than formal arguments in procedure call at (1)
+temp.f95:42:8:
+
+   42 | print *, permutation_array([5, 0, 1, 2, 3, 4])
+      |        1
+Error: More actual than formal arguments in procedure call at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def square_is_white(coordinates: str) -&gt; bool:
+    return (ord(coordinates[0]) - ord('a') + ord(coordinates[1]) - ord('1')) % 2 == 0
+</code></pre>
+<p>The algorithm first calculates the position of the square using the ASCII values of the characters given in the coordinate string, then the row and column positions are added together. If the sum is even, the square is a white square, otherwise it is a black square.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool squareIsWhite(std_sequence(string coordinates) {
+return (coordinates[0] - 'a' + coordinates[1] - '1') % 2 == 0;
+}
+</code></pre>
+<p>The algorithm first calculates the position of the square using the ASCII values of the characters given in the coordinate string, then the row and column positions are added together. If the sum is even, the square is a white square, otherwise it is a black square.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

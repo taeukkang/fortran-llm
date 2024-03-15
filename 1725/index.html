@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Number Of Rectangles That Can Form The Largest Square</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1720/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1732/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an array <code>rectangles</code> where <code>rectangles[i] = [li, wi]</code> represents the <code>ith</code> rectangle of length <code>li</code> and width <code>wi</code>.</p>
+<p>You can cut the <code>ith</code> rectangle to form a square with a side length of <code>k</code> if both <code>k &lt;= li</code> and <code>k &lt;= wi</code>. For example, if you have a rectangle <code>[4,6]</code>, you can cut it to get a square with a side length of at most <code>4</code>.</p>
+<p>Let <code>maxLen</code> be the side length of the <strong>largest</strong> square you can obtain from any of the given rectangles.</p>
+<p>Return <em>the <strong>number</strong> of rectangles that can make a square with a side length of</em> <code>maxLen</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> rectangles = [[5,8],[3,9],[5,12],[16,5]]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The largest squares you can get from each rectangle are of lengths [5,3,5,5].
+The largest possible square is of length 5, and you can get it out of 3 rectangles.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> rectangles = [[2,3],[3,7],[4,3],[3,7]]
+<strong>Output:</strong> 3</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= rectangles.length &lt;= 1000</code></li>
+<li><code>rectangles[i].length == 2</code></li>
+<li><code>1 &lt;= li, wi &lt;= 109</code></li>
+<li><code>li != wi</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/number-of-rectangles-that-can-form-the-largest-square/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, dimension(n) :: rectangles
+    integer :: i, k, maxLen, count
+
+    ! Examples
+    rectangles(1) = [5, 8]
+    rectangles(2) = [3, 9]
+    rectangles(3) = [5, 12]
+    rectangles(4) = [16, 5]
+
+    ! Output
+    write (*, '(A)') 'Example 1:'
+    call solve(rectangles, maxLen, count)
+    write (*, '(I0, A, I0)') count, ' rectangles can make a square with a side length of ', maxLen
+    write (*, '(A)') ''
+
+    rectangles(1) = [2, 3]
+    rectangles(2) = [3, 7]
+    rectangles(3) = [4, 3]
+    rectangles(4) = [3, 7]
+
+    ! Output
+    write (*, '(A)') 'Example 2:'
+    call solve(rectangles, maxLen, count)
+    write (*, '(I0, A, I0)') count, ' rectangles can make a square with a side length of ', maxLen
+    write (*, '(A)') ''
+
+contains
+
+    subroutine solve(rectangles, maxLen, count)
+        implicit none
+        integer, intent(in) :: rectangles(:, :)
+        integer, intent(out) :: maxLen, count
+        integer :: i, j, k, l, m, n, p, q, r, s, t, u, v, w, x, y, z
+
+        maxLen = -huge(maxLen)
+        count = 0
+
+        do i = 1, size(rectangles, 1)
+            do j = 1, size(rectangles, 2)
+                k = rectangles(i, 1)
+                l = rectangles(i, 2)
+                m = min(k, l)
+                n = max(k, l)
+                p = (m + 1) / 2
+                q = (n + 1) / 2
+                r = (p * q) / 2
+                s = (r + 1) / 2
+                t = (s + 1) / 2
+                u = (t + 1) / 2
+                v = (u + 1) / 2
+                w = (v + 1) / 2
+                x = (w + 1) / 2
+                y = (x + 1) / 2
+                z = (y + 1) / 2
+                if (z > maxLen) then
+                    maxLen = z
+                    count = 1
+                else if (z == maxLen) then
+                    count = count + 1
+                end if
+            end do
+        end do
+    end subroutine solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:4:
+
+    9 |     rectangles(1) = [5, 8]
+      |    1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:10:4:
+
+   10 |     rectangles(2) = [3, 9]
+      |    1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:11:4:
+
+   11 |     rectangles(3) = [5, 12]
+      |    1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:12:4:
+
+   12 |     rectangles(4) = [16, 5]
+      |    1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:16:15:
+
+   16 |     call solve(rectangles, maxLen, count)
+      |               1
+Error: Rank mismatch in argument ‘rectangles’ at (1) (rank-2 and rank-1)
+temp.f95:20:4:
+
+   20 |     rectangles(1) = [2, 3]
+      |    1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:21:4:
+
+   21 |     rectangles(2) = [3, 7]
+      |    1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:22:4:
+
+   22 |     rectangles(3) = [4, 3]
+      |    1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:23:4:
+
+   23 |     rectangles(4) = [3, 7]
+      |    1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:27:15:
+
+   27 |     call solve(rectangles, maxLen, count)
+      |               1
+Error: Rank mismatch in argument ‘rectangles’ at (1) (rank-2 and rank-1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module SquareWithMaxSide
+    implicit none
+    private
+    public :: squareWithMaxSide
+contains
+    function squareWithMaxSide(rectangles) result(count)
+        integer, intent(in) :: rectangles(:,:)
+        integer :: count, i, k, maxLen, li, wi
+
+        count = 0
+        maxLen = 0
+
+        do i = 1, size(rectangles, 1)
+            li = rectangles(i, 1)
+            wi = rectangles(i, 2)
+
+            k = min(li, wi)
+
+            if (k > maxLen) then
+                maxLen = k
+                count = 1
+            else if (k == maxLen) then
+                count = count + 1
+            end if
+        end do
+    end function squareWithMaxSide
+end module SquareWithMaxSide
+
+program test_squareWithMaxSide
+    use SquareWithMaxSide
+    implicit none
+    integer, parameter :: rectangles(4, 2) = reshape([5, 8, 3, 9, 5, 12, 16, 5], [4, 2])
+    integer :: count
+
+    count = squareWithMaxSide(rectangles)
+
+    write (*, '(A, I0)') 'The number of rectangles that can make a square with a side length of ', maxLen
+end program test_squareWithMaxSide
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:31:
+
+    4 |     public :: squareWithMaxSide
+      |                               1
+Error: PUBLIC attribute applied to MODULE squarewithmaxside at (1)
+temp.f95:6:30:
+
+    6 |     function squareWithMaxSide(rectangles) result(count)
+      |                              1
+Error: MODULE attribute of ‘squarewithmaxside’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:46:
+
+    7 |         integer, intent(in) :: rectangles(:,:)
+      |                                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:46:
+
+    8 |         integer :: count, i, k, maxLen, li, wi
+      |                                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:17:
+
+   10 |         count = 0
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:11:18:
+
+   11 |         maxLen = 0
+      |                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:13:37:
+
+   13 |         do i = 1, size(rectangles, 1)
+      |                                     1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:14:33:
+
+   14 |             li = rectangles(i, 1)
+      |                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:33:
+
+   15 |             wi = rectangles(i, 2)
+      |                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:27:
+
+   17 |             k = min(li, wi)
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:32:
+
+   19 |             if (k > maxLen) then
+      |                                1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:20:26:
+
+   20 |                 maxLen = k
+      |                          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:21:25:
+
+   21 |                 count = 1
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:38:
+
+   22 |             else if (k == maxLen) then
+      |                                      1
+Error: Unexpected ELSE IF statement in CONTAINS section at (1)
+temp.f95:23:33:
+
+   23 |                 count = count + 1
+      |                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:15:
+
+   24 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:11:
+
+   25 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:7:
+
+   26 |     end function squareWithMaxSide
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:9:
+
+   30 |     use SquareWithMaxSide
+      |         1
+Fatal Error: Cannot open module file ‘squarewithmaxside.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def numberOfSets(n, k):
+    mod = 10**9 + 7
+    dp = [[0] * (k + 1) for _ in range(n)]
+    presum = [1] * n
+
+    for j in range(1, k + 1):
+        for i in range(n):
+            dp[i][j] = presum[i]
+            if i &gt; 0:
+                dp[i][j] += dp[i - 1][j]
+            dp[i][j] %= mod
+            presum[i] = (presum[i] + dp[i][j - 1]) % mod
+
+    return dp[n - 1][k]
+</code></pre>
+<p>The problem can be solved using dynamic programming. We create a 2D array <code>dp</code> of dimensions (n, k + 1), where <code>dp[i][j]</code> stores the number of ways to draw <code>j</code> non-overlapping line segments up to point <code>i</code>. We also maintain an array <code>presum</code> which is the prefix sum of the <code>dp</code> array. </p>
+<p>We then loop through <code>j</code> from 1 to k and <code>i</code> from 0 to n-1, calculating <code>dp[i][j]</code> using the values in <code>presum</code> and <code>dp</code> arrays. To avoid recomputing values, we update the <code>presum</code> array iteratively.</p>
+<p>Finally, we return the value in <code>dp[n - 1][k]</code> which is the number of ways to draw k non-overlapping line segments up to point n-1.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int numberOfSets(int n, int k) {
+    long long mod = 1e9 + 7;
+    vector&lt;vector&lt;long long&gt;&gt; dp(n, vector&lt;long long&gt;(k + 1, 0));
+    vector&lt;long long&gt; presum(n, 1);
+
+    for (int j = 1; j &lt;= k; ++j) {
+        for (int i = 0; i &lt; n; ++i) {
+            dp[i][j] = presum[i];
+            if (i) {
+                dp[i][j] += dp[i - 1][j];
+            }
+            dp[i][j] %= mod;
+            presum[i] = (presum[i] + dp[i][j - 1]) % mod;
+        }
+    }
+
+    return dp[n - 1][k];
+}
+</code></pre>
+<p>The problem can be solved using dynamic programming. We create a 2D array <code>dp</code> of dimensions (n, k + 1), where <code>dp[i][j]</code> stores the number of ways to draw <code>j</code> non-overlapping line segments up to point <code>i</code>. We also maintain an array <code>presum</code> which is the prefix sum of the <code>dp</code> array. </p>
+<p>We then loop through <code>j</code> from 1 to k and <code>i</code> from 0 to n-1, calculating <code>dp[i][j]</code> using the values in <code>presum</code> and <code>dp</code> arrays. To avoid recomputing values, we update the <code>presum</code> array iteratively.</p>
+<p>Finally, we return the value in <code>dp[n - 1][k]</code> which is the number of ways to draw k non-overlapping line segments up to point n-1.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

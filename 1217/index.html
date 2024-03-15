@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Cost to Move Chips to The Same Position</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1213/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1221/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>We have <code>n</code> chips, where the position of the <code>ith</code> chip is <code>position[i]</code>.</p>
+<p>We need to move all the chips to <strong>the same position</strong>. In one step, we can change the position of the <code>ith</code> chip from <code>position[i]</code> to:</p>
+<ul>
+<li><code>position[i] + 2</code> or <code>position[i] - 2</code> with <code>cost = 0</code>.</li>
+<li><code>position[i] + 1</code> or <code>position[i] - 1</code> with <code>cost = 1</code>.</li>
+</ul>
+<p>Return <em>the minimum cost</em> needed to move all the chips to the same position.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> position = [1,2,3]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> First step: Move the chip at position 3 to position 1 with cost = 0.
+Second step: Move the chip at position 2 to position 1 with cost = 1.
+Total cost is 1.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> position = [2,2,2,3,3]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> We can move the two chips at position  3 to position 2. Each move has cost = 1. The total cost = 2.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> position = [1,1000000000]
+<strong>Output:</strong> 1</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= position.length &lt;= 100</code></li>
+<li><code>1 &lt;= position[i] &lt;= 10^9</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-cost-to-move-chips-to-the-same-position/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 3
+    integer, dimension(n) :: position = (/ 1, 2, 3 /)
+    integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+    integer :: cost
+    integer :: minCost
+
+    ! Example 1
+    write (*,*) "Example 1:"
+    write (*,*) "position = ", position
+    cost = 0
+    call moveChips(position, cost)
+    write (*,*) "minCost = ", minCost
+
+    ! Example 2
+    write (*,*) "Example 2:"
+    write (*,*) "position = ", position
+    cost = 0
+    call moveChips(position, cost)
+    write (*,*) "minCost = ", minCost
+
+    ! Example 3
+    write (*,*) "Example 3:"
+    write (*,*) "position = ", position
+    cost = 0
+    call moveChips(position, cost)
+    write (*,*) "minCost = ", minCost
+
+contains
+
+    subroutine moveChips(position, cost)
+        implicit none
+        integer, intent(inout) :: position(:)
+        integer, intent(inout) :: cost
+        integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+
+        do i = 1, size(position)
+            if (position(i) == position(i+1)) then
+                cost = cost + 1
+            else if (position(i) == position(i+1)+1 .or. position(i) == position(i+1)-1) then
+                cost = cost + 2
+            end if
+        end do
+
+        minCost = cost
+    end subroutine moveChips
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:31:
+
+    6 |     integer :: i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+      |                               1
+Error: Symbol ‘n’ at (1) already has basic type of INTEGER
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module chips
+implicit none
+contains
+
+function min_cost(position) result(cost)
+integer, intent(in) :: position(:)
+integer :: cost, i, j, diff
+
+! Initialize the cost to 0
+cost = 0
+
+! Loop through each chip
+do i = 1, size(position)
+
+    ! Loop through each chip again
+    do j = 1, size(position)
+
+        ! If the current chip is not the same as the current chip,
+        ! calculate the difference between their positions
+        if (i /= j) then
+            diff = abs(position(i) - position(j))
+
+            ! If the difference is 1, the cost is 1
+            if (diff == 1) then
+                cost = cost + 1
+            ! If the difference is 2, the cost is 0
+            else if (diff == 2) then
+                cost = cost + 0
+            end if
+        end if
+    end do
+end do
+
+end function min_cost
+end module chips
+
+program main
+use chips
+implicit none
+integer, parameter :: n = 3
+integer :: position(n) = [1, 2, 3]
+integer :: cost
+
+! Call the min_cost function and store the result in cost
+cost = min_cost(position)
+
+! Print the cost to stdout
+write (*,*) cost
+
+end program main
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>           4
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def sort_array(arr1, arr2):
+    counts = {}
+    result = []
+
+    for num in arr1:
+        counts[num] = counts.get(num, 0) + 1
+
+    for num in arr2:
+        if num in counts:
+            result.extend([num] * counts[num])
+            del counts[num]
+
+    for num in sorted(counts.keys()):
+        result.extend([num] * counts[num])
+
+    return result
+</code></pre>
+<ol>
+<li>Create a dictionary <code>counts</code> to store the count of each number in <code>arr1</code>.</li>
+<li>Iterate through the elements of <code>arr2</code>. For each element, add that element to the result <code>n</code> times where <code>n</code> is the count of that element in <code>arr1</code>. Remove the element from the <code>counts</code> dictionary.</li>
+<li>Iterate through the sorted keys of the remaining elements in <code>counts</code>. For each key, append the key to the result <code>n</code> times where <code>n</code> is the count of that element in <code>arr1</code>.</li>
+<li>Return the resulting sorted array.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;map&gt;
+#include &lt;algorithm&gt;
+
+void sortArray(vector&lt;int&gt;&amp; arr1, vector&lt;int&gt;&amp; arr2) {
+    map&lt;int, int&gt; counts;
+
+    for (int num : arr1) {
+        counts[num]++;
+    }
+    int index = 0;
+    for (int num : arr2) {
+        while (counts[num]--) {
+            arr1[index++] = num;
+        }
+    }
+    for (auto &amp;pair : counts) {
+        while (pair.second--) {
+            arr1[index++] = pair.first;
+        }
+    }
+}
+</code></pre>
+<ol>
+<li>Create a dictionary <code>counts</code> to store the count of each number in <code>arr1</code>.</li>
+<li>Iterate through the elements of <code>arr2</code>. For each element, add that element to the result <code>n</code> times where <code>n</code> is the count of that element in <code>arr1</code>. Remove the element from the <code>counts</code> dictionary.</li>
+<li>Iterate through the sorted keys of the remaining elements in <code>counts</code>. For each key, append the key to the result <code>n</code> times where <code>n</code> is the count of that element in <code>arr1</code>.</li>
+<li>Return the resulting sorted array.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Construct the Rectangle</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/485/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/495/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A web developer needs to know how to design a web page's size. So, given a specific rectangular web page's area, your job by now is to design a rectangular web page, whose length L and width W satisfy the following requirements:</p>
+<ol>
+<li>The area of the rectangular web page you designed must equal to the given target area.</li>
+<li>The width <code>W</code> should not be larger than the length <code>L</code>, which means <code>L &gt;= W</code>.</li>
+<li>The difference between length <code>L</code> and width <code>W</code> should be as small as possible.</li>
+</ol>
+<p>Return <em>an array <code>[L, W]</code> where <code>L</code> and <code>W</code> are the length and width of the web page you designed in sequence.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> area = 4
+<strong>Output:</strong> [2,2]
+<strong>Explanation:</strong> The target area is 4, and all the possible ways to construct it are [1,4], [2,2], [4,1]. 
+But according to requirement 2, [1,4] is illegal; according to requirement 3,  [4,1] is not optimal compared to [2,2]. So the length L is 2, and the width W is 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> area = 37
+<strong>Output:</strong> [37,1]</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> area = 122122
+<strong>Output:</strong> [427,286]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= area &lt;= 107</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/construct-the-rectangle/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: area
+    integer :: l, w
+
+    area = 4
+    call solve(area, l, w)
+    write (*, '(A, I0, A, I0)') 'Length: ', l, '; Width: ', w
+
+    area = 37
+    call solve(area, l, w)
+    write (*, '(A, I0, A, I0)') 'Length: ', l, '; Width: ', w
+
+    area = 122122
+    call solve(area, l, w)
+    write (*, '(A, I0, A, I0)') 'Length: ', l, '; Width: ', w
+
+contains
+
+    subroutine solve(area, l, w)
+        implicit none
+        integer, intent(in) :: area
+        integer, intent(out) :: l, w
+
+        integer :: diff
+
+        l = int(sqrt(real(area)))
+        do while (l > 0)
+            w = area / l
+            if (w == 0) then
+                exit
+            end if
+            diff = abs(l - w)
+            if (diff == 0) then
+                exit
+            else if (diff < minval(diff, l-1, w-1)) then
+                exit
+            end if
+            l = l - 1
+        end do
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:37:35:
+
+   37 |             else if (diff < minval(diff, l-1, w-1)) then
+      |                                   1
+Error: ‘array’ argument of ‘minval’ intrinsic at (1) must be an array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: area, L, W
+
+! Define main program
+program main
+    ! Read input
+    read *, area
+
+    ! Call function to solve problem
+    call solve(area, L, W)
+
+    ! Print output
+    write (*,*) L, W
+end program main
+
+! Define function to solve problem
+subroutine solve(area, L, W)
+    ! Declare variables
+    integer :: area, L, W
+
+    ! Initialize variables
+    L = 0
+    W = 0
+
+    ! Loop until we find the correct solution
+    do while (L * W /= area .or. L < W)
+        ! Increase length
+        L = L + 1
+
+        ! Check if width is too large
+        if (L < W) then
+            ! Reset width
+            W = 0
+        end if
+
+        ! Check if width is too small
+        if (L > W + 1) then
+            ! Increase width
+            W = W + 1
+        end if
+    end do
+end subroutine solve
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:12:
+
+    5 | program main
+      |            1
+Error: Unexpected PROGRAM statement at (1)
+temp.f95:14:16:
+
+   14 | end program main
+      |                1
+Error: Syntax error in END PROGRAM statement at (1)
+temp.f95:19:19:
+
+   19 |     integer :: area, L, W
+      |                   1
+Error: Symbol ‘area’ at (1) already has basic type of INTEGER
+temp.f95:42:3:
+
+   42 | end subroutine solve
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def constructRectangle(area: int) -&gt; List[int]:
+    width = int(area**0.5)
+    while area % width != 0:
+        width -= 1
+    length = area // width
+    return [length, width]
+</code></pre>
+<p>The algorithm starts by calculating the square root of the given area, using the sqrt function in each language. Since web pages with more rectangular shapes are preferred, we start the width from <code>sqrt(area)</code> and work our way down.</p>
+<p>We initialize the variable width with the integer value of the square root of the area: <code>width = sqrt(area)</code>. This initialization ensures that our width and length will be as close as possible to each other.</p>
+<p>We then use a while loop to check if the current width divides the area evenly (<code>area % width != 0</code>). If it doesn't, we decrement the width by one and repeat the loop until we find a width that divides the area evenly.</p>
+<p>Finally, we calculate the length by dividing the area with the width: <code>length = area / width</code>. We return the length and width as an array in the required sequence: <code>[length, width]</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;cmath&gt;
+
+std::vector&lt;int&gt; constructRectangle(int area) {
+    int width = std::sqrt(area);
+    while(area % width != 0) {
+        width -= 1;
+    }
+    int length = area / width;
+    return {length, width};
+}
+</code></pre>
+<p>The algorithm starts by calculating the square root of the given area, using the sqrt function in each language. Since web pages with more rectangular shapes are preferred, we start the width from <code>sqrt(area)</code> and work our way down.</p>
+<p>We initialize the variable width with the integer value of the square root of the area: <code>width = sqrt(area)</code>. This initialization ensures that our width and length will be as close as possible to each other.</p>
+<p>We then use a while loop to check if the current width divides the area evenly (<code>area % width != 0</code>). If it doesn't, we decrement the width by one and repeat the loop until we find a width that divides the area evenly.</p>
+<p>Finally, we calculate the length by dividing the area with the width: <code>length = area / width</code>. We return the length and width as an array in the required sequence: <code>[length, width]</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

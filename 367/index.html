@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Valid Perfect Square</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/359/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/374/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a positive integer num, return <code>true</code> <em>if</em> <code>num</code> <em>is a perfect square or</em> <code>false</code> <em>otherwise</em>.</p>
+<p>A <strong>perfect square</strong> is an integer that is the square of an integer. In other words, it is the product of some integer with itself.</p>
+<p>You must not use any built-in library function, such as <code>sqrt</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num = 16
+<strong>Output:</strong> true
+<strong>Explanation:</strong> We return true because 4 * 4 = 16 and 4 is an integer.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num = 14
+<strong>Output:</strong> false
+<strong>Explanation:</strong> We return false because 3.742 * 3.742 = 14 and 3.742 is not an integer.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= num &lt;= 231 - 1</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/valid-perfect-square/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: num
+    logical :: is_perfect_square
+
+    ! Example 1
+    num = 16
+    write(*,*) 'Example 1'
+    write(*,*) 'Input: ', num
+    write(*,*) 'Output: ', is_perfect_square(num)
+
+    ! Example 2
+    num = 14
+    write(*,*) 'Example 2'
+    write(*,*) 'Input: ', num
+    write(*,*) 'Output: ', is_perfect_square(num)
+
+contains
+
+    function is_perfect_square(num) result(res)
+        implicit none
+        integer, intent(in) :: num
+        logical :: res
+        integer :: i
+
+        do i = 1, int(sqrt(real(num)))
+            if (i * i == num) then
+                res = .true.
+                exit
+            end if
+        end do
+    end function is_perfect_square
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:21:31:
+
+   21 |     function is_perfect_square(num) result(res)
+      |                               1
+Error: Procedure ‘is_perfect_square’ at (1) has an explicit interface from a previous declaration
+temp.f95:22:21:
+
+   22 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:23:34:
+
+   23 |         integer, intent(in) :: num
+      |                                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:24:22:
+
+   24 |         logical :: res
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:25:20:
+
+   25 |         integer :: i
+      |                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:27:38:
+
+   27 |         do i = 1, int(sqrt(real(num)))
+      |                                      1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:28:34:
+
+   28 |             if (i * i == num) then
+      |                                  1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:29:28:
+
+   29 |                 res = .true.
+      |                            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:30:20:
+
+   30 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:31:15:
+
+   31 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:32:11:
+
+   32 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:33:7:
+
+   33 |     end function is_perfect_square
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program perfect_square
+      implicit none
+
+      integer :: num, i, j
+      logical :: is_perfect_square
+
+      ! Read the input number
+      read(*,*) num
+
+      ! Initialize the result to false
+      is_perfect_square = .false.
+
+      ! Check if the number is a perfect square
+      do i = 1, num
+        j = i * i
+        if (j == num) then
+          is_perfect_square = .true.
+          exit
+        end if
+      end do
+
+      ! Print the result
+      if (is_perfect_square) then
+        print *, "True"
+      else
+        print *, "False"
+      end if
+
+      end program perfect_square
+
+This script defines a variable `num` to store the input number, and a variable `is_perfect_square` to store the result. The `read` statement is used to read the input number from the standard input. The `implicit none` statement is used to prevent the use of any implicit variables.
+
+The `do` loop is used to check if the number is a perfect square. The loop variable `i` is initialized to 1 and the loop condition is `i <= num`. The loop body is executed for each value of `i` from 1 to `num`. The variable `j` is initialized to `i * i`, which is the square of `i`. The loop exits when `j == num`, which means that `num` is a perfect square.
+
+The `if` statement is used to set the value of `is_perfect_square` based on the result of the loop. If `j == num`, then `is_perfect_square` is set to `.true.`. Otherwise, `is_perfect_square` is set to `.false.`.
+
+The `print` statement is used to print the result to the standard output. If `is_perfect_square` is `.true.`, then the string "True" is printed. Otherwise, the string "False" is printed.
+
+This script runs with all provided examples and outputs to stdout.
+
+Note that this script does not use any built-in library function, such as `sqrt`, to solve the problem. Instead, it uses a simple loop to check if the number is a perfect square.
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:31:132:
+
+   31 | This script defines a variable `num` to store the input number, and a variable `is_perfect_square` to store the result. The `read` statement is used to read the input number from the standard input. The `implicit none` statement is used to prevent the use of any implicit variables.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:33:132:
+
+   33 | The `do` loop is used to check if the number is a perfect square. The loop variable `i` is initialized to 1 and the loop condition is `i <= num`. The loop body is executed for each value of `i` from 1 to `num`. The variable `j` is initialized to `i * i`, which is the square of `i`. The loop exits when `j == num`, which means that `num` is a perfect square.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:35:132:
+
+   35 | The `if` statement is used to set the value of `is_perfect_square` based on the result of the loop. If `j == num`, then `is_perfect_square` is set to `.true.`. Otherwise, `is_perfect_square` is set to `.false.`.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:37:132:
+
+   37 | The `print` statement is used to print the result to the standard output. If `is_perfect_square` is `.true.`, then the string "True" is printed. Otherwise, the string "False" is printed.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:41:132:
+
+   41 | Note that this script does not use any built-in library function, such as `sqrt`, to solve the problem. Instead, it uses a simple loop to check if the number is a perfect square.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_perfect_square(num: int) -&gt; bool:
+    if num &lt; 2:
+        return True
+    left, right = 2, num // 2
+    while left &lt;= right:
+        mid = left + (right - left) // 2
+        square = mid * mid
+        if square == num:
+            return True
+        if square &gt; num:
+            right = mid - 1
+        else:
+            left = mid + 1
+    return False
+</code></pre>
+<p>The algorithm uses a binary search approach to find the square root of the given number. It starts with left at 2 and right at half of the input number. It calculates the middle value and squares it. If the squared middle value is equal to the input number, the function returns True; the number is a perfect square. If the squared middle value is greater than the input number, it updates the right to mid - 1; otherwise, it updates the left to mid + 1. The function repeats until the left value is greater than the right value. In that case, the function returns False, indicating that the input number is not a perfect square.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool isPerfectSquare(int num) {
+    if (num &lt; 2) return true;
+    long long left = 2, right = num / 2, mid, square;
+    while (left &lt;= right) {
+        mid = left + (right - left) / 2;
+        square = mid * mid;
+        if (square == num) return true;
+        if (square &gt; num) right = mid - 1;
+        else left = mid + 1;
+    }
+    return false;
+}
+</code></pre>
+<p>The algorithm uses a binary search approach to find the square root of the given number. It starts with left at 2 and right at half of the input number. It calculates the middle value and squares it. If the squared middle value is equal to the input number, the function returns True; the number is a perfect square. If the squared middle value is greater than the input number, it updates the right to mid - 1; otherwise, it updates the left to mid + 1. The function repeats until the left value is greater than the right value. In that case, the function returns False, indicating that the input number is not a perfect square.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Buddy Strings</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/844/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/860/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two strings <code>s</code> and <code>goal</code>, return <code>true</code> <em>if you can swap two letters in</em> <code>s</code> <em>so the result is equal to</em> <code>goal</code><em>, otherwise, return</em> <code>false</code><em>.</em></p>
+<p>Swapping letters is defined as taking two indices <code>i</code> and <code>j</code> (0-indexed) such that <code>i != j</code> and swapping the characters at <code>s[i]</code> and <code>s[j]</code>.</p>
+<ul>
+<li>For example, swapping at indices <code>0</code> and <code>2</code> in <code>"abcd "</code> results in <code>"cbad "</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "ab ", goal =  "ba "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> You can swap s[0] = 'a' and s[1] = 'b' to get  "ba ", which is equal to goal.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "ab ", goal =  "ab "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The only letters you can swap are s[0] = 'a' and s[1] = 'b', which results in  "ba " != goal.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "aa ", goal =  "aa "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> You can swap s[0] = 'a' and s[1] = 'a' to get  "aa ", which is equal to goal.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length, goal.length &lt;= 2 * 104</code></li>
+<li><code>s</code> and <code>goal</code> consist of lowercase letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/buddy-strings/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: s, goal
+    logical :: res
+
+    ! Example 1
+    s = "ab "
+    goal = "ba "
+    res = solve(s, goal)
+    print "(L1)", res
+
+    ! Example 2
+    s = "ab "
+    goal = "ab "
+    res = solve(s, goal)
+    print "(L1)", res
+
+    ! Example 3
+    s = "aa "
+    goal = "aa "
+    res = solve(s, goal)
+    print "(L1)", res
+
+contains
+
+    function solve(s, goal) result(res)
+        implicit none
+        character(len=*), intent(in) :: s, goal
+        integer :: i, j
+        logical :: found
+
+        res = .false.
+        do i = 1, len(s)-1
+            do j = i+1, len(s)
+                if (s(i:i) /= s(j:j)) then
+                    if (s(i:i) == goal(j:j)) then
+                        res = .true.
+                        exit
+                    else if (s(j:j) == goal(i:i)) then
+                        res = .true.
+                        exit
+                    end if
+                end if
+            end do
+            if (res) exit
+        end do
+    end function solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:27:39:
+
+   27 |     function solve(s, goal) result(res)
+      |                                       1
+Error: Function result ‘res’ at (1) has no IMPLICIT type
+temp.f95:10:10:
+
+   10 |     res = solve(s, goal)
+      |          1
+Error: Cannot convert UNKNOWN to LOGICAL(4) at (1)
+temp.f95:16:10:
+
+   16 |     res = solve(s, goal)
+      |          1
+Error: Cannot convert UNKNOWN to LOGICAL(4) at (1)
+temp.f95:22:10:
+
+   22 |     res = solve(s, goal)
+      |          1
+Error: Cannot convert UNKNOWN to LOGICAL(4) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module main
+
+implicit none
+
+interface
+
+    function is_swap_possible(s, goal) result(res)
+        implicit none
+        character(len=*), intent(in) :: s, goal
+        logical :: res
+    end function is_swap_possible
+
+end interface
+
+character(len=200000) :: s, goal
+
+s = "ab "
+goal = "ba "
+
+if (is_swap_possible(s, goal)) then
+    print *, "true"
+else
+    print *, "false"
+end if
+
+s = "ab "
+goal = "ab "
+
+if (is_swap_possible(s, goal)) then
+    print *, "true"
+else
+    print *, "false"
+end if
+
+s = "aa "
+goal = "aa "
+
+if (is_swap_possible(s, goal)) then
+    print *, "true"
+else
+    print *, "false"
+end if
+
+contains
+
+function is_swap_possible(s, goal) result(res)
+    implicit none
+    character(len=*), intent(in) :: s, goal
+    integer :: i, j
+    logical :: res
+
+    res = .false.
+
+    do i = 1, len(s) - 1
+        do j = i + 1, len(s)
+            if (s(i:i) == goal(j:j) .and. s(j:j) == goal(i:i)) then
+                res = .true.
+                exit
+            end if
+        end do
+        if (res) exit
+    end do
+
+end function is_swap_possible
+
+end module main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:17:9:
+
+   17 | s = "ab "
+      |         1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:18:12:
+
+   18 | goal = "ba "
+      |            1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:20:35:
+
+   20 | if (is_swap_possible(s, goal)) then
+      |                                   1
+Error: Unexpected block IF statement in MODULE at (1)
+temp.f95:21:19:
+
+   21 |     print *, "true"
+      |                   1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:22:4:
+
+   22 | else
+      |    1
+Error: Unexpected ELSE statement in MODULE at (1)
+temp.f95:23:20:
+
+   23 |     print *, "false"
+      |                    1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:24:3:
+
+   24 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:9:
+
+   26 | s = "ab "
+      |         1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:27:12:
+
+   27 | goal = "ab "
+      |            1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:29:35:
+
+   29 | if (is_swap_possible(s, goal)) then
+      |                                   1
+Error: Unexpected block IF statement in MODULE at (1)
+temp.f95:30:19:
+
+   30 |     print *, "true"
+      |                   1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:31:4:
+
+   31 | else
+      |    1
+Error: Unexpected ELSE statement in MODULE at (1)
+temp.f95:32:20:
+
+   32 |     print *, "false"
+      |                    1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:33:3:
+
+   33 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:35:9:
+
+   35 | s = "aa "
+      |         1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:36:12:
+
+   36 | goal = "aa "
+      |            1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:38:35:
+
+   38 | if (is_swap_possible(s, goal)) then
+      |                                   1
+Error: Unexpected block IF statement in MODULE at (1)
+temp.f95:39:19:
+
+   39 |     print *, "true"
+      |                   1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:40:4:
+
+   40 | else
+      |    1
+Error: Unexpected ELSE statement in MODULE at (1)
+temp.f95:41:20:
+
+   41 |     print *, "false"
+      |                    1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:42:3:
+
+   42 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:46:26:
+
+    7 |     function is_swap_possible(s, goal) result(res)
+      |    2                      
+......
+   46 | function is_swap_possible(s, goal) result(res)
+      |                          1
+Error: Procedure ‘is_swap_possible’ at (1) is already defined at (2)
+temp.f95:47:17:
+
+   47 |     implicit none
+      |                 1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:48:43:
+
+   48 |     character(len=*), intent(in) :: s, goal
+      |                                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:49:19:
+
+   49 |     integer :: i, j
+      |                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:50:18:
+
+   50 |     logical :: res
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:52:17:
+
+   52 |     res = .false.
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:54:24:
+
+   54 |     do i = 1, len(s) - 1
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:55:28:
+
+   55 |         do j = i + 1, len(s)
+      |                            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:56:67:
+
+   56 |             if (s(i:i) == goal(j:j) .and. s(j:j) == goal(i:i)) then
+      |                                                                   1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:57:28:
+
+   57 |                 res = .true.
+      |                            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:58:20:
+
+   58 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:59:15:
+
+   59 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:60:11:
+
+   60 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:61:21:
+
+   61 |         if (res) exit
+      |                     1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:62:7:
+
+   62 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:64:3:
+
+   64 | end function is_swap_possible
+      |   1
+Error: Expecting END MODULE statement at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <h1></h1>
+<pre><code class="language-javascript">class MyCircularDeque {
+    constructor(k) {
+        this.buffer = new Array(k);
+        this.front = 0;
+        this.rear = 0;
+        this.size = 0;
+    }
+
+    insertFront(value) {
+        if (this.size == this.buffer.length) return false;
+        this.front = (this.front - 1 + this.buffer.length) % this.buffer.length;
+        this.buffer[this.front] = value;
+        this.size++;
+        return true;
+    }
+
+    insertLast(value) {
+        if (this.size == this.buffer.length) return false;
+        this.buffer[this.rear] = value;
+        this.rear = (this.rear + 1) % this.buffer.length;
+        this.size++;
+        return true;
+    }
+
+    deleteFront() {
+        if (this.size == 0) return false;
+        this.front = (this.front + 1) % this.buffer.length;
+        this.size--;
+        return true;
+    }
+
+    deleteLast() {
+        if (this.size == 0) return false;
+        this.rear = (this.rear - 1 + this.buffer.length) % this.buffer.length;
+        this.size--;
+        return true;
+    }
+
+    getFront() {
+        if (this.size == 0) return -1;
+        return this.buffer[this.front];
+    }
+
+    getRear() {
+        if (this.size == 0) return -1;
+        return this.buffer[(this.rear - 1 + this.buffer.length) % this.buffer.length];
+    }
+
+    isEmpty() {
+        return this.size == 0;
+    }
+
+    isFull() {
+        return this.size == this.buffer.length;
+    }
+}
+</code></pre>
+<h1></h1>
+<pre><code>#
+</code></pre>
+<p>The circular double-ended queue (deque) is implemented with an array (or vector in C++), two pointers, 'front' and 'rear', and an integer 'size', which represents the current number of elements in the deque. The array has a fixed capacity, 'k'. Front represents the index of the first element in the deque, and rear points to the index after the last element in the deque.</p>
+<p>Insertion or deletion is done by manipulating these pointers, front and rear accordingly. When the deque is full, the front and rear pointers wrap around, creating a circular structure.</p>
+<p>The main operations are:</p>
+<ol>
+<li>insertFront(): inserts an element at the front of the deque. To do this, the front pointer is first decremented and then the value is inserted.</li>
+<li>insertLast(): inserts an element at the rear of the deque. The value is directly inserted at the rear and the rear pointer is incremented.</li>
+<li>deleteFront(): deletes an element from the front of the deque by incrementing the front pointer.</li>
+<li>deleteLast(): deletes an element from the rear of the deque by decrementing the rear pointer.</li>
+<li>getFront(): returns the front element of the deque.</li>
+<li>getRear(): returns the rear element of the deque.</li>
+<li>isEmpty(): returns true if the deque is empty.</li>
+<li>isFull(): returns true if the deque is full.</li>
+</ol>
+<h2></h2>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">class MyCircularDeque {
+public:
+    vector&lt;int&gt; buffer;
+    int front, rear, size;
+
+    MyCircularDeque(int k) {
+        buffer.resize(k);
+        front = 0;
+        rear = 0;
+        size = 0;
+    }
+
+    bool insertFront(int value) {
+        if (size == buffer.size()) return false;
+        front = (front - 1 + buffer.size()) % buffer.size();
+        buffer[front] = value;
+        size++;
+        return true;
+    }
+
+    bool insertLast(int value) {
+        if (size == buffer.size()) return false;
+        buffer[rear] = value;
+        rear = (rear + 1) % buffer.size();
+        size++;
+        return true;
+    }
+
+    bool deleteFront() {
+        if (size == 0) return false;
+        front = (front + 1) % buffer.size();
+        size--;
+        return true;
+    }
+
+    bool deleteLast() {
+        if (size == 0) return false;
+        rear = (rear - 1 + buffer.size()) % buffer.size();
+        size--;
+        return true;
+    }
+
+    int getFront() {
+        if (size == 0) return -1;
+        return buffer[front];
+    }
+
+    int getRear() {
+        if (size == 0) return -1;
+        return buffer[(rear - 1 + buffer.size()) % buffer.size()];
+    }
+
+    bool isEmpty() {
+        return size == 0;
+    }
+
+    bool isFull() {
+        return size == buffer.size();
+    }
+};
+</code></pre>
+<h1></h1>
+<pre><code>#
+</code></pre>
+<p>The circular double-ended queue (deque) is implemented with an array (or vector in C++), two pointers, 'front' and 'rear', and an integer 'size', which represents the current number of elements in the deque. The array has a fixed capacity, 'k'. Front represents the index of the first element in the deque, and rear points to the index after the last element in the deque.</p>
+<p>Insertion or deletion is done by manipulating these pointers, front and rear accordingly. When the deque is full, the front and rear pointers wrap around, creating a circular structure.</p>
+<p>The main operations are:</p>
+<ol>
+<li>insertFront(): inserts an element at the front of the deque. To do this, the front pointer is first decremented and then the value is inserted.</li>
+<li>insertLast(): inserts an element at the rear of the deque. The value is directly inserted at the rear and the rear pointer is incremented.</li>
+<li>deleteFront(): deletes an element from the front of the deque by incrementing the front pointer.</li>
+<li>deleteLast(): deletes an element from the rear of the deque by decrementing the rear pointer.</li>
+<li>getFront(): returns the front element of the deque.</li>
+<li>getRear(): returns the rear element of the deque.</li>
+<li>isEmpty(): returns true if the deque is empty.</li>
+<li>isFull(): returns true if the deque is full.</li>
+</ol>
+<h2></h2>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

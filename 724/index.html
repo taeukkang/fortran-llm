@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find Pivot Index</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/717/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/728/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of integers <code>nums</code>, calculate the <strong>pivot index</strong> of this array.</p>
+<p>The <strong>pivot index</strong> is the index where the sum of all the numbers <strong>strictly</strong> to the left of the index is equal to the sum of all the numbers <strong>strictly</strong> to the index's right.</p>
+<p>If the index is on the left edge of the array, then the left sum is <code>0</code> because there are no elements to the left. This also applies to the right edge of the array.</p>
+<p>Return <em>the <strong>leftmost pivot index</strong></em>. If no such index exists, return <code>-1</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,7,3,6,5,6]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong>
+The pivot index is 3.
+Left sum = nums[0] + nums[1] + nums[2] = 1 + 7 + 3 = 11
+Right sum = nums[4] + nums[5] = 5 + 6 = 11</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,3]
+<strong>Output:</strong> -1
+<strong>Explanation:</strong>
+There is no index that satisfies the conditions in the problem statement.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [2,1,-1]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong>
+The pivot index is 0.
+Left sum = 0 (no elements to the left of index 0)
+Right sum = nums[1] + nums[2] = 1 + -1 = 0</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 104</code></li>
+<li><code>-1000 &lt;= nums[i] &lt;= 1000</code></li>
+</ul>
+<p><strong>Note:</strong> This question is the same as 1991: <a href="https://leetcode.com/problems/find-the-middle-index-in-array/">https://leetcode.com/problems/find-the-middle-index-in-array/</a></p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-pivot-index/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solves the problem of finding the pivot index of an array of integers
+    implicit none
+
+    integer, parameter :: n = 6
+    integer, dimension(n) :: nums
+    integer :: i, j, k, l, m, n_left, n_right, pivot_index
+    logical :: found
+
+    ! Examples
+    nums = [1, 7, 3, 6, 5, 6]
+    write (*, '(A, I0)') 'Example 1: ', find_pivot_index(nums)
+
+    nums = [1, 2, 3]
+    write (*, '(A, I0)') 'Example 2: ', find_pivot_index(nums)
+
+    nums = [2, 1, -1]
+    write (*, '(A, I0)') 'Example 3: ', find_pivot_index(nums)
+
+contains
+
+    function find_pivot_index(nums) result(pivot_index)
+        ! Calculates the pivot index of an array of integers
+        implicit none
+
+        integer, intent(in) :: nums(:)
+        integer :: pivot_index
+        integer :: i, n_left, n_right
+
+        n_left = 0
+        n_right = sum(nums)
+
+        do i = 1, size(nums)
+            if (n_left == n_right) then
+                pivot_index = i - 1
+                exit
+            end if
+
+            if (i > 1) then
+                n_left = n_left + nums(i - 1)
+            end if
+
+            if (i < size(nums)) then
+                n_right = n_right - nums(i)
+            end if
+        end do
+
+        if (.not. allocated(pivot_index)) then
+            pivot_index = -1
+        end if
+
+    end function find_pivot_index
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:48:28:
+
+   48 |         if (.not. allocated(pivot_index)) then
+      |                            1
+Error: ‘array’ argument of ‘allocated’ intrinsic at (1) must be ALLOCATABLE
+temp.f95:14:4:
+
+   14 |     nums = [1, 2, 3]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (6 and 3)
+temp.f95:17:4:
+
+   17 |     nums = [2, 1, -1]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (6 and 3)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">```
+program pivot_index
+    implicit none
+    integer, parameter :: int64 = selected_int_kind(13)
+    integer :: i, j, n, left_sum, right_sum, pivot_index
+    integer, dimension(:), allocatable :: nums
+
+    read *, n
+    allocate(nums(n))
+    do i = 1, n
+        read *, nums(i)
+    end do
+
+    pivot_index = -1
+    do i = 1, n
+        left_sum = 0
+        right_sum = 0
+        do j = 1, i - 1
+            left_sum = left_sum + nums(j)
+        end do
+        do j = i + 1, n
+            right_sum = right_sum + nums(j)
+        end do
+        if (left_sum == right_sum) then
+            pivot_index = i
+            exit
+        end if
+    end do
+
+    write (*, '(I0)') pivot_index
+
+end program pivot_index
+```
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:1:2:
+
+    1 | ```
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:5:56:
+
+    5 |     integer :: i, j, n, left_sum, right_sum, pivot_index
+      |                                                        1
+Error: Symbol ‘pivot_index’ at (1) cannot have a type
+temp.f95:14:16:
+
+   14 |     pivot_index = -1
+      |                1
+Error: ‘pivot_index’ at (1) is not a variable
+temp.f95:25:24:
+
+   25 |             pivot_index = i
+      |                        1
+Error: ‘pivot_index’ at (1) is not a variable
+temp.f95:30:33:
+
+   30 |     write (*, '(I0)') pivot_index
+      |                                 1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:33:2:
+
+   33 | ```
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:10:8:
+
+   10 |     do i = 1, n
+      |        1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:18:12:
+
+   18 |         do j = 1, i - 1
+      |            1
+Error: Symbol ‘j’ at (1) has no IMPLICIT type
+temp.f95:16:16:
+
+   16 |         left_sum = 0
+      |                1
+Error: Symbol ‘left_sum’ at (1) has no IMPLICIT type
+temp.f95:8:13:
+
+    8 |     read *, n
+      |             1
+Error: Symbol ‘n’ at (1) has no IMPLICIT type
+temp.f95:17:17:
+
+   17 |         right_sum = 0
+      |                 1
+Error: Symbol ‘right_sum’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def pivotIndex(nums):
+    total_sum = sum(nums)
+    left_sum = 0
+    for i, num in enumerate(nums):
+        if left_sum == total_sum - left_sum - num:
+            return i
+        left_sum += num
+    return -1
+</code></pre>
+<pre><code>1. First, find the total sum of the array.
+</code></pre>
+<ol>
+<li>Iterate through the array, maintaining a running sum of the elements to the left of the current index.</li>
+<li>For each index, check if the left sum is equal to the total sum minus the left sum and the value at the current index.</li>
+<li>If such equality is found, return the index as the pivot index. If not found, return -1.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int pivotIndex(vector&lt;int&gt;&amp; nums) {
+    int total_sum = 0, left_sum = 0;
+    for (int num : nums)
+        total_sum += num;
+    for (int i = 0; i &lt; nums.size(); ++i) {
+        if (left_sum == total_sum - left_sum - nums[i])
+            return i;
+        left_sum += nums[i];
+    }
+    return -1;
+}
+</code></pre>
+<pre><code>1. First, find the total sum of the array.
+</code></pre>
+<ol>
+<li>Iterate through the array, maintaining a running sum of the elements to the left of the current index.</li>
+<li>For each index, check if the left sum is equal to the total sum minus the left sum and the value at the current index.</li>
+<li>If such equality is found, return the index as the pivot index. If not found, return -1.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

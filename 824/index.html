@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Goat Latin</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/821/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/830/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>sentence</code> that consist of words separated by spaces. Each word consists of lowercase and uppercase letters only.</p>
+<p>We would like to convert the sentence to "Goat Latin " (a made-up language similar to Pig Latin.) The rules of Goat Latin are as follows:</p>
+<ul>
+<li>If a word begins with a vowel (<code>'a'</code>, <code>'e'</code>, <code>'i'</code>, <code>'o'</code>, or <code>'u'</code>), append <code>"ma "</code> to the end of the word.<ul>
+<li>For example, the word <code>"apple "</code> becomes <code>"applema "</code>.</li>
+</ul>
+</li>
+<li>If a word begins with a consonant (i.e., not a vowel), remove the first letter and append it to the end, then add <code>"ma "</code>.<ul>
+<li>For example, the word <code>"goat "</code> becomes <code>"oatgma "</code>.</li>
+</ul>
+</li>
+<li>Add one letter <code>'a'</code> to the end of each word per its word index in the sentence, starting with <code>1</code>.<ul>
+<li>For example, the first word gets <code>"a "</code> added to the end, the second word gets <code>"aa "</code> added to the end, and so on.</li>
+</ul>
+</li>
+</ul>
+<p>Return <em>the final sentence representing the conversion from sentence to Goat Latin</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> sentence = "I speak Goat Latin"
+<strong>Output:</strong> "Imaa peaksmaaa oatGmaaaa atinLmaaaaa"</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> sentence = "The quick brown fox jumped over the lazy dog"
+<strong>Output:</strong> "heTmaa uickqmaaa rownbmaaaa oxfmaaaaa umpedjmaaaaaa overmaaaaaaa hetmaaaaaaaa azylmaaaaaaaaa ogdmaaaaaaaaaa"</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= sentence.length &lt;= 150</code></li>
+<li><code>sentence</code> consists of English letters and spaces.</li>
+<li><code>sentence</code> has no leading or trailing spaces.</li>
+<li>All the words in <code>sentence</code> are separated by a single space.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/goat-latin/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: sentence
+    integer :: i
+
+    ! Example 1
+    sentence = "I speak Goat Latin"
+    print '(A)', goat_latin(sentence)
+
+    ! Example 2
+    sentence = "The quick brown fox jumped over the lazy dog"
+    print '(A)', goat_latin(sentence)
+
+contains
+
+    function goat_latin(sentence) result(result_sentence)
+        implicit none
+        character(len=*), intent(in) :: sentence
+        character(len=:), allocatable :: result_sentence
+        logical :: is_vowel
+        integer :: i
+
+        allocate(character(len=len(sentence)+3) :: result_sentence)
+
+        do i = 1, size(sentence)
+            is_vowel = any(sentence(i:i) == ['a', 'e', 'i', 'o', 'u'])
+            if (is_vowel) then
+                result_sentence = trim(result_sentence) // sentence(i:i) // "ma "
+            else
+                result_sentence = trim(result_sentence) // sentence(i+1:) // sentence(i:i) // "ma "
+            end if
+            if (i < size(sentence)) then
+                result_sentence = trim(result_sentence) // "a "
+            end if
+        end do
+    end function goat_latin
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:33:25:
+
+   33 |             if (i < size(sentence)) then
+      |                         1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+temp.f95:26:23:
+
+   26 |         do i = 1, size(sentence)
+      |                       1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: i, j, k, l, m
+character(len=150) :: sentence, word, new_word
+
+! Read input sentence
+read(*,*) sentence
+
+! Initialize variables
+i = 1
+j = 1
+k = 1
+l = 1
+m = 1
+
+! Loop through each word in the sentence
+do while (sentence(i:i) /= ' ')
+    ! Get the current word
+    word = sentence(j:l)
+
+    ! Check if the word starts with a vowel
+    if (index('aeiou', word(1:1)) /= 0) then
+        ! Append "ma " to the end of the word
+        new_word = word // 'ma '
+    else
+        ! Remove the first letter and append it to the end
+        new_word = word(2:) // word(1:1) // 'ma '
+    end if
+
+    ! Add the letter 'a' to the end of the word
+    new_word = new_word // 'a'
+
+    ! Increment variables
+    i = i + l
+    j = j + l
+    k = k + l
+    l = l + l
+    m = m + 1
+
+    ! Print the new word
+    write(*,*) new_word
+
+    ! Check if we are at the end of the sentence
+    if (sentence(i:i) == ' ') then
+        exit
+    end if
+
+    ! Increment variables
+    i = i + 1
+    j = j + 1
+    k = k + 1
+    l = l + 1
+    m = m + 1
+end do
+
+end [FORTRAN]
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:55:3:
+
+   55 | end [FORTRAN]
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def number_of_lines(widths, s):
+    lines = 1
+    current_pixel = 0
+    for c in s:
+        letter_pixels = widths[ord(c) - ord('a')]
+        if current_pixel + letter_pixels &gt; 100:
+            lines += 1
+            current_pixel = 0
+        current_pixel += letter_pixels
+    return [lines, current_pixel]
+</code></pre>
+<pre><code>The algorithm starts by initializing two variables, `lines` and `currentPixel`. `lines` denotes the number of lines it has taken so far to type out the string `s`, and `currentPixel` stores the width of the characters typed on the current line.
+</code></pre>
+<p>The algorithm iterates through each character <code>c</code> in the input string <code>s</code>. For each character, it calculates its width in pixels by using its respective entry in the <code>widths</code> array. If the addition of the width of the character to the <code>currentPixel</code> would cause it go over 100 pixels, it increases the line count by 1, resets the <code>currentPixel</code> to 0, and continues processing the rest of the string <code>s</code>. Otherwise, add the character width to the <code>currentPixel</code>.</p>
+<p>Finally, when the loop finishes iterating all characters in the string <code>s</code>, the algorithm returns the <code>lines</code> and <code>currentPixel</code> as a result array of length 2.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+std::vector&lt;int&gt; numberOfLines(std::vector&lt;int&gt;&amp; widths, std::string s) {
+    int lines = 1;
+    int currentPixel = 0;
+    for (char c : s) {
+        int letterPixels = widths[c - 'a'];
+        if (currentPixel + letterPixels &gt; 100) {
+            lines++;
+            currentPixel = 0;
+        }
+        currentPixel += letterPixels;
+    }
+    return {lines, currentPixel};
+}
+</code></pre>
+<pre><code>The algorithm starts by initializing two variables, `lines` and `currentPixel`. `lines` denotes the number of lines it has taken so far to type out the string `s`, and `currentPixel` stores the width of the characters typed on the current line.
+</code></pre>
+<p>The algorithm iterates through each character <code>c</code> in the input string <code>s</code>. For each character, it calculates its width in pixels by using its respective entry in the <code>widths</code> array. If the addition of the width of the character to the <code>currentPixel</code> would cause it go over 100 pixels, it increases the line count by 1, resets the <code>currentPixel</code> to 0, and continues processing the rest of the string <code>s</code>. Otherwise, add the character width to the <code>currentPixel</code>.</p>
+<p>Finally, when the loop finishes iterating all characters in the string <code>s</code>, the algorithm returns the <code>lines</code> and <code>currentPixel</code> as a result array of length 2.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

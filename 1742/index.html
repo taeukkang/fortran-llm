@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Maximum Number of Balls in a Box</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1736/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1748/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are working in a ball factory where you have <code>n</code> balls numbered from <code>lowLimit</code> up to <code>highLimit</code> <strong>inclusive</strong> (i.e., <code>n == highLimit - lowLimit + 1</code>), and an infinite number of boxes numbered from <code>1</code> to <code>infinity</code>.</p>
+<p>Your job at this factory is to put each ball in the box with a number equal to the sum of digits of the ball's number. For example, the ball number <code>321</code> will be put in the box number <code>3 + 2 + 1 = 6</code> and the ball number <code>10</code> will be put in the box number <code>1 + 0 = 1</code>.</p>
+<p>Given two integers <code>lowLimit</code> and <code>highLimit</code>, return <em>the number of balls in the box with the most balls.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> lowLimit = 1, highLimit = 10
+<strong>Output:</strong> 2
+<strong>Explanation:</strong>
+Box Number:  1 2 3 4 5 6 7 8 9 10 11 ...
+Ball Count:  2 1 1 1 1 1 1 1 1 0  0  ...
+Box 1 has the most number of balls with 2 balls.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> lowLimit = 5, highLimit = 15
+<strong>Output:</strong> 2
+<strong>Explanation:</strong>
+Box Number:  1 2 3 4 5 6 7 8 9 10 11 ...
+Ball Count:  1 1 1 1 2 2 1 1 1 0  0  ...
+Boxes 5 and 6 have the most number of balls with 2 balls in each.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> lowLimit = 19, highLimit = 28
+<strong>Output:</strong> 2
+<strong>Explanation:</strong>
+Box Number:  1 2 3 4 5 6 7 8 9 10 11 12 ...
+Ball Count:  0 1 1 1 1 1 1 1 1 2  0  0  ...
+Box 10 has the most number of balls with 2 balls.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= lowLimit &lt;= highLimit &lt;= 105</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/maximum-number-of-balls-in-a-box/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n, lowLimit, highLimit, i, j, k, maxCount, count
+
+    ! read input
+    read(*,*) n
+    read(*,*) lowLimit
+    read(*,*) highLimit
+
+    ! initialize variables
+    maxCount = 0
+
+    ! loop over all possible box numbers
+    do i = 1, infinity
+        ! reset count for current box
+        count = 0
+
+        ! loop over all balls
+        do j = lowLimit, highLimit
+            ! check if ball belongs to current box
+            if (sumDigits(j) == i) then
+                ! increment count for current box
+                count = count + 1
+            end if
+        end do
+
+        ! check if current box has more balls than previous one
+        if (count > maxCount) then
+            maxCount = count
+        end if
+    end do
+
+    ! print result
+    write (*,*) maxCount
+
+contains
+
+    function sumDigits(n) result(sum)
+        implicit none
+        integer, intent(in) :: n
+        integer :: sum
+        integer :: digit
+
+        sum = 0
+        do while (n /= 0)
+            digit = mod(n, 10)
+            sum = sum + digit
+            n = n / 10
+        end do
+    end function sumDigits
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:22:
+
+   15 |     do i = 1, infinity
+      |                      1
+Error: Symbol ‘infinity’ at (1) has no IMPLICIT type
+temp.f95:49:12:
+
+   49 |             n = n / 10
+      |            1
+Error: Dummy argument ‘n’ with INTENT(IN) in variable definition context (assignment) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! This is a Fortran code to solve the problem
+
+program ball_factory
+    implicit none
+    integer :: lowLimit, highLimit, n, i, j, k, max_balls, box_count
+    integer, dimension(:), allocatable :: balls
+
+    ! Read the input
+    read(*,*) lowLimit
+    read(*,*) highLimit
+
+    ! Calculate the number of balls
+    n = highLimit - lowLimit + 1
+
+    ! Allocate memory for the balls
+    allocate(balls(n))
+
+    ! Initialize the balls
+    do i = 1, n
+        balls(i) = i
+    end do
+
+    ! Sort the balls based on the sum of digits
+    call sort(balls, n)
+
+    ! Initialize the box count
+    box_count = 0
+
+    ! Loop through the balls and count the number of balls in each box
+    do i = 1, n
+        k = 0
+        do j = 1, n
+            if (balls(j) == i) then
+                k = k + 1
+            end if
+        end do
+        if (k > box_count) then
+            box_count = k
+        end if
+    end do
+
+    ! Print the result
+    write(*,*) box_count
+
+    ! Deallocate the memory
+    deallocate(balls)
+end program ball_factory
+
+! This is a subroutine to sort the balls based on the sum of digits
+subroutine sort(balls, n)
+    implicit none
+    integer, dimension(n), intent(inout) :: balls
+    integer, intent(in) :: n
+    integer :: i, j, temp
+
+    ! Bubble sort algorithm
+    do i = 1, n - 1
+        do j = 1, n - i
+            if (sum_digits(balls(j)) > sum_digits(balls(j + 1))) then
+                temp = balls(j)
+                balls(j) = balls(j + 1)
+                balls(j + 1) = temp
+            end if
+        end do
+    end do
+
+contains
+
+    ! This is a function to calculate the sum of digits of a number
+    function sum_digits(n) result(sum)
+        implicit none
+        integer, intent(in) :: n
+        integer :: sum, digit
+
+        sum = 0
+        do while (n > 0)
+            digit = mod(n, 10)
+            sum = sum + digit
+            n = n / 10
+        end do
+    end function sum_digits
+end subroutine sort
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:79:12:
+
+   79 |             n = n / 10
+      |            1
+Error: Dummy argument ‘n’ with INTENT(IN) in variable definition context (assignment) at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def maxWidthOfVerticalArea(points):
+    xs = sorted([point[0] for point in points])
+    max_width = 0
+    for i in range(1, len(xs)):
+        max_width = max(max_width, xs[i] - xs[i - 1])
+    return max_width
+</code></pre>
+<pre><code>1. Obtain all the x-coordinates from the given points, and store them in a new list (`xs`).
+</code></pre>
+<ol>
+<li>Sort the x-coordinates in ascending order.</li>
+<li>Initialize the maximum width (<code>max_width</code>) to be 0.</li>
+<li>Iterate through the sorted x coordinates:</li>
+<li>For each consecutive pair of x-coordinates, calculate their difference.</li>
+<li>Update the <code>max_width</code> with the maximum value between the current <code>max_width</code> and the difference.</li>
+<li>Return the <code>max_width</code>.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int maxWidthOfVerticalArea(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; points) {
+    std::vector&lt;int&gt; xs;
+    for (const auto&amp; point : points) {
+        xs.push_back(point[0]);
+    }
+    std::sort(xs.begin(), xs.end());
+
+    int max_width = 0;
+    for (size_t i = 1; i &lt; xs.size(); ++i) {
+        max_width = std::max(max_width, xs[i] - xs[i - 1]);
+    }
+
+    return max_width;
+}
+</code></pre>
+<pre><code>1. Obtain all the x-coordinates from the given points, and store them in a new list (`xs`).
+</code></pre>
+<ol>
+<li>Sort the x-coordinates in ascending order.</li>
+<li>Initialize the maximum width (<code>max_width</code>) to be 0.</li>
+<li>Iterate through the sorted x coordinates:</li>
+<li>For each consecutive pair of x-coordinates, calculate their difference.</li>
+<li>Update the <code>max_width</code> with the maximum value between the current <code>max_width</code> and the difference.</li>
+<li>Return the <code>max_width</code>.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

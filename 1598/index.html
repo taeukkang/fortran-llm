@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Crawler Log Folder</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1592/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1603/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>The Leetcode file system keeps a log each time some user performs a <em>change folder</em> operation.</p>
+<p>The operations are described below:</p>
+<ul>
+<li><code>"../ "</code> : Move to the parent folder of the current folder. (If you are already in the main folder, <strong>remain in the same folder</strong>).</li>
+<li><code>"./ "</code> : Remain in the same folder.</li>
+<li><code>"x/ "</code> : Move to the child folder named <code>x</code> (This folder is <strong>guaranteed to always exist</strong>).</li>
+</ul>
+<p>You are given a list of strings <code>logs</code> where <code>logs[i]</code> is the operation performed by the user at the <code>ith</code> step.</p>
+<p>The file system starts in the main folder, then the operations in <code>logs</code> are performed.</p>
+<p>Return <em>the minimum number of operations needed to go back to the main folder after the change folder operations.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> logs = [ "d1/ ", "d2/ ", "../ ", "d21/ ", "./ "]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> Use this change folder operation  "../ " 2 times and go back to the main folder.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> logs = [ "d1/ ", "d2/ ", "./ ", "d3/ ", "../ ", "d31/ "]
+<strong>Output:</strong> 3</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> logs = [ "d1/ ", "../ ", "../ ", "../ "]
+<strong>Output:</strong> 0</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= logs.length &lt;= 103</code></li>
+<li><code>2 &lt;= logs[i].length &lt;= 10</code></li>
+<li><code>logs[i]</code> contains lowercase English letters, digits, <code>'.'</code>, and <code>'/'</code>.</li>
+<li><code>logs[i]</code> follows the format described in the statement.</li>
+<li>Folder names consist of lowercase English letters and digits.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/crawler-log-folder/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, n
+    character(len=10) :: logs(100)
+
+    call get_args(n, logs)
+
+    do i = 1, n
+        write (*, '(A)') trim(logs(i))
+    end do
+
+contains
+
+    subroutine get_args(n, logs)
+        implicit none
+        integer, intent(out) :: n
+        character(len=10), intent(out) :: logs(:)
+        integer :: i
+
+        ! read input from stdin
+        read *, n
+        do i = 1, n
+            read *, logs(i)
+        end do
+    end subroutine get_args
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 22 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7aa5c98dd960 in ???
+#1  0x7aa5c98de4d9 in ???
+#2  0x7aa5c9b3217b in ???
+#3  0x7aa5c9b2b684 in ???
+#4  0x7aa5c9b2c2aa in ???
+#5  0x56dd5d2432e9 in get_args.0
+#6  0x56dd5d243469 in MAIN__
+#7  0x56dd5d2435ae in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!include "stdio.h"
+
+program leetcode_1236_solution
+
+implicit none
+
+integer :: i, j, k, n, m, count
+character(len=10) :: logs(100000)
+character(len=10) :: folder
+
+! read input
+read(*,*) n
+do i=1,n
+    read(*,*) logs(i)
+end do
+
+! initialize variables
+count = 0
+folder = "main"
+
+! process input
+do i=1,n
+    select case (logs(i))
+        case ("../ ")
+            ! move to parent folder
+            if (folder /= "main") then
+                folder = folder(1:len_trim(folder)-1)
+            end if
+        case ("./ ")
+            ! remain in current folder
+        case default
+            ! move to child folder
+            folder = folder // logs(i)(1:len_trim(logs(i)))
+    end select
+    count = count + 1
+end do
+
+! print output
+write(*,*) count
+
+end program leetcode_1236_solution
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 12 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x79b4be4bf960 in ???
+#1  0x79b4be4c04d9 in ???
+#2  0x79b4be71417b in ???
+#3  0x79b4be70d684 in ???
+#4  0x79b4be70e2aa in ???
+#5  0x593f4cbe229e in MAIN__
+#6  0x593f4cbe2636 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minOperations(logs):
+    depth = 0
+    for log in logs:
+        if log == &quot;../&quot;:
+            depth = max(0, depth - 1)
+        elif log != &quot;./&quot;:
+            depth += 1
+    return depth
+</code></pre>
+<p>The algorithm iterates through each log entry, incrementing the <code>depth</code> variable whenever it encounters a non-relative move (<code>"x/"</code>). If it encounters a move to the parent directory (<code>"../"</code>) it decreases the <code>depth</code> variable by 1, but only if the depth is greater than 0 to make sure we don't go beyond the main folder. It ignores relative moves (<code>"./"</code>). Finally, it returns the number of operations needed to go back to the main folder, which is the final value of <code>depth</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minOperations(vector&lt;string&gt;&amp; logs) {
+    int depth = 0;
+    for (const string&amp; log : logs) {
+        if (log == &quot;../&quot;) {
+            depth = max(0, depth - 1);
+        } else if (log != &quot;./&quot;) {
+            depth += 1;
+        }
+    }
+    return depth;
+}
+</code></pre>
+<p>The algorithm iterates through each log entry, incrementing the <code>depth</code> variable whenever it encounters a non-relative move (<code>"x/"</code>). If it encounters a move to the parent directory (<code>"../"</code>) it decreases the <code>depth</code> variable by 1, but only if the depth is greater than 0 to make sure we don't go beyond the main folder. It ignores relative moves (<code>"./"</code>). Finally, it returns the number of operations needed to go back to the main folder, which is the final value of <code>depth</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

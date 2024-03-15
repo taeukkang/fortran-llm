@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find Common Characters</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/999/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1005/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string array <code>words</code>, return <em>an array of all characters that show up in all strings within the</em> <code>words</code> <em>(including duplicates)</em>. You may return the answer in <strong>any order</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> words = ["bella","label","roller"]
+<strong>Output:</strong> ["e","l","l"]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> words = ["cool","lock","cook"]
+<strong>Output:</strong> ["c","o"]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= words.length &lt;= 100</code></li>
+<li><code>1 &lt;= words[i].length &lt;= 100</code></li>
+<li><code>words[i]</code> consists of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-common-characters/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: words(:)
+    character(len=:), allocatable :: chars(:)
+    integer :: i, j, k
+
+    ! Example 1
+    words = ["bella", "label", "roller"]
+    call getChars(words, chars)
+    print "(A)", chars
+
+    ! Example 2
+    words = ["cool", "lock", "cook"]
+    call getChars(words, chars)
+    print "(A)", chars
+
+contains
+
+    subroutine getChars(words, chars)
+        implicit none
+        character(len=*), intent(in) :: words(:)
+        character(len=*), intent(out) :: chars(:)
+        integer :: n, m
+        logical :: found(26)
+
+        n = size(words)
+        m = 0
+        do i = 1, n
+            found = .false.
+            do j = 1, n
+                if (j /= i) then
+                    do k = 1, len(words(j))
+                        if (.not. found(ichar(words(j)(k:k)))) then
+                            found(ichar(words(j)(k:k))) = .true.
+                        end if
+                    end do
+                end if
+            end do
+            do k = 1, 26
+                if (found(k)) then
+                    m = m + 1
+                end if
+            end do
+        end do
+
+        allocate(chars(m))
+        m = 0
+        do i = 1, n
+            do j = 1, len(words(i))
+                if (.not. found(ichar(words(i)(j:j)))) then
+                    found(ichar(words(i)(j:j))) = .true.
+                    m = m + 1
+                    chars(m) = words(i)(j:j)
+                end if
+            end do
+        end do
+
+    end subroutine getChars
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:47:17:
+
+   47 |         allocate(chars(m))
+      |                 1
+Error: Allocate-object at (1) must be ALLOCATABLE or a POINTER
+temp.f95:9:30:
+
+    9 |     words = ["bella", "label", "roller"]
+      |                              1
+Error: Different CHARACTER lengths (5/6) in array constructor at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare the input and output variables
+integer, parameter :: num_words = 100
+integer, parameter :: max_word_length = 100
+character(len=max_word_length), dimension(num_words) :: words
+character, dimension(max_word_length) :: common_chars
+
+! Declare the local variables
+integer :: i, j, k
+integer :: num_common_chars
+
+! Initialize the common characters array
+common_chars = ""
+
+! Loop through each word in the input array
+do i = 1, num_words
+    ! Loop through each character in the current word
+    do j = 1, len_trim(words(i))
+        ! Check if the current character is already in the common characters array
+        do k = 1, num_common_chars
+            if (common_chars(k) == words(i)(j:j)) exit
+        end do
+        
+        ! If the current character is not in the common characters array, add it
+        if (k == num_common_chars + 1) then
+            num_common_chars = num_common_chars + 1
+            common_chars(num_common_chars) = words(i)(j:j)
+        end if
+    end do
+end do
+
+! Sort the common characters array
+call sort(common_chars)
+
+! Print the common characters array
+do i = 1, num_common_chars
+    write (*,*) common_chars(i)
+end do
+
+end
+
+! Sort the input array of characters
+subroutine sort(array)
+implicit none
+
+! Declare the input and output variables
+character, dimension(:) :: array
+
+! Declare the local variables
+integer :: i, j
+character :: temp
+
+! Loop through each element in the array
+do i = 1, size(array) - 1
+    ! Loop through each element after the current one
+    do j = i + 1, size(array)
+        ! Check if the current element is greater than the next element
+        if (array(i) > array(j)) then
+            ! Swap the elements
+            temp = array(i)
+            array(i) = array(j)
+            array(j) = temp
+        end if
+    end do
+end do
+
+end subroutine sort
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:32:9:
+
+   32 | call sort(common_chars)
+      |         1
+Error: Explicit interface required for ‘sort’ at (1): assumed-shape argument
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-javascript">function maxWidthRamp(nums) {
+    const indices = [...Array(nums.length).keys()].sort((i, j) =&gt; {
+        return nums[i] === nums[j] ? i - j : nums[i] - nums[j];
+    });
+
+    let maxWidth = 0;
+    let minIndex = Infinity;
+    for (const index of indices) {
+        maxWidth = Math.max(maxWidth, index - minIndex);
+        minIndex = Math.min(minIndex, index);
+    }
+
+    return maxWidth;
+}
+</code></pre>
+<ol>
+<li>First, create an array of indices of the input array.</li>
+<li>Sort the indices based on its corresponding value in the input array. In case of equal values, sort based on the index itself.</li>
+<li>Initialize maxWidth (maximum width of ramp) with 0 and minIndex (smallest index encountered so far) with maximum integer value.</li>
+<li>Iterate through the sorted indices array. Each iteration, calculate the width between the current index and minIndex, and update maxWidth if the calculated width is greater than the current max width. Update minIndex with the smallest value between the current index and minIndex.</li>
+<li>At the end of the iteration, maxWidth will hold the maximum width of a ramp in the nums array, and this value is returned.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int maxWidthRamp(std::vector&lt;int&gt;&amp; nums) {
+    std::vector&lt;int&gt; indices(nums.size());
+    for (int i = 0; i &lt; nums.size(); ++i) {
+        indices[i] = i;
+    }
+
+    std::sort(indices.begin(), indices.end(), [&amp;](int i, int j) {
+        return nums[i] == nums[j] ? i &lt; j : nums[i] &lt; nums[j];
+    });
+
+    int maxWidth = 0;
+    int minIndex = std::numeric_limits&lt;int&gt;::max();
+    for (int index : indices) {
+        maxWidth = std::max(maxWidth, index - minIndex);
+        minIndex = std::min(minIndex, index);
+    }
+
+    return maxWidth;
+}
+</code></pre>
+<ol>
+<li>First, create an array of indices of the input array.</li>
+<li>Sort the indices based on its corresponding value in the input array. In case of equal values, sort based on the index itself.</li>
+<li>Initialize maxWidth (maximum width of ramp) with 0 and minIndex (smallest index encountered so far) with maximum integer value.</li>
+<li>Iterate through the sorted indices array. Each iteration, calculate the width between the current index and minIndex, and update maxWidth if the calculated width is greater than the current max width. Update minIndex with the smallest value between the current index and minIndex.</li>
+<li>At the end of the iteration, maxWidth will hold the maximum width of a ramp in the nums array, and this value is returned.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

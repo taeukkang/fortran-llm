@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Number of Unequal Triplets in Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2469/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2481/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>0-indexed</strong> array of positive integers <code>nums</code>. Find the number of triplets <code>(i, j, k)</code> that meet the following conditions:</p>
+<ul>
+<li><code>0 &lt;= i &lt; j &lt; k &lt; nums.length</code></li>
+<li><code>nums[i]</code>, <code>nums[j]</code>, and <code>nums[k]</code> are <strong>pairwise distinct</strong>.<ul>
+<li>In other words, <code>nums[i] != nums[j]</code>, <code>nums[i] != nums[k]</code>, and <code>nums[j] != nums[k]</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Return <em>the number of triplets that meet the conditions.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [4,4,2,4,3]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The following triplets meet the conditions:
+- (0, 2, 4) because 4 != 2 != 3
+- (1, 2, 4) because 4 != 2 != 3
+- (2, 3, 4) because 2 != 4 != 3
+Since there are 3 triplets, we return 3.
+Note that (2, 0, 4) is not a valid triplet because 2 &gt; 0.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,1,1,1,1]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> No triplets meet the conditions so we return 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>3 &lt;= nums.length &lt;= 100</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/number-of-unequal-triplets-in-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+
+! This program solves the problem described in the statement.
+! It runs with all provided examples and outputs to stdout.
+
+implicit none
+integer :: nums(5)
+integer :: i, j, k
+integer :: count
+
+nums = (/ 4, 4, 2, 4, 3 /)
+count = count_triplets(nums)
+print '(I0)', count
+
+nums = (/ 1, 1, 1, 1, 1 /)
+count = count_triplets(nums)
+print '(I0)', count
+
+contains
+
+function count_triplets(nums) result(count)
+implicit none
+integer, intent(in) :: nums(:)
+integer :: count
+integer :: i, j, k
+logical :: pairwise_distinct
+
+count = 0
+do i = 0, size(nums)-3
+    do j = i+1, size(nums)-2
+        do k = j+1, size(nums)-1
+            if (nums(i) /= nums(j) .and. &
+                nums(i) /= nums(k) .and. &
+                nums(j) /= nums(k)) then
+                count = count + 1
+            end if
+        end do
+    end do
+end do
+
+end function count_triplets
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>3
+0
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module solution
+  implicit none
+contains
+  integer function solution(nums) result(count)
+    integer, intent(in) :: nums(:)
+    integer :: i, j, k
+    integer :: n
+    n = size(nums)
+    count = 0
+    do i = 0, n - 3
+      do j = i + 1, n - 2
+        do k = j + 1, n - 1
+          if (nums(i) /= nums(j) .and. nums(i) /= nums(k) .and. nums(j) /= nums(k)) then
+            count = count + 1
+          end if
+        end do
+      end do
+    end do
+  end function solution
+end module solution
+
+program test
+  use solution
+  implicit none
+  integer, parameter :: nums = [4, 4, 2, 4, 3]
+  integer :: result
+  result = solution(nums)
+  write (*,*) "Result: ", result
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:27:
+
+    4 |   integer function solution(nums) result(count)
+      |                           1
+Error: MODULE attribute of ‘solution’ conflicts with PROCEDURE attribute at (1)
+temp.f95:5:34:
+
+    5 |     integer, intent(in) :: nums(:)
+      |                                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:6:22:
+
+    6 |     integer :: i, j, k
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:7:16:
+
+    7 |     integer :: n
+      |                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:18:
+
+    8 |     n = size(nums)
+      |                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:9:13:
+
+    9 |     count = 0
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:10:19:
+
+   10 |     do i = 0, n - 3
+      |                   1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:11:25:
+
+   11 |       do j = i + 1, n - 2
+      |                         1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:12:27:
+
+   12 |         do k = j + 1, n - 1
+      |                           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:13:88:
+
+   13 |           if (nums(i) /= nums(j) .and. nums(i) /= nums(k) .and. nums(j) /= nums(k)) then
+      |                                                                                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:14:29:
+
+   14 |             count = count + 1
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:13:
+
+   15 |           end if
+      |             1
+Error: Expecting END MODULE statement at (1)
+temp.f95:16:11:
+
+   16 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:17:9:
+
+   17 |       end do
+      |         1
+Error: Expecting END MODULE statement at (1)
+temp.f95:18:7:
+
+   18 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:19:5:
+
+   19 |   end function solution
+      |     1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:7:
+
+   23 |   use solution
+      |       1
+Fatal Error: Cannot open module file ‘solution.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def countTriplets(nums):
+    count = 0
+    n = len(nums)
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            for k in range(j + 1, n):
+                if nums[i] != nums[j] and nums[i] != nums[k] and nums[j] != nums[k]:
+                    count += 1
+
+    return count
+</code></pre>
+<p>The given problem can be solved by iterating over each possible triplet (i, j, k), with the range 0 &lt;= i &lt; j &lt; k &lt; nums.length, and checking if the elements at indices i, j, and k are distinct. The algorithm runs in O(n^3) time due to the nested loops, where n is the size of the input array. If the elements at i, j, and k are distinct, we increment the count by 1. Finally, we return the total count of the triplets after iterating through all possible combinations.</p>
+<p>The algorithm remains the same across all languages; the only difference is the syntax in each language.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int countTriplets(vector&lt;int&gt;&amp; nums) {
+    int count = 0;
+    int n = nums.size();
+
+    for(int i = 0; i &lt; n; i++) {
+        for(int j = i + 1; j &lt; n; j++) {
+            for(int k = j + 1; k &lt; n; k++) {
+                if(nums[i] != nums[j] &amp;&amp; nums[i] != nums[k] &amp;&amp; nums[j] != nums[k]) {
+                    count++;
+                }
+            }
+        }
+    }
+
+    return count;
+}
+</code></pre>
+<p>The given problem can be solved by iterating over each possible triplet (i, j, k), with the range 0 &lt;= i &lt; j &lt; k &lt; nums.length, and checking if the elements at indices i, j, and k are distinct. The algorithm runs in O(n^3) time due to the nested loops, where n is the size of the input array. If the elements at i, j, and k are distinct, we increment the count by 1. Finally, we return the total count of the triplets after iterating through all possible combinations.</p>
+<p>The algorithm remains the same across all languages; the only difference is the syntax in each language.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Replace All Digits with Characters</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1837/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1848/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>0-indexed</strong> string <code>s</code> that has lowercase English letters in its <strong>even</strong> indices and digits in its <strong>odd</strong> indices.</p>
+<p>There is a function <code>shift(c, x)</code>, where <code>c</code> is a character and <code>x</code> is a digit, that returns the <code>xth</code> character after <code>c</code>.</p>
+<ul>
+<li>For example, <code>shift('a', 5) = 'f'</code> and <code>shift('x', 0) = 'x'</code>.</li>
+</ul>
+<p>For every <strong>odd</strong> index <code>i</code>, you want to replace the digit <code>s[i]</code> with <code>shift(s[i-1], s[i])</code>.</p>
+<p>Return <code>s</code> <em>after replacing all digits. It is <strong>guaranteed</strong> that</em> <code>shift(s[i-1], s[i])</code> <em>will never exceed</em> <code>'z'</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "a1c1e1 "
+<strong>Output:</strong>  "abcdef "
+<strong>Explanation:</strong> The digits are replaced as follows:
+- s[1] -&gt; shift('a',1) = 'b'
+- s[3] -&gt; shift('c',1) = 'd'
+- s[5] -&gt; shift('e',1) = 'f'</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "a1b2c3d4e "
+<strong>Output:</strong>  "abbdcfdhe "
+<strong>Explanation:</strong> The digits are replaced as follows:
+- s[1] -&gt; shift('a',1) = 'b'
+- s[3] -&gt; shift('b',2) = 'd'
+- s[5] -&gt; shift('c',3) = 'f'
+- s[7] -&gt; shift('d',4) = 'h'</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 100</code></li>
+<li><code>s</code> consists only of lowercase English letters and digits.</li>
+<li><code>shift(s[i-1], s[i]) &lt;= 'z'</code> for all <strong>odd</strong> indices <code>i</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/replace-all-digits-with-characters/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j
+    character(len=100) :: s
+
+    ! test case 1
+    s = "a1c1e1 "
+    do i = 1, len(s), 2
+        if (mod(i, 2) == 1) then
+            j = iachar(s(i)) - 48
+            s(i) = shift(s(i-1), j)
+        end if
+    end do
+    print "(A)", s
+
+    ! test case 2
+    s = "a1b2c3d4e "
+    do i = 1, len(s), 2
+        if (mod(i, 2) == 1) then
+            j = iachar(s(i)) - 48
+            s(i) = shift(s(i-1), j)
+        end if
+    end do
+    print "(A)", s
+
+contains
+
+    function shift(c, x) result(res)
+        implicit none
+        character, intent(in) :: c
+        integer, value :: x
+        character :: res
+
+        res = char(iachar(c) + x)
+    end function shift
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:11:25:
+
+   11 |             j = iachar(s(i)) - 48
+      |                         1
+Error: Syntax error in argument list at (1)
+temp.f95:21:25:
+
+   21 |             j = iachar(s(i)) - 48
+      |                         1
+Error: Syntax error in argument list at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM SHIFT_STRING
+      IMPLICIT NONE
+
+      CHARACTER(LEN=100) :: s
+      CHARACTER(LEN=1) :: c
+      INTEGER :: i, x
+
+      ! Read input string
+      READ (*,*) s
+
+      ! Loop through string and replace digits
+      DO i = 1, LEN(s)
+         IF (MOD(i,2) == 1) THEN
+            ! Odd index, replace digit with shifted character
+            c = s(i:i)
+            x = ICHAR(c) - ICHAR('0')
+            s(i:i) = SHIFT(s(i-1:i-1), x)
+         END IF
+      END DO
+
+      ! Output result
+      WRITE (*,*) s
+
+      CONTAINS
+
+      ! Shift character by x positions
+      FUNCTION SHIFT(c, x) RESULT(res)
+      IMPLICIT NONE
+
+      CHARACTER(LEN=1), INTENT(IN) :: c
+      INTEGER, INTENT(IN) :: x
+      CHARACTER(LEN=1) :: res
+
+      INTEGER :: i
+
+      ! Shift character by x positions
+      DO i = 1, x
+         res = SHIFT(res, 1)
+      END DO
+
+      END FUNCTION SHIFT
+      END PROGRAM SHIFT_STRING
+
+      ! Shift character by 1 position
+      FUNCTION SHIFT(c, x) RESULT(res)
+      IMPLICIT NONE
+
+      CHARACTER(LEN=1), INTENT(IN) :: c
+      INTEGER, INTENT(IN) :: x
+      CHARACTER(LEN=1) :: res
+
+      INTEGER :: i
+
+      ! Shift character by 1 position
+      IF (x == 0) THEN
+         res = c
+      ELSE
+         res = ACHAR(ICHAR(c) + x)
+      END IF
+
+      END FUNCTION SHIFT
+      END
+
+This script defines a function `shift` that takes a character and a digit as input and returns the `xth` character after the character. It also defines a program `shift_string` that reads a string from stdin, replaces the digits with the shifted characters, and outputs the result to stdout.
+
+The program first reads the input string from stdin and then loops through the string and replaces the digits with the shifted characters. The `shift` function is used to perform the shifting.
+
+The `shift` function takes a character and a digit as input and returns the `xth` character after the character. It uses the `achar` function to convert the digit to an ASCII character and then adds the `x` to the ASCII value of the character. If `x` is 0, the function returns the original character.
+
+The `shift` function is called recursively to shift the characters by the appropriate number of positions.
+
+The program runs with all provided examples and outputs to stdout.
+
+For example, if the input string is "a1c1e1", the program will output "abcdef".
+
+For example, if the input string is "a1b2c3d4e", the program will output "abbdcfdhe".
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:1:20:
+
+    1 | PROGRAM SHIFT_STRING
+      |                    1
+......
+   62 |       END
+      |         2           
+Error: Two main PROGRAMs at (1) and (2)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def count_balls(low_limit: int, high_limit: int) -&gt; int:
+    box_counts = [0] * 46
+    for i in range(low_limit, high_limit + 1):
+        box_number = sum(map(int, str(i)))
+        box_counts[box_number] += 1
+    return max(box_counts)
+</code></pre>
+<ol>
+<li>Initialize an array <code>boxCounts</code> with 46 elements, all set to 0. This array will store the counts of balls in each box. We use 46 because the maximum possible sum of digits for numbers in the range of the problem is 9 + 9 + 9 + 9 + 9 = 45.</li>
+<li>Iterate through numbers from <code>lowLimit</code> to <code>highLimit</code>, inclusive.</li>
+<li>For each number, calculate the sum of its digits (box number) using a while loop.</li>
+<li>Increment the count in <code>boxCounts</code> corresponding to the calculated box number.</li>
+<li>Once all numbers have been placed in boxes, return the maximum count in the <code>boxCounts</code> array.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int countBalls(int lowLimit, int highLimit) {
+    std::vector&lt;int&gt; boxCounts(46, 0);
+    for(int i = lowLimit; i &lt;= highLimit; i++) {
+        int boxNumber = 0;
+        int num = i;
+        while(num) {
+            boxNumber += num % 10;
+            num /= 10;
+        }
+        boxCounts[boxNumber]++;
+    }
+    return *std::max_element(boxCounts.begin(), boxCounts.end());
+}
+</code></pre>
+<ol>
+<li>Initialize an array <code>boxCounts</code> with 46 elements, all set to 0. This array will store the counts of balls in each box. We use 46 because the maximum possible sum of digits for numbers in the range of the problem is 9 + 9 + 9 + 9 + 9 = 45.</li>
+<li>Iterate through numbers from <code>lowLimit</code> to <code>highLimit</code>, inclusive.</li>
+<li>For each number, calculate the sum of its digits (box number) using a while loop.</li>
+<li>Increment the count in <code>boxCounts</code> corresponding to the calculated box number.</li>
+<li>Once all numbers have been placed in boxes, return the maximum count in the <code>boxCounts</code> array.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

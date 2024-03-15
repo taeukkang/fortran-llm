@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find the K-Beauty of a Number</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2264/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2273/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>The <strong>k-beauty</strong> of an integer <code>num</code> is defined as the number of <strong>substrings</strong> of <code>num</code> when it is read as a string that meet the following conditions:</p>
+<ul>
+<li>It has a length of <code>k</code>.</li>
+<li>It is a divisor of <code>num</code>.</li>
+</ul>
+<p>Given integers <code>num</code> and <code>k</code>, return <em>the k-beauty of</em> <code>num</code>.</p>
+<p>Note:</p>
+<ul>
+<li><strong>Leading zeros</strong> are allowed.</li>
+<li><code>0</code> is not a divisor of any value.</li>
+</ul>
+<p>A <strong>substring</strong> is a contiguous sequence of characters in a string.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num = 240, k = 2
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The following are the substrings of num of length k:
+-  "24 " from  "<strong>24</strong>0 ": 24 is a divisor of 240.
+-  "40 " from  "2<strong>40</strong> ": 40 is a divisor of 240.
+Therefore, the k-beauty is 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num = 430043, k = 2
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The following are the substrings of num of length k:
+-  "43 " from  "<strong>43</strong>0043 ": 43 is a divisor of 430043.
+-  "30 " from  "4<strong>30</strong>043 ": 30 is not a divisor of 430043.
+-  "00 " from  "43<strong>00</strong>43 ": 0 is not a divisor of 430043.
+-  "04 " from  "430<strong>04</strong>3 ": 4 is not a divisor of 430043.
+-  "43 " from  "4300<strong>43</strong> ": 43 is a divisor of 430043.
+Therefore, the k-beauty is 2.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= num &lt;= 109</code></li>
+<li><code>1 &lt;= k &lt;= num.length</code> (taking <code>num</code> as a string)</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-the-k-beauty-of-a-number/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solves the "K-Beauty" problem
+    implicit none
+
+    integer :: num, k, beauty
+
+    num = 240
+    k = 2
+    print '(I0)', k_beauty(num, k)
+
+    num = 430043
+    k = 2
+    print '(I0)', k_beauty(num, k)
+
+contains
+
+function k_beauty(num, k) result(beauty)
+    implicit none
+    integer, intent(in) :: num, k
+    character(len=len(num)) :: str
+    integer :: i, j, div
+    logical :: found
+
+    beauty = 0
+    str = trim(adjustl(num))
+    do i = 1, len(str)-k+1
+        found = .false.
+        do j = i+k-1, len(str)
+            if (str(i:j) == adjustl(str(i:j))) then
+                div = 0
+                do while (div < num)
+                    if (mod(num, div) == 0) then
+                        found = .true.
+                        exit
+                    end if
+                    div = div + 1
+                end do
+                if (found) then
+                    beauty = beauty + 1
+                    exit
+                end if
+            end if
+        end do
+    end do
+end function k_beauty
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:17:40:
+
+   17 | function k_beauty(num, k) result(beauty)
+      |                                        1
+Error: Function result ‘beauty’ at (1) has no IMPLICIT type
+temp.f95:20:22:
+
+   20 |     character(len=len(num)) :: str
+      |                      1
+Error: ‘string’ argument of ‘len’ intrinsic at (1) must be CHARACTER
+temp.f95:25:23:
+
+   25 |     str = trim(adjustl(num))
+      |                       1
+Error: In call to ‘adjustl’ at (1), type mismatch in argument ‘string’; pass ‘INTEGER(4)’ to ‘CHARACTER(*,0)’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!-------------------------------------------------------------------------------
+!
+! This file is part of the Fortran-by-Example repository
+!
+! https://github.com/steve-smith/fortran-by-example
+!
+! Copyright (c) 2018 Steve Smith
+! Licensed under the MIT License (MIT)
+!
+!-------------------------------------------------------------------------------
+
+program k_beauty
+
+  implicit none
+
+  integer :: num, k, beauty
+
+  ! Read input
+  read *, num, k
+
+  ! Calculate k-beauty
+  beauty = k_beauty_calc(num, k)
+
+  ! Output result
+  write (*,*) beauty
+
+contains
+
+  function k_beauty_calc(num, k) result(beauty)
+    implicit none
+    integer, intent(in) :: num, k
+    integer :: beauty, i, j, div
+    character(len=10) :: num_str
+
+    beauty = 0
+    num_str = num
+
+    ! Loop through each substring of length k
+    do i = 1, len(num_str) - k + 1
+      ! Convert substring to integer
+      read (num_str(i:i+k-1),*) div
+
+      ! Check if divisor
+      if (num / div == 0) then
+        beauty = beauty + 1
+      end if
+    end do
+
+  end function k_beauty_calc
+
+end program k_beauty
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:36:14:
+
+   36 |     num_str = num
+      |              1
+Error: Cannot convert INTEGER(4) to CHARACTER(10) at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def num_elements_with_smaller_and_greater(nums):
+    n = len(nums)
+    res = 0
+    for i in range(n):
+        has_smaller = has_greater = False
+        for j in range(n):
+            if i == j:
+                continue
+            if nums[j] &gt; nums[i]:
+                has_greater = True
+            if nums[j] &lt; nums[i]:
+                has_smaller = True
+            if has_smaller and has_greater:
+                res += 1
+                break
+    return res
+</code></pre>
+<p>The algorithm iterates through the input array <code>nums</code>. For each element, it checks if there are both smaller and greater elements in the array. To do this, it uses two boolean variables (<code>hasSmaller</code> and <code>hasGreater</code>). The inner loop iterates through the array again to compare each pair of distinct elements.</p>
+<p>If a pair of elements that satisfies the condition (one is smaller and the other is greater) is found, the result is incremented by 1, and the inner loop is broken to avoid redundant checks for the current element.</p>
+<p>After iterating through the entire array, the final result is returned.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int numElementsWithSmallerAndGreater(const std::vector&lt;int&gt;&amp; nums) {
+    int n = nums.size();
+    int res = 0;
+    for (int i = 0; i &lt; n; i++) {
+        bool hasSmaller = false, hasGreater = false;
+        for (int j = 0; j &lt; n; j++) {
+            if (i == j) continue;
+            if (nums[j] &gt; nums[i]) hasGreater = true;
+            if (nums[j] &lt; nums[i]) hasSmaller = true;
+            if (hasSmaller &amp;&amp; hasGreater) {
+                res++;
+                break;
+            }
+        }
+    }
+    return res;
+}
+</code></pre>
+<p>The algorithm iterates through the input array <code>nums</code>. For each element, it checks if there are both smaller and greater elements in the array. To do this, it uses two boolean variables (<code>hasSmaller</code> and <code>hasGreater</code>). The inner loop iterates through the array again to compare each pair of distinct elements.</p>
+<p>If a pair of elements that satisfies the condition (one is smaller and the other is greater) is found, the result is incremented by 1, and the inner loop is broken to avoid redundant checks for the current element.</p>
+<p>After iterating through the entire array, the final result is returned.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count Good Triplets</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1528/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1539/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of integers <code>arr</code>, and three integers <code>a</code>, <code>b</code> and <code>c</code>. You need to find the number of good triplets.</p>
+<p>A triplet <code>(arr[i], arr[j], arr[k])</code> is <strong>good</strong> if the following conditions are true:</p>
+<ul>
+<li><code>0 &lt;= i &lt; j &lt; k &lt; arr.length</code></li>
+<li><code>|arr[i] - arr[j]| &lt;= a</code></li>
+<li><code>|arr[j] - arr[k]| &lt;= b</code></li>
+<li><code>|arr[i] - arr[k]| &lt;= c</code></li>
+</ul>
+<p>Where <code>|x|</code> denotes the absolute value of <code>x</code>.</p>
+<p>Return <em>the number of good triplets</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [3,0,1,1,9,7], a = 7, b = 2, c = 3
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> There are 4 good triplets: [(3,0,1), (3,0,1), (3,1,1), (0,1,1)].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [1,1,2,2,3], a = 0, b = 0, c = 1
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> No triplet satisfies all conditions.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>3 &lt;= arr.length &lt;= 100</code></li>
+<li><code>0 &lt;= arr[i] &lt;= 1000</code></li>
+<li><code>0 &lt;= a, b, c &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-good-triplets/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 6
+    integer, dimension(n) :: arr = (/ 3, 0, 1, 1, 9, 7 /)
+    integer, parameter :: a = 7, b = 2, c = 3
+    integer :: i, j, k
+    integer :: num_good_triplets
+
+    num_good_triplets = count_good_triplets(arr, a, b, c)
+    write (*, '(A, I0)') 'Number of good triplets: ', num_good_triplets
+
+contains
+
+    function count_good_triplets(arr, a, b, c) result(num_good_triplets)
+        implicit none
+        integer, intent(in) :: arr(:)
+        integer, intent(in) :: a, b, c
+        integer :: i, j, k
+        logical :: condition_1, condition_2, condition_3
+        num_good_triplets = 0
+        do i = 1, size(arr) - 2
+            do j = i + 1, size(arr) - 1
+                do k = j + 1, size(arr)
+                    condition_1 = (0 <= i .and. i < j .and. j < k .and. k < size(arr))
+                    condition_2 = abs(arr(i) - arr(j)) <= a
+                    condition_3 = abs(arr(j) - arr(k)) <= b
+                    condition_4 = abs(arr(i) - arr(k)) <= c
+                    if (condition_1 .and. condition_2 .and. condition_3 .and. condition_4) then
+                        num_good_triplets = num_good_triplets + 1
+                    end if
+                end do
+            end do
+        end do
+    end function count_good_triplets
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:72:
+
+   15 |     function count_good_triplets(arr, a, b, c) result(num_good_triplets)
+      |                                                                        1
+Error: Function result ‘num_good_triplets’ at (1) has no IMPLICIT type
+temp.f95:28:31:
+
+   28 |                     condition_4 = abs(arr(i) - arr(k)) <= c
+      |                               1
+Error: Symbol ‘condition_4’ at (1) has no IMPLICIT type; did you mean ‘condition_3’?
+temp.f95:10:24:
+
+   10 |     num_good_triplets = count_good_triplets(arr, a, b, c)
+      |                        1
+Error: Cannot convert UNKNOWN to INTEGER(4) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module good_triplets
+  implicit none
+contains
+  integer function count_good_triplets(arr, a, b, c) result(good_triplets)
+    integer, intent(in) :: arr(:)
+    integer, intent(in) :: a, b, c
+    integer :: i, j, k
+
+    good_triplets = 0
+    do i = 1, size(arr) - 2
+      do j = i + 1, size(arr) - 1
+        do k = j + 1, size(arr)
+          if (abs(arr(i) - arr(j)) <= a .and. &
+              abs(arr(j) - arr(k)) <= b .and. &
+              abs(arr(i) - arr(k)) <= c) then
+            good_triplets = good_triplets + 1
+          end if
+        end do
+      end do
+    end do
+  end function count_good_triplets
+end module good_triplets
+
+program test_good_triplets
+  use good_triplets
+  implicit none
+  integer, parameter :: arr = [3, 0, 1, 1, 9, 7]
+  integer, parameter :: a = 7, b = 2, c = 3
+  integer :: good_triplets
+
+  good_triplets = count_good_triplets(arr, a, b, c)
+  write (*, '(A, I0)') 'Number of good triplets: ', good_triplets
+end program test_good_triplets
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:27:27:
+
+   27 |   integer, parameter :: arr = [3, 0, 1, 1, 9, 7]
+      |                           1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:29:26:
+
+   29 |   integer :: good_triplets
+      |                          1
+Error: Symbol ‘test_good_triplets’ at (1) cannot have a type
+temp.f95:31:16:
+
+   31 |   good_triplets = count_good_triplets(arr, a, b, c)
+      |                1
+Error: ‘good_triplets’ at (1) is not a variable
+temp.f95:32:65:
+
+   32 |   write (*, '(A, I0)') 'Number of good triplets: ', good_triplets
+      |                                                                 1
+Error: Symbol at (1) is not appropriate for an expression
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minNumberOfFrogs(croakOfFrogs: str) -&gt; int:
+    counts = [0] * 5
+    max_frogs = 0
+
+    for c in croakOfFrogs:
+        index = &quot;croak&quot;.find(c)
+        if index == 0:
+            counts[0] += 1
+            max_frogs = max(max_frogs, counts[0])
+        elif counts[index - 1] &gt; 0:
+            counts[index - 1] -= 1
+            counts[index] += 1
+        else:
+            return -1
+
+    if counts[0] == counts[4]:
+        return max_frogs
+    else:
+        return -1
+</code></pre>
+<p>The algorithm starts by initializing an array <code>counts</code> with five elements and <code>max_frogs</code> to zero. It iterates through the given string <code>croakOfFrogs</code>. For each character, it finds its index in the string "croak":</p>
+<ul>
+<li>If the character is a 'c', it increases the first element of <code>counts</code> and updates the <code>max_frogs</code>.</li>
+<li>If the character is one of 'r', 'o', 'a', or 'k', it checks if the previous letter in "croak" has a non-zero count in the <code>counts</code> array. If it does, it transfers the count of the previous letter to the count of the current character; otherwise, it returns -1, as the string does not represent a valid croak sequence.</li>
+</ul>
+<p>After iterating through the entire string, the algorithm checks if the count of 'c's is equal to the count of 'k's, which indicates that all frog croaks are completed. If so, it returns the value of <code>max_frogs</code>; otherwise, it returns -1.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+
+int minNumberOfFrogs(std::string croakOfFrogs) {
+    int counts[5] = {0}, max_frogs = 0;
+
+    for (char c : croakOfFrogs) {
+        int index = std::string(&quot;croak&quot;).find(c);
+        if (index == 0) {
+            counts[0]++;
+            max_frogs = std::max(max_frogs, counts[0]);
+        } else if (counts[index - 1] &gt; 0) {
+            counts[index - 1]--;
+            counts[index]++;
+        } else {
+            return -1;
+        }
+    }
+
+    if (counts[0] == counts[4]) {
+        return max_frogs;
+    } else {
+        return -1;
+    }
+}
+</code></pre>
+<p>The algorithm starts by initializing an array <code>counts</code> with five elements and <code>max_frogs</code> to zero. It iterates through the given string <code>croakOfFrogs</code>. For each character, it finds its index in the string "croak":</p>
+<ul>
+<li>If the character is a 'c', it increases the first element of <code>counts</code> and updates the <code>max_frogs</code>.</li>
+<li>If the character is one of 'r', 'o', 'a', or 'k', it checks if the previous letter in "croak" has a non-zero count in the <code>counts</code> array. If it does, it transfers the count of the previous letter to the count of the current character; otherwise, it returns -1, as the string does not represent a valid croak sequence.</li>
+</ul>
+<p>After iterating through the entire string, the algorithm checks if the count of 'c's is equal to the count of 'k's, which indicates that all frog croaks are completed. If so, it returns the value of <code>max_frogs</code>; otherwise, it returns -1.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

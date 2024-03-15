@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Cells in a Range on an Excel Sheet</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2190/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2200/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A cell <code>(r, c)</code> of an excel sheet is represented as a string <code>" "</code> where:</p>
+<ul>
+<li>denotes the column number <code>c</code> of the cell. It is represented by <strong>alphabetical letters</strong>.<ul>
+<li>For example, the <code>1st</code> column is denoted by <code>'A'</code>, the <code>2nd</code> by <code>'B'</code>, the <code>3rd</code> by <code>'C'</code>, and so on.</li>
+</ul>
+</li>
+<li>is the row number <code>r</code> of the cell. The <code>rth</code> row is represented by the <strong>integer</strong> <code>r</code>.</li>
+</ul>
+<p>You are given a string <code>s</code> in the format <code>": "</code>, where represents the column <code>c1</code>, represents the row <code>r1</code>, represents the column <code>c2</code>, and represents the row <code>r2</code>, such that <code>r1 &lt;= r2</code> and <code>c1 &lt;= c2</code>.</p>
+<p>Return <em>the <strong>list of cells</strong></em> <code>(x, y)</code> <em>such that</em> <code>r1 &lt;= x &lt;= r2</code> <em>and</em> <code>c1 &lt;= y &lt;= c2</code>. The cells should be represented as <strong>strings</strong> in the format mentioned above and be sorted in <strong>non-decreasing</strong> order first by columns and then by rows.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "K1:L2 "
+<strong>Output:</strong> [ "K1 ", "K2 ", "L1 ", "L2 "]
+<strong>Explanation:</strong>
+The above diagram shows the cells which should be present in the list.
+The red arrows denote the order in which the cells should be presented.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "A1:F1 "
+<strong>Output:</strong> [ "A1 ", "B1 ", "C1 ", "D1 ", "E1 ", "F1 "]
+<strong>Explanation:</strong>
+The above diagram shows the cells which should be present in the list.
+The red arrow denotes the order in which the cells should be presented.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>s.length == 5</code></li>
+<li><code>'A' &lt;= s[0] &lt;= s[3] &lt;= 'Z'</code></li>
+<li><code>'1' &lt;= s[1] &lt;= s[4] &lt;= '9'</code></li>
+<li><code>s</code> consists of uppercase English letters, digits and <code>':'</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/cells-in-a-range-on-an-excel-sheet/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+
+! This program solves the following problem:
+!
+! A cell (r, c) of an excel sheet is represented as a string " " where:
+!
+! - denotes the column number c of the cell. It is represented by alphabetical letters.
+!   For example, the 1st column is denoted by 'A', the 2nd by 'B', the 3rd by 'C', and so on.
+! - is the row number r of the cell. The rth row is represented by the integer r.
+!
+! You are given a string s in the format ": ", where represents the column c1, represents the row r1, represents the column c2, and represents the row r2, such that r1 <= r2 and c1 <= c2.
+!
+! Return the list of cells (x, y) such that r1 <= x <= r2 and c1 <= y <= c2. The cells should be represented as strings in the format mentioned above and be sorted in non-decreasing order first by columns and then by rows.
+!
+! Example 1:
+! Input: s =  "K1:L2 "
+! Output: ["K1 ", "K2 ", "L1 ", "L2 "]
+! Explanation:
+! The above diagram shows the cells which should be present in the list.
+! The red arrows denote the order in which the cells should be presented.
+!
+! Example 2:
+! Input: s =  "A1:F1 "
+! Output: ["A1 ", "B1 ", "C1 ", "D1 ", "E1 ", "F1 "]
+! Explanation:
+! The above diagram shows the cells which should be present in the list.
+! The red arrow denotes the order in which the cells should be presented.
+!
+! Constraints:
+! s.length == 5
+! 'A' <= s[0] <= s[3] <= 'Z'
+! '1' <= s[1] <= s[4] <= '9'
+! s consists of uppercase English letters, digits and ':'.
+
+implicit none
+
+character(len=5), parameter :: s = "K1:L2"
+type(cell_range) :: range
+type(cell_list) :: list
+
+call get_range(s, range)
+call get_list(range, list)
+
+print "(A)", list%to_string()
+
+contains
+
+subroutine get_range(s, range)
+
+! Get the range from the input string.
+
+implicit none
+
+character(len=*), intent(in) :: s
+type(cell_range), intent(out) :: range
+
+integer :: i, j, k, l
+
+i = index(s, ":")
+j = scan(s, ":", back=.true.)
+k = scan(s, ":")
+l = len_trim(s)
+
+if (i /= 2 .or. j /= l - 1) then
+    stop "Invalid input string."
+end if
+
+range%start%row = s(3:i-1)
+range%start%col = s(1:2)
+range%end%row = s(i+1:j-1)
+range%end%col = s(k+1:l)
+
+end subroutine get_range
+
+function get_list(range, list) result(new_list)
+
+! Get the list of cells from the range.
+
+implicit none
+
+type(cell_range), intent(in) :: range
+type(cell_list), intent(in) :: list
+type(cell_list) :: new_list
+
+integer :: i, j, k, n
+logical :: found
+
+n = size(list%cells)
+do i = 1, n
+    do j = 1, n
+        if (list%cells(i)%row >= range%start%row .and. &
+            list%cells(i)%row <= range%end%row .and. &
+            list%cells(i)%col >= range%start%col .and. &
+            list%cells(i)%col <= range%end%col) then
+            call add_cell(list%cells(i), new_list)
+            exit
+        end if
+    end do
+end do
+
+end function get_list
+
+subroutine add_cell(cell, list)
+
+! Add a cell to the list</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:38:17:
+
+   38 | type(cell_range) :: range
+      |                 1
+Error: Derived type ‘cell_range’ at (1) is being used before it is defined
+temp.f95:39:16:
+
+   39 | type(cell_list) :: list
+      |                1
+Error: Derived type ‘cell_list’ at (1) is being used before it is defined
+temp.f95:44:19:
+
+   44 | print "(A)", list%to_string()
+      |                   1
+Error: Symbol ‘list’ at (1) has no IMPLICIT type
+temp.f95:55:17:
+
+   55 | type(cell_range), intent(out) :: range
+      |                 1
+Error: Derived type ‘cell_range’ at (1) is being used before it is defined
+temp.f95:68:7:
+
+   68 | range%start%row = s(3:i-1)
+      |       1
+Error: Symbol ‘range’ at (1) has no IMPLICIT type
+temp.f95:69:7:
+
+   69 | range%start%col = s(1:2)
+      |       1
+Error: Symbol ‘range’ at (1) has no IMPLICIT type
+temp.f95:70:7:
+
+   70 | range%end%row = s(i+1:j-1)
+      |       1
+Error: Symbol ‘range’ at (1) has no IMPLICIT type
+temp.f95:71:7:
+
+   71 | range%end%col = s(k+1:l)
+      |       1
+Error: Symbol ‘range’ at (1) has no IMPLICIT type
+temp.f95:75:47:
+
+   75 | function get_list(range, list) result(new_list)
+      |                                               1
+Error: FUNCTION attribute conflicts with SUBROUTINE attribute in ‘get_list’ at (1)
+temp.f95:79:13:
+
+   79 | implicit none
+      |             1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:81:17:
+
+   81 | type(cell_range), intent(in) :: range
+      |                 1
+Error: Derived type ‘cell_range’ at (1) is being used before it is defined
+temp.f95:82:16:
+
+   82 | type(cell_list), intent(in) :: list
+      |                1
+Error: Derived type ‘cell_list’ at (1) is being used before it is defined
+temp.f95:83:16:
+
+   83 | type(cell_list) :: new_list
+      |                1
+Error: Derived type ‘cell_list’ at (1) is being used before it is defined
+temp.f95:85:21:
+
+   85 | integer :: i, j, k, n
+      |                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:86:16:
+
+   86 | logical :: found
+      |                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:88:15:
+
+   88 | n = size(list%cells)
+      |               1
+Error: Symbol ‘list’ at (1) has no IMPLICIT type
+temp.f95:89:11:
+
+   89 | do i = 1, n
+      |           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:90:15:
+
+   90 |     do j = 1, n
+      |               1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:91:18:
+
+   91 |         if (list%cells(i)%row >= range%start%row .and. &
+      |                  1
+Error: Symbol ‘list’ at (1) has no IMPLICIT type
+temp.f95:95:32:
+
+   95 |             call add_cell(list%cells(i), new_list)
+      |                                1
+Error: Symbol ‘list’ at (1) has no IMPLICIT type
+temp.f95:96:16:
+
+   96 |             exit
+      |                1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:97:11:
+
+   97 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:98:7:
+
+   98 |     end do
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:99:3:
+
+   99 | end do
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:101:3:
+
+  101 | end function get_list
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program excel_cells
+      implicit none
+
+      character(len=5) :: s
+      character(len=2) :: c1, c2
+      integer :: r1, r2
+      integer :: i, j
+
+      read(*,*) s
+
+      ! Extract the column numbers
+      c1 = s(1:2)
+      c2 = s(3:4)
+
+      ! Extract the row numbers
+      read(s(5:6),*) r1, r2
+
+      ! Initialize the list of cells
+      allocate(cells(r2-r1+1, c2-c1+1))
+
+      ! Fill the list of cells
+      do i = r1, r2
+         do j = c1, c2
+            write(cells(i-r1+1,j-c1+1),'(A,I0.2)') c(j), i
+         end do
+      end do
+
+      ! Sort the list of cells
+      call sort_cells(cells, r2-r1+1, c2-c1+1)
+
+      ! Print the list of cells
+      do i = 1, r2-r1+1
+         do j = 1, c2-c1+1
+            write(*,'(A)') cells(i,j)
+         end do
+      end do
+
+      contains
+
+      subroutine sort_cells(cells, m, n)
+      implicit none
+      character(len=2), intent(inout) :: cells(m,n)
+      integer, intent(in) :: m, n
+      integer :: i, j, k
+      character(len=2) :: temp
+
+      ! Sort the cells by columns
+      do i = 1, n
+         do j = 1, m-1
+            if (cells(j,i) > cells(j+1,i)) then
+               temp = cells(j,i)
+               cells(j,i) = cells(j+1,i)
+               cells(j+1,i) = temp
+            end if
+         end do
+      end do
+
+      ! Sort the cells by rows
+      do i = 1, m
+         do j = 1, n-1
+            if (cells(i,j) > cells(i,j+1)) then
+               temp = cells(i,j)
+               cells(i,j) = cells(i,j+1)
+               cells(i,j+1) = temp
+            end if
+         end do
+      end do
+
+      end subroutine sort_cells
+
+      end program excel_cells
+
+      function c(i) result(c)
+      implicit none
+      integer, intent(in) :: i
+      character(len=2) :: c
+
+      ! Convert the integer to a column string
+      if (i < 27) then
+         c = char(i+64)
+      else
+         c = char(i/26+64)
+         c = c // char(mod(i,26)+64)
+      end if
+
+      end function c
+
+      end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:19:15:
+
+   19 |       allocate(cells(r2-r1+1, c2-c1+1))
+      |               1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:73:29:
+
+   73 |       function c(i) result(c)
+      |                             1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:1:19:
+
+    1 | program excel_cells
+      |                   1
+......
+   74 |       implicit none
+      |                   2
+Error: Two main PROGRAMs at (1) and (2)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def cell_range(s):
+    r1 = int(s[1])
+    r2 = int(s[4])
+    c1 = ord(s[0]) - ord('A') + 1
+    c2 = ord(s[3]) - ord('A') + 1
+
+    res = []
+    for c in range(c1, c2 + 1):
+        for r in range(r1, r2 + 1):
+            res.append(chr(ord('A') + c - 1) + str(r))
+    return res
+</code></pre>
+<p>The algorithm is relatively straightforward: First, extract each cell's row and column from the input string <code>s</code> using indexed access on the input string, which works identically in all languages. The row values are parsed from a character to the integer it represents. The column values need to be zero-indexed and then shifted by 1, so subtract the ASCII value of 'A' (or 'A'.charCodeAt(0) in JavaScript) and then add 1.</p>
+<p>Next, create a nested loop to iterate over all columns (<code>c</code>) and rows (<code>r</code>). In the inner loop, push the column and row as a formatted string to the results array, reusing the method from the column extraction to create the column character for output.</p>
+<p>Finally, return the array of sorted cell strings.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+
+std::vector&lt;std::string&gt; cellRange(const std::string&amp; s) {
+    int r1 = s[1] - '0';
+    int r2 = s[4] - '0';
+    int c1 = s[0] - 'A' + 1;
+    int c2 = s[3] - 'A' + 1;
+
+    std::vector&lt;std::string&gt; res;
+    for (int c = c1; c &lt;= c2; ++c) {
+        for (int r = r1; r &lt;= r2; ++r) {
+            res.push_back(std::string(1, 'A' + c - 1) + std::to_string(r));
+        }
+    }
+    return res;
+}
+</code></pre>
+<p>The algorithm is relatively straightforward: First, extract each cell's row and column from the input string <code>s</code> using indexed access on the input string, which works identically in all languages. The row values are parsed from a character to the integer it represents. The column values need to be zero-indexed and then shifted by 1, so subtract the ASCII value of 'A' (or 'A'.charCodeAt(0) in JavaScript) and then add 1.</p>
+<p>Next, create a nested loop to iterate over all columns (<code>c</code>) and rows (<code>r</code>). In the inner loop, push the column and row as a formatted string to the results array, reusing the method from the column extraction to create the column character for output.</p>
+<p>Finally, return the array of sorted cell strings.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

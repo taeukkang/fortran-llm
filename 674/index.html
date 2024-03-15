@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Longest Continuous Increasing Subsequence</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/671/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/680/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an unsorted array of integers <code>nums</code>, return <em>the length of the longest <strong>continuous increasing subsequence</strong> (i.e. subarray)</em>. The subsequence must be <strong>strictly</strong> increasing.</p>
+<p>A <strong>continuous increasing subsequence</strong> is defined by two indices <code>l</code> and <code>r</code> (<code>l &lt; r</code>) such that it is <code>[nums[l], nums[l + 1], ..., nums[r - 1], nums[r]]</code> and for each <code>l &lt;= i &lt; r</code>, <code>nums[i] &lt; nums[i + 1]</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,3,5,4,7]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The longest continuous increasing subsequence is [1,3,5] with length 3.
+Even though [1,3,5,7] is an increasing subsequence, it is not continuous as elements 5 and 7 are separated by element
+4.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [2,2,2,2,2]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> The longest continuous increasing subsequence is [2] with length 1. Note that it must be strictly
+increasing.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 104</code></li>
+<li><code>-109 &lt;= nums[i] &lt;= 109</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/longest-continuous-increasing-subsequence/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solves the problem:
+    ! Given an unsorted array of integers nums, return the length of the longest
+    ! continuous increasing subsequence (i.e., subarray). The subsequence must be
+    ! strictly increasing.
+    implicit none
+
+    integer :: nums(10), len_longest_subseq
+
+    nums = [1, 3, 5, 4, 7]
+    print '(I0)', len_longest_subseq(nums)
+
+    nums = [2, 2, 2, 2, 2]
+    print '(I0)', len_longest_subseq(nums)
+
+contains
+
+    function len_longest_subseq(nums) result(len)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: len, i, j, n
+
+        n = size(nums)
+        if (n == 0) then
+            len = 0
+            return
+        end if
+
+        len = 1
+        do i = 2, n
+            if (nums(i-1) < nums(i)) then
+                len = len + 1
+            else
+                j = i - 1
+                do while (j > 1 .and. nums(j-1) >= nums(j))
+                    j = j - 1
+                end do
+                len = max(len, i - j)
+            end if
+        end do
+    end function len_longest_subseq
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:18:32:
+
+   18 |     function len_longest_subseq(nums) result(len)
+      |                                1
+Error: Procedure ‘len_longest_subseq’ at (1) has an explicit interface from a previous declaration
+temp.f95:19:21:
+
+   19 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:20:38:
+
+   20 |         integer, intent(in) :: nums(:)
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:21:31:
+
+   21 |         integer :: len, i, j, n
+      |                               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:23:22:
+
+   23 |         n = size(nums)
+      |                      1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:24:
+
+   24 |         if (n == 0) then
+      |                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:25:19:
+
+   25 |             len = 0
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:18:
+
+   26 |             return
+      |                  1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:27:11:
+
+   27 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:29:15:
+
+   29 |         len = 1
+      |               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:30:19:
+
+   30 |         do i = 2, n
+      |                   1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:31:41:
+
+   31 |             if (nums(i-1) < nums(i)) then
+      |                                         1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:32:29:
+
+   32 |                 len = len + 1
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:33:16:
+
+   33 |             else
+      |                1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:34:25:
+
+   34 |                 j = i - 1
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:35:59:
+
+   35 |                 do while (j > 1 .and. nums(j-1) >= nums(j))
+      |                                                           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:36:29:
+
+   36 |                     j = j - 1
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:37:19:
+
+   37 |                 end do
+      |                   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:38:37:
+
+   38 |                 len = max(len, i - j)
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:39:15:
+
+   39 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:40:11:
+
+   40 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:41:7:
+
+   41 |     end function len_longest_subseq
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:10:4:
+
+   10 |     nums = [1, 3, 5, 4, 7]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 5)
+temp.f95:13:4:
+
+   13 |     nums = [2, 2, 2, 2, 2]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 5)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module longest_continuous_increasing_subsequence
+
+implicit none
+
+contains
+
+integer function longest_increasing_subsequence(nums) result(ans)
+
+! Given an unsorted array of integers `nums`, return the length of the longest
+! continuous increasing subsequence (i.e. subarray)
+
+! A continuous increasing subsequence is defined by two indices `l` and `r` (`l < r`) such that it is
+! `[nums[l], nums[l + 1], ..., nums[r - 1], nums[r]]` and for each `l <= i < r`, `nums[i] < nums[i + 1]`.
+
+! Example 1:
+! Input: nums = [1,3,5,4,7]
+! Output: 3
+! Explanation: The longest continuous increasing subsequence is [1,3,5] with length 3.
+! Even though [1,3,5,7] is an increasing subsequence, it is not continuous as elements 5 and 7 are separated by element 4.
+
+! Example 2:
+! Input: nums = [2,2,2,2,2]
+! Output: 1
+! Explanation: The longest continuous increasing subsequence is [2] with length 1. Note that it must be strictly increasing.
+
+! Constraints:
+! 1 <= nums.length <= 104
+! -109 <= nums[i] <= 109
+
+integer, intent(in) :: nums(:)
+
+! dp(i) represents the length of the longest continuous increasing subsequence ending at index i
+integer :: dp(size(nums))
+
+! Initialize dp(0) to 1, as there is always a continuous increasing subsequence of length 1 ending at index 0
+dp(0) = 1
+
+! Loop through the array and update dp(i) for each index i
+do i = 1, size(nums)
+    ! If the current element is greater than the previous element,
+    ! then the current element can be added to the subsequence
+    ! ending at index i - 1, so dp(i) = dp(i - 1) + 1
+    if (nums(i) > nums(i - 1)) then
+        dp(i) = dp(i - 1) + 1
+    ! Otherwise, the current element cannot be added to the subsequence
+    ! ending at index i - 1, so dp(i) = 1
+    else
+        dp(i) = 1
+    end if
+end do
+
+! Return the maximum value in dp
+ans = maxval(dp)
+
+end function longest_increasing_subsequence
+
+end module longest_continuous_increasing_subsequence
+
+! Test the longest_increasing_subsequence function with the following examples:
+program test_longest_increasing_subsequence
+
+use longest_continuous_increasing_subsequence, only: longest_increasing_subsequence
+
+implicit none
+
+! Examples taken from the problem statement
+integer, parameter :: example1(5) = [1, 3, 5, 4, 7]
+integer, parameter :: example2(5) = [2, 2, 2, 2, 2]
+
+! Output the length of the longest continuous increasing subsequence for each example
+write (*,*) "Example 1:", longest_increasing_subsequence(example1)
+write (*,*) "Example 2:", longest_increasing_subsequence(example2)
+
+end program test_longest_increasing_subsequence
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:39:4:
+
+   39 | do i = 1, size(nums)
+      |    1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:36:3:
+
+   36 | dp(0) = 1
+      |   1
+Warning: Array reference at (1) is out of bounds (0 < 1) in dimension 1
+temp.f95:62:5:
+
+   62 | use longest_continuous_increasing_subsequence, only: longest_increasing_subsequence
+      |     1
+Fatal Error: Cannot open module file ‘longest_continuous_increasing_subsequence.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def findLengthOfLCIS(nums):
+    if not nums:
+        return 0
+    result, current = 1, 1
+    for i in range(1, len(nums)):
+        current = current + 1 if nums[i] &gt; nums[i - 1] else 1
+        result = max(result, current)
+    return result
+</code></pre>
+<p>The algorithm works as follows:</p>
+<ol>
+<li>If the input array is empty, return 0.</li>
+<li>Initialize two variables: <code>result</code> (to hold the maximum length found so far) and <code>current</code> (to hold the length of the current increasing subsequence). Both are initially set to 1.</li>
+<li>Iterate through the array from index 1 to the end.</li>
+<li>For each index, if the current element is greater than the previous element, increase the length of the current increasing subsequence by 1. Otherwise, reset it to 1.</li>
+<li>Update the result with the maximum value between the current result and the current increasing subsequence length.</li>
+<li>Return the result after the iteration completes.</li>
+</ol>
+<p>This algorithm has a linear time complexity, i.e., O(n), where n is the length of the input array.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int findLengthOfLCIS(vector&lt;int&gt;&amp; nums) {
+    if (nums.empty()) return 0;
+    int result = 1, current = 1;
+    for (int i = 1; i &lt; nums.size(); ++i) {
+        current = nums[i] &gt; nums[i - 1] ? current + 1 : 1;
+        result = max(result, current);
+    }
+    return result;
+}
+</code></pre>
+<p>The algorithm works as follows:</p>
+<ol>
+<li>If the input array is empty, return 0.</li>
+<li>Initialize two variables: <code>result</code> (to hold the maximum length found so far) and <code>current</code> (to hold the length of the current increasing subsequence). Both are initially set to 1.</li>
+<li>Iterate through the array from index 1 to the end.</li>
+<li>For each index, if the current element is greater than the previous element, increase the length of the current increasing subsequence by 1. Otherwise, reset it to 1.</li>
+<li>Update the result with the maximum value between the current result and the current increasing subsequence length.</li>
+<li>Return the result after the iteration completes.</li>
+</ol>
+<p>This algorithm has a linear time complexity, i.e., O(n), where n is the length of the input array.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

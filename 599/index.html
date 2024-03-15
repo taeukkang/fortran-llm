@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Index Sum of Two Lists</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/598/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/604/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two arrays of strings <code>list1</code> and <code>list2</code>, find the <strong>common strings with the least index sum</strong>.</p>
+<p>A <strong>common string</strong> is a string that appeared in both <code>list1</code> and <code>list2</code>.</p>
+<p>A <strong>common string with the least index sum</strong> is a common string such that if it appeared at <code>list1[i]</code> and <code>list2[j]</code> then <code>i + j</code> should be the minimum value among all the other <strong>common strings</strong>.</p>
+<p>Return <em>all the <strong>common strings with the least index sum</strong></em>. Return the answer in <strong>any order</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> list1 = [ "Shogun ", "Tapioca Express ", "Burger King ", "KFC "], list2 = [ "Piatti ", "The Grill at Torrey Pines ", "Hungry Hunter Steakhouse ", "Shogun "]
+<strong>Output:</strong> [ "Shogun "]
+<strong>Explanation:</strong> The only common string is  "Shogun ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> list1 = [ "Shogun ", "Tapioca Express ", "Burger King ", "KFC "], list2 = [ "KFC ", "Shogun ", "Burger King "]
+<strong>Output:</strong> [ "Shogun "]
+<strong>Explanation:</strong> The common string with the least index sum is  "Shogun " with index sum = (0 + 1) = 1.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> list1 = [ "happy ", "sad ", "good "], list2 = [ "sad ", "happy ", "good "]
+<strong>Output:</strong> [ "sad ", "happy "]
+<strong>Explanation:</strong> There are three common strings:
+ "happy " with index sum = (0 + 1) = 1.
+ "sad " with index sum = (1 + 0) = 1.
+ "good " with index sum = (2 + 2) = 4.
+The strings with the least index sum are  "sad " and  "happy ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= list1.length, list2.length &lt;= 1000</code></li>
+<li><code>1 &lt;= list1[i].length, list2[i].length &lt;= 30</code></li>
+<li><code>list1[i]</code> and <code>list2[i]</code> consist of spaces <code>' '</code> and English letters.</li>
+<li>All the strings of <code>list1</code> are <strong>unique</strong>.</li>
+<li>All the strings of <code>list2</code> are <strong>unique</strong>.</li>
+<li>There is at least a common string between <code>list1</code> and <code>list2</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-index-sum-of-two-lists/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, output_unit
+    implicit none
+    character(len=:), allocatable :: list1(:), list2(:)
+    integer :: i, j, k, n, m
+    type(string_set) :: common_strings
+
+    call get_command_argument(1, n)
+    allocate(list1(n))
+    do i = 1, n
+        call get_command_argument(i+1, list1(i))
+    end do
+
+    call get_command_argument(2, m)
+    allocate(list2(m))
+    do j = 1, m
+        call get_command_argument(j+1+n, list2(j))
+    end do
+
+    common_strings = get_common_strings(list1, list2)
+
+    write (output_unit, '(*(g0,:," ",a))') common_strings%strings
+
+contains
+
+    function get_common_strings(list1, list2) result(common_strings)
+        implicit none
+        character(len=*), intent(in) :: list1(:), list2(:)
+        type(string_set) :: common_strings
+        integer :: i, j
+
+        common_strings = string_set()
+
+        do i = 1, size(list1)
+            do j = 1, size(list2)
+                if (list1(i) == list2(j)) then
+                    call common_strings%add(list1(i))
+                end if
+            end do
+        end do
+
+    end function get_common_strings
+
+    type :: string_set
+        class(*), pointer :: strings(:) => null()
+    contains
+        procedure :: add => add_string
+        generic :: assignment(=) => add
+    end type string_set
+
+    subroutine add_string(self, string)
+        implicit none
+        class(string_set), intent(inout) :: self
+        character(len=*), intent(in) :: string
+        integer :: i
+
+        if (.not. associated(self%strings)) then
+            allocate(self%strings(1))
+            self%strings(1) = string
+        else
+            do i = 1, size(self%strings)
+                if (self%strings(i) == string) return
+            end do
+            allocate(self%strings(size(self%strings)+1))
+            self%strings(size(self%strings)) = string
+        end if
+
+    end subroutine add_string
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:21:
+
+    6 |     type(string_set) :: common_strings
+      |                     1
+Error: Derived type ‘string_set’ at (1) is being used before it is defined
+temp.f95:9:13:
+
+    9 |     allocate(list1(n))
+      |             1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:15:13:
+
+   15 |     allocate(list2(m))
+      |             1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:22:59:
+
+   22 |     write (output_unit, '(*(g0,:," ",a))') common_strings%strings
+      |                                                           1
+Error: Symbol ‘common_strings’ at (1) has no IMPLICIT type
+temp.f95:29:25:
+
+   29 |         type(string_set) :: common_strings
+      |                         1
+Error: Derived type ‘string_set’ at (1) is being used before it is defined
+temp.f95:26:68:
+
+   26 |     function get_common_strings(list1, list2) result(common_strings)
+      |                                                                    1
+Error: Function result ‘common_strings’ at (1) has no IMPLICIT type
+temp.f95:37:39:
+
+   37 |                     call common_strings%add(list1(i))
+      |                                       1
+Error: VARIABLE attribute of ‘common_strings’ conflicts with PROCEDURE attribute at (1)
+temp.f95:44:22:
+
+   44 |     type :: string_set
+      |                      1
+Error: Unexpected derived type declaration statement in CONTAINS section at (1)
+temp.f95:45:49:
+
+   45 |         class(*), pointer :: strings(:) => null()
+      |                                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:46:12:
+
+   46 |     contains
+      |            1
+Error: Unexpected CONTAINS statement in CONTAINS section at (1)
+temp.f95:49:7:
+
+   49 |     end type string_set
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:53:26:
+
+   53 |         class(string_set), intent(inout) :: self
+      |                          1
+Error: Derived type ‘string_set’ at (1) is being used before it is defined
+temp.f95:57:35:
+
+   57 |         if (.not. associated(self%strings)) then
+      |                                   1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:58:27:
+
+   58 |             allocate(self%strings(1))
+      |                           1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:59:18:
+
+   59 |             self%strings(1) = string
+      |                  1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:60:12:
+
+   60 |         else
+      |            1
+Error: Unexpected ELSE statement at (1)
+temp.f95:61:33:
+
+   61 |             do i = 1, size(self%strings)
+      |                                 1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:62:26:
+
+   62 |                 if (self%strings(i) == string) return
+      |                          1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:63:15:
+
+   63 |             end do
+      |               1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:64:27:
+
+   64 |             allocate(self%strings(size(self%strings)+1))
+      |                           1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:65:18:
+
+   65 |             self%strings(size(self%strings)) = string
+      |                  1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:66:11:
+
+   66 |         end if
+      |           1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:51:30:
+
+   51 |     subroutine add_string(self, string)
+      |                              1
+Error: Symbol ‘self’ at (1) has no IMPLICIT type
+temp.f95:20:18:
+
+   20 |     common_strings = get_common_strings(list1, list2)
+      |                  1
+Error: Symbol ‘common_strings’ at (1) has no IMPLICIT type
+temp.f95:32:25:
+
+   32 |         common_strings = string_set()
+      |                         1
+Error: Function ‘string_set’ at (1) has no IMPLICIT type
+temp.f95:8:33:
+
+    8 |     call get_command_argument(1, n)
+      |                                 1
+Error: In call to ‘get_command_argument’ at (1), type mismatch in argument ‘value’; pass ‘INTEGER(4)’ to ‘CHARACTER(*)’
+temp.f95:14:33:
+
+   14 |     call get_command_argument(2, m)
+      |                                 1
+Error: In call to ‘get_command_argument’ at (1), type mismatch in argument ‘value’; pass ‘INTEGER(4)’ to ‘CHARACTER(*)’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module common_strings
+
+implicit none
+
+contains
+
+subroutine solve(list1, list2, common_strings)
+
+! This subroutine takes two arrays of strings list1 and list2, and returns
+! all the common strings with the least index sum.
+
+! list1: array of strings
+! list2: array of strings
+! common_strings: array of strings
+
+character(len=*), intent(in) :: list1(:)
+character(len=*), intent(in) :: list2(:)
+character(len=*), intent(out) :: common_strings(:)
+
+! Local variables
+integer :: i, j, k, l, m, n, o
+integer :: index_sum
+logical :: found
+
+! Initialize the common strings array
+common_strings = ""
+
+! Loop through the elements of list1
+do i = 1, size(list1)
+
+    ! Loop through the elements of list2
+    do j = 1, size(list2)
+
+        ! Check if the current element of list1 is in list2
+        if (index(list2(j), list1(i)) /= 0) then
+
+            ! If it is, add it to the common strings array
+            common_strings = [common_strings, list1(i)]
+
+            ! Check if the current element of list2 is in list1
+            if (index(list1(i), list2(j)) /= 0) then
+
+                ! If it is, add it to the common strings array
+                common_strings = [common_strings, list2(j)]
+
+            end if
+
+        end if
+
+    end do
+
+end do
+
+! Sort the common strings array in ascending order
+call sort(common_strings)
+
+! Print the common strings
+do i = 1, size(common_strings)
+    write (*,*) common_strings(i)
+end do
+
+end subroutine solve
+
+end module common_strings
+
+program main
+
+use common_strings
+
+implicit none
+
+! Test case 1
+character(len=*), parameter :: list1(4) = ["Shogun ", "Tapioca Express ", "Burger King ", "KFC "]
+character(len=*), parameter :: list2(4) = ["Piatti ", "The Grill at Torrey Pines ", "Hungry Hunter Steakhouse ", "Shogun "]
+
+call solve(list1, list2, common_strings)
+
+! Test case 2
+character(len=*), parameter :: list1(4) = ["Shogun ", "Tapioca Express ", "Burger King ", "KFC "]
+character(len=*), parameter :: list2(4) = ["KFC ", "Shogun ", "Burger King "]
+
+call solve(list1, list2, common_strings)
+
+! Test case 3
+character(len=*), parameter :: list1(3) = ["happy ", "sad ", "good "]
+character(len=*), parameter :: list2(3) = ["sad ", "happy ", "good "]
+
+call solve(list1, list2, common_strings)
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:73:53:
+
+   73 | character(len=*), parameter :: list1(4) = ["Shogun ", "Tapioca Express ", "Burger King ", "KFC "]
+      |                                                     1
+Error: Different CHARACTER lengths (7/16) in array constructor at (1)
+temp.f95:74:53:
+
+   74 | character(len=*), parameter :: list2(4) = ["Piatti ", "The Grill at Torrey Pines ", "Hungry Hunter Steakhouse ", "Shogun "]
+      |                                                     1
+Error: Different CHARACTER lengths (7/26) in array constructor at (1)
+temp.f95:76:40:
+
+   76 | call solve(list1, list2, common_strings)
+      |                                        1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:79:53:
+
+   79 | character(len=*), parameter :: list1(4) = ["Shogun ", "Tapioca Express ", "Burger King ", "KFC "]
+      |                                                     1
+Error: Different CHARACTER lengths (7/16) in array constructor at (1)
+temp.f95:80:50:
+
+   80 | character(len=*), parameter :: list2(4) = ["KFC ", "Shogun ", "Burger King "]
+      |                                                  1
+Error: Different CHARACTER lengths (4/7) in array constructor at (1)
+temp.f95:82:40:
+
+   82 | call solve(list1, list2, common_strings)
+      |                                        1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:85:52:
+
+   85 | character(len=*), parameter :: list1(3) = ["happy ", "sad ", "good "]
+      |                                                    1
+Error: Different CHARACTER lengths (6/4) in array constructor at (1)
+temp.f95:86:50:
+
+   86 | character(len=*), parameter :: list2(3) = ["sad ", "happy ", "good "]
+      |                                                  1
+Error: Different CHARACTER lengths (4/6) in array constructor at (1)
+temp.f95:88:40:
+
+   88 | call solve(list1, list2, common_strings)
+      |                                        1
+Error: Symbol at (1) is not appropriate for an expression
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from typing import List
+
+def findRestaurant(list1: List[str], list2: List[str]) -&gt; List[str]:
+    restaurantMap = {restaurant: i for i, restaurant in enumerate(list1)}
+
+    minSum = float(&quot;inf&quot;)
+    result = []
+    for j, restaurant in enumerate(list2):
+        if restaurant in restaurantMap:
+            totalSum = j + restaurantMap[restaurant]
+            if totalSum &lt; minSum:
+                result = [restaurant]
+                minSum = totalSum
+            elif totalSum == minSum:
+                result.append(restaurant)
+
+    return result
+</code></pre>
+<pre><code>1. Create a hashmap to store the restaurants and their indices (or just index for Python and JavaScript) in list1.
+</code></pre>
+<ol>
+<li>Initialize a variable, minSum, to store the minimum sum of indices, and a result list to store the common restaurants with the least index sum.</li>
+<li>Iterate through list2; for each restaurant, check if it is in the hashmap.
+   a. If it is, calculate the sum of its index in list1 and list2.
+   b. If the sum is less than the current minSum, clear the result list, add the current restaurant to the result list, and update minSum.
+   c. If the sum is equal to minSum, add the restaurant to the result list.</li>
+<li>Return the result list.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;unordered_map&gt;
+#include &lt;string&gt;
+
+std::vector&lt;std::string&gt; findRestaurant(std::vector&lt;std::string&gt;&amp; list1, std::vector&lt;std::string&gt;&amp; list2) {
+    std::unordered_map&lt;std::string, int&gt; restaurantMap;
+    for (int i = 0; i &lt; list1.size(); i++) {
+        restaurantMap[list1[i]] = i;
+    }
+
+    int minSum = INT_MAX;
+    std::vector&lt;std::string&gt; result;
+    for (int j = 0; j &lt; list2.size(); j++) {
+        if (restaurantMap.count(list2[j])) {
+            int sum = j + restaurantMap[list2[j]];
+            if (sum &lt; minSum) {
+                result.clear();
+                result.push_back(list2[j]);
+                minSum = sum;
+            } else if (sum == minSum) {
+                result.push_back(list2[j]);
+            }
+        }
+    }
+    return result;
+}
+</code></pre>
+<pre><code>1. Create a hashmap to store the restaurants and their indices (or just index for Python and JavaScript) in list1.
+</code></pre>
+<ol>
+<li>Initialize a variable, minSum, to store the minimum sum of indices, and a result list to store the common restaurants with the least index sum.</li>
+<li>Iterate through list2; for each restaurant, check if it is in the hashmap.
+   a. If it is, calculate the sum of its index in list1 and list2.
+   b. If the sum is less than the current minSum, clear the result list, add the current restaurant to the result list, and update minSum.
+   c. If the sum is equal to minSum, add the restaurant to the result list.</li>
+<li>Return the result list.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

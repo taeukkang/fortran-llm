@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find a Corresponding Node of a Binary Tree in a Clone of That Tree</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1374/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1380/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two binary trees <code>original</code> and <code>cloned</code> and given a reference to a node <code>target</code> in the original tree.</p>
+<p>The <code>cloned</code> tree is a <strong>copy of</strong> the <code>original</code> tree.</p>
+<p>Return <em>a reference to the same node</em> in the <code>cloned</code> tree.</p>
+<p><strong>Note</strong> that you are <strong>not allowed</strong> to change any of the two trees or the <code>target</code> node and the answer <strong>must be</strong> a reference to a node in the <code>cloned</code> tree.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> tree = [7,4,3,null,null,6,19], target = 3
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> In all examples the original and cloned trees are shown. The target node is a green node from the original tree. The answer is the yellow node from the cloned tree.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> tree = [7], target =  7
+<strong>Output:</strong> 7</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> tree = [8,null,6,null,5,null,4,null,3,null,2,null,1], target = 4
+<strong>Output:</strong> 4</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the <code>tree</code> is in the range <code>[1, 104]</code>.</li>
+<li>The values of the nodes of the <code>tree</code> are unique.</li>
+<li><code>target</code> node is a node from the <code>original</code> tree and is not <code>null</code>.</li>
+</ul>
+<p><strong>Follow up:</strong> Could you solve the problem if repeated values on the tree are allowed?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-a-corresponding-node-of-a-binary-tree-in-a-clone-of-that-tree/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, iostat_end, DP => REAL64
+    implicit none
+    integer, parameter :: unit_in = 10, unit_out = 20
+    character(len=256) :: filename
+    type :: node
+        real(kind=DP), pointer :: value => null()
+        class(node), pointer :: left => null(), right => null()
+    end type node
+    type(node), pointer :: root, target
+    integer :: stat
+
+    ! read input file name from command line argument
+    if (command_argument_count() /= 1) then
+        write (unit=error_unit, fmt='(A)') 'error: expected one command line argument'
+        stop 1
+    end if
+    call get_command_argument(1, filename)
+
+    ! open files
+    open (newunit=unit_in, file=filename, status='old', action='read', &
+          access='stream', form='unformatted', iostat=stat)
+    if (stat /= 0) then
+        write (unit=error_unit, fmt='(A,I0,A)') 'error: could not open file "', stat, '" for reading'
+        stop 2
+    end if
+    open (newunit=unit_out, file='stdout', status='replace', action='write', &
+          access='stream', form='unformatted', iostat=stat)
+    if (stat /= 0) then
+        write (unit=error_unit, fmt='(A,I0,A)') 'error: could not open file "', stat, '" for writing'
+        stop 3
+    end if
+
+    ! read root node from input file
+    allocate (root)
+    read (unit=unit_in, iostat=stat) root
+    if (stat == iostat_end) then
+        write (unit=error_unit, fmt='(A)') 'error: unexpected end of file while reading root node'
+        stop 4
+    else if (stat /= 0) then
+        write (unit=error_unit, fmt='(A,I0,A)') 'error: could not read root node from file "', stat, '"'
+        stop 5
+    end if
+
+    ! read target node from input file
+    allocate (target)
+    read (unit=unit_in, iostat=stat) target
+    if (stat == iostat_end) then
+        write (unit=error_unit, fmt='(A)') 'error: unexpected end of file while reading target node'
+        stop 6
+    else if (stat /= 0) then
+        write (unit=error_unit, fmt='(A,I0,A)') 'error: could not read target node from file "', stat, '"'
+        stop 7
+    end if
+
+    ! solve problem
+    call solve(root, target)
+
+    ! write solution to output file
+    write (unit=unit_out) target
+
+    ! close files
+    close (unit=unit_in)
+    close (unit=unit_out)
+
+contains
+
+subroutine solve(original, cloned)
+    implicit none
+    class(node), intent(in) :: original
+    class(node), intent(inout) :: cloned
+    ! local variables
+    class(node), pointer :: current, next
+
+    ! copy original tree into cloned tree
+    allocate (cloned%left)
+    allocate (cloned%right)
+    allocate (cloned%value)
+    cloned%value => original%value
+    cloned%left => original%left
+    cloned%right => original%right
+
+    ! find target node in cloned tree
+    current => cloned
+    do while (associated(current))
+        if (current%value == original%value) exit
+        if (current%value < original%value) then
+            current => current%right
+        else
+            current => current%left
+        end if
+    end do
+
+    ! return reference to same node in cloned tree
+    target => current
+end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:84:15:
+
+   84 |     current => cloned
+      |               1
+Error: Pointer assignment target is neither TARGET nor POINTER at (1)
+temp.f95:21:18:
+
+   21 |     open (newunit=unit_in, file=filename, status='old', action='read', &
+      |                  1
+Error: Named constant ‘unit_in’ in variable definition context (NEWUNIT tag) at (1)
+temp.f95:27:18:
+
+   27 |     open (newunit=unit_out, file='stdout', status='replace', action='write', &
+      |                  1
+Error: Named constant ‘unit_out’ in variable definition context (NEWUNIT tag) at (1)
+temp.f95:36:41:
+
+   36 |     read (unit=unit_in, iostat=stat) root
+      |                                         1
+Error: Data transfer element at (1) cannot have POINTER components unless it is processed by a defined input/output procedure
+temp.f95:47:43:
+
+   47 |     read (unit=unit_in, iostat=stat) target
+      |                                           1
+Error: Data transfer element at (1) cannot have POINTER components unless it is processed by a defined input/output procedure
+temp.f95:60:32:
+
+   60 |     write (unit=unit_out) target
+      |                                1
+Error: Data transfer element at (1) cannot have POINTER components unless it is processed by a defined input/output procedure
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module cloned_tree
+
+implicit none
+
+contains
+
+pure function find_cloned_node(original, cloned, target) result(cloned_node)
+
+! This function finds the cloned node in the cloned tree that corresponds to the target node in the original tree.
+! The function assumes that the cloned tree is a copy of the original tree.
+
+type(node), pointer, intent(in) :: original
+type(node), pointer, intent(in) :: cloned
+type(node), pointer, intent(in) :: target
+type(node), pointer :: cloned_node
+
+! Initialize the cloned node to null
+cloned_node => null()
+
+! If the original tree is empty or the target node is null, return null
+if (associated(original, null())) return
+if (.not. associated(target, null())) return
+
+! If the target node is the root of the original tree, return the root of the cloned tree
+if (associated(target, original%left)) then
+    cloned_node => cloned%left
+else if (associated(target, original%right)) then
+    cloned_node => cloned%right
+end if
+
+! If the target node is not the root of the original tree, find the cloned node recursively
+if (.not. associated(cloned_node, null())) then
+    cloned_node => find_cloned_node(original%left, cloned%left, target)
+    if (.not. associated(cloned_node, null())) return
+    cloned_node => find_cloned_node(original%right, cloned%right, target)
+end if
+
+end function find_cloned_node
+
+end module cloned_tree
+
+program main
+
+use cloned_tree
+implicit none
+
+! Declare the original and cloned trees and the target node
+type(node), pointer :: original, cloned, target
+
+! Create the original tree
+original => create_node(7)
+call add_left_child(original, create_node(4))
+call add_right_child(original, create_node(3))
+call add_left_child(original%left, create_node(6))
+call add_right_child(original%left, create_node(19))
+
+! Create the cloned tree
+cloned => create_node(7)
+call add_left_child(cloned, create_node(4))
+call add_right_child(cloned, create_node(3))
+call add_left_child(cloned%left, create_node(6))
+call add_right_child(cloned%left, create_node(19))
+
+! Set the target node
+target => original%left
+
+! Find the cloned node
+cloned_node => find_cloned_node(original, cloned, target)
+
+! Print the value of the cloned node
+write (*,*) cloned_node%data
+
+end program main
+
+module node_mod
+
+implicit none
+
+type :: node
+    integer :: data
+    type(node), pointer :: left
+    type(node), pointer :: right
+end type node
+
+contains
+
+pure function create_node(data) result(new_node)
+
+type(node), pointer :: new_node
+integer, intent(in) :: data
+
+allocate(new_node)
+new_node%data = data
+new_node%left => null()
+new_node%right => null()
+
+end function create_node
+
+subroutine add_left_child(parent, child)
+
+type(node), pointer, intent(inout) :: parent
+type(node), pointer, intent(in) :: child
+
+if (.not. associated(parent, null())) then
+    parent%left => child
+end if
+
+end subroutine add_left_child
+
+subroutine add_right_child(parent, child)
+
+type(node), pointer, intent(inout) :: parent
+type(node), pointer, intent(in) :: child
+
+if (.not. associated(parent, null())) then
+    parent%right => child
+end if
+
+end subroutine add_right_child
+
+end module node_mod
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:12:11:
+
+   12 | type(node), pointer, intent(in) :: original
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:13:11:
+
+   13 | type(node), pointer, intent(in) :: cloned
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:14:11:
+
+   14 | type(node), pointer, intent(in) :: target
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:15:11:
+
+   15 | type(node), pointer :: cloned_node
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:7:76:
+
+    7 | pure function find_cloned_node(original, cloned, target) result(cloned_node)
+      |                                                                            1
+Error: Function result ‘cloned_node’ at (1) has no IMPLICIT type
+temp.f95:25:33:
+
+   25 | if (associated(target, original%left)) then
+      |                                 1
+Error: Symbol ‘original’ at (1) has no IMPLICIT type
+temp.f95:26:27:
+
+   26 |     cloned_node => cloned%left
+      |                           1
+Error: Symbol ‘cloned’ at (1) has no IMPLICIT type
+temp.f95:27:38:
+
+   27 | else if (associated(target, original%right)) then
+      |                                      1
+Error: Symbol ‘original’ at (1) has no IMPLICIT type
+temp.f95:28:27:
+
+   28 |     cloned_node => cloned%right
+      |                           1
+Error: Symbol ‘cloned’ at (1) has no IMPLICIT type
+temp.f95:29:3:
+
+   29 | end if
+      |   1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:33:46:
+
+   33 |     cloned_node => find_cloned_node(original%left, cloned%left, target)
+      |                                              1
+Error: Symbol ‘original’ at (1) has no IMPLICIT type
+temp.f95:35:46:
+
+   35 |     cloned_node => find_cloned_node(original%right, cloned%right, target)
+      |                                              1
+Error: Symbol ‘original’ at (1) has no IMPLICIT type
+temp.f95:7:39:
+
+    7 | pure function find_cloned_node(original, cloned, target) result(cloned_node)
+      |                                       1
+Error: Symbol ‘original’ at (1) has no IMPLICIT type
+temp.f95:7:39:
+
+    7 | pure function find_cloned_node(original, cloned, target) result(cloned_node)
+      |                                       1
+Error: Argument ‘original’ of pure function ‘find_cloned_node’ at (1) must be INTENT(IN) or VALUE
+temp.f95:7:47:
+
+    7 | pure function find_cloned_node(original, cloned, target) result(cloned_node)
+      |                                               1
+Error: Symbol ‘cloned’ at (1) has no IMPLICIT type
+temp.f95:7:47:
+
+    7 | pure function find_cloned_node(original, cloned, target) result(cloned_node)
+      |                                               1
+Error: Argument ‘cloned’ of pure function ‘find_cloned_node’ at (1) must be INTENT(IN) or VALUE
+temp.f95:7:55:
+
+    7 | pure function find_cloned_node(original, cloned, target) result(cloned_node)
+      |                                                       1
+Error: Symbol ‘target’ at (1) has no IMPLICIT type
+temp.f95:7:55:
+
+    7 | pure function find_cloned_node(original, cloned, target) result(cloned_node)
+      |                                                       1
+Error: Argument ‘target’ of pure function ‘find_cloned_node’ at (1) must be INTENT(IN) or VALUE
+temp.f95:44:5:
+
+   44 | use cloned_tree
+      |     1
+Fatal Error: Cannot open module file ‘cloned_tree.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def reconstructMatrix(upper, lower, colsum):
+    result = [[0] * len(colsum) for _ in range(2)]
+
+    for i in range(len(colsum)):
+        if colsum[i] == 2:
+            result[0][i] = 1
+            result[1][i] = 1
+            upper -= 1
+            lower -= 1
+        elif colsum[i] == 1:
+            if upper &gt; lower:
+                result[0][i] = 1
+                upper -= 1
+            else:
+                result[1][i] = 1
+                lower -= 1
+
+        if upper &lt; 0 or lower &lt; 0:
+            return []
+
+    if upper &gt; 0 or lower &gt; 0:
+        return []
+
+    return result
+</code></pre>
+<p>First, initialize an empty 2D array with 2 rows and "n" columns, where "n" is the length of the <code>colsum</code> array.</p>
+<p>Iterate through the <code>colsum</code> array, and for each element:
+1. If the element is equal to 2, set both the upper row and lower row values to 1, and decrement both <code>upper</code> and <code>lower</code>.
+2. If the element is equal to 1, check if <code>upper</code> is greater than <code>lower</code>. If so, set the value in the upper row to 1 and decrement <code>upper</code>, otherwise set the value in the lower row to 1 and decrement <code>lower</code>.</p>
+<p>At any point, if either <code>upper</code> or <code>lower</code> becomes negative, return an empty array as there is no valid solution.</p>
+<p>Finally, if either <code>upper</code> or <code>lower</code> is still greater than 0, return an empty array as there is no valid solution. Otherwise, return the reconstructed 2D array.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+using namespace std;
+
+vector&lt;vector&lt;int&gt;&gt; reconstructMatrix(int upper, int lower, vector&lt;int&gt;&amp; colsum) {
+    vector&lt;vector&lt;int&gt;&gt; result(2, vector&lt;int&gt;(colsum.size(), 0));
+
+    for (int i = 0; i &lt; colsum.size(); i++) {
+        if (colsum[i] == 2) {
+            result[0][i] = 1;
+            result[1][i] = 1;
+            upper--;
+            lower--;
+        } else if (colsum[i] == 1) {
+            if (upper &gt; lower) {
+                result[0][i] = 1;
+                upper--;
+            } else {
+                result[1][i] = 1;
+                lower--;
+            }
+        }
+
+        if (upper &lt; 0 || lower &lt; 0) {
+            return {};
+        }
+    }
+
+    if (upper &gt; 0 || lower &gt; 0) {
+        return {};
+    }
+
+    return result;
+}
+</code></pre>
+<p>First, initialize an empty 2D array with 2 rows and "n" columns, where "n" is the length of the <code>colsum</code> array.</p>
+<p>Iterate through the <code>colsum</code> array, and for each element:
+1. If the element is equal to 2, set both the upper row and lower row values to 1, and decrement both <code>upper</code> and <code>lower</code>.
+2. If the element is equal to 1, check if <code>upper</code> is greater than <code>lower</code>. If so, set the value in the upper row to 1 and decrement <code>upper</code>, otherwise set the value in the lower row to 1 and decrement <code>lower</code>.</p>
+<p>At any point, if either <code>upper</code> or <code>lower</code> becomes negative, return an empty array as there is no valid solution.</p>
+<p>Finally, if either <code>upper</code> or <code>lower</code> is still greater than 0, return an empty array as there is no valid solution. Otherwise, return the reconstructed 2D array.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

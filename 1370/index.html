@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Increasing Decreasing String</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1365/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1374/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>s</code>. Reorder the string using the following algorithm:</p>
+<ol>
+<li>Pick the <strong>smallest</strong> character from <code>s</code> and <strong>append</strong> it to the result.</li>
+<li>Pick the <strong>smallest</strong> character from <code>s</code> which is greater than the last appended character to the result and <strong>append</strong> it.</li>
+<li>Repeat step 2 until you cannot pick more characters.</li>
+<li>Pick the <strong>largest</strong> character from <code>s</code> and <strong>append</strong> it to the result.</li>
+<li>Pick the <strong>largest</strong> character from <code>s</code> which is smaller than the last appended character to the result and <strong>append</strong> it.</li>
+<li>Repeat step 5 until you cannot pick more characters.</li>
+<li>Repeat the steps from 1 to 6 until you pick all characters from <code>s</code>.</li>
+</ol>
+<p>In each step, If the smallest or the largest character appears more than once you can choose any occurrence and append it to the result.</p>
+<p>Return <em>the result string after sorting</em> <code>s</code> <em>with this algorithm</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "aaaabbbbcccc "
+<strong>Output:</strong>  "abccbaabccba "
+<strong>Explanation:</strong> After steps 1, 2 and 3 of the first iteration, result =  "abc "
+After steps 4, 5 and 6 of the first iteration, result =  "abccba "
+First iteration is done. Now s =  "aabbcc " and we go back to step 1
+After steps 1, 2 and 3 of the second iteration, result =  "abccbaabc "
+After steps 4, 5 and 6 of the second iteration, result =  "abccbaabccba "</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "rat "
+<strong>Output:</strong>  "art "
+<strong>Explanation:</strong> The word  "rat " becomes  "art " after re-ordering it with the mentioned algorithm.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 500</code></li>
+<li><code>s</code> consists of only lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/increasing-decreasing-string/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: s
+    character(len=:), allocatable :: result
+
+    ! Example 1
+    s = 'aaaabbbbcccc'
+    write(*,'(A)') solve(s)
+
+    ! Example 2
+    s = 'rat'
+    write(*,'(A)') solve(s)
+
+contains
+
+    function solve(s) result(result)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer :: i, j, k
+        character :: c
+        logical :: found
+
+        allocate(character(len=len(s)) :: result)
+        result = ''
+
+        do while (len(s) > 0)
+            ! Step 1
+            c = minval(s)
+            call remove(s, c)
+            result = trim(result) // c
+
+            ! Step 2
+            do while (len(s) > 0)
+                c = minval(s, key=gt_char)
+                if (c == '') exit
+                call remove(s, c)
+                result = trim(result) // c
+            end do
+
+            ! Step 3
+            do while (len(s) > 0)
+                c = minval(s)
+                if (c == '') exit
+                call remove(s, c)
+                result = trim(result) // c
+            end do
+
+            ! Step 4
+            c = maxval(s)
+            call remove(s, c)
+            result = trim(result) // c
+
+            ! Step 5
+            do while (len(s) > 0)
+                c = maxval(s, key=lt_char)
+                if (c == '') exit
+                call remove(s, c)
+                result = trim(result) // c
+            end do
+
+            ! Step 6
+            do while (len(s) > 0)
+                c = maxval(s)
+                if (c == '') exit
+                call remove(s, c)
+                result = trim(result) // c
+            end do
+        end do
+
+    contains
+
+        pure function gt_char(c1, c2) result(gt)
+            implicit none
+            character, intent(in) :: c1, c2
+            logical :: gt
+
+            gt = ichar(c1) > ichar(c2)
+        end function gt_char
+
+        pure function lt_char(c1, c2) result(lt)
+            implicit none
+            character, intent(in) :: c1, c2
+            logical :: lt
+
+            lt = ichar(c1) < ichar(c2)
+        end function lt_char
+
+        subroutine remove(string, char)
+            implicit none
+            character(len=*), intent(inout) :: string
+            character, intent(in) :: char
+            integer :: i
+
+            do while (index(string, char) /= 0)
+                i = index(string, char)
+                string(i:) = string(i+1:)
+            end do
+        end subroutine remove
+
+    end function solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:24:42:
+
+   24 |         allocate(character(len=len(s)) :: result)
+      |                                          1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:17:36:
+
+   17 |     function solve(s) result(result)
+      |                                    1
+Error: Function result ‘result’ at (1) has no IMPLICIT type
+temp.f95:71:12:
+
+   71 |     contains
+      |            1
+Error: CONTAINS statement at (1) is already in a contained program unit
+temp.f95:74:25:
+
+   74 |             implicit none
+      |                         1
+Error: Duplicate IMPLICIT NONE statement at (1)
+temp.f95:75:43:
+
+   75 |             character, intent(in) :: c1, c2
+      |                                           1
+Error: Unexpected data declaration statement at (1)
+temp.f95:76:25:
+
+   76 |             logical :: gt
+      |                         1
+Error: Unexpected data declaration statement at (1)
+temp.f95:79:28:
+
+   79 |         end function gt_char
+      |                            1
+Error: Expected label ‘solve’ for END FUNCTION statement at (1)
+temp.f95:82:25:
+
+   82 |             implicit none
+      |                         1
+Error: Duplicate IMPLICIT NONE statement at (1)
+temp.f95:83:43:
+
+   83 |             character, intent(in) :: c1, c2
+      |                                           1
+Error: Unexpected data declaration statement at (1)
+temp.f95:84:25:
+
+   84 |             logical :: lt
+      |                         1
+Error: Unexpected data declaration statement at (1)
+temp.f95:87:28:
+
+   87 |         end function lt_char
+      |                            1
+Error: Expected label ‘solve’ for END FUNCTION statement at (1)
+temp.f95:90:25:
+
+   90 |             implicit none
+      |                         1
+Error: Duplicate IMPLICIT NONE statement at (1)
+temp.f95:91:53:
+
+   91 |             character(len=*), intent(inout) :: string
+      |                                                     1
+Error: Unexpected data declaration statement at (1)
+temp.f95:92:41:
+
+   92 |             character, intent(in) :: char
+      |                                         1
+Error: Unexpected data declaration statement at (1)
+temp.f95:93:24:
+
+   93 |             integer :: i
+      |                        1
+Error: Symbol ‘i’ at (1) already has basic type of INTEGER
+temp.f95:99:11:
+
+   99 |         end subroutine remove
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:24:31:
+
+   24 |         allocate(character(len=len(s)) :: result)
+      |                               1
+Error: ‘remove’ at (1) is not a function
+temp.f95:78:25:
+
+   78 |             gt = ichar(c1) > ichar(c2)
+      |                         1
+Error: Symbol ‘c1’ at (1) has no IMPLICIT type; did you mean ‘c’?
+temp.f95:78:37:
+
+   78 |             gt = ichar(c1) > ichar(c2)
+      |                                     1
+Error: Symbol ‘c2’ at (1) has no IMPLICIT type; did you mean ‘c’?
+temp.f95:95:40:
+
+   95 |             do while (index(string, char) /= 0)
+      |                                        1
+Error: Symbol ‘char’ at (1) has no IMPLICIT type
+temp.f95:78:14:
+
+   78 |             gt = ichar(c1) > ichar(c2)
+      |              1
+Error: Symbol ‘gt’ at (1) has no IMPLICIT type
+temp.f95:35:41:
+
+   35 |                 c = minval(s, key=gt_char)
+      |                                         1
+Error: Symbol ‘gt_char’ at (1) has no IMPLICIT type
+temp.f95:86:14:
+
+   86 |             lt = ichar(c1) < ichar(c2)
+      |              1
+Error: Symbol ‘lt’ at (1) has no IMPLICIT type
+temp.f95:56:41:
+
+   56 |                 c = maxval(s, key=lt_char)
+      |                                         1
+Error: Symbol ‘lt_char’ at (1) has no IMPLICIT type
+temp.f95:95:34:
+
+   95 |             do while (index(string, char) /= 0)
+      |                                  1
+Error: Symbol ‘string’ at (1) has no IMPLICIT type
+temp.f95:29:23:
+
+   29 |             c = minval(s)
+      |                       1
+Error: ‘array’ argument of ‘minval’ intrinsic at (1) must be an array
+temp.f95:43:27:
+
+   43 |                 c = minval(s)
+      |                           1
+Error: ‘array’ argument of ‘minval’ intrinsic at (1) must be an array
+temp.f95:50:23:
+
+   50 |             c = maxval(s)
+      |                       1
+Error: ‘array’ argument of ‘maxval’ intrinsic at (1) must be an array
+temp.f95:64:27:
+
+   64 |                 c = maxval(s)
+      |                           1
+Error: ‘array’ argument of ‘maxval’ intrinsic at (1) must be an array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: i, j, k, l, m, n, o
+character(len=500) :: s, result
+
+! Read input
+read(*,*) s
+
+! Initialize variables
+i = 1
+j = 1
+k = 1
+l = 1
+m = 1
+n = 1
+o = 1
+
+! Initialize result
+result = ""
+
+! Loop until all characters are used
+do while (i <= len(s))
+
+! Find smallest character
+do while (j <= len(s))
+if (s(j:j) < s(i:i)) then
+i = j
+endif
+j = j + 1
+enddo
+
+! Append smallest character
+result = result // s(i:i)
+
+! Find smallest character greater than last appended character
+do while (k <= len(s))
+if (s(k:k) > s(i:i) .and. s(k:k) < s(o:o)) then
+o = k
+endif
+k = k + 1
+enddo
+
+! Append smallest character greater than last appended character
+result = result // s(o:o)
+
+! Find largest character
+do while (l <= len(s))
+if (s(l:l) > s(i:i)) then
+i = l
+endif
+l = l + 1
+enddo
+
+! Append largest character
+result = result // s(i:i)
+
+! Find largest character smaller than last appended character
+do while (m <= len(s))
+if (s(m:m) < s(i:i) .and. s(m:m) > s(n:n)) then
+n = m
+endif
+m = m + 1
+enddo
+
+! Append largest character smaller than last appended character
+result = result // s(n:n)
+
+! Increment variables
+i = i + 1
+j = j + 1
+k = k + 1
+l = l + 1
+m = m + 1
+n = n + 1
+o = o + 1
+
+! End loop
+enddo
+
+! Print result
+print *, result
+
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 6 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x79062fb54960 in ???
+#1  0x79062fb554d9 in ???
+#2  0x79062fda917b in ???
+#3  0x79062fda2684 in ???
+#4  0x79062fda32aa in ???
+#5  0x5d09c18a721c in MAIN__
+#6  0x5d09c18a7655 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def numberOfSubarrays(nums, k):
+    n = len(nums)
+    result = count = 0
+    odd_count = [0] * (n + 1)
+
+    odd_count[0] = 1
+    for num in nums:
+        count += num % 2
+        if count &gt;= k:
+            result += odd_count[count - k]
+        odd_count[count] += 1
+
+    return result
+</code></pre>
+<ol>
+<li>Initialize array <code>oddCount</code> with a size of <code>n+1</code> and set <code>oddCount[0]</code> to 1.</li>
+<li>Initialize <code>count</code> and <code>result</code> to 0.</li>
+<li>Iterate through the input array <code>nums</code>.</li>
+<li>For each element, increment <code>count</code> by the value of the element modulo 2 (if the element is odd, it increments by 1, otherwise by 0).</li>
+<li>If <code>count</code> is greater than or equal to <code>k</code>, increment <code>result</code> by the value of <code>oddCount[count - k]</code>.</li>
+<li>Increment <code>oddCount[count]</code>.</li>
+<li>After iteration, return <code>result</code> as the number of nice sub-arrays.</li>
+</ol>
+<p>This algorithm works by tracking the number of odd elements within a subarray and storing the cumulative sums in the <code>oddCount</code> array. By iterating through the input array and incrementing the count, the algorithm determines whether a subarray is nice by checking if the count is greater than or equal to <code>k</code> and updating the result accordingly.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int numberOfSubarrays(vector&lt;int&gt;&amp; nums, int k) {
+    int n = nums.size(), result = 0, count = 0;
+    vector&lt;int&gt; oddCount(n + 1, 0);
+
+    oddCount[0] = 1;
+    for (int i = 0; i &lt; n; i++) {
+        count += nums[i] % 2;
+        if (count &gt;= k) result += oddCount[count - k];
+        oddCount[count]++;
+    }
+
+    return result;
+}
+</code></pre>
+<ol>
+<li>Initialize array <code>oddCount</code> with a size of <code>n+1</code> and set <code>oddCount[0]</code> to 1.</li>
+<li>Initialize <code>count</code> and <code>result</code> to 0.</li>
+<li>Iterate through the input array <code>nums</code>.</li>
+<li>For each element, increment <code>count</code> by the value of the element modulo 2 (if the element is odd, it increments by 1, otherwise by 0).</li>
+<li>If <code>count</code> is greater than or equal to <code>k</code>, increment <code>result</code> by the value of <code>oddCount[count - k]</code>.</li>
+<li>Increment <code>oddCount[count]</code>.</li>
+<li>After iteration, return <code>result</code> as the number of nice sub-arrays.</li>
+</ol>
+<p>This algorithm works by tracking the number of odd elements within a subarray and storing the cumulative sums in the <code>oddCount</code> array. By iterating through the input array and incrementing the count, the algorithm determines whether a subarray is nice by checking if the count is greater than or equal to <code>k</code> and updating the result accordingly.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

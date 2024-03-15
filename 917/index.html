@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Reverse Only Letters</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/914/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/922/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string <code>s</code>, reverse the string according to the following rules:</p>
+<ul>
+<li>All the characters that are not English letters remain in the same position.</li>
+<li>All the English letters (lowercase or uppercase) should be reversed.</li>
+</ul>
+<p>Return <code>s</code> <em>after reversing it</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s = "ab-cd"
+<strong>Output:</strong> "dc-ba"</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s = "a-bC-dEf-ghIj"
+<strong>Output:</strong> "j-Ih-gfE-dCba"</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s = "Test1ng-Leet=code-Q!"
+<strong>Output:</strong> "Qedo1ct-eeLg=ntse-T!"</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 100</code></li>
+<li><code>s</code> consists of characters with ASCII values in the range <code>[33, 122]</code>.</li>
+<li><code>s</code> does not contain <code>'\ "'</code> or <code>'\\'</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/reverse-only-letters/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=100) :: s
+
+    call get_command_argument(1, s)
+
+    print '(A)', reverse_string(s)
+
+contains
+
+    function reverse_string(s) result(r)
+        implicit none
+        character(len=*), intent(in) :: s
+        character(len=len(s)) :: r
+
+        integer :: i, j
+
+        do i = 1, len(s)
+            if (is_letter(s(i:i))) then
+                j = len(s) - i + 1
+                r(j:j) = s(i:i)
+            else
+                r(i:i) = s(i:i)
+            end if
+        end do
+    end function reverse_string
+
+    function is_letter(c) result(res)
+        implicit none
+        character(len=*), intent(in) :: c
+        logical :: res
+
+        res = any(c == ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']) .or. &
+              any(c == ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'])
+    end function is_letter
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:34:132:
+
+   34 |         res = any(c == ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']) .or. &
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:34:23:
+
+   34 |         res = any(c == ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']) .or. &
+      |                       1
+Error: Invalid character in name at (1)
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! This program reverses a string according to the following rules:
+!
+! * All the characters that are not English letters remain in the same position.
+! * All the English letters (lowercase or uppercase) should be reversed.
+
+program reverse_string
+
+implicit none
+
+character(len=100) :: s
+character(len=100) :: reversed_s
+integer :: i, j
+
+! Read the input string from the command line argument
+call get_command_argument(1, s)
+
+! Initialize the reversed string to all spaces
+reversed_s = repeat(' ', len(s))
+
+! Iterate over the characters in the input string
+do i = 1, len(s)
+    ! If the character is an English letter, reverse it
+    if (is_letter(s(i:i))) then
+        reversed_s(len(s) - i + 1:len(s) - i + 1) = s(i:i)
+    else
+        ! If the character is not an English letter, leave it in the same position
+        reversed_s(i:i) = s(i:i)
+    end if
+end do
+
+! Print the reversed string to stdout
+write (*, '(a)') reversed_s
+
+contains
+
+! Check if a character is an English letter
+function is_letter(c) result(is_letter)
+    character(len=1), intent(in) :: c
+    logical :: is_letter
+
+    is_letter = (c >= 'a' .and. c <= 'z') .or. (c >= 'A' .and. c <= 'Z')
+end function is_letter
+
+end program reverse_string
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:37:39:
+
+   37 | function is_letter(c) result(is_letter)
+      |                                       1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:38:37:
+
+   38 |     character(len=1), intent(in) :: c
+      |                                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:39:24:
+
+   39 |     logical :: is_letter
+      |                        1
+Error: Symbol ‘is_letter’ at (1) has already been host associated
+temp.f95:41:14:
+
+   41 |     is_letter = (c >= 'a' .and. c <= 'z') .or. (c >= 'A' .and. c <= 'Z')
+      |              1
+Error: Symbol ‘is_letter’ at (1) has already been host associated
+temp.f95:42:3:
+
+   42 | end function is_letter
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:23:8:
+
+   23 |     if (is_letter(s(i:i))) then
+      |        1
+Error: Function ‘is_letter’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def num_rescue_boats(people, limit):
+    people.sort()
+    left, right = 0, len(people) - 1
+    boats = 0
+    while left &lt;= right:
+        if people[left] + people[right] &lt;= limit:
+            left += 1
+        right -= 1
+        boats += 1
+    return boats
+</code></pre>
+<p>The algorithm sorts the weights of the people in ascending order. Then, it uses two pointers, left, starting at the first person, and right, starting at the last person, to assign people to boats efficiently.</p>
+<p>In each iteration, if the person pointed by left and the person pointed by right can fit in the same boat, they are assigned to one. Whether those two people can share a boat or not, we still move the right pointer to the previous person, because the heaviest person will always need a boat.</p>
+<p>This process is repeated until the left pointer and right pointer meet, guaranteeing all people have been assigned to boats. The count of boats used during the process is returned as the minimum number of boats needed.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+
+int numRescueBoats(std::vector&lt;int&gt;&amp; people, int limit) {
+    std::sort(people.begin(), people.end());
+    int left = 0, right = people.size() - 1;
+    int boats = 0;
+    while (left &lt;= right) {
+        if (people[left] + people[right] &lt;= limit) {
+            left++;
+        }
+        right--;
+        boats++;
+    }
+    return boats;
+}
+</code></pre>
+<p>The algorithm sorts the weights of the people in ascending order. Then, it uses two pointers, left, starting at the first person, and right, starting at the last person, to assign people to boats efficiently.</p>
+<p>In each iteration, if the person pointed by left and the person pointed by right can fit in the same boat, they are assigned to one. Whether those two people can share a boat or not, we still move the right pointer to the previous person, because the heaviest person will always need a boat.</p>
+<p>This process is repeated until the left pointer and right pointer meet, guaranteeing all people have been assigned to boats. The count of boats used during the process is returned as the minimum number of boats needed.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

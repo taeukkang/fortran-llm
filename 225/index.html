@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Implement Stack using Queues</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/219/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/226/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Implement a last-in-first-out (LIFO) stack using only two queues. The implemented stack should support all the functions of a normal stack (<code>push</code>, <code>top</code>, <code>pop</code>, and <code>empty</code>).</p>
+<p>Implement the <code>MyStack</code> class:</p>
+<ul>
+<li><code>void push(int x)</code> Pushes element x to the top of the stack.</li>
+<li><code>int pop()</code> Removes the element on the top of the stack and returns it.</li>
+<li><code>int top()</code> Returns the element on the top of the stack.</li>
+<li><code>boolean empty()</code> Returns <code>true</code> if the stack is empty, <code>false</code> otherwise.</li>
+</ul>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>You must use <strong>only</strong> standard operations of a queue, which means that only <code>push to back</code>, <code>peek/pop from front</code>, <code>size</code> and <code>is empty</code> operations are valid.</li>
+<li>Depending on your language, the queue may not be supported natively. You may simulate a queue using a list or deque (double-ended queue) as long as you use only a queue's standard operations.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input</strong>
+[ "MyStack ",  "push ",  "push ",  "top ",  "pop ",  "empty "]
+[[], [1], [2], [], [], []]
+<strong>Output</strong>
+[null, null, null, 2, 2, false]</p>
+<p><strong>Explanation</strong>
+MyStack myStack = new MyStack();
+myStack.push(1);
+myStack.push(2);
+myStack.top(); // return 2
+myStack.pop(); // return 2
+myStack.empty(); // return False</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= x &lt;= 9</code></li>
+<li>At most <code>100</code> calls will be made to <code>push</code>, <code>pop</code>, <code>top</code>, and <code>empty</code>.</li>
+<li>All the calls to <code>pop</code> and <code>top</code> are valid.</li>
+</ul>
+<p><strong>Follow-up:</strong> Can you implement the stack using only one queue?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/implement-stack-using-queues/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! This program implements a last-in-first-out (LIFO) stack using only two queues.
+    implicit none
+
+    type :: MyStack
+        private
+        integer, allocatable :: q1(:), q2(:)
+        integer :: size
+    contains
+        procedure :: push => push_impl
+        procedure :: pop => pop_impl
+        procedure :: top => top_impl
+        procedure :: empty => empty_impl
+    end type MyStack
+
+    interface MyStack
+        module procedure constructor
+    end interface MyStack
+
+contains
+
+    function constructor() result(stack)
+        type(MyStack) :: stack
+
+        allocate(stack%q1(0))
+        allocate(stack%q2(0))
+        stack%size = 0
+    end function constructor
+
+    subroutine push_impl(this, x)
+        class(MyStack), intent(inout) :: this
+        integer, value :: x
+
+        if (allocated(this%q1)) then
+            call move_alloc(this%q1, this%q2)
+        else
+            allocate(this%q1(0))
+        end if
+        allocate(this%q1(this%size + 1))
+        this%q1(this%size + 1) = x
+        this%size = this%size + 1
+    end subroutine push_impl
+
+    function pop_impl(this) result(x)
+        class(MyStack), intent(inout) :: this
+        integer :: x
+
+        if (.not. allocated(this%q1)) then
+            error stop 'Error: pop called on empty stack.'
+        end if
+        x = this%q1(this%size)
+        this%size = this%size - 1
+        if (this%size == 0) then
+            deallocate(this%q1)
+            if (allocated(this%q2)) then
+                call move_alloc(this%q2, this%q1)
+            end if
+        end if
+    end function pop_impl
+
+    function top_impl(this) result(x)
+        class(MyStack), intent(in) :: this
+        integer :: x
+
+        if (.not. allocated(this%q1)) then
+            error stop 'Error: top called on empty stack.'
+        end if
+        x = this%q1(this%size)
+    end function top_impl
+
+    logical function empty_impl(this)
+        class(MyStack), intent(in) :: this
+
+        empty_impl = .not. allocated(this%q1)
+    end function empty_impl
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:15:
+
+    6 |         private
+      |               1
+Error: PRIVATE statement at (1) is only allowed in the specification part of a module
+temp.f95:22:4:
+
+   22 |     function constructor() result(stack)
+      |    1
+Error: INTERNAL-PROC procedure at (1) is already declared as MODULE-PROC procedure
+temp.f95:13:17:
+
+   13 |         procedure :: empty => empty_impl
+      |                 1
+Error: ‘empty_impl’ must be a module procedure or an external procedure with an explicit interface at (1)
+temp.f95:11:17:
+
+   11 |         procedure :: pop => pop_impl
+      |                 1
+Error: ‘pop_impl’ must be a module procedure or an external procedure with an explicit interface at (1)
+temp.f95:10:17:
+
+   10 |         procedure :: push => push_impl
+      |                 1
+Error: ‘push_impl’ must be a module procedure or an external procedure with an explicit interface at (1)
+temp.f95:12:17:
+
+   12 |         procedure :: top => top_impl
+      |                 1
+Error: ‘top_impl’ must be a module procedure or an external procedure with an explicit interface at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module MyStack
+    implicit none
+    private
+    type :: MyStack_t
+        integer :: size = 0
+        integer, allocatable :: queue(:)
+    end type MyStack_t
+
+    interface MyStack
+        module procedure constructor
+    end interface MyStack
+
+contains
+
+    function constructor() result(this)
+        type(MyStack_t) :: this
+
+        allocate(this%queue(0))
+    end function constructor
+
+    subroutine push(this, x)
+        class(MyStack_t), intent(inout) :: this
+        integer, intent(in) :: x
+
+        this%size = this%size + 1
+        allocate(this%queue(this%size))
+        this%queue(this%size) = x
+    end subroutine push
+
+    function top(this) result(x)
+        class(MyStack_t), intent(in) :: this
+        integer :: x
+
+        x = this%queue(this%size)
+    end function top
+
+    function pop(this) result(x)
+        class(MyStack_t), intent(inout) :: this
+        integer :: x
+
+        x = this%queue(this%size)
+        this%size = this%size - 1
+        deallocate(this%queue(this%size + 1))
+    end function pop
+
+    function empty(this) result(x)
+        class(MyStack_t), intent(in) :: this
+        logical :: x
+
+        x = this%size == 0
+    end function empty
+end module MyStack
+
+program main
+    use MyStack
+    implicit none
+    type(MyStack_t) :: stack
+    integer :: x
+
+    ! Test case 1:
+    call stack%push(1)
+    call stack%push(2)
+    x = stack%top()
+    write (*,*) x
+    x = stack%pop()
+    write (*,*) x
+    x = stack%empty()
+    write (*,*) x
+
+    ! Test case 2:
+    call stack%push(3)
+    call stack%push(4)
+    x = stack%top()
+    write (*,*) x
+    x = stack%pop()
+    write (*,*) x
+    x = stack%empty()
+    write (*,*) x
+
+    ! Test case 3:
+    call stack%push(5)
+    call stack%push(6)
+    x = stack%top()
+    write (*,*) x
+    x = stack%pop()
+    write (*,*) x
+    x = stack%empty()
+    write (*,*) x
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:21:
+
+    9 |     interface MyStack
+      |                     1
+Error: MODULE attribute of ‘mystack’ conflicts with PROCEDURE attribute at (1)
+temp.f95:10:25:
+
+   10 |         module procedure constructor
+      |                         1
+Error: MODULE PROCEDURE at (1) must be in a generic module interface
+temp.f95:11:7:
+
+   11 |     end interface MyStack
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:43:19:
+
+   43 |         deallocate(this%queue(this%size + 1))
+      |                   1
+Error: Allocate-object at (1) must be ALLOCATABLE or a POINTER
+temp.f95:55:9:
+
+   55 |     use MyStack
+      |         1
+Fatal Error: Cannot open module file ‘mystack.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from collections import deque
+
+class MyStack:
+
+    def __init__(self):
+        self.q1 = deque()
+        self.q2 = deque()
+
+    def push(self, x: int) -&gt; None:
+        self.q2.append(x)
+        while self.q1:
+            self.q2.append(self.q1.popleft())
+        self.q1, self.q2 = self.q2, self.q1
+
+    def pop(self) -&gt; int:
+        return self.q1.popleft()
+
+    def top(self) -&gt; int:
+        return self.q1[0]
+
+    def empty(self) -&gt; bool:
+        return not self.q1
+</code></pre>
+<p>We have two queues q1 and q2, where we will store the elements. For every push operation, we first push the new element into q2, then move all the elements in the q1 to q2, and then swap both queues. The pop and top operations will always operate on q1, which maintains the elements in the reverse order, simulating the LIFO order of a stack. The empty operation simply checks if q1 is empty.</p>
+<p>The time complexity for push is O(n), while the time complexities for top, pop, and empty are O(1).</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;queue&gt;
+
+class MyStack {
+public:
+    std::queue&lt;int&gt; q1, q2;
+
+    void push(int x) {
+        q2.push(x);
+        while (!q1.empty()) {
+            q2.push(q1.front());
+            q1.pop();
+        }
+        std::swap(q1, q2);
+    }
+
+    int pop() {
+        int top = q1.front();
+        q1.pop();
+        return top;
+    }
+
+    int top() {
+        return q1.front();
+    }
+
+    bool empty() {
+        return q1.empty();
+    }
+};
+</code></pre>
+<p>We have two queues q1 and q2, where we will store the elements. For every push operation, we first push the new element into q2, then move all the elements in the q1 to q2, and then swap both queues. The pop and top operations will always operate on q1, which maintains the elements in the reverse order, simulating the LIFO order of a stack. The empty operation simply checks if q1 is empty.</p>
+<p>The time complexity for push is O(n), while the time complexities for top, pop, and empty are O(1).</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Reformat Date</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1502/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1512/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a <code>date</code> string in the form <code>Day Month Year</code>, where:</p>
+<ul>
+<li><code>Day</code> is in the set <code>{ "1st ", "2nd ", "3rd ", "4th ", ..., "30th ", "31st "}</code>.</li>
+<li><code>Month</code> is in the set <code>{ "Jan ", "Feb ", "Mar ", "Apr ", "May ", "Jun ", "Jul ", "Aug ", "Sep ", "Oct ", "Nov ", "Dec "}</code>.</li>
+<li><code>Year</code> is in the range <code>[1900, 2100]</code>.</li>
+</ul>
+<p>Convert the date string to the format <code>YYYY-MM-DD</code>, where:</p>
+<ul>
+<li><code>YYYY</code> denotes the 4 digit year.</li>
+<li><code>MM</code> denotes the 2 digit month.</li>
+<li><code>DD</code> denotes the 2 digit day.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> date =  "20th Oct 2052 "
+<strong>Output:</strong>  "2052-10-20 "</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> date =  "6th Jun 1933 "
+<strong>Output:</strong>  "1933-06-06 "</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> date =  "26th May 1960 "
+<strong>Output:</strong>  "1960-05-26 "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The given dates are guaranteed to be valid, so no error handling is necessary.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/reformat-date/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=10) :: date
+    integer :: year, month, day
+
+    ! Example 1
+    date = "20th Oct 2052"
+    call convert_date(date, year, month, day)
+    write (*, '(I4, "-", I2.2, "-", I2.2)') year, month, day
+
+    ! Example 2
+    date = "6th Jun 1933"
+    call convert_date(date, year, month, day)
+    write (*, '(I4, "-", I2.2, "-", I2.2)') year, month, day
+
+    ! Example 3
+    date = "26th May 1960"
+    call convert_date(date, year, month, day)
+    write (*, '(I4, "-", I2.2, "-", I2.2)') year, month, day
+
+contains
+
+    subroutine convert_date(date, year, month, day)
+        implicit none
+        character(len=*), intent(in) :: date
+        integer, intent(out) :: year, month, day
+
+        integer :: i
+        character(len=3) :: month_name
+
+        read (date, *) day, month_name, year
+
+        do i = 1, size(month_names)
+            if (month_names(i) == month_name) then
+                month = i
+                exit
+            end if
+        end do
+
+    end subroutine convert_date
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:35:16:
+
+   35 |             if (month_names(i) == month_name) then
+      |                1
+Error: Function ‘month_names’ at (1) has no IMPLICIT type
+temp.f95:34:34:
+
+   34 |         do i = 1, size(month_names)
+      |                                  1
+Error: Symbol ‘month_names’ at (1) has no IMPLICIT type; did you mean ‘month_name’?
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM DATE_CONVERSION
+      IMPLICIT NONE
+
+      CHARACTER(len=10) :: date
+      CHARACTER(len=4) :: year
+      CHARACTER(len=2) :: month
+      CHARACTER(len=2) :: day
+      CHARACTER(len=10) :: output
+
+      READ(*,*) date
+
+      ! Extract the year
+      year = date(7:10)
+
+      ! Extract the month
+      SELECT CASE (date(5:7))
+      CASE ("Jan")
+        month = "01"
+      CASE ("Feb")
+        month = "02"
+      CASE ("Mar")
+        month = "03"
+      CASE ("Apr")
+        month = "04"
+      CASE ("May")
+        month = "05"
+      CASE ("Jun")
+        month = "06"
+      CASE ("Jul")
+        month = "07"
+      CASE ("Aug")
+        month = "08"
+      CASE ("Sep")
+        month = "09"
+      CASE ("Oct")
+        month = "10"
+      CASE ("Nov")
+        month = "11"
+      CASE ("Dec")
+        month = "12"
+      END SELECT
+
+      ! Extract the day
+      day = date(1:2)
+
+      ! Build the output string
+      output = year // "-" // month // "-" // day
+
+      ! Print the output
+      WRITE (*,*) output
+
+      END PROGRAM DATE_CONVERSION
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 10 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7f5e0cf69960 in ???
+#1  0x7f5e0cf6a4d9 in ???
+#2  0x7f5e0d1be17b in ???
+#3  0x7f5e0d1b7684 in ???
+#4  0x7f5e0d1b82aa in ???
+#5  0x5c2928ca2229 in MAIN__
+#6  0x5c2928ca244c in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def hasValidPath(grid):
+    m, n = len(grid), len(grid[0])
+    visited = [[False for _ in range(n)] for _ in range(m)]
+
+    return dfs(grid, 0, 0, m, n, visited)
+
+def dfs(grid, x, y, m, n, visited):
+    if x &lt; 0 or y &lt; 0 or x &gt;= m or y &gt;= n or visited[x][y]:
+        return False
+    if x == m - 1 and y == n - 1:
+        return True
+
+    visited[x][y] = True
+
+    next_x = [-1, 0, 1, 0]
+    next_y = [0, 1, 0, -1]
+
+    for i in range(4):
+        dx = x + next_x[i]
+        dy = y + next_y[i]
+
+        if dfs(grid, dx, dy, m, n, visited):
+            return True
+
+    return False
+</code></pre>
+<p>The algorithm performs a depth-first search through the grid starting from the upper-left cell (0,0), marking each visited cell in a separate grid. It iterates 4 different directions for each cell, checking boundaries, and continuing its search if a valid path is found from the next cell in the given direction.</p>
+<p>The DFS continues until it reaches the bottom-right cell (m-1, n-1), at which point it returns true. If the algorithm cannot find a path to the bottom-right cell, it returns false.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+
+bool hasValidPath(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; grid) {
+    int m = grid.size();
+    int n = grid[0].size();
+    std::vector&lt;std::vector&lt;bool&gt;&gt; visited(m, std::vector&lt;bool&gt;(n, false));
+
+    return dfs(grid, 0, 0, m, n, visited);
+}
+
+bool dfs(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; grid, int x, int y, int m, int n, std::vector&lt;std::vector&lt;bool&gt;&gt;&amp; visited) {
+    if (x &lt; 0 || y &lt; 0 || x &gt;= m || y &gt;= n || visited[x][y]) return false;
+    if (x == m - 1 &amp;&amp; y == n - 1) return true;
+
+    visited[x][y] = true;
+
+    int next_x[4] = {-1, 0, 1, 0};
+    int next_y[4] = {0, 1, 0, -1};
+
+    for (int i = 0; i &lt; 4; i++) {
+        int dx = x + next_x[i];
+        int dy = y + next_y[i];
+
+        if (dfs(grid, dx, dy, m, n, visited)) return true;
+    }
+
+    return false;
+}
+</code></pre>
+<p>The algorithm performs a depth-first search through the grid starting from the upper-left cell (0,0), marking each visited cell in a separate grid. It iterates 4 different directions for each cell, checking boundaries, and continuing its search if a valid path is found from the next cell in the given direction.</p>
+<p>The DFS continues until it reaches the bottom-right cell (m-1, n-1), at which point it returns true. If the algorithm cannot find a path to the bottom-right cell, it returns false.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

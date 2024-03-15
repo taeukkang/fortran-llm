@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Island Perimeter</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/461/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/476/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given <code>row x col</code> <code>grid</code> representing a map where <code>grid[i][j] = 1</code> represents land and <code>grid[i][j] = 0</code> represents water.</p>
+<p>Grid cells are connected <strong>horizontally/vertically</strong> (not diagonally). The <code>grid</code> is completely surrounded by water, and there is exactly one island (i.e., one or more connected land cells).</p>
+<p>The island doesn't have "lakes ", meaning the water inside isn't connected to the water around the island. One cell is a square with side length 1. The grid is rectangular, width and height don't exceed 100. Determine the perimeter of the island.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> grid = [[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]
+<strong>Output:</strong> 16
+<strong>Explanation:</strong> The perimeter is the 16 yellow stripes in the image above.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> grid = [[1]]
+<strong>Output:</strong> 4</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> grid = [[1,0]]
+<strong>Output:</strong> 4</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>row == grid.length</code></li>
+<li><code>col == grid[i].length</code></li>
+<li><code>1 &lt;= row, col &lt;= 100</code></li>
+<li><code>grid[i][j]</code> is <code>0</code> or <code>1</code>.</li>
+<li>There is exactly one island in <code>grid</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/island-perimeter/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: row = 4, col = 4
+    integer :: grid(row, col)
+
+    ! Example 1
+    grid(:, :) = reshape([0, 1, 0, 0, &
+                           1, 1, 1, 0, &
+                           0, 1, 0, 0, &
+                           1, 1, 0, 0], shape(grid))
+    print '(I0)', solve(grid)
+
+    ! Example 2
+    grid(:, :) = reshape([1], shape(grid))
+    print '(I0)', solve(grid)
+
+    ! Example 3
+    grid(:, :) = reshape([1, 0], shape(grid))
+    print '(I0)', solve(grid)
+
+contains
+
+    function solve(grid) result(perimeter)
+        implicit none
+        integer, intent(in) :: grid(:, :)
+        integer :: perimeter
+        integer :: i, j
+
+        perimeter = 0
+        do i = 1, size(grid, 1)
+            do j = 1, size(grid, 2)
+                if (grid(i, j) == 1) then
+                    perimeter = perimeter + 4
+                    if (i > 1 .and. grid(i-1, j) == 1) then
+                        perimeter = perimeter - 2
+                    end if
+                    if (j > 1 .and. grid(i, j-1) == 1) then
+                        perimeter = perimeter - 2
+                    end if
+                end if
+            end do
+        end do
+    end function solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:25:
+
+   15 |     grid(:, :) = reshape([1], shape(grid))
+      |                         1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+temp.f95:19:25:
+
+   19 |     grid(:, :) = reshape([1, 0], shape(grid))
+      |                         1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: row, col, i, j, perimeter
+integer, dimension(:,:), allocatable :: grid
+
+! Read input
+read(*,*) row
+read(*,*) col
+allocate(grid(row,col))
+do i = 1, row
+    read(*,*) grid(i,:)
+end do
+
+! Calculate perimeter
+perimeter = 0
+do i = 2, row - 1
+    do j = 2, col - 1
+        if (grid(i,j) == 1) then
+            if (grid(i-1,j) == 0 .or. grid(i+1,j) == 0 .or. grid(i,j-1) == 0 .or. grid(i,j+1) == 0) then
+                perimeter = perimeter + 4
+            end if
+        end if
+    end do
+end do
+
+! Print output
+write(*,*) perimeter
+
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 6 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7f76fc51a960 in ???
+#1  0x7f76fc51b4d9 in ???
+#2  0x7f76fc76f17b in ???
+#3  0x7f76fc768684 in ???
+#4  0x7f76fc7692aa in ???
+#5  0x59a57866d28c in MAIN__
+#6  0x59a57866d84f in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def islandPerimeter(grid):
+    perimeter = 0
+    for row in range(len(grid)):
+        for col in range(len(grid[row])):
+            if grid[row][col] == 1:
+                perimeter += 4
+                if row &gt; 0 and grid[row - 1][col] == 1:
+                    perimeter -= 2
+                if col &gt; 0 and grid[row][col - 1] == 1:
+                    perimeter -= 2
+    return perimeter
+</code></pre>
+<p>The algorithm iterates through each cell in the grid. If a cell contains land, increment the perimeter count by 4 (each side of the square). If there is land in the adjacent cell to the left or above, decrement the perimeter count by 2 for each adjacent land cell as they share a common side. This way, we can calculate the total perimeter of the island without any extra data structures or recursion.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int islandPerimeter(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    int perimeter = 0;
+    for (int row = 0; row &lt; grid.size(); row++) {
+        for (int col = 0; col &lt; grid[row].size(); col++) {
+            if (grid[row][col] == 1) {
+                perimeter += 4;
+                if (row &gt; 0 &amp;&amp; grid[row - 1][col] == 1) perimeter -= 2;
+                if (col &gt; 0 &amp;&amp; grid[row][col - 1] == 1) perimeter -= 2;
+            }
+        }
+    }
+    return perimeter;
+}
+</code></pre>
+<p>The algorithm iterates through each cell in the grid. If a cell contains land, increment the perimeter count by 4 (each side of the square). If there is land in the adjacent cell to the left or above, decrement the perimeter count by 2 for each adjacent land cell as they share a common side. This way, we can calculate the total perimeter of the island without any extra data structures or recursion.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

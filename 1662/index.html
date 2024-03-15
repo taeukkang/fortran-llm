@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Check If Two String Arrays are Equivalent</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1656/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1668/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two string arrays <code>word1</code> and <code>word2</code>, return <code>true</code> <em>if the two arrays <strong>represent</strong> the same string, and</em> <code>false</code> <em>otherwise.</em></p>
+<p>A string is <strong>represented</strong> by an array if the array elements concatenated <strong>in order</strong> forms the string.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> word1 = [ "ab ",  "c "], word2 = [ "a ",  "bc "]
+<strong>Output:</strong> true
+<strong>Explanation:</strong>
+word1 represents string  "ab " +  "c " -&gt;  "abc "
+word2 represents string  "a " +  "bc " -&gt;  "abc "
+The strings are the same, so return true.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> word1 = [ "a ",  "cb "], word2 = [ "ab ",  "c "]
+<strong>Output:</strong> false</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> word1  = [ "abc ",  "d ",  "defg "], word2 = [ "abcddefg "]
+<strong>Output:</strong> true</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= word1.length, word2.length &lt;= 103</code></li>
+<li><code>1 &lt;= word1[i].length, word2[i].length &lt;= 103</code></li>
+<li><code>1 &lt;= sum(word1[i].length), sum(word2[i].length) &lt;= 103</code></li>
+<li><code>word1[i]</code> and <code>word2[i]</code> consist of lowercase letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/check-if-two-string-arrays-are-equivalent/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j
+    character(len=:), allocatable :: word1(:), word2(:)
+    logical :: result
+
+    ! Example 1
+    allocate(word1(2))
+    allocate(word2(2))
+    word1(1) = 'ab '
+    word1(2) = 'c '
+    word2(1) = 'a '
+    word2(2) = 'bc '
+    result = representSameString(word1, word2)
+    print *, result
+
+    ! Example 2
+    deallocate(word1)
+    deallocate(word2)
+    allocate(word1(2))
+    allocate(word2(2))
+    word1(1) = 'a '
+    word1(2) = 'cb '
+    word2(1) = 'ab '
+    word2(2) = 'c '
+    result = representSameString(word1, word2)
+    print *, result
+
+    ! Example 3
+    deallocate(word1)
+    deallocate(word2)
+    allocate(word1(3))
+    allocate(word2(1))
+    word1(1) = 'abc '
+    word1(2) = 'd '
+    word1(3) = 'defg '
+    word2(1) = 'abcddefg '
+    result = representSameString(word1, word2)
+    print *, result
+
+contains
+
+    function representSameString(word1, word2) result(same)
+        implicit none
+        character(len=*), intent(in) :: word1(:), word2(:)
+        logical :: same
+
+        integer :: i, j
+        character(len=:), allocatable :: concatWord(:)
+
+        allocate(concatWord(sum(len(word1))))
+        concatWord = ''
+        do i = 1, size(word1)
+            concatWord = trim(concatWord) // trim(word1(i))
+        end do
+        do i = 1, size(word2)
+            concatWord = trim(concatWord) // trim(word2(i))
+        end do
+        same = (concatWord == word2(1))
+    end function representSameString
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:13:
+
+    9 |     allocate(word1(2))
+      |             1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:10:13:
+
+   10 |     allocate(word2(2))
+      |             1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:21:13:
+
+   21 |     allocate(word1(2))
+      |             1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:22:13:
+
+   22 |     allocate(word2(2))
+      |             1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:33:13:
+
+   33 |     allocate(word1(3))
+      |             1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:34:13:
+
+   34 |     allocate(word2(1))
+      |             1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:52:17:
+
+   52 |         allocate(concatWord(sum(len(word1))))
+      |                 1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:55:30:
+
+   55 |             concatWord = trim(concatWord) // trim(word1(i))
+      |                              1
+Error: ‘string’ argument of ‘trim’ intrinsic at (1) must be a scalar
+temp.f95:58:30:
+
+   58 |             concatWord = trim(concatWord) // trim(word2(i))
+      |                              1
+Error: ‘string’ argument of ‘trim’ intrinsic at (1) must be a scalar
+temp.f95:60:8:
+
+   60 |         same = (concatWord == word2(1))
+      |        1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program solve
+      implicit none
+
+      integer, parameter :: max_length = 100
+      character(len=max_length) :: word1(max_length), word2(max_length)
+      integer :: i, j, k
+
+      ! Read input
+      read (*, *) word1
+      read (*, *) word2
+
+      ! Initialize variables
+      i = 1
+      j = 1
+      k = 1
+
+      ! Check if the two arrays represent the same string
+      do while (i <= size(word1) .and. j <= size(word2))
+        if (word1(i) == word2(j)) then
+          i = i + 1
+          j = j + 1
+        else
+          k = k + 1
+        end if
+      end do
+
+      ! Check if we have reached the end of both arrays
+      if (i > size(word1) .and. j > size(word2)) then
+        print *, "true"
+      else
+        print *, "false"
+      end if
+
+      end program solve
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 9 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7c32df5d7960 in ???
+#1  0x7c32df5d84d9 in ???
+#2  0x7c32df82c17b in ???
+#3  0x7c32df825684 in ???
+#4  0x7c32df8262aa in ???
+#5  0x7c32df82bb7a in ???
+#6  0x594a01596292 in MAIN__
+#7  0x594a0159655d in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_num_operations(nums):
+    result = 0
+    highest_bit = [0] * 32
+    for num in nums:
+        for j in range(32):
+            if num &amp; (1 &lt;&lt; j):
+                highest_bit[j] += 1
+    for count in highest_bit:
+        result = max(result, count)
+    return result + 31
+</code></pre>
+<p>The algorithm starts by initializing a result variable to 0 and an array called highestBit of size 32 with all elements set to 0. Then, for each number in the input nums array, we perform bitwise operations to check if a specific bit is turned on (1). If so, we increment the corresponding element in the highestBit array by 1. After processing all the numbers in the input array, we loop through the highestBit array and update the result variable to the maximum value found plus 31. Finally, we return the result. The algorithm tries to find the highest bit set in any of the input numbers to determine the minimum number of calls needed to make nums from arr.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minNumOperations(vector&lt;int&gt;&amp; nums) {
+    int result = 0;
+    int highestBit[32] = {0};
+    for (int num : nums) {
+        for (int j = 0; j &lt; 32; ++j) {
+            if (num &amp; (1 &lt;&lt; j)) {
+                highestBit[j]++;
+            }
+        }
+    }
+    for (int count : highestBit) {
+        result = max(result, count);
+    }
+    return result + 31;
+}
+</code></pre>
+<p>The algorithm starts by initializing a result variable to 0 and an array called highestBit of size 32 with all elements set to 0. Then, for each number in the input nums array, we perform bitwise operations to check if a specific bit is turned on (1). If so, we increment the corresponding element in the highestBit array by 1. After processing all the numbers in the input array, we loop through the highestBit array and update the result variable to the maximum value found plus 31. Finally, we return the result. The algorithm tries to find the highest bit set in any of the input numbers to determine the minimum number of calls needed to make nums from arr.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

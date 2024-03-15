@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count Number of Pairs With Absolute Difference K</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2000/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2011/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code> and an integer <code>k</code>, return <em>the number of pairs</em> <code>(i, j)</code> <em>where</em> <code>i &lt; j</code> <em>such that</em> <code>|nums[i] - nums[j]| == k</code>.</p>
+<p>The value of <code>|x|</code> is defined as:</p>
+<ul>
+<li><code>x</code> if <code>x &gt;= 0</code>.</li>
+<li><code>-x</code> if <code>x &lt; 0</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,2,1], k = 1
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> The pairs with an absolute difference of 1 are:
+- [<strong>1</strong>,<strong>2</strong>,2,1]
+- [<strong>1</strong>,2,<strong>2</strong>,1]
+- [1,<strong>2</strong>,2,<strong>1</strong>]
+- [1,2,<strong>2</strong>,<strong>1</strong>]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,3], k = 3
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There are no pairs with an absolute difference of 3.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [3,2,1,5,4], k = 2
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The pairs with an absolute difference of 2 are:
+- [<strong>3</strong>,2,<strong>1</strong>,5,4]
+- [<strong>3</strong>,2,1,<strong>5</strong>,4]
+- [3,<strong>2</strong>,1,5,<strong>4</strong>]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 200</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 100</code></li>
+<li><code>1 &lt;= k &lt;= 99</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-number-of-pairs-with-absolute-difference-k/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solve the problem described in the task
+    implicit none
+
+    integer, parameter :: n = 5
+    integer, dimension(n) :: nums = (/ 1, 2, 2, 1, 3 /)
+    integer, parameter :: k = 1
+    integer :: i, j
+    integer :: count
+
+    count = 0
+    do i = 1, n - 1
+        do j = i + 1, n
+            if (abs(nums(i) - nums(j)) == k) then
+                count = count + 1
+            end if
+        end do
+    end do
+
+    print '(I0)', count
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>6
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module pairwise_difference
+    implicit none
+    private
+    public :: pairwise_difference_solution
+
+contains
+
+    function pairwise_difference_solution(nums, k) result(count)
+        integer, intent(in) :: nums(:)
+        integer, intent(in) :: k
+        integer :: count
+        integer :: i, j
+
+        count = 0
+        do i = 1, size(nums) - 1
+            do j = i + 1, size(nums)
+                if (abs(nums(i) - nums(j)) == k) then
+                    count = count + 1
+                end if
+            end do
+        end do
+    end function pairwise_difference_solution
+end module pairwise_difference
+
+program pairwise_difference_main
+    use pairwise_difference
+    implicit none
+    integer, parameter :: nums1(4) = [1, 2, 2, 1]
+    integer, parameter :: nums2(2) = [1, 3]
+    integer, parameter :: nums3(5) = [3, 2, 1, 5, 4]
+    integer, parameter :: k1 = 1
+    integer, parameter :: k2 = 3
+    integer, parameter :: k3 = 2
+    integer :: count1, count2, count3
+
+    count1 = pairwise_difference_solution(nums1, k1)
+    count2 = pairwise_difference_solution(nums2, k2)
+    count3 = pairwise_difference_solution(nums3, k3)
+
+    write (*,*) "nums1:", nums1
+    write (*,*) "k1:", k1
+    write (*,*) "count1:", count1
+    write (*,*) "nums2:", nums2
+    write (*,*) "k2:", k2
+    write (*,*) "count2:", count2
+    write (*,*) "nums3:", nums3
+    write (*,*) "k3:", k3
+    write (*,*) "count3:", count3
+end program pairwise_difference_main
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> nums1:           1           2           2           1
+ k1:           1
+ count1:           4
+ nums2:           1           3
+ k2:           3
+ count2:           0
+ nums3:           3           2           1           5           4
+ k3:           2
+ count3:           3
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def chalk_replacer(chalk, k):
+    total_chalk = sum(chalk)
+    k %= total_chalk
+    for i, val in enumerate(chalk):
+        if k &lt; val:
+            return i
+        k -= val
+    return 0
+</code></pre>
+<ol>
+<li>Calculate the sum of all elements in the <code>chalk</code> array, representing the total chalk needed for one full cycle.</li>
+<li>Calculate the remainder of <code>k</code> divided by the total chalk needed using modulo operation (<code>k %= sum</code>). This will determine the remaining chalk when the teacher starts the last cycle.</li>
+<li>Iterate through the <code>chalk</code> array:</li>
+<li>If the remaining chalk (<code>k</code>) is less than the chalk needed by the current student (<code>chalk[i]</code> for C++ and Java, or <code>val</code> for Python and JavaScript), return the index of this student.</li>
+<li>Otherwise, update the remaining chalk by subtracting the chalk needed by the current student from <code>k</code>.</li>
+</ol>
+<p>Repeat this process until a student is found who will replace the chalk.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+
+int chalkReplacer(std::vector&lt;int&gt;&amp; chalk, int k) {
+    long long sum = 0;
+    for (int i = 0; i &lt; chalk.size(); i++) {
+        sum += chalk[i];
+    }
+    k %= sum;
+    for (int i = 0; i &lt; chalk.size(); i++) {
+        if (k &lt; chalk[i]) {
+            return i;
+        }
+        k -= chalk[i];
+    }
+    return 0;
+}
+</code></pre>
+<ol>
+<li>Calculate the sum of all elements in the <code>chalk</code> array, representing the total chalk needed for one full cycle.</li>
+<li>Calculate the remainder of <code>k</code> divided by the total chalk needed using modulo operation (<code>k %= sum</code>). This will determine the remaining chalk when the teacher starts the last cycle.</li>
+<li>Iterate through the <code>chalk</code> array:</li>
+<li>If the remaining chalk (<code>k</code>) is less than the chalk needed by the current student (<code>chalk[i]</code> for C++ and Java, or <code>val</code> for Python and JavaScript), return the index of this student.</li>
+<li>Otherwise, update the remaining chalk by subtracting the chalk needed by the current student from <code>k</code>.</li>
+</ol>
+<p>Repeat this process until a student is found who will replace the chalk.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Isomorphic Strings</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/203/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/206/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two strings <code>s</code> and <code>t</code>, <em>determine if they are isomorphic</em>.</p>
+<p>Two strings <code>s</code> and <code>t</code> are isomorphic if the characters in <code>s</code> can be replaced to get <code>t</code>.</p>
+<p>All occurrences of a character must be replaced with another character while preserving the order of characters. No two characters may map to the same character, but a character may map to itself.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s = "egg", t = "add"
+<strong>Output:</strong> true</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s = "foo", t = "bar"
+<strong>Output:</strong> false</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s = "paper", t = "title"
+<strong>Output:</strong> true</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 5 * 104</code></li>
+<li><code>t.length == s.length</code></li>
+<li><code>s</code> and <code>t</code> consist of any valid ascii character.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/isomorphic-strings/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, n
+    character(len=:), allocatable :: s, t
+    logical :: is_isomorphic
+
+    ! Example 1: egg -> add
+    s = 'egg'
+    t = 'add'
+    write(*,*) 'Example 1:'
+    write(*,*) 's = ', s
+    write(*,*) 't = ', t
+    call solve(s, t)
+    write(*,*) 'Is isomorphic? ', is_isomorphic
+    write(*,*) ''
+
+    ! Example 2: foo -> bar
+    s = 'foo'
+    t = 'bar'
+    write(*,*) 'Example 2:'
+    write(*,*) 's = ', s
+    write(*,*) 't = ', t
+    call solve(s, t)
+    write(*,*) 'Is isomorphic? ', is_isomorphic
+    write(*,*) ''
+
+    ! Example 3: paper -> title
+    s = 'paper'
+    t = 'title'
+    write(*,*) 'Example 3:'
+    write(*,*) 's = ', s
+    write(*,*) 't = ', t
+    call solve(s, t)
+    write(*,*) 'Is isomorphic? ', is_isomorphic
+    write(*,*) ''
+
+contains
+
+    subroutine solve(s, t)
+        implicit none
+        character(len=*), intent(in) :: s, t
+        logical :: is_isomorphic
+
+        is_isomorphic = .false.
+
+        do i = 1, len(s)
+            do j = 1, len(t)
+                if (s(i:i) == t(j:j)) then
+                    is_isomorphic = .true.
+                    exit
+                end if
+            end do
+        end do
+
+    end subroutine solve
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Example 1:
+ s = egg
+ t = add
+ Is isomorphic?  T
+ 
+ Example 2:
+ s = foo
+ t = bar
+ Is isomorphic?  T
+ 
+ Example 3:
+ s = paper
+ t = title
+ Is isomorphic?  T
+ 
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module isomorphic_strings
+
+implicit none
+
+contains
+
+function is_isomorphic(s, t) result(is_iso)
+
+character(len=*), intent(in) :: s, t
+logical :: is_iso
+
+! Initialize the mapping array
+integer, parameter :: MAX_CHARS = 256
+integer :: mapping(MAX_CHARS)
+
+! Initialize the mapping array with -1
+mapping = -1
+
+! Check if the characters in s and t are isomorphic
+is_iso = is_isomorphic_helper(s, t, mapping)
+
+end function is_isomorphic
+
+recursive function is_isomorphic_helper(s, t, mapping) result(is_iso)
+
+character(len=*), intent(in) :: s, t
+integer, intent(inout) :: mapping(:)
+logical :: is_iso
+
+! Base case: if s and t are empty, return true
+if (len(s) == 0 .and. len(t) == 0) then
+    is_iso = .true.
+    return
+endif
+
+! Base case: if s or t is empty, return false
+if (len(s) == 0 .or. len(t) == 0) then
+    is_iso = .false.
+    return
+endif
+
+! Check if the first character in s and t are isomorphic
+if (mapping(iachar(s(1:1))) == iachar(t(1:1))) then
+    is_iso = is_isomorphic_helper(s(2:), t(2:), mapping)
+else
+    is_iso = .false.
+endif
+
+! If the first character in s and t are not isomorphic, try mapping the first character in s to all possible characters in t
+if (.not. is_iso) then
+    do i = 1, len(t)
+        if (mapping(iachar(s(1:1))) == -1) then
+            mapping(iachar(s(1:1))) = iachar(t(i:i))
+            is_iso = is_isomorphic_helper(s(2:), t, mapping)
+            if (is_iso) exit
+            mapping(iachar(s(1:1))) = -1
+        endif
+    enddo
+endif
+
+end function is_isomorphic_helper
+
+end module isomorphic_strings
+
+program main
+
+use isomorphic_strings
+implicit none
+
+! Test case 1: "egg", "add"
+character(len=*), parameter :: s1 = "egg"
+character(len=*), parameter :: t1 = "add"
+
+! Test case 2: "foo", "bar"
+character(len=*), parameter :: s2 = "foo"
+character(len=*), parameter :: t2 = "bar"
+
+! Test case 3: "paper", "title"
+character(len=*), parameter :: s3 = "paper"
+character(len=*), parameter :: t3 = "title"
+
+! Test case 4: "ab", "ba"
+character(len=*), parameter :: s4 = "ab"
+character(len=*), parameter :: t4 = "ba"
+
+! Test case 5: "aa", "ab"
+character(len=*), parameter :: s5 = "aa"
+character(len=*), parameter :: t5 = "ab"
+
+! Test case 6: "aa", "aa"
+character(len=*), parameter :: s6 = "aa"
+character(len=*), parameter :: t6 = "aa"
+
+! Test case 7: "aab", "aba"
+character(len=*), parameter :: s7 = "aab"
+character(len=*), parameter :: t7 = "aba"
+
+! Test case 8: "abc", "bca"
+character(len=*), parameter :: s8 = "abc"
+character(len=*), parameter :: t8 = "bca"
+
+! Test case 9: "abcd", "dabc"
+character(len=*), parameter :: s9 = "abcd"
+character(len=*), parameter :: t9 = "dabc"
+
+! Test case 10: "abcd", "bacd"
+character(len=*), parameter :: s10 = "abcd"
+character(len=*), parameter :: t10 = "bac
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:51:8:
+
+   51 |     do i = 1, len(t)
+      |        1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:67:5:
+
+   67 | use isomorphic_strings
+      |     1
+Fatal Error: Cannot open module file ‘isomorphic_strings.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_isomorphic(s: str, t: str) -&gt; bool:
+    map1, map2 = {}, {}
+    for char_s, char_t in zip(s, t):
+        if char_s not in map1:
+            map1[char_s] = char_t
+        if char_t not in map2:
+            map2[char_t] = char_s
+        if map1[char_s] != char_t or map2[char_t] != char_s:
+            return False
+    return True
+</code></pre>
+<ul>
+<li>Create two maps (or hash_maps) to store the mappings for characters in <code>s</code> to <code>t</code> and characters in <code>t</code> to <code>s</code>.</li>
+<li>Iterate through the characters of <code>s</code> and <code>t</code>.</li>
+<li>If the current character of <code>s</code> is not a key in the first map, add it with the corresponding character of <code>t</code> as the value.</li>
+<li>If the current character of <code>t</code> is not a key in the second map, add it with the corresponding character of <code>s</code> as the value.</li>
+<li>If the maps have inconsistent mappings, return false (they are not isomorphic).</li>
+<li>If the loop is over without finding inconsistent mappings, return true (the strings are isomorphic).</li>
+</ul>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;unordered_map&gt;
+
+bool isIsomorphic(std::string s, std::string t) {
+    std::unordered_map&lt;char, char&gt; map1, map2;
+    for (size_t i = 0; i &lt; s.size(); ++i) {
+        if (map1.find(s[i]) == map1.end()) {
+            map1[s[i]] = t[i];
+        }
+        if (map2.find(t[i]) == map2.end()) {
+            map2[t[i]] = s[i];
+        }
+        if (map1[s[i]] != t[i] || map2[t[i]] != s[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+</code></pre>
+<ul>
+<li>Create two maps (or hash_maps) to store the mappings for characters in <code>s</code> to <code>t</code> and characters in <code>t</code> to <code>s</code>.</li>
+<li>Iterate through the characters of <code>s</code> and <code>t</code>.</li>
+<li>If the current character of <code>s</code> is not a key in the first map, add it with the corresponding character of <code>t</code> as the value.</li>
+<li>If the current character of <code>t</code> is not a key in the second map, add it with the corresponding character of <code>s</code> as the value.</li>
+<li>If the maps have inconsistent mappings, return false (they are not isomorphic).</li>
+<li>If the loop is over without finding inconsistent mappings, return true (the strings are isomorphic).</li>
+</ul>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

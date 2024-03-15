@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Armstrong Number</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1133/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1137/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer <code>n</code>, return <code>true</code> <em>if and only if it is an <strong>Armstrong number</strong></em>.</p>
+<p>The <code>k</code>-digit number <code>n</code> is an Armstrong number if and only if the <code>kth</code> power of each digit sums to <code>n</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 153
+<strong>Output:</strong> true
+<strong>Explanation:</strong> 153 is a 3-digit number, and 153 = 13 + 53 + 33.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 123
+<strong>Output:</strong> false
+<strong>Explanation:</strong> 123 is a 3-digit number, and 123 != 13 + 23 + 33 = 36.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 108</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/armstrong-number/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program armstrong_numbers
+    implicit none
+
+    integer :: n, k, i, sum
+    logical :: is_armstrong
+
+    ! Example 1:
+    n = 153
+    call check(is_armstrong(n), .true.)
+
+    ! Example 2:
+    n = 123
+    call check(is_armstrong(n), .false.)
+
+contains
+
+    function is_armstrong(n) result(res)
+        implicit none
+        integer, value :: n
+        integer :: k, i, sum
+        logical :: res
+
+        k = floor(log10(real(n))) + 1
+        sum = 0
+        do i = 1, k
+            sum = sum + (mod(n, 10)**i)
+            n = n / 10
+        end do
+        res = sum == n
+    end function is_armstrong
+
+    subroutine check(actual, expected)
+        implicit none
+        logical, value :: actual, expected
+
+        if (actual .eqv. expected) then
+            write (*, '(A)') "PASSED"
+        else
+            write (*, '(A)') "FAILED"
+        end if
+    end subroutine check
+end program armstrong_numbers</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:17:26:
+
+   17 |     function is_armstrong(n) result(res)
+      |                          1
+Error: Procedure ‘is_armstrong’ at (1) has an explicit interface from a previous declaration
+temp.f95:18:21:
+
+   18 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:19:27:
+
+   19 |         integer, value :: n
+      |                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:20:28:
+
+   20 |         integer :: k, i, sum
+      |                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:21:22:
+
+   21 |         logical :: res
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:23:37:
+
+   23 |         k = floor(log10(real(n))) + 1
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:15:
+
+   24 |         sum = 0
+      |               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:25:19:
+
+   25 |         do i = 1, k
+      |                   1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:26:39:
+
+   26 |             sum = sum + (mod(n, 10)**i)
+      |                                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:27:22:
+
+   27 |             n = n / 10
+      |                      1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:28:11:
+
+   28 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:29:22:
+
+   29 |         res = sum == n
+      |                      1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:30:7:
+
+   30 |     end function is_armstrong
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:33:21:
+
+   33 |         implicit none
+      |                     1
+Error: Duplicate IMPLICIT NONE statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">```
+program armstrong_numbers
+    implicit none
+
+    integer :: n, k, i, sum
+    logical :: is_armstrong
+
+    ! read input
+    read *, n
+
+    ! check if n is an Armstrong number
+    is_armstrong = .false.
+    k = floor(log10(real(n))) + 1
+    do i = 1, k
+        sum = 0
+        do while (n > 0)
+            sum = sum + (mod(n, 10) ** i)
+            n = n / 10
+        end do
+        if (sum == n) then
+            is_armstrong = .true.
+            exit
+        end if
+    end do
+
+    ! output result
+    if (is_armstrong) then
+        write (*, '(A)') "Yes"
+    else
+        write (*, '(A)') "No"
+    end if
+
+end program armstrong_numbers
+```
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:1:2:
+
+    1 | ```
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:34:2:
+
+   34 | ```
+      |  1
+Error: Invalid character in name at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_armstrong(n: int) -&gt; bool:
+    power_sum = 0
+    original = n
+    k = len(str(n))
+    while n &gt; 0:
+        digit = n % 10
+        power_sum += digit ** k
+        n //= 10
+    return power_sum == original
+</code></pre>
+<ol>
+<li>Initialize <code>power_sum</code> to 0 and store the input number into a variable called <code>original</code>.</li>
+<li>Calculate the length of the number (number of digits) and store it in variable <code>k</code>.</li>
+<li>Use a while loop to iterate through each digit of the number.</li>
+<li>In each iteration, extract the last digit of the number.</li>
+<li>Add the <code>k</code>th power of the digit to <code>power_sum</code>.</li>
+<li>Remove the last digit from the number.</li>
+<li>After the loop, check if <code>power_sum</code> is equal to the original number. If it is, then the number is an Armstrong number, so return <code>true</code>, otherwise return <code>false</code>.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool isArmstrong(int n) {
+    int power_sum = 0, original = n;
+    int k = to_string(n).length();
+    while (n &gt; 0) {
+        int digit = n % 10;
+        power_sum += pow(digit, k);
+        n /= 10;
+    }
+    return power_sum == original;
+}
+</code></pre>
+<ol>
+<li>Initialize <code>power_sum</code> to 0 and store the input number into a variable called <code>original</code>.</li>
+<li>Calculate the length of the number (number of digits) and store it in variable <code>k</code>.</li>
+<li>Use a while loop to iterate through each digit of the number.</li>
+<li>In each iteration, extract the last digit of the number.</li>
+<li>Add the <code>k</code>th power of the digit to <code>power_sum</code>.</li>
+<li>Remove the last digit from the number.</li>
+<li>After the loop, check if <code>power_sum</code> is equal to the original number. If it is, then the number is an Armstrong number, so return <code>true</code>, otherwise return <code>false</code>.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

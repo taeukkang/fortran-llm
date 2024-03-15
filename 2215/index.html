@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find the Difference of Two Arrays</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2210/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2220/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two <strong>0-indexed</strong> integer arrays <code>nums1</code> and <code>nums2</code>, return <em>a list</em> <code>answer</code> <em>of size</em> <code>2</code> <em>where:</em></p>
+<ul>
+<li><code>answer[0]</code> <em>is a list of all <strong>distinct</strong> integers in</em> <code>nums1</code> <em>which are <strong>not</strong> present in</em> <code>nums2</code><em>.</em></li>
+<li><code>answer[1]</code> <em>is a list of all <strong>distinct</strong> integers in</em> <code>nums2</code> <em>which are <strong>not</strong> present in</em> <code>nums1</code>.</li>
+</ul>
+<p><strong>Note</strong> that the integers in the lists may be returned in <strong>any</strong> order.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums1 = [1,2,3], nums2 = [2,4,6]
+<strong>Output:</strong> [[1,3],[4,6]]
+<strong>Explanation:</strong>
+For nums1, nums1[1] = 2 is present at index 0 of nums2, whereas nums1[0] = 1 and nums1[2] = 3 are not present in nums2. Therefore, answer[0] = [1,3].
+For nums2, nums2[0] = 2 is present at index 1 of nums1, whereas nums2[1] = 4 and nums2[2] = 6 are not present in nums2. Therefore, answer[1] = [4,6].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums1 = [1,2,3,3], nums2 = [1,1,2,2]
+<strong>Output:</strong> [[3],[]]
+<strong>Explanation:</strong>
+For nums1, nums1[2] and nums1[3] are not present in nums2. Since nums1[2] == nums1[3], their value is only included once and answer[0] = [3].
+Every integer in nums2 is present in nums1. Therefore, answer[1] = [].</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums1.length, nums2.length &lt;= 1000</code></li>
+<li><code>-1000 &lt;= nums1[i], nums2[i] &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-the-difference-of-two-arrays/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solves the problem "Given two 0-indexed integer arrays nums1 and nums2, return a list answer of size 2 where:
+    ! - answer[0] is a list of all distinct integers in nums1 which are not present in nums2.
+    ! - answer[1] is a list of all distinct integers in nums2 which are not present in nums1.
+    ! Note that the integers in the lists may be returned in any order."
+    implicit none
+
+    integer, parameter :: n = 3
+    integer, dimension(n) :: nums1 = [1, 2, 3]
+    integer, dimension(n) :: nums2 = [2, 4, 6]
+    integer, allocatable, dimension(:) :: answer(:, :)
+
+    call solve(nums1, nums2, answer)
+
+    write (*, '(A)') 'Answer:'
+    write (*, '(*(I0, 1X))') answer
+
+contains
+
+    subroutine solve(nums1, nums2, answer)
+        implicit none
+        integer, intent(in) :: nums1(:), nums2(:)
+        integer, allocatable, intent(out) :: answer(:, :)
+        integer :: i, j, k
+
+        allocate(answer(2, 2))
+
+        do i = 1, size(nums1)
+            if (count(nums1(i) == nums2) == 0) then
+                answer(1, 1) = nums1(i)
+            end if
+        end do
+
+        do i = 1, size(nums2)
+            if (count(nums2(i) == nums1) == 0) then
+                answer(2, 1) = nums2(i)
+            end if
+        end do
+
+        answer(1, 2) = [1, 3]
+        answer(2, 2) = [4, 6]
+
+    end subroutine solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:40:8:
+
+   40 |         answer(1, 2) = [1, 3]
+      |        1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:41:8:
+
+   41 |         answer(2, 2) = [4, 6]
+      |        1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module distinct_elements
+
+implicit none
+
+contains
+
+function distinct_elements(nums1, nums2) result(answer)
+
+integer, intent(in) :: nums1(:), nums2(:)
+integer :: answer(2)
+
+! Local variables
+integer :: i, j, k
+logical :: present
+
+! Initialize the answer
+answer = 0
+
+! Loop through the elements of nums1
+do i = 1, size(nums1)
+
+    ! Check if the current element is present in nums2
+    present = .false.
+    do j = 1, size(nums2)
+        if (nums1(i) == nums2(j)) then
+            present = .true.
+            exit
+        end if
+    end do
+
+    ! If the current element is not present in nums2, add it to the first list
+    if (.not. present) then
+        answer(1) = [answer(1), nums1(i)]
+    end if
+
+end do
+
+! Loop through the elements of nums2
+do i = 1, size(nums2)
+
+    ! Check if the current element is present in nums1
+    present = .false.
+    do j = 1, size(nums1)
+        if (nums2(i) == nums1(j)) then
+            present = .true.
+            exit
+        end if
+    end do
+
+    ! If the current element is not present in nums1, add it to the second list
+    if (.not. present) then
+        answer(2) = [answer(2), nums2(i)]
+    end if
+
+end do
+
+end function distinct_elements
+
+end module distinct_elements
+
+! Test the function with the given examples
+program test_distinct_elements
+
+use distinct_elements
+
+implicit none
+
+! Examples
+integer, parameter :: nums1(3) = [1, 2, 3]
+integer, parameter :: nums2(3) = [2, 4, 6]
+integer, parameter :: expected(2) = reshape([1, 3, 4, 6], [2, 2])
+
+! Test case 1
+print *, "Test case 1:"
+print *, "Input: ", nums1, nums2
+print *, "Expected: ", expected
+print *, "Actual: ", distinct_elements(nums1, nums2)
+
+! Test case 2
+print *, "Test case 2:"
+print *, "Input: ", [1, 2, 3, 3], [1, 1, 2, 2]
+print *, "Expected: ", reshape([3], [2, 1])
+print *, "Actual: ", distinct_elements([1, 2, 3, 3], [1, 1, 2, 2])
+
+end program test_distinct_elements
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:26:
+
+    7 | function distinct_elements(nums1, nums2) result(answer)
+      |                          1
+Error: MODULE attribute of ‘distinct_elements’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:41:
+
+    9 | integer, intent(in) :: nums1(:), nums2(:)
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:20:
+
+   10 | integer :: answer(2)
+      |                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:18:
+
+   13 | integer :: i, j, k
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:18:
+
+   14 | logical :: present
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:17:10:
+
+   17 | answer = 0
+      |          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:21:
+
+   20 | do i = 1, size(nums1)
+      |                     1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:23:21:
+
+   23 |     present = .false.
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:25:
+
+   24 |     do j = 1, size(nums2)
+      |                         1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:25:38:
+
+   25 |         if (nums1(i) == nums2(j)) then
+      |                                      1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:26:28:
+
+   26 |             present = .true.
+      |                            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:27:16:
+
+   27 |             exit
+      |                1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:28:11:
+
+   28 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:7:
+
+   29 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:32:27:
+
+   32 |     if (.not. present) then
+      |                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:33:41:
+
+   33 |         answer(1) = [answer(1), nums1(i)]
+      |                                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:34:7:
+
+   34 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:36:3:
+
+   36 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:39:21:
+
+   39 | do i = 1, size(nums2)
+      |                     1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:42:21:
+
+   42 |     present = .false.
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:43:25:
+
+   43 |     do j = 1, size(nums1)
+      |                         1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:44:38:
+
+   44 |         if (nums2(i) == nums1(j)) then
+      |                                      1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:45:28:
+
+   45 |             present = .true.
+      |                            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:46:16:
+
+   46 |             exit
+      |                1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:47:11:
+
+   47 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:48:7:
+
+   48 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:51:27:
+
+   51 |     if (.not. present) then
+      |                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:52:41:
+
+   52 |         answer(2) = [answer(2), nums2(i)]
+      |                                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:53:7:
+
+   53 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:55:3:
+
+   55 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:57:3:
+
+   57 | end function distinct_elements
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:64:5:
+
+   64 | use distinct_elements
+      |     1
+Fatal Error: Cannot open module file ‘distinct_elements.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from itertools import permutations
+
+def unique_permutations(digits):
+    unique_perms = set(permutations(digits))
+    unique_ints = sorted({int(''.join(map(str, perm))) for perm in unique_perms})
+
+    return unique_ints
+</code></pre>
+<ol>
+<li>For each language, the function accepts the input array <code>digits</code>.</li>
+<li>We sort the input array in non-decreasing order.</li>
+<li>We use a helper function to perform recursion and create permutations. The helper function takes parameters for the digits, the current permutation being formed, the set of unique permutations, and a tracking array called <code>used</code> to keep track of digits that have been used in the current permutation.</li>
+<li>In the helper function, if the length of the current permutation matches the length of the input array, we have a complete permutation, so we convert the current permutation into an integer and insert it into the result set.</li>
+<li>If the current permutation is not complete, we iterate through the input array, and for each digit that is not already used in the current permutation, we mark it as used, add it to the current permutation, and call the helper function recursively.</li>
+<li>After a recursive call, we remove the last added digit from the current permutation and mark that digit as unused.</li>
+<li>Once the helper function is done, we convert the result set into a sorted array and return it.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+using namespace std;
+
+void helper(vector&lt;int&gt;&amp; digits, vector&lt;int&gt;&amp; current, set&lt;int&gt;&amp; result, vector&lt;bool&gt;&amp; used) {
+    if (current.size() == digits.size()) {
+        int num = 0;
+        for (int d : current) {
+            num = num * 10 + d;
+        }
+        result.insert(num);
+        return;
+    }
+    for (int i = 0; i &lt; digits.size(); ++i) {
+        if (!used[i]) {
+            used[i] = true;
+            current.push_back(digits[i]);
+            helper(digits, current, result, used);
+            current.pop_back();
+            used[i] = false;
+        }
+    }
+}
+
+vector&lt;int&gt; uniquePermutations(vector&lt;int&gt;&amp; digits) {
+    vector&lt;int&gt; current;
+    set&lt;int&gt; result;
+    vector&lt;bool&gt; used(digits.size(), false);
+    sort(digits.begin(), digits.end());
+
+    helper(digits, current, result, used);
+
+    return vector&lt;int&gt;(result.begin(), result.end());
+}
+</code></pre>
+<ol>
+<li>For each language, the function accepts the input array <code>digits</code>.</li>
+<li>We sort the input array in non-decreasing order.</li>
+<li>We use a helper function to perform recursion and create permutations. The helper function takes parameters for the digits, the current permutation being formed, the set of unique permutations, and a tracking array called <code>used</code> to keep track of digits that have been used in the current permutation.</li>
+<li>In the helper function, if the length of the current permutation matches the length of the input array, we have a complete permutation, so we convert the current permutation into an integer and insert it into the result set.</li>
+<li>If the current permutation is not complete, we iterate through the input array, and for each digit that is not already used in the current permutation, we mark it as used, add it to the current permutation, and call the helper function recursively.</li>
+<li>After a recursive call, we remove the last added digit from the current permutation and mark that digit as unused.</li>
+<li>Once the helper function is done, we convert the result set into a sorted array and return it.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

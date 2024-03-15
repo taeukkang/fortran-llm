@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Check if All Characters Have Equal Number of Occurrences</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1935/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1945/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string <code>s</code>, return <code>true</code> <em>if</em> <code>s</code> <em>is a <strong>good</strong> string, or</em> <code>false</code> <em>otherwise</em>.</p>
+<p>A string <code>s</code> is <strong>good</strong> if <strong>all</strong> the characters that appear in <code>s</code> have the <strong>same</strong> number of occurrences (i.e., the same frequency).</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "abacbc "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The characters that appear in s are 'a', 'b', and 'c'. All characters occur 2 times in s.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "aaabb "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The characters that appear in s are 'a' and 'b'.
+'a' occurs 3 times while 'b' occurs 2 times, which is not the same number of times.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 1000</code></li>
+<li><code>s</code> consists of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/check-if-all-characters-have-equal-number-of-occurrences/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: s
+    logical :: good
+
+    ! Example 1
+    s = "abacbc "
+    good = goodString(s)
+    print *, good
+
+    ! Example 2
+    s = "aaabb "
+    good = goodString(s)
+    print *, good
+
+contains
+
+    function goodString(s) result(good)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer :: count(26)
+        integer :: i
+
+        do i = 1, size(count)
+            count(i) = 0
+        end do
+
+        do i = 1, len(s)
+            count(ichar(s(i:i)) - ichar('a') + 1) = count(ichar(s(i:i)) - ichar('a') + 1) + 1
+        end do
+
+        good = .true.
+        do i = 1, size(count)
+            if (count(i) /= count(1)) then
+                good = .false.
+                exit
+            end if
+        end do
+
+    end function goodString
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:19:39:
+
+   19 |     function goodString(s) result(good)
+      |                                       1
+Error: Function result ‘good’ at (1) has no IMPLICIT type
+temp.f95:9:11:
+
+    9 |     good = goodString(s)
+      |           1
+Error: Cannot convert UNKNOWN to LOGICAL(4) at (1)
+temp.f95:14:11:
+
+   14 |     good = goodString(s)
+      |           1
+Error: Cannot convert UNKNOWN to LOGICAL(4) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module good_string
+
+implicit none
+
+contains
+
+function is_good_string(s) result(is_good)
+
+character(len=*), intent(in) :: s
+logical :: is_good
+
+! Local variables
+integer :: char_count(26)
+integer :: i
+
+! Initialize the character count array
+char_count = 0
+
+! Count the number of occurrences of each character in s
+do i = 1, len(s)
+    char_count(ichar(s(i:i))) = char_count(ichar(s(i:i))) + 1
+end do
+
+! Check if all characters have the same number of occurrences
+is_good = .true.
+do i = 1, 26
+    if (char_count(i) > 0) then
+        if (any(char_count(i+1:26) /= char_count(i))) then
+            is_good = .false.
+            exit
+        end if
+    end if
+end do
+
+end function is_good_string
+
+end module good_string
+
+program test_good_string
+
+use good_string
+
+implicit none
+
+! Test case 1:
+print *, is_good_string("abacbc ")
+! Expected output:
+! true
+
+! Test case 2:
+print *, is_good_string("aaabb ")
+! Expected output:
+! false
+
+! Test case 3:
+print *, is_good_string("abcdefghijklmnopqrstuvwxyz ")
+! Expected output:
+! true
+
+! Test case 4:
+print *, is_good_string("abcd")
+! Expected output:
+! false
+
+! Test case 5:
+print *, is_good_string("")
+! Expected output:
+! true
+
+end program test_good_string
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> T
+ T
+</pre>
+          </div>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>
+Program received signal SIGSEGV: Segmentation fault - invalid memory reference.
+
+Backtrace for this error:
+#0  0x7a0676ac9960 in ???
+#1  0x7a0676ac8ac5 in ???
+#2  0x7a06768bf51f in ???
+#3  0x5bd1e612b406 in MAIN__
+#4  0x5bd1e612b549 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def make_string_sorted(s):
+    mod = 1000000007
+    n = len(s)
+    fact = [1] * (n + 1)
+    inv = [1] * (n + 1)
+    for i in range(1, n + 1):
+        fact[i] = fact[i - 1] * i % mod
+        inv[i] = inv[i - 1] * (mod - mod // i) % mod
+
+    ans = 0
+    for i in range(n):
+        less_than = 0
+        for j in range(i + 1, n):
+            if s[j] &lt; s[i]:
+                less_than += 1
+        ans = (ans + less_than * fact[n - i - 1]) % mod
+    return ans
+</code></pre>
+<p>The algorithm consists of the following steps:</p>
+<ol>
+<li>Initialize the factorials and inverse factorials for numbers up to the length of the given string, using modulo arithmetic.</li>
+<li>For each character in the string, count the number of characters to the right that are less than the current character.</li>
+<li>Multiply that count by the factorial of the number of remaining characters to the right, modulo the large prime number, and add it to the result.</li>
+</ol>
+<p>In this way, the algorithm takes into account all possible permutations generated through the process of sorting, accumulating the required operations to make the string sorted.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int makeStringSorted(string s) {
+    const int mod = 1e9 + 7;
+    int n = s.size();
+    vector&lt;int&gt; fact(n + 1, 1);
+    vector&lt;int&gt; inv(n + 1, 1);
+    for (int i = 1; i &lt;= n; ++i) {
+        fact[i] = 1LL * fact[i - 1] * i % mod;
+        inv[i] = 1LL * inv[i - 1] * (mod - mod / i) % mod;
+    }
+    int ans = 0;
+    for (int i = 0; i &lt; n; ++i) {
+        int less_than = 0;
+        for (int j = i + 1; j &lt; n; ++j) {
+            if (s[j] &lt; s[i]) ++less_than;
+        }
+        ans = (ans + 1LL * less_than * fact[n - i - 1] % mod) % mod;
+    }
+    return ans;
+}
+</code></pre>
+<p>The algorithm consists of the following steps:</p>
+<ol>
+<li>Initialize the factorials and inverse factorials for numbers up to the length of the given string, using modulo arithmetic.</li>
+<li>For each character in the string, count the number of characters to the right that are less than the current character.</li>
+<li>Multiply that count by the factorial of the number of remaining characters to the right, modulo the large prime number, and add it to the result.</li>
+</ol>
+<p>In this way, the algorithm takes into account all possible permutations generated through the process of sorting, accumulating the required operations to make the string sorted.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

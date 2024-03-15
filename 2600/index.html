@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>K Items With the Maximum Sum</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2595/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2605/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>There is a bag that consists of items, each item has a number <code>1</code>, <code>0</code>, or <code>-1</code> written on it.</p>
+<p>You are given four <strong>non-negative</strong> integers <code>numOnes</code>, <code>numZeros</code>, <code>numNegOnes</code>, and <code>k</code>.</p>
+<p>The bag initially contains:</p>
+<ul>
+<li><code>numOnes</code> items with <code>1</code>s written on them.</li>
+<li><code>numZeroes</code> items with <code>0</code>s written on them.</li>
+<li><code>numNegOnes</code> items with <code>-1</code>s written on them.</li>
+</ul>
+<p>We want to pick exactly <code>k</code> items among the available items. Return <em>the <strong>maximum</strong> possible sum of numbers written on the items</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> numOnes = 3, numZeros = 2, numNegOnes = 0, k = 2
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> We have a bag of items with numbers written on them {1, 1, 1, 0, 0}. We take 2 items with 1 written on them and get a sum in a total of 2.
+It can be proven that 2 is the maximum possible sum.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> numOnes = 3, numZeros = 2, numNegOnes = 0, k = 4
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> We have a bag of items with numbers written on them {1, 1, 1, 0, 0}. We take 3 items with 1 written on them, and 1 item with 0 written on it, and get a sum in a total of 3.
+It can be proven that 3 is the maximum possible sum.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= numOnes, numZeros, numNegOnes &lt;= 50</code></li>
+<li><code>0 &lt;= k &lt;= numOnes + numZeros + numNegOnes</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/k-items-with-the-maximum-sum/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: numOnes, numZeros, numNegOnes, k, maxSum
+
+    ! Example 1
+    numOnes = 3
+    numZeros = 2
+    numNegOnes = 0
+    k = 2
+    call solve(numOnes, numZeros, numNegOnes, k)
+
+    ! Example 2
+    numOnes = 3
+    numZeros = 2
+    numNegOnes = 0
+    k = 4
+    call solve(numOnes, numZeros, numNegOnes, k)
+
+contains
+
+subroutine solve(numOnes, numZeros, numNegOnes, k)
+    implicit none
+    integer, intent(in) :: numOnes, numZeros, numNegOnes, k
+    integer :: i, j, sum
+
+    do i = 1, numOnes
+        do j = 1, numZeros
+            sum = i + j
+            if (sum == k) then
+                write (*, '(A, I0, A, I0, A, I0, A, I0, A)') &
+                    "The maximum possible sum is ", i, " + ", j, " + ", numNegOnes, " = ", sum
+                return
+            end if
+        end do
+    end do
+
+    do i = 1, numOnes
+        do j = 1, numZeros
+            sum = i + j + numNegOnes
+            if (sum == k) then
+                write (*, '(A, I0, A, I0, A, I0, A, I0, A)') &
+                    "The maximum possible sum is ", i, " + ", j, " + ", numNegOnes, " = ", sum
+                return
+            end if
+        end do
+    end do
+
+    do i = 1, numOnes
+        sum = i + numNegOnes
+        if (sum == k) then
+            write (*, '(A, I0, A, I0, A, I0, A, I0, A)') &
+                "The maximum possible sum is ", i, " + ", numNegOnes, " = ", sum
+            return
+        end if
+    end do
+
+    do i = 1, numZeros
+        sum = i + numNegOnes
+        if (sum == k) then
+            write (*, '(A, I0, A, I0, A, I0, A, I0, A)') &
+                "The maximum possible sum is ", i, " + ", numNegOnes, " = ", sum
+            return
+        end if
+    end do
+
+    write (*, '(A)') "No solution found."
+end subroutine solve
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>The maximum possible sum is 1 + 1 + 0 = 2
+The maximum possible sum is 2 + 2 + 0 = 4
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! This is a Fortran code for the problem
+
+program maxSum
+    implicit none
+    integer, parameter :: numOnes = 3, numZeros = 2, numNegOnes = 0, k = 2
+    integer :: i, j, sum
+
+    ! Initialize the sum to 0
+    sum = 0
+
+    ! Loop through the items in the bag
+    do i = 1, numOnes
+        ! If the current item has a 1 written on it
+        if (i == 1) then
+            ! Add the current item to the sum
+            sum = sum + 1
+        end if
+    end do
+
+    do i = 1, numZeros
+        ! If the current item has a 0 written on it
+        if (i == 1) then
+            ! Add the current item to the sum
+            sum = sum + 0
+        end if
+    end do
+
+    do i = 1, numNegOnes
+        ! If the current item has a -1 written on it
+        if (i == 1) then
+            ! Subtract the current item from the sum
+            sum = sum - 1
+        end if
+    end do
+
+    ! Print the maximum possible sum
+    print *, sum
+end program maxSum
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>           1
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def max_sum(numOnes: int, numZeros: int, numNegOnes: int, k: int) -&gt; int:
+    max_sum = 0
+    for i in range(k + 1):
+        ones = min(i, numOnes)
+        neg_ones = min(k - i, numNegOnes)
+        max_sum = max(max_sum, ones - neg_ones)
+    return max_sum
+</code></pre>
+<p>We want to find the maximum sum of <strong>k</strong> items that can be picked from the given bag. Iterate through <strong>0</strong> to <strong>k</strong>, and pick the minimum between <strong>i</strong> and <strong>numOnes</strong> as the count of ones, and pick the minimum between <strong>k-i</strong> and <strong>numNegOnes</strong> as the count of -1s. Since 1 - (-1) = 2, every 1 combined with a -1 will increase max_sum by 2. Calculate the maximum between the current <code>max_sum</code> and the sum of ones minus negative ones for each iteration. Return the final <code>max_sum</code> after the loop has finished, which will have the maximum possible sum of items.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int maxSum(int numOnes, int numZeros, int numNegOnes, int k) {
+    int max_sum = 0;
+    for (int i = 0; i &lt;= k; ++i) {
+        int ones = min(i, numOnes);
+        int neg_ones = min(k - i, numNegOnes);
+        max_sum = max(max_sum, ones - neg_ones);
+    }
+    return max_sum;
+}
+</code></pre>
+<p>We want to find the maximum sum of <strong>k</strong> items that can be picked from the given bag. Iterate through <strong>0</strong> to <strong>k</strong>, and pick the minimum between <strong>i</strong> and <strong>numOnes</strong> as the count of ones, and pick the minimum between <strong>k-i</strong> and <strong>numNegOnes</strong> as the count of -1s. Since 1 - (-1) = 2, every 1 combined with a -1 will increase max_sum by 2. Calculate the maximum between the current <code>max_sum</code> and the sum of ones minus negative ones for each iteration. Return the final <code>max_sum</code> after the loop has finished, which will have the maximum possible sum of items.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

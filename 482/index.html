@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>License Key Formatting</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/476/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/485/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a license key represented as a string <code>s</code> that consists of only alphanumeric characters and dashes. The string is separated into <code>n + 1</code> groups by <code>n</code> dashes. You are also given an integer <code>k</code>.</p>
+<p>We want to reformat the string <code>s</code> such that each group contains exactly <code>k</code> characters, except for the first group, which could be shorter than <code>k</code> but still must contain at least one character. Furthermore, there must be a dash inserted between two groups, and you should convert all lowercase letters to uppercase.</p>
+<p>Return <em>the reformatted license key</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "5F3Z-2e-9-w ", k = 4
+<strong>Output:</strong>  "5F3Z-2E9W "
+<strong>Explanation:</strong> The string s has been split into two parts, each part has 4 characters.
+Note that the two extra dashes are not needed and can be removed.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "2-5g-3-J ", k = 2
+<strong>Output:</strong>  "2-5G-3J "
+<strong>Explanation:</strong> The string s has been split into three parts, each part has 2 characters except the first part as it could be shorter as mentioned above.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 105</code></li>
+<li><code>s</code> consists of English letters, digits, and dashes <code>'-'</code>.</li>
+<li><code>1 &lt;= k &lt;= 104</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/license-key-formatting/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: s
+    integer :: n, k
+
+    call get_command_argument(1, s)
+    read (s, *) n
+    call get_command_argument(2, s)
+    read (s, *) k
+
+    print '(A)', solve(s, n, k)
+
+contains
+
+    function solve(s, n, k) result(res)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer, intent(in) :: n, k
+        character(len=:), allocatable :: res
+        integer :: i, j, l
+
+        l = len(s)
+        allocate(character(l) :: res)
+
+        do i = 1, n
+            if (i == 1) then
+                j = min(k, l)
+            else
+                j = k
+            end if
+            res(i:j) = s(i:j)
+            if (i /= n) then
+                res(j+1:j+1) = '-'
+            end if
+        end do
+
+        ! Convert lowercase letters to uppercase
+        do i = 1, l
+            if (res(i:i) >= 'a' .and. res(i:i) <= 'z') then
+                res(i:i) = char(ichar(res(i:i)) - 32)
+            end if
+        end do
+
+    end function solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 8 of file temp.f95
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7ab3bb504960 in ???
+#1  0x7ab3bb5054d9 in ???
+#2  0x7ab3bb75917b in ???
+#3  0x7ab3bb752684 in ???
+#4  0x7ab3bb7532aa in ???
+#5  0x5ce92ffd7597 in MAIN__
+#6  0x5ce92ffd777e in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module license_key_formatting
+    implicit none
+
+contains
+
+    function license_key_formatting(s, k) result(formatted_key)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer, intent(in) :: k
+        character(len=:), allocatable :: formatted_key
+
+        ! Split the string into an array of substrings
+        character(len=:), allocatable :: substrings(:)
+        integer :: n_substrings
+        call split_string(s, substrings, n_substrings)
+
+        ! Reformat the substrings
+        character(len=:), allocatable :: reformatted_substrings(:)
+        call reformat_substrings(substrings, reformatted_substrings, n_substrings)
+
+        ! Join the reformatted substrings into a single string
+        character(len=:), allocatable :: formatted_key
+        call join_strings(reformatted_substrings, formatted_key)
+
+    contains
+
+        ! Split a string into an array of substrings
+        subroutine split_string(s, substrings, n_substrings)
+            implicit none
+            character(len=*), intent(in) :: s
+            character(len=:), allocatable, intent(out) :: substrings(:)
+            integer, intent(out) :: n_substrings
+
+            ! Initialize the number of substrings to 0
+            n_substrings = 0
+
+            ! Loop over the characters in the string
+            integer :: i
+            do i = 1, len(s)
+                ! If the current character is a dash, increment the number of substrings
+                if (s(i:i) == '-') then
+                    n_substrings = n_substrings + 1
+                end if
+            end do
+
+            ! Allocate the array of substrings
+            allocate(substrings(n_substrings))
+
+            ! Reset the number of substrings to 0
+            n_substrings = 0
+
+            ! Loop over the characters in the string again
+            integer :: j
+            do j = 1, len(s)
+                ! If the current character is not a dash, add it to the current substring
+                if (s(j:j) /= '-') then
+                    substrings(n_substrings) = substrings(n_substrings) // s(j:j)
+                ! If the current character is a dash, increment the number of substrings
+                else
+                    n_substrings = n_substrings + 1
+                end if
+            end do
+        end subroutine split_string
+
+        ! Reformat an array of substrings
+        subroutine reformat_substrings(substrings, reformatted_substrings, n_substrings)
+            implicit none
+            character(len=:), allocatable, intent(in) :: substrings(:)
+            character(len=:), allocatable, intent(out) :: reformatted_substrings(:)
+            integer, intent(in) :: n_substrings
+
+            ! Loop over the substrings
+            integer :: i
+            do i = 1, n_substrings
+                ! If the current substring is shorter than k characters, pad it with spaces
+                if (len(substrings(i)) < k) then
+                    reformatted_substrings(i) = substrings(i) // repeat(' ', k - len(substrings(i)))
+                ! Otherwise, use the substring as is
+                else
+                    reformatted_substrings(i) = substrings(i)
+                end if
+
+                ! Convert the current substring to uppercase
+                reformatted_substrings(i) = to_upper(reformatted_substrings(i))
+            end do
+        end subroutine reformat_substrings
+
+        ! Join an array of strings into a single string
+        subroutine join_strings(strings, joined_string)
+            implicit none
+            character(len=:), allocatable, intent(in) :: strings(:)
+            character(len=:), allocatable, intent(out) :: joined_string
+
+            ! Initialize the joined string to the first substring
+            joined_string = strings(1)
+
+            ! Loop over the remaining substrings
+            integer :: i
+            do i = 2, size(strings)
+                ! Add a dash and the current substring to the joined string
+                joined_string = joined_string // '-' // strings
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:35:
+
+    6 |     function license_key_formatting(s, k) result(formatted_key)
+      |                                   1
+Error: MODULE attribute of ‘license_key_formatting’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:21:
+
+    7 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:8:41:
+
+    8 |         character(len=*), intent(in) :: s
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:32:
+
+    9 |         integer, intent(in) :: k
+      |                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:54:
+
+   10 |         character(len=:), allocatable :: formatted_key
+      |                                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:54:
+
+   13 |         character(len=:), allocatable :: substrings(:)
+      |                                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:31:
+
+   14 |         integer :: n_substrings
+      |                               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:54:
+
+   15 |         call split_string(s, substrings, n_substrings)
+      |                                                      1
+Error: Unexpected CALL statement in CONTAINS section at (1)
+temp.f95:18:66:
+
+   18 |         character(len=:), allocatable :: reformatted_substrings(:)
+      |                                                                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:19:82:
+
+   19 |         call reformat_substrings(substrings, reformatted_substrings, n_substrings)
+      |                                                                                  1
+Error: Unexpected CALL statement in CONTAINS section at (1)
+temp.f95:22:54:
+
+   22 |         character(len=:), allocatable :: formatted_key
+      |                                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:23:64:
+
+   23 |         call join_strings(reformatted_substrings, formatted_key)
+      |                                                                1
+Error: Unexpected CALL statement in CONTAINS section at (1)
+temp.f95:25:12:
+
+   25 |     contains
+      |            1
+Error: Unexpected CONTAINS statement in CONTAINS section at (1)
+temp.f95:29:25:
+
+   29 |             implicit none
+      |                         1
+Error: Duplicate IMPLICIT NONE statement at (1)
+temp.f95:38:24:
+
+   38 |             integer :: i
+      |                        1
+Error: Unexpected data declaration statement at (1)
+temp.f95:47:21:
+
+   47 |             allocate(substrings(n_substrings))
+      |                     1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:53:24:
+
+   53 |             integer :: j
+      |                        1
+Error: Unexpected data declaration statement at (1)
+temp.f95:98:24:
+
+   98 |             integer :: i
+      |                        1
+Error: Unexpected data declaration statement at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def license_key_formatting(s: str, k: int) -&gt; str:
+    result = []
+    count = 0
+    for c in reversed(s):
+        if c != '-':
+            if count == k:
+                result.append('-')
+                count = 0
+            result.append(c.upper())
+            count += 1
+    return ''.join(reversed(result))
+</code></pre>
+<p>The algorithm starts by iterating the string s from the end to the beginning, skipping the dashes. During the iteration, we check whether the current group has reached k characters. If so, we append a dash to the result string. We then add the current character, converting it to uppercase, to the result string. After the iteration, we reverse the result string for C++, Java, and Python implementations (for JavaScript, we prepend characters so no need to reverse in the end). This is because we built the reformatted license key in reverse order. Finally, we return the result string.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;cctype&gt;
+#include &lt;string&gt;
+using namespace std;
+
+string licenseKeyFormatting(string s, int k) {
+    string result = &quot;&quot;;
+    int count = 0;
+    for (int i = s.size() - 1; i &gt;= 0; i--) {
+        if (s[i] != '-') {
+            if (count == k) {
+                result.push_back('-');
+                count = 0;
+            }
+            result.push_back(toupper(s[i]));
+            count++;
+        }
+    }
+    reverse(result.begin(), result.end());
+    return result;
+}
+</code></pre>
+<p>The algorithm starts by iterating the string s from the end to the beginning, skipping the dashes. During the iteration, we check whether the current group has reached k characters. If so, we append a dash to the result string. We then add the current character, converting it to uppercase, to the result string. After the iteration, we reverse the result string for C++, Java, and Python implementations (for JavaScript, we prepend characters so no need to reverse in the end). This is because we built the reformatted license key in reverse order. Finally, we return the result string.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

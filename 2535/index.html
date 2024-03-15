@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Difference Between Element Sum and Digit Sum of an Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2529/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2540/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a positive integer array <code>nums</code>.</p>
+<ul>
+<li>The <strong>element sum</strong> is the sum of all the elements in <code>nums</code>.</li>
+<li>The <strong>digit sum</strong> is the sum of all the digits (not necessarily distinct) that appear in <code>nums</code>.</li>
+</ul>
+<p>Return <em>the <strong>absolute</strong> difference between the <strong>element sum</strong> and <strong>digit sum</strong> of</em> <code>nums</code>.</p>
+<p><strong>Note</strong> that the absolute difference between two integers <code>x</code> and <code>y</code> is defined as <code>|x - y|</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,15,6,3]
+<strong>Output:</strong> 9
+<strong>Explanation:</strong> 
+The element sum of nums is 1 + 15 + 6 + 3 = 25.
+The digit sum of nums is 1 + 1 + 5 + 6 + 3 = 16.
+The absolute difference between the element sum and digit sum is |25 - 16| = 9.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,3,4]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong>
+The element sum of nums is 1 + 2 + 3 + 4 = 10.
+The digit sum of nums is 1 + 2 + 3 + 4 = 10.
+The absolute difference between the element sum and digit sum is |10 - 10| = 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 2000</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 2000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/difference-between-element-sum-and-digit-sum-of-an-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, dimension(n) :: nums
+    integer :: i
+
+    ! Examples
+    nums = reshape([1, 15, 6, 3], shape(nums))
+    write(*,*) 'Example 1:'
+    write(*,*) 'Input:', nums
+    write(*,*) 'Output:', abs(sum(nums) - digitSum(nums))
+
+    nums = reshape([1, 2, 3, 4], shape(nums))
+    write(*,*) 'Example 2:'
+    write(*,*) 'Input:', nums
+    write(*,*) 'Output:', abs(sum(nums) - digitSum(nums))
+
+contains
+
+    function digitSum(arr) result(res)
+        implicit none
+        integer, intent(in) :: arr(:)
+        integer :: res
+        integer :: i, j
+
+        res = 0
+        do i = 1, size(arr)
+            do j = 1, len_trim(str(arr(i)))
+                res = res + ichar(str(arr(i))(j:j)) - ichar('0')
+            end do
+        end do
+    end function digitSum
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:30:46:
+
+   30 |                 res = res + ichar(str(arr(i))(j:j)) - ichar('0')
+      |                                              1
+Error: Syntax error in argument list at (1)
+temp.f95:29:31:
+
+   29 |             do j = 1, len_trim(str(arr(i)))
+      |                               1
+Error: Function ‘str’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module abs_diff_sums
+    implicit none
+    private
+    public :: abs_diff_sums
+
+contains
+
+    function abs_diff_sums(nums) result(diff)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: diff, element_sum, digit_sum
+
+        element_sum = sum(nums)
+        digit_sum = sum(digits(nums))
+        diff = abs(element_sum - digit_sum)
+    end function abs_diff_sums
+
+    pure function digits(nums) result(digits_array)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: digits_array(size(nums))
+
+        integer :: i, digit
+
+        do i = 1, size(nums)
+            digit = nums(i)
+            do while (digit > 0)
+                digits_array(i) = digits_array(i) + mod(digit, 10)
+                digit = digit / 10
+            end do
+        end do
+    end function digits
+end module abs_diff_sums
+
+program test_abs_diff_sums
+    use abs_diff_sums
+    implicit none
+    integer :: nums(4)
+
+    nums = [1, 15, 6, 3]
+    write (*,*) 'Example 1:', abs_diff_sums(nums)
+
+    nums = [1, 2, 3, 4]
+    write (*,*) 'Example 2:', abs_diff_sums(nums)
+end program test_abs_diff_sums
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:27:
+
+    4 |     public :: abs_diff_sums
+      |                           1
+Error: PUBLIC attribute applied to MODULE abs_diff_sums at (1)
+temp.f95:8:26:
+
+    8 |     function abs_diff_sums(nums) result(diff)
+      |                          1
+Error: MODULE attribute of ‘abs_diff_sums’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:21:
+
+    9 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:10:38:
+
+   10 |         integer, intent(in) :: nums(:)
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:47:
+
+   11 |         integer :: diff, element_sum, digit_sum
+      |                                               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:31:
+
+   13 |         element_sum = sum(nums)
+      |                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:14:37:
+
+   14 |         digit_sum = sum(digits(nums))
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:43:
+
+   15 |         diff = abs(element_sum - digit_sum)
+      |                                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:7:
+
+   16 |     end function abs_diff_sums
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:19:21:
+
+   19 |         implicit none
+      |                     1
+Error: Duplicate IMPLICIT NONE statement at (1)
+temp.f95:36:9:
+
+   36 |     use abs_diff_sums
+      |         1
+Fatal Error: Cannot open module file ‘abs_diff_sums.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def difference_between_element_and_digit_sum(nums):
+    element_sum = sum(nums)
+    digit_sum = sum(sum(int(digit) for digit in str(num)) for num in nums)
+    return abs(element_sum - digit_sum)
+</code></pre>
+<p>The idea here is to calculate the element sum and digit sum in one pass of the input list. We iterate through the input list, adding each number to the element sum. To get the digit sum, we keep dividing the number by 10 and adding the remainder to the digit sum until the number becomes 0. Once we have the element sum and digit sum, we can return the absolute difference between them. The specific implementation will vary slightly between different languages, but the overall algorithm should be the same.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int differenceBetweenElementAndDigitSum(vector&lt;int&gt;&amp; nums) {
+    int element_sum = 0, digit_sum = 0;
+    for (int num : nums) {
+        element_sum += num;
+        while (num &gt; 0) {
+            digit_sum += num % 10;
+            num /= 10;
+        }
+    }
+    return abs(element_sum - digit_sum);
+}
+</code></pre>
+<p>The idea here is to calculate the element sum and digit sum in one pass of the input list. We iterate through the input list, adding each number to the element sum. To get the digit sum, we keep dividing the number by 10 and adding the remainder to the digit sum until the number becomes 0. Once we have the element sum and digit sum, we can return the absolute difference between them. The specific implementation will vary slightly between different languages, but the overall algorithm should be the same.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

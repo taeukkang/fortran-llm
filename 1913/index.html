@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Maximum Product Difference Between Two Pairs</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1909/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1920/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>The <strong>product difference</strong> between two pairs <code>(a, b)</code> and <code>(c, d)</code> is defined as <code>(a * b) - (c * d)</code>.</p>
+<ul>
+<li>For example, the product difference between <code>(5, 6)</code> and <code>(2, 7)</code> is <code>(5 * 6) - (2 * 7) = 16</code>.</li>
+</ul>
+<p>Given an integer array <code>nums</code>, choose four <strong>distinct</strong> indices <code>w</code>, <code>x</code>, <code>y</code>, and <code>z</code> such that the <strong>product difference</strong> between pairs <code>(nums[w], nums[x])</code> and <code>(nums[y], nums[z])</code> is <strong>maximized</strong>.</p>
+<p>Return <em>the <strong>maximum</strong> such product difference</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [5,6,2,7,4]
+<strong>Output:</strong> 34
+<strong>Explanation:</strong> We can choose indices 1 and 3 for the first pair (6, 7) and indices 2 and 4 for the second pair (2, 4).
+The product difference is (6 * 7) - (2 * 4) = 34.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [4,2,5,9,7,4,8]
+<strong>Output:</strong> 64
+<strong>Explanation:</strong> We can choose indices 3 and 6 for the first pair (9, 8) and indices 1 and 5 for the second pair (2, 4).
+The product difference is (9 * 8) - (2 * 4) = 64.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>4 &lt;= nums.length &lt;= 104</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 104</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/maximum-product-difference-between-two-pairs/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solves the problem of finding the maximum product difference between two pairs of distinct indices in an array
+    implicit none
+
+    integer :: i, j, k, l, w, x, y, z
+    integer :: a, b, c, d
+    integer :: max_diff
+    integer, dimension(100) :: nums
+
+    ! Examples
+    nums = reshape([5, 6, 2, 7, 4], shape=[5])
+    write (*, '(A, I0)') 'Example 1: ', max_product_diff(nums)
+    nums = reshape([4, 2, 5, 9, 7, 4, 8], shape=[7])
+    write (*, '(A, I0)') 'Example 2: ', max_product_diff(nums)
+
+contains
+
+    function max_product_diff(nums) result(max_diff)
+        ! Returns the maximum product difference between two pairs of distinct indices in an array
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: max_diff
+        integer :: diff
+
+        max_diff = 0
+        do i = 1, size(nums) - 1
+            do j = i + 1, size(nums)
+                if (i /= j) then
+                    a = nums(i)
+                    b = nums(j)
+                    do k = 1, size(nums)
+                        if (k /= i .and. k /= j) then
+                            c = nums(k)
+                            do l = 1, size(nums)
+                                if (l /= i .and. l /= j .and. l /= k) then
+                                    d = nums(l)
+                                    diff = (a * b) - (c * d)
+                                    if (diff > max_diff) then
+                                        max_diff = diff
+                                        w = i
+                                        x = j
+                                        y = k
+                                        z = l
+                                    end if
+                                end if
+                            end do
+                        end if
+                    end do
+                end if
+            end do
+        end do
+        write (*, '(A, I0)') 'Maximum product difference: ', max_diff
+        write (*, '(A, I0, A, I0, A, I0, A, I0)') 'Indices: ', w, ', ', x, ', ', y, ', ', z
+    end function max_product_diff
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:11:4:
+
+   11 |     nums = reshape([5, 6, 2, 7, 4], shape=[5])
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (100 and 5)
+temp.f95:13:4:
+
+   13 |     nums = reshape([4, 2, 5, 9, 7, 4, 8], shape=[7])
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (100 and 7)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module max_product_difference
+
+implicit none
+
+contains
+
+function max_product_difference(nums) result(max_diff)
+
+integer, intent(in) :: nums(:)
+integer :: max_diff, w, x, y, z, a, b, c, d
+
+max_diff = -1
+
+do w = 1, size(nums) - 3
+    do x = w + 1, size(nums) - 2
+        do y = x + 1, size(nums) - 1
+            do z = y + 1, size(nums)
+                a = nums(w)
+                b = nums(x)
+                c = nums(y)
+                d = nums(z)
+                if (a /= b .and. a /= c .and. a /= d .and. b /= c .and. b /= d .and. c /= d) then
+                    max_diff = max(max_diff, (a * b) - (c * d))
+                end if
+            end do
+        end do
+    end do
+end do
+
+end function max_product_difference
+
+end module max_product_difference
+
+program test
+
+use max_product_difference
+
+implicit none
+
+integer :: nums(4)
+integer :: max_diff
+
+nums = [5, 6, 2, 7]
+max_diff = max_product_difference(nums)
+write (*,*) "Max product difference: ", max_diff
+
+nums = [4, 2, 5, 9, 7, 4, 8]
+max_diff = max_product_difference(nums)
+write (*,*) "Max product difference: ", max_diff
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:31:
+
+    7 | function max_product_difference(nums) result(max_diff)
+      |                               1
+Error: MODULE attribute of ‘max_product_difference’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:30:
+
+    9 | integer, intent(in) :: nums(:)
+      |                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:43:
+
+   10 | integer :: max_diff, w, x, y, z, a, b, c, d
+      |                                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:13:
+
+   12 | max_diff = -1
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:14:24:
+
+   14 | do w = 1, size(nums) - 3
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:15:32:
+
+   15 |     do x = w + 1, size(nums) - 2
+      |                                1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:16:36:
+
+   16 |         do y = x + 1, size(nums) - 1
+      |                                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:17:36:
+
+   17 |             do z = y + 1, size(nums)
+      |                                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:18:27:
+
+   18 |                 a = nums(w)
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:27:
+
+   19 |                 b = nums(x)
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:27:
+
+   20 |                 c = nums(y)
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:21:27:
+
+   21 |                 d = nums(z)
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:97:
+
+   22 |                 if (a /= b .and. a /= c .and. a /= d .and. b /= c .and. b /= d .and. c /= d) then
+      |                                                                                                 1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:23:63:
+
+   23 |                     max_diff = max(max_diff, (a * b) - (c * d))
+      |                                                               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:19:
+
+   24 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:15:
+
+   25 |             end do
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:11:
+
+   26 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:27:7:
+
+   27 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:3:
+
+   28 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:3:
+
+   30 | end function max_product_difference
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:36:5:
+
+   36 | use max_product_difference
+      |     1
+Fatal Error: Cannot open module file ‘max_product_difference.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_changes(nums, k):
+    n = len(nums)
+    xor_prefix = [0] * (n + 1)
+    for i in range(1, n + 1):
+        xor_prefix[i] = xor_prefix[i - 1] ^ nums[i - 1]
+
+    dp = [{} for _ in range(k)]
+    min_dp = [n] * k
+
+    for i in range(1, n + 1):
+        x = xor_prefix[i] ^ xor_prefix[i - k]
+
+        if i &gt;= k:
+            dp[0][x] = dp[0].get(x, 0) + 1
+
+        for j in range(1, 1 + (i - j * k) // k):
+            if x in dp[j - 1]:
+                dp[j][x] = dp[j].get(x, 0) + 1
+                min_dp[j] = min(min_dp[j], dp[j - 1][x] - dp[j][x])
+
+    return min(n, [min_dp[j] + j for j in range(k)])
+</code></pre>
+<p>We first create a prefix XOR array called <code>xor_prefix</code>, containing the XOR values from the start of the original input array <code>nums</code> to each element in <code>xor_prefix</code>. We then initialize our dynamic programming table <code>dp</code>, which is an array of maps, and an array <code>min_dp</code>, that will be used to store the minimum elements to change.</p>
+<p>We iterate through the prefix XOR array, calculating the XOR of the prefixes considering the length of k, and we store the count of the occurrences where the XOR is equal to zero.</p>
+<p>For each possible combination of segment size and occurrences, we update our <code>dp</code> table and the <code>min_dp</code> array accordingly. </p>
+<p>Finally, we iterate through the <code>min_dp</code> array to find the minimum number of elements to change, implying that the XOR of all segments is equal to zero. We return the minimum value found.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;unordered_map&gt;
+
+int minChanges(std::vector&lt;int&gt;&amp; nums, int k) {
+    int n = nums.size();
+    std::vector&lt;int&gt; xor_prefix(n+1);
+    for (int i = 1; i &lt;= n; ++i) {
+        xor_prefix[i] = xor_prefix[i-1] ^ nums[i-1];
+    }
+
+    std::vector&lt;std::unordered_map&lt;int, int&gt;&gt; dp(k);
+    std::vector&lt;int&gt; min_dp(k, n);
+
+    for (int i = 1; i &lt;= n; ++i) {
+        int x = xor_prefix[i] ^ xor_prefix[i - k];
+
+        if (i &gt;= k) {
+            dp[0][x]++;
+        }
+
+        for (int j = 1; i - j * k &gt;= 0; ++j) {
+            dp[j][x]++;
+            min_dp[j] = std::min(min_dp[j], dp[j-1][x] - dp[j][x]);
+        }
+    }
+
+    int answer = n;
+    for (int j = 0; j &lt; k; ++j) {
+        answer = std::min(answer, min_dp[j] + j);
+    }
+    return answer;
+}
+</code></pre>
+<p>We first create a prefix XOR array called <code>xor_prefix</code>, containing the XOR values from the start of the original input array <code>nums</code> to each element in <code>xor_prefix</code>. We then initialize our dynamic programming table <code>dp</code>, which is an array of maps, and an array <code>min_dp</code>, that will be used to store the minimum elements to change.</p>
+<p>We iterate through the prefix XOR array, calculating the XOR of the prefixes considering the length of k, and we store the count of the occurrences where the XOR is equal to zero.</p>
+<p>For each possible combination of segment size and occurrences, we update our <code>dp</code> table and the <code>min_dp</code> array accordingly. </p>
+<p>Finally, we iterate through the <code>min_dp</code> array to find the minimum number of elements to change, implying that the XOR of all segments is equal to zero. We return the minimum value found.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

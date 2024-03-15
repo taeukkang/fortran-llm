@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Goal Parser Interpretation</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1672/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1684/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You own a <strong>Goal Parser</strong> that can interpret a string <code>command</code>. The <code>command</code> consists of an alphabet of <code>"G "</code>, <code>"() "</code> and/or <code>"(al) "</code> in some order. The Goal Parser will interpret <code>"G "</code> as the string <code>"G "</code>, <code>"() "</code> as the string <code>"o "</code>, and <code>"(al) "</code> as the string <code>"al "</code>. The interpreted strings are then concatenated in the original order.</p>
+<p>Given the string <code>command</code>, return <em>the <strong>Goal Parser</strong>'s interpretation of</em> <code>command</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> command =  "G()(al) "
+<strong>Output:</strong>  "Goal "
+<strong>Explanation:</strong> The Goal Parser interprets the command as follows:
+G -&gt; G
+() -&gt; o
+(al) -&gt; al
+The final concatenated result is  "Goal ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> command =  "G()()()()(al) "
+<strong>Output:</strong>  "Gooooal "</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> command =  "(al)G(al)()()G "
+<strong>Output:</strong>  "alGalooG "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= command.length &lt;= 100</code></li>
+<li><code>command</code> consists of <code>"G "</code>, <code>"() "</code>, and/or <code>"(al) "</code> in some order.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/goal-parser-interpretation/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=100) :: command
+    character(len=100) :: result
+
+    ! Example 1
+    command = "G()(al) "
+    result = goalParser(command)
+    write (*,*) trim(result)
+
+    ! Example 2
+    command = "G()()()()(al) "
+    result = goalParser(command)
+    write (*,*) trim(result)
+
+    ! Example 3
+    command = "(al)G(al)()()G "
+    result = goalParser(command)
+    write (*,*) trim(result)
+
+contains
+
+    function goalParser(command) result(result)
+        implicit none
+        character(len=*), intent(in) :: command
+        character(len=100) :: result
+
+        integer :: i
+        logical :: found_g
+
+        result = ""
+        found_g = .false.
+
+        do i = 1, len(command)
+            select case (command(i:i))
+                case ("G")
+                    if (.not. found_g) then
+                        result = trim(result) // "G"
+                        found_g = .true.
+                    end if
+                case ("()")
+                    result = trim(result) // "o"
+                case ("(al)")
+                    result = trim(result) // "al"
+            end select
+        end do
+
+    end function goalParser
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> G
+ G
+ G
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+      implicit none
+
+      character(len=100) :: command
+      character(len=100) :: result
+
+      command = "G()(al) "
+      result = goal_parser(command)
+      write (*,*) "Interpretation of ", command, " is ", result
+
+      command = "G()()()()(al) "
+      result = goal_parser(command)
+      write (*,*) "Interpretation of ", command, " is ", result
+
+      command = "(al)G(al)()()G "
+      result = goal_parser(command)
+      write (*,*) "Interpretation of ", command, " is ", result
+
+      contains
+
+      function goal_parser(command) result(result)
+      implicit none
+
+      character(len=*), intent(in) :: command
+      character(len=100) :: result
+
+      integer :: i
+      integer :: j
+
+      result = ""
+
+      do i = 1, len(command)
+        if (command(i:i+1) == "G ") then
+          result = result // "G "
+        else if (command(i:i+1) == "() ") then
+          result = result // "o "
+        else if (command(i:i+2) == "(al) ") then
+          result = result // "al "
+        end if
+      end do
+
+      end function goal_parser
+      end program main
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Interpretation of G()(al)                                                                                              is                                                                                                     
+ Interpretation of G()()()()(al)                                                                                        is                                                                                                     
+ Interpretation of (al)G(al)()()G                                                                                       is                                                                                                     
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def num_ways(s: str) -&gt; int:
+    number_of_ones = s.count('1')
+    if number_of_ones % 3 != 0:
+        return 0
+
+    target = number_of_ones // 3
+    if target == 0:
+        n = len(s)
+        return ((n - 1) * (n - 2) // 2) % 1000000007
+
+    ones_so_far1, ones_so_far2 = 0, 0
+    way1, way2 = 0, 0
+    for c in s:
+        if c == '1':
+            ones_so_far1 += 1
+            if ones_so_far1 == target:
+                way1 += 1
+                ones_so_far1 = 0
+
+            ones_so_far2 += 1
+            if ones_so_far2 == target * 2:
+                way2 += 1
+                ones_so_far2 = 0
+
+    return (way1 * way2) % 1000000007
+</code></pre>
+<pre><code>First, count the number of ones in the binary string s. If the number of ones is not divisible by three, there is no valid way to split s. If the number of ones is zero, calculate the result as the number of ways to pick two positions out of (s.length() - 1) positions to insert separator. In other cases, we iterate through the string and count ones. If the count reaches target ones, we accumulate the result for s1 and clear the count. Similarly for s2, we accumulate the result based on the count reaching target * 2. Finally, we calculate the result as (way1 * way2) % 1000000007.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+using namespace std;
+
+int numWays(string s) {
+    int numberOfOnes = 0;
+    for (char c : s) {
+        if (c == '1') numberOfOnes++;
+    }
+    if (numberOfOnes % 3 != 0) return 0;
+
+    int target = numberOfOnes / 3;
+    if (target == 0) {
+        long n = s.length();
+        return ((n - 1) * (n - 2) / 2) % 1000000007;
+    }
+
+    int onesSoFar1 = 0, onesSoFar2 = 0;
+    long way1 = 0, way2 = 0;
+    for (char c : s) {
+        if (c == '1') {
+            onesSoFar1++;
+            if (onesSoFar1 == target) {
+                way1++;
+                onesSoFar1 = 0;
+            }
+
+            onesSoFar2++;
+            if (onesSoFar2 == target * 2) {
+                way2++;
+                onesSoFar2 = 0;
+            }
+        }
+    }
+
+    return (way1 * way2) % 1000000007;
+}
+</code></pre>
+<pre><code>First, count the number of ones in the binary string s. If the number of ones is not divisible by three, there is no valid way to split s. If the number of ones is zero, calculate the result as the number of ways to pick two positions out of (s.length() - 1) positions to insert separator. In other cases, we iterate through the string and count ones. If the count reaches target ones, we accumulate the result for s1 and clear the count. Similarly for s2, we accumulate the result based on the count reaching target * 2. Finally, we calculate the result as (way1 * way2) % 1000000007.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

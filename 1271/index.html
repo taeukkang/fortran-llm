@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Hexspeak</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1266/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1275/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A decimal number can be converted to its <strong>Hexspeak representation</strong> by first converting it to an uppercase hexadecimal string, then replacing all occurrences of the digit <code>'0'</code> with the letter <code>'O'</code>, and the digit <code>'1'</code> with the letter <code>'I'</code>. Such a representation is valid if and only if it consists only of the letters in the set <code>{'A', 'B', 'C', 'D', 'E', 'F', 'I', 'O'}</code>.</p>
+<p>Given a string <code>num</code> representing a decimal integer <code>n</code>, <em>return the <strong>Hexspeak representation</strong> of</em> <code>n</code> <em>if it is valid, otherwise return</em> <code>"ERROR "</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num =  "257 "
+<strong>Output:</strong>  "IOI "
+<strong>Explanation:</strong> 257 is 101 in hexadecimal.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num =  "3 "
+<strong>Output:</strong>  "ERROR "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= num.length &lt;= 12</code></li>
+<li><code>num</code> does not contain leading zeros.</li>
+<li>num represents an integer in the range <code>[1, 1012]</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/hexspeak/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=12) :: num
+    character(len=4) :: hexspeak
+
+    ! Example 1
+    num = "257"
+    write(*,*) "Example 1:"
+    write(*,*) "Input: ", trim(num)
+    hexspeak = hexspeak_representation(num)
+    write(*,*) "Output: ", trim(hexspeak)
+
+    ! Example 2
+    num = "3"
+    write(*,*) "Example 2:"
+    write(*,*) "Input: ", trim(num)
+    hexspeak = hexspeak_representation(num)
+    write(*,*) "Output: ", trim(hexspeak)
+
+contains
+
+    function hexspeak_representation(num) result(hexspeak)
+        implicit none
+        character(len=*), intent(in) :: num
+        character(len=4) :: hexspeak
+        character(len=12) :: hexstring
+
+        hexstring = num
+        call toupper(hexstring)
+        hexspeak = ""
+        do i = 1, len_trim(hexstring)
+            select case (hexstring(i:i))
+                case ("0")
+                    hexspeak = hexspeak // "O"
+                case ("1")
+                    hexspeak = hexspeak // "I"
+                case default
+                    hexspeak = hexspeak // hexstring(i:i)
+            end select
+        end do
+
+        if (all(hexspeak == ["A", "B", "C", "D", "E", "F", "I", "O"])) then
+            hexspeak = trim(hexspeak)
+        else
+            hexspeak = "ERROR "
+        end if
+
+    end function hexspeak_representation
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:32:12:
+
+   32 |         do i = 1, len_trim(hexstring)
+      |            1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM Hexspeak
+
+IMPLICIT NONE
+
+CHARACTER(len=12) :: num
+CHARACTER(len=12) :: hexspeak
+INTEGER :: n
+
+! Read input
+READ(*,*) num
+
+! Convert to integer
+READ(num,*) n
+
+! Convert to hexspeak
+hexspeak = num
+CALL replace_zero(hexspeak)
+CALL replace_one(hexspeak)
+
+! Check if valid
+IF (hexspeak .EQ. "ERROR ") THEN
+    WRITE(*,*) "ERROR "
+ELSE
+    WRITE(*,*) hexspeak
+END IF
+
+CONTAINS
+
+SUBROUTINE replace_zero(str)
+CHARACTER(len=12), INTENT(INOUT) :: str
+INTEGER :: i
+
+DO i = 1, 12
+    IF (str(i:i) .EQ. "0") THEN
+        str(i:i) = "O"
+    END IF
+END DO
+
+END SUBROUTINE replace_zero
+
+SUBROUTINE replace_one(str)
+CHARACTER(len=12), INTENT(INOUT) :: str
+INTEGER :: i
+
+DO i = 1, 12
+    IF (str(i:i) .EQ. "1") THEN
+        str(i:i) = "I"
+    END IF
+END DO
+
+END SUBROUTINE replace_one
+
+END PROGRAM Hexspeak
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:29:
+
+    6 | CHARACTER(len=12) :: hexspeak
+      |                             1
+Error: Symbol ‘hexspeak’ at (1) cannot have a type
+temp.f95:16:9:
+
+   16 | hexspeak = num
+      |         1
+Error: ‘hexspeak’ at (1) is not a variable
+temp.f95:17:27:
+
+   17 | CALL replace_zero(hexspeak)
+      |                           1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:18:26:
+
+   18 | CALL replace_one(hexspeak)
+      |                          1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:21:13:
+
+   21 | IF (hexspeak .EQ. "ERROR ") THEN
+      |             1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:23:4:
+
+   23 | ELSE
+      |    1
+Error: Unexpected ELSE statement at (1)
+temp.f95:24:23:
+
+   24 |     WRITE(*,*) hexspeak
+      |                       1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:25:3:
+
+   25 | END IF
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def to_hexspeak(num: str) -&gt; str:
+    n = int(num)
+    hex_str = []
+    while n:
+        rem = n % 16
+        if rem == 1: hex_str.insert(0, 'I')
+        elif rem == 0: hex_str.insert(0, 'O')
+        elif rem &gt; 9: hex_str.insert(0, chr(rem - 10 + ord('A')))
+        else: return 'ERROR'
+        n //= 16
+    return ''.join(hex_str)
+</code></pre>
+<p>The algorithm first converts the input number (given as a string) to a long integer (we'll call it <code>n</code>). We then use a loop to construct the Hexspeak representation in reverse order. In each iteration, we calculate the remainder <code>rem</code> of <code>n</code> divided by 16. If <code>rem</code> is 1, we append 'I' to the beginning of the string; if it is 0, we append 'O'; if it is greater than 9, we append the corresponding letter ('A' to 'F'); and if it is none of these, then the Hexspeak representation is invalid, and we return "ERROR". After processing each character, we update <code>n</code> by dividing it by 16. Finally, we return the constructed Hexspeak representation.</p>
+<p>This algorithm runs in O(log(n)) time complexity, as each iteration of the loop reduces <code>n</code> by a factor of 16. The space complexity is also O(log(n)), as the constructed Hexspeak representation string has a length proportional to the number of hexadecimal digits in <code>n</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+
+std::string toHexspeak(std::string num) {
+    long n = std::stol(num);
+    std::string hex = &quot;&quot;;
+    while (n) {
+        int rem = n % 16;
+        if (rem == 1) hex = &quot;I&quot; + hex;
+        else if (rem == 0) hex = &quot;O&quot; + hex;
+        else if (rem &gt; 9) hex = (char)(rem - 10 + 'A') + hex;
+        else return &quot;ERROR&quot;;
+        n /= 16;
+    }
+    return hex;
+}
+</code></pre>
+<p>The algorithm first converts the input number (given as a string) to a long integer (we'll call it <code>n</code>). We then use a loop to construct the Hexspeak representation in reverse order. In each iteration, we calculate the remainder <code>rem</code> of <code>n</code> divided by 16. If <code>rem</code> is 1, we append 'I' to the beginning of the string; if it is 0, we append 'O'; if it is greater than 9, we append the corresponding letter ('A' to 'F'); and if it is none of these, then the Hexspeak representation is invalid, and we return "ERROR". After processing each character, we update <code>n</code> by dividing it by 16. Finally, we return the constructed Hexspeak representation.</p>
+<p>This algorithm runs in O(log(n)) time complexity, as each iteration of the loop reduces <code>n</code> by a factor of 16. The space complexity is also O(log(n)), as the constructed Hexspeak representation string has a length proportional to the number of hexadecimal digits in <code>n</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

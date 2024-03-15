@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Longest Uncommon Subsequence I</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/520/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/530/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two strings <code>a</code> and <code>b</code>, return <em>the length of the <strong>longest uncommon subsequence</strong> between</em> <code>a</code> <em>and</em> <code>b</code>. If the longest uncommon subsequence does not exist, return <code>-1</code>.</p>
+<p>An <strong>uncommon subsequence</strong> between two strings is a string that is a <strong>subsequence of one but not the other</strong>.</p>
+<p>A <strong>subsequence</strong> of a string <code>s</code> is a string that can be obtained after deleting any number of characters from <code>s</code>.</p>
+<ul>
+<li>For example, <code>"abc "</code> is a subsequence of <code>"aebdc "</code> because you can delete the underlined characters in <code>"aebdc "</code> to get <code>"abc "</code>. Other subsequences of <code>"aebdc "</code> include <code>"aebdc "</code>, <code>"aeb "</code>, and <code>" "</code> (empty string).</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> a =  "aba ", b =  "cdc "
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> One longest uncommon subsequence is  "aba " because  "aba " is a subsequence of  "aba " but not  "cdc ".
+Note that  "cdc " is also a longest uncommon subsequence.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> a =  "aaa ", b =  "bbb "
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The longest uncommon subsequences are  "aaa " and  "bbb ".</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> a =  "aaa ", b =  "aaa "
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> Every subsequence of string a is also a subsequence of string b. Similarly, every subsequence of string b is also a subsequence of string a.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= a.length, b.length &lt;= 100</code></li>
+<li><code>a</code> and <code>b</code> consist of lower-case English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/longest-uncommon-subsequence-i/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=100) :: a, b
+    integer :: n
+
+    call get_command_argument(1, a)
+    call get_command_argument(2, b)
+
+    n = longest_uncommon_subsequence(a, b)
+    write (*, '(I0)') n
+
+contains
+
+    function longest_uncommon_subsequence(a, b) result(n)
+        implicit none
+        character(len=*), intent(in) :: a, b
+        integer :: i, j, k, l, m, n
+        logical :: found
+
+        ! Initialize variables
+        n = -1
+        found = .false.
+
+        ! Loop over all possible starting indices for a
+        do i = 1, len(a)
+            ! Loop over all possible ending indices for a
+            do j = i, len(a)
+                ! Check if a(i:j) is a subsequence of b
+                do k = 1, len(b)
+                    ! Check if b(k:) is a subsequence of a(i:j)
+                    do l = k, len(b)
+                        if (a(i:j) == b(k:l)) then
+                            ! If it is, check if a(i:j) is longer than the current longest uncommon subsequence
+                            if (len(a(i:j)) > n) then
+                                ! If it is, update the longest uncommon subsequence
+                                n = len(a(i:j))
+                                found = .true.
+                            end if
+                            exit
+                        end if
+                    end do
+                    if (found) exit
+                end do
+                if (found) exit
+            end do
+            if (found) exit
+        end do
+
+    end function longest_uncommon_subsequence
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>1
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!-------------------------------------------------------------------------------
+  !
+  ! Fortran script to solve the longest uncommon subsequence problem
+  !
+  !-------------------------------------------------------------------------------
+
+  program longest_uncommon_subsequence
+
+    implicit none
+
+    character(len=100) :: a, b
+    integer :: i, j, k, l, m, n
+    integer :: max_len
+    integer :: len_a, len_b
+    integer :: dp(100, 100)
+
+    ! Read input
+    read(*,*) a
+    read(*,*) b
+
+    ! Initialize dp array
+    do i = 1, 100
+        do j = 1, 100
+            dp(i, j) = -1
+        end do
+    end do
+
+    ! Set the length of the input strings
+    len_a = len(a)
+    len_b = len(b)
+
+    ! Initialize the maximum length
+    max_len = -1
+
+    ! Loop through all possible substrings of a
+    do i = 1, len_a
+        do j = i, len_a
+            ! Loop through all possible substrings of b
+            do k = 1, len_b
+                do l = k, len_b
+                    ! Check if the current substring is a subsequence of the other
+                    if (index(a(i:j), b(k:l)) /= 0 .or. index(b(k:l), a(i:j)) /= 0) then
+                        ! If it is, set the maximum length to the current length
+                        max_len = max(max_len, j-i+1)
+                    end if
+                end do
+            end do
+        end do
+    end do
+
+    ! Print the maximum length
+    write(*,*) max_len
+
+  end program longest_uncommon_subsequence
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 18 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7a655386b960 in ???
+#1  0x7a655386c4d9 in ???
+#2  0x7a6553ac017b in ???
+#3  0x7a6553ab9684 in ???
+#4  0x7a6553aba2aa in ???
+#5  0x5b5eecb23225 in MAIN__
+#6  0x5b5eecb235ab in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def findLUSlength(a: str, b: str) -&gt; int:
+    if a == b:
+        return -1
+    return max(len(a), len(b))
+</code></pre>
+<p>The algorithm is as follows:
+1. First, we compare if the strings a and b are equal. If they are equal, it means that there is no uncommon subsequence between them, so we return -1.
+2. If the strings are not equal, then we find the length of both strings and return the one with the maximum length. This is because the longest uncommon subsequence can be the longer of the two strings itself (since it is not a subsequence of the other string).</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int findLUSlength(string a, string b) {
+    if (a == b) {
+        return -1;
+    }
+    return max(a.length(), b.length());
+}
+</code></pre>
+<p>The algorithm is as follows:
+1. First, we compare if the strings a and b are equal. If they are equal, it means that there is no uncommon subsequence between them, so we return -1.
+2. If the strings are not equal, then we find the length of both strings and return the one with the maximum length. This is because the longest uncommon subsequence can be the longer of the two strings itself (since it is not a subsequence of the other string).</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

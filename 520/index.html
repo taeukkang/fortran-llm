@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Detect Capital</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/509/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/521/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>We define the usage of capitals in a word to be right when one of the following cases holds:</p>
+<ul>
+<li>All letters in this word are capitals, like <code>"USA "</code>.</li>
+<li>All letters in this word are not capitals, like <code>"leetcode "</code>.</li>
+<li>Only the first letter in this word is capital, like <code>"Google "</code>.</li>
+</ul>
+<p>Given a string <code>word</code>, return <code>true</code> if the usage of capitals in it is right.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> word = "USA"
+<strong>Output:</strong> true</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> word = "FlaG"
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= word.length &lt;= 100</code></li>
+<li><code>word</code> consists of lowercase and uppercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/detect-capital/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=*), parameter :: example_1 = "USA"
+    character(len=*), parameter :: example_2 = "FlaG"
+    character(len=*), parameter :: example_3 = "leetcode"
+    character(len=*), parameter :: example_4 = "Google"
+
+    logical :: result
+
+    result = is_capitalized(example_1)
+    print '(L1)', result
+    result = is_capitalized(example_2)
+    print '(L1)', result
+    result = is_capitalized(example_3)
+    print '(L1)', result
+    result = is_capitalized(example_4)
+    print '(L1)', result
+
+contains
+
+    function is_capitalized(word) result(is_right)
+        implicit none
+        character(len=*), intent(in) :: word
+        logical :: is_right
+
+        integer :: i
+
+        is_right = .false.
+
+        do i = 1, len(word)
+            if (ichar(word(i:i)) >= ichar('A') .and. ichar(word(i:i)) <= ichar('Z')) then
+                ! If any letter is capital, then the whole word must be capitalized
+                exit
+            end if
+        end do
+
+        if (i == len(word)) then
+            ! If we reach the end of the word without finding any capital letter,
+            ! then the word is not capitalized
+            is_right = .false.
+        else
+            ! Otherwise, check if the first letter is capital
+            if (ichar(word(1:1)) >= ichar('A') .and. ichar(word(1:1)) <= ichar('Z')) then
+                is_right = .true.
+            end if
+        end if
+
+    end function is_capitalized
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>T
+T
+F
+T
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module main
+
+implicit none
+
+interface
+
+function is_capitalized_right(word) result(is_right)
+character(len=*), intent(in) :: word
+logical :: is_right
+end function is_capitalized_right
+
+end interface
+
+contains
+
+subroutine run_test_cases()
+
+character(len=100) :: word
+logical :: is_right
+
+word = "USA"
+is_right = is_capitalized_right(word)
+if (is_right) then
+    write (*,*) "Test case 1: PASSED"
+else
+    write (*,*) "Test case 1: FAILED"
+end if
+
+word = "FlaG"
+is_right = is_capitalized_right(word)
+if (.not. is_right) then
+    write (*,*) "Test case 2: PASSED"
+else
+    write (*,*) "Test case 2: FAILED"
+end if
+
+word = "leetcode"
+is_right = is_capitalized_right(word)
+if (is_right) then
+    write (*,*) "Test case 3: PASSED"
+else
+    write (*,*) "Test case 3: FAILED"
+end if
+
+word = "Google"
+is_right = is_capitalized_right(word)
+if (is_right) then
+    write (*,*) "Test case 4: PASSED"
+else
+    write (*,*) "Test case 4: FAILED"
+end if
+
+end subroutine run_test_cases
+
+function is_capitalized_right(word) result(is_right)
+character(len=*), intent(in) :: word
+logical :: is_right
+
+! Check if all letters in the word are capitals
+if (all(word == ucase(word))) then
+    is_right = .true.
+! Check if all letters in the word are not capitals
+else if (all(word == lcase(word))) then
+    is_right = .true.
+! Check if only the first letter in the word is capital
+else if (word(1:1) == ucase(word(1:1)) .and. &
+        & all(word(2:) == lcase(word(2:)))) then
+    is_right = .true.
+else
+    is_right = .false.
+end if
+
+end function is_capitalized_right
+
+end module main
+
+! Call the run_test_cases subroutine to run the test cases
+call run_test_cases()
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:55:30:
+
+    7 | function is_capitalized_right(word) result(is_right)
+      |                               
+......
+   55 | function is_capitalized_right(word) result(is_right)
+      |                              1
+Error: Procedure ‘is_capitalized_right’ at (1) is already defined at (2)
+temp.f95:56:36:
+
+   56 | character(len=*), intent(in) :: word
+      |                                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:57:19:
+
+   57 | logical :: is_right
+      |                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:60:34:
+
+   60 | if (all(word == ucase(word))) then
+      |                                  1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:61:21:
+
+   61 |     is_right = .true.
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:63:39:
+
+   63 | else if (all(word == lcase(word))) then
+      |                                       1
+Error: Unexpected ELSE IF statement in CONTAINS section at (1)
+temp.f95:64:21:
+
+   64 |     is_right = .true.
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:66:16:
+
+   66 | else if (word(1:1) == ucase(word(1:1)) .and. &
+      |                1
+Error: Syntax error in argument list at (1)
+temp.f95:68:21:
+
+   68 |     is_right = .true.
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:69:4:
+
+   69 | else
+      |    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:70:22:
+
+   70 |     is_right = .false.
+      |                      1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:71:3:
+
+   71 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:73:3:
+
+   73 | end function is_capitalized_right
+      |   1
+Error: Expecting END MODULE statement at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def detectCapitalUse(word: str) -&gt; bool:
+    numCapital = sum(1 for c in word if c.isupper())
+    return numCapital == 0 or numCapital == len(word) or (numCapital == 1 and word[0].isupper())
+</code></pre>
+<pre><code>The algorithm keeps track of the count of capital letters in the word. It iterates over each character in the word, and if the character is uppercase, it increments the `numCapital` counter.
+</code></pre>
+<p>After iterating through the word, the algorithm checks if one of the three conditions holds:
+1. There are no capital letters (<code>numCapital == 0</code>)
+2. All letters are capital (<code>numCapital == word.size()</code> in C++ / <code>word.length</code> in Java and JavaScript / <code>len(word)</code> in Python)
+3. Only the first letter is capital (<code>numCapital == 1</code> and the first letter is uppercase)</p>
+<p>If any of these conditions hold, the function returns <code>true</code>, otherwise <code>false</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool detectCapitalUse(string word) {
+    int numCapital = 0;
+    for (char c : word) {
+        if (isupper(c)) numCapital++;
+    }
+    return numCapital == 0 || numCapital == word.size() || (numCapital == 1 &amp;&amp; isupper(word[0]));
+}
+</code></pre>
+<pre><code>The algorithm keeps track of the count of capital letters in the word. It iterates over each character in the word, and if the character is uppercase, it increments the `numCapital` counter.
+</code></pre>
+<p>After iterating through the word, the algorithm checks if one of the three conditions holds:
+1. There are no capital letters (<code>numCapital == 0</code>)
+2. All letters are capital (<code>numCapital == word.size()</code> in C++ / <code>word.length</code> in Java and JavaScript / <code>len(word)</code> in Python)
+3. Only the first letter is capital (<code>numCapital == 1</code> and the first letter is uppercase)</p>
+<p>If any of these conditions hold, the function returns <code>true</code>, otherwise <code>false</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

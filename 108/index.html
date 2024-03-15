@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Convert Sorted Array to Binary Search Tree</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/104/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/110/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code> where the elements are sorted in <strong>ascending order</strong>, convert <em>it to a</em> <strong><em>height-balanced</em></strong> <em>binary search tree</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [-10,-3,0,5,9]
+<strong>Output:</strong> [0,-3,9,-10,null,5]
+<strong>Explanation:</strong> [0,-10,5,null,-3,null,9] is also accepted:</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,3]
+<strong>Output:</strong> [3,1]
+<strong>Explanation:</strong> [1,null,3] and [3,1] are both height-balanced BSTs.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 104</code></li>
+<li><code>-104 &lt;= nums[i] &lt;= 104</code></li>
+<li><code>nums</code> is sorted in a <strong>strictly increasing</strong> order.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solve the problem described in the task
+    implicit none
+
+    integer, parameter :: n = 6
+    integer, dimension(n) :: nums
+    type(Node), pointer :: root
+
+    ! Example 1
+    nums = [-10, -3, 0, 5, 9]
+    call solve(nums, root)
+    write (*, '(A)') 'Example 1:'
+    call print_tree(root)
+
+    ! Example 2
+    nums = [1, 3]
+    call solve(nums, root)
+    write (*, '(A)') 'Example 2:'
+    call print_tree(root)
+
+contains
+
+    subroutine solve(nums, root)
+        ! Solves the problem
+        implicit none
+        integer, dimension(:), intent(in) :: nums
+        type(Node), pointer, intent(out) :: root
+
+        integer :: i
+
+        allocate(root)
+        root%val = nums(1)
+        root%left => null()
+        root%right => null()
+
+        do i = 2, size(nums)
+            call insert(root, nums(i))
+        end do
+    end subroutine solve
+
+    subroutine insert(node, val)
+        ! Inserts a new node into the binary search tree
+        implicit none
+        class(Node), pointer, intent(inout) :: node
+        integer, intent(in) :: val
+
+        if (val < node%val) then
+            if (.not. associated(node%left)) then
+                allocate(node%left)
+                node%left%val = val
+                node%left%left => null()
+                node%left%right => null()
+            else
+                call insert(node%left, val)
+            end if
+        else
+            if (.not. associated(node%right)) then
+                allocate(node%right)
+                node%right%val = val
+                node%right%left => null()
+                node%right%right => null()
+            else
+                call insert(node%right, val)
+            end if
+        end if
+    end subroutine insert
+
+    subroutine print_tree(node)
+        ! Prints the binary search tree
+        implicit none
+        class(Node), pointer, intent(in) :: node
+
+        if (associated(node)) then
+            write (*, '(I0)', advance='no') node%val
+            call print_tree(node%left)
+            call print_tree(node%right)
+        end if
+    end subroutine print_tree
+
+end program main
+
+type Node
+    integer :: val
+    type(Node), pointer :: left
+    type(Node), pointer :: right
+end type Node</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:15:
+
+    7 |     type(Node), pointer :: root
+      |               1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:27:19:
+
+   27 |         type(Node), pointer, intent(out) :: root
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:31:17:
+
+   31 |         allocate(root)
+      |                 1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:32:14:
+
+   32 |         root%val = nums(1)
+      |              1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:33:14:
+
+   33 |         root%left => null()
+      |              1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:34:14:
+
+   34 |         root%right => null()
+      |              1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:44:20:
+
+   44 |         class(Node), pointer, intent(inout) :: node
+      |                    1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:47:24:
+
+   47 |         if (val < node%val) then
+      |                        1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:48:39:
+
+   48 |             if (.not. associated(node%left)) then
+      |                                       1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:49:31:
+
+   49 |                 allocate(node%left)
+      |                               1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:50:22:
+
+   50 |                 node%left%val = val
+      |                      1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:51:22:
+
+   51 |                 node%left%left => null()
+      |                      1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:52:22:
+
+   52 |                 node%left%right => null()
+      |                      1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:53:16:
+
+   53 |             else
+      |                1
+Error: Unexpected ELSE statement at (1)
+temp.f95:54:34:
+
+   54 |                 call insert(node%left, val)
+      |                                  1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:55:15:
+
+   55 |             end if
+      |               1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:56:12:
+
+   56 |         else
+      |            1
+Error: Unexpected ELSE statement at (1)
+temp.f95:57:39:
+
+   57 |             if (.not. associated(node%right)) then
+      |                                       1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:58:31:
+
+   58 |                 allocate(node%right)
+      |                               1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:59:22:
+
+   59 |                 node%right%val = val
+      |                      1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:60:22:
+
+   60 |                 node%right%left => null()
+      |                      1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:61:22:
+
+   61 |                 node%right%right => null()
+      |                      1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:62:16:
+
+   62 |             else
+      |                1
+Error: Unexpected ELSE statement at (1)
+temp.f95:63:34:
+
+   63 |                 call insert(node%right, val)
+      |                                  1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:64:15:
+
+   64 |             end if
+      |               1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:65:11:
+
+   65 |         end if
+      |           1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:71:20:
+
+   71 |         class(Node), pointer, intent(in) :: node
+      |                    1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:74:50:
+
+   74 |             write (*, '(I0)', advance='no') node%val
+      |                                                  1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:75:34:
+
+   75 |             call print_tree(node%left)
+      |                                  1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:76:34:
+
+   76 |             call print_tree(node%right)
+      |                                  1
+Error: Symbol ‘node’ at (1) has no IMPLICIT type
+temp.f95:1:12:
+
+    1 | program main
+      |            1
+......
+   82 | type Node
+      |         2   
+Error: Two main PROGRAMs at (1) and (2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program convert_to_height_balanced_bst
+      implicit none
+
+      integer, parameter :: max_size = 100000
+      integer :: nums(max_size), i, n, current, left, right
+
+      ! Read the input
+      read (*,*) n
+      do i = 1, n
+        read (*,*) nums(i)
+      end do
+
+      ! Build the binary search tree
+      current = 1
+      left = 2
+      right = 3
+      while (current <= n)
+        if (left <= n .and. nums(left) < nums(current)) then
+          ! Left subtree is not empty
+          if (right <= n .and. nums(right) < nums(left)) then
+            ! Right subtree is not empty
+            if (nums(right) < nums(current)) then
+              ! Right subtree is smaller than current node
+              write (*,*) nums(right), nums(current), nums(left)
+              current = right + 1
+              left = right + 1
+              right = right + 2
+            else
+              ! Right subtree is larger than current node
+              write (*,*) nums(current), nums(left), nums(right)
+              current = right + 1
+              left = right + 1
+              right = right + 2
+            end if
+          else
+            ! Right subtree is empty
+            write (*,*) nums(current), nums(left)
+            current = left + 1
+            left = left + 2
+          end if
+        else
+          ! Left subtree is empty
+          if (right <= n .and. nums(right) < nums(current)) then
+            ! Right subtree is not empty
+            write (*,*) nums(current), nums(right)
+            current = right + 1
+            left = right + 1
+            right = right + 2
+          else
+            ! Right subtree is empty
+            write (*,*) nums(current)
+            current = current + 1
+          end if
+        end if
+      end do
+
+      end program convert_to_height_balanced_bst
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:17:7:
+
+   17 |       while (current <= n)
+      |       1
+Error: Unclassifiable statement at (1)
+temp.f95:55:9:
+
+   55 |       end do
+      |         1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def sorted_array_to_bst(nums):
+    def helper(start, end):
+        if start &gt; end:
+            return None
+
+        mid = start + (end - start) // 2
+        node = TreeNode(nums[mid])
+        node.left = helper(start, mid - 1)
+        node.right = helper(mid + 1, end)
+
+        return node
+
+    return helper(0, len(nums) - 1)
+</code></pre>
+<pre><code>The algorithm for creating a height-balanced binary search tree from a sorted array can be described as follows:
+</code></pre>
+<ol>
+<li>Find the middle element of the array, and make it the root of the binary search tree.</li>
+<li>For each half of the array (elements to the left of the middle element and elements to the right of the middle element), repeat step 1 recursively.</li>
+<li>The base case is when the start index is greater than the end index, in which case a null node is returned.</li>
+</ol>
+<p>The above code implements this algorithm in C++, Java, Python, and JavaScript.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+TreeNode* sortedArrayToBST(std::vector&lt;int&gt;&amp; nums, int start, int end) {
+    if (start &gt; end) return nullptr;
+
+    int mid = start + (end - start) / 2;
+    TreeNode* node = new TreeNode(nums[mid]);
+    node-&gt;left = sortedArrayToBST(nums, start, mid - 1);
+    node-&gt;right = sortedArrayToBST(nums, mid + 1, end);
+
+    return node;
+}
+
+TreeNode* sortedArrayToBST(std::vector&lt;int&gt;&amp; nums) {
+    return sortedArrayToBST(nums, 0, nums.size() - 1);
+}
+</code></pre>
+<pre><code>The algorithm for creating a height-balanced binary search tree from a sorted array can be described as follows:
+</code></pre>
+<ol>
+<li>Find the middle element of the array, and make it the root of the binary search tree.</li>
+<li>For each half of the array (elements to the left of the middle element and elements to the right of the middle element), repeat step 1 recursively.</li>
+<li>The base case is when the start index is greater than the end index, in which case a null node is returned.</li>
+</ol>
+<p>The above code implements this algorithm in C++, Java, Python, and JavaScript.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

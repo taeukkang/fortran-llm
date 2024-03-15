@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Implement Queue using Stacks</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/231/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/234/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Implement a first in first out (FIFO) queue using only two stacks. The implemented queue should support all the functions of a normal queue (<code>push</code>, <code>peek</code>, <code>pop</code>, and <code>empty</code>).</p>
+<p>Implement the <code>MyQueue</code> class:</p>
+<ul>
+<li><code>void push(int x)</code> Pushes element x to the back of the queue.</li>
+<li><code>int pop()</code> Removes the element from the front of the queue and returns it.</li>
+<li><code>int peek()</code> Returns the element at the front of the queue.</li>
+<li><code>boolean empty()</code> Returns <code>true</code> if the queue is empty, <code>false</code> otherwise.</li>
+</ul>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>You must use <strong>only</strong> standard operations of a stack, which means only <code>push to top</code>, <code>peek/pop from top</code>, <code>size</code>, and <code>is empty</code> operations are valid.</li>
+<li>Depending on your language, the stack may not be supported natively. You may simulate a stack using a list or deque (double-ended queue) as long as you use only a stack's standard operations.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input</strong>
+[ "MyQueue ",  "push ",  "push ",  "peek ",  "pop ",  "empty "]
+[[], [1], [2], [], [], []]
+<strong>Output</strong>
+[null, null, null, 1, 1, false]</p>
+<p><strong>Explanation</strong>
+MyQueue myQueue = new MyQueue();
+myQueue.push(1); // queue is: [1]
+myQueue.push(2); // queue is: [1, 2] (leftmost is front of the queue)
+myQueue.peek(); // return 1
+myQueue.pop(); // return 1, queue is [2]
+myQueue.empty(); // return false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= x &lt;= 9</code></li>
+<li>At most <code>100</code> calls will be made to <code>push</code>, <code>pop</code>, <code>peek</code>, and <code>empty</code>.</li>
+<li>All the calls to <code>pop</code> and <code>peek</code> are valid.</li>
+</ul>
+<p><strong>Follow-up:</strong> Can you implement the queue such that each operation is <strong><a href="https://en.wikipedia.org/wiki/Amortized_analysis">amortized</a></strong> <code>O(1)</code> time complexity? In other words, performing <code>n</code> operations will take overall <code>O(n)</code> time even if one of those operations may take longer.</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/implement-queue-using-stacks/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    type :: MyQueue
+        private
+        integer, allocatable :: stack(:)
+        integer :: size = 0
+    contains
+        procedure :: push => push_impl
+        procedure :: pop => pop_impl
+        procedure :: peek => peek_impl
+        procedure :: empty => empty_impl
+    end type MyQueue
+
+    interface MyQueue
+        module procedure constructor
+    end interface MyQueue
+
+contains
+
+    function constructor() result(queue)
+        type(MyQueue) :: queue
+
+        allocate(queue%stack(0))
+    end function constructor
+
+    subroutine push_impl(queue, x)
+        class(MyQueue), intent(inout) :: queue
+        integer, value :: x
+
+        queue%size = queue%size + 1
+        allocate(queue%stack(queue%size))
+        queue%stack(queue%size) = x
+    end subroutine push_impl
+
+    function pop_impl(queue) result(x)
+        class(MyQueue), intent(inout) :: queue
+        integer :: x
+
+        if (queue%empty()) then
+            error stop 'cannot pop from an empty queue'
+        end if
+
+        x = queue%stack(queue%size)
+        deallocate(queue%stack(queue%size))
+        queue%size = queue%size - 1
+    end function pop_impl
+
+    function peek_impl(queue) result(x)
+        class(MyQueue), intent(in) :: queue
+        integer :: x
+
+        if (queue%empty()) then
+            error stop 'cannot peek from an empty queue'
+        end if
+
+        x = queue%stack(queue%size)
+    end function peek_impl
+
+    logical function empty_impl(queue) result(empty)
+        class(MyQueue), intent(in) :: queue
+
+        empty = queue%size == 0
+    end function empty_impl
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:15:
+
+    5 |         private
+      |               1
+Error: PRIVATE statement at (1) is only allowed in the specification part of a module
+temp.f95:21:4:
+
+   21 |     function constructor() result(queue)
+      |    1
+Error: INTERNAL-PROC procedure at (1) is already declared as MODULE-PROC procedure
+temp.f95:12:17:
+
+   12 |         procedure :: empty => empty_impl
+      |                 1
+Error: ‘empty_impl’ must be a module procedure or an external procedure with an explicit interface at (1)
+temp.f95:11:17:
+
+   11 |         procedure :: peek => peek_impl
+      |                 1
+Error: ‘peek_impl’ must be a module procedure or an external procedure with an explicit interface at (1)
+temp.f95:10:17:
+
+   10 |         procedure :: pop => pop_impl
+      |                 1
+Error: ‘pop_impl’ must be a module procedure or an external procedure with an explicit interface at (1)
+temp.f95:9:17:
+
+    9 |         procedure :: push => push_impl
+      |                 1
+Error: ‘push_impl’ must be a module procedure or an external procedure with an explicit interface at (1)
+temp.f95:53:12:
+
+   53 |         if (queue%empty()) then
+      |            1
+Error: ‘empty’ at (1) should be a FUNCTION
+temp.f95:40:12:
+
+   40 |         if (queue%empty()) then
+      |            1
+Error: ‘empty’ at (1) should be a FUNCTION
+temp.f95:45:19:
+
+   45 |         deallocate(queue%stack(queue%size))
+      |                   1
+Error: Allocate-object at (1) must be ALLOCATABLE or a POINTER
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module MyQueue
+
+! Declare the stacks used to implement the queue
+integer :: stack1(100), stack2(100)
+integer :: top1, top2
+
+! Declare the functions of the queue
+contains
+
+! Push an element to the back of the queue
+subroutine push(x)
+integer, intent(in) :: x
+! If the first stack is empty, push the element to the first stack
+if (top1 == 0) then
+    top1 = 1
+    stack1(top1) = x
+else
+    ! If the first stack is not empty, push the element to the second stack
+    top2 = top2 + 1
+    stack2(top2) = x
+end if
+end subroutine push
+
+! Pop an element from the front of the queue
+function pop() result(x)
+integer :: x
+! If the first stack is empty, pop the element from the second stack
+if (top1 == 0) then
+    top2 = top2 - 1
+    x = stack2(top2 + 1)
+else
+    ! If the first stack is not empty, pop the element from the first stack
+    top1 = top1 - 1
+    x = stack1(top1 + 1)
+end if
+end function pop
+
+! Peek at the element at the front of the queue
+function peek() result(x)
+integer :: x
+! If the first stack is empty, peek at the element from the second stack
+if (top1 == 0) then
+    x = stack2(top2 + 1)
+else
+    ! If the first stack is not empty, peek at the element from the first stack
+    x = stack1(top1 + 1)
+end if
+end function peek
+
+! Check if the queue is empty
+function empty() result(x)
+logical :: x
+! If both stacks are empty, the queue is empty
+if (top1 == 0 .and. top2 == 0) then
+    x = .true.
+else
+    x = .false.
+end if
+end function empty
+
+end module MyQueue
+
+! Test the queue with the given examples
+program test
+use MyQueue
+implicit none
+
+! Test case 1: Push and pop
+call push(1)
+call push(2)
+call push(3)
+call push(4)
+call push(5)
+call push(6)
+call push(7)
+call push(8)
+call push(9)
+call push(10)
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call pop()
+call
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:188:4:
+
+  188 | call
+      |    1
+Error: Syntax error in CALL statement at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class MyQueue:
+
+    def __init__(self):
+        self.stack1 = []
+        self.stack2 = []
+
+    def push(self, x: int) -&gt; None:
+        self.stack1.append(x)
+
+    def pop(self) -&gt; int:
+        if not self.stack2:
+            while self.stack1:
+                self.stack2.append(self.stack1.pop())
+        return self.stack2.pop()
+
+    def peek(self) -&gt; int:
+        if not self.stack2:
+            while self.stack1:
+                self.stack2.append(self.stack1.pop())
+        return self.stack2[-1]
+
+    def empty(self) -&gt; bool:
+        return not self.stack1 and not self.stack2
+</code></pre>
+<p>We can use two stacks(stack1 and stack2) to simulate a queue's functionality. Each time we push an element into the queue, we push it to stack1. </p>
+<p>When we need to pop or peek the front element, we check if stack2 is empty; if so, pop all elements from stack1 and push them to stack2. The front element of the queue then would be on the top of the stack2. If stack2 is not empty, just pop or peek the top element of stack2.</p>
+<p>To check if the queue is empty, we just need to check if both the stacks are empty.</p>
+<p>By doing this, we are maintaining stack2 as the reversed version of stack1, which allows us to access the elements in the correct order for a queue (FIFO).</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">class MyQueue {
+public:
+    stack&lt;int&gt; stack1, stack2;
+
+    MyQueue() {
+    }
+
+    void push(int x) {
+        stack1.push(x);
+    }
+
+    int pop() {
+        if (stack2.empty()) {
+            while (!stack1.empty()) {
+                stack2.push(stack1.top());
+                stack1.pop();
+            }
+        }
+        int top_element = stack2.top();
+        stack2.pop();
+        return top_element;
+    }
+
+    int peek() {
+        if (stack2.empty()) {
+            while (!stack1.empty()) {
+                stack2.push(stack1.top());
+                stack1.pop();
+            }
+        }
+        return stack2.top();
+    }
+
+    bool empty() {
+        return stack1.empty() &amp;&amp; stack2.empty();
+    }
+};
+</code></pre>
+<p>We can use two stacks(stack1 and stack2) to simulate a queue's functionality. Each time we push an element into the queue, we push it to stack1. </p>
+<p>When we need to pop or peek the front element, we check if stack2 is empty; if so, pop all elements from stack1 and push them to stack2. The front element of the queue then would be on the top of the stack2. If stack2 is not empty, just pop or peek the top element of stack2.</p>
+<p>To check if the queue is empty, we just need to check if both the stacks are empty.</p>
+<p>By doing this, we are maintaining stack2 as the reversed version of stack1, which allows us to access the elements in the correct order for a queue (FIFO).</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

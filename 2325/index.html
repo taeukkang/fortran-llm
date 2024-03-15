@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Decode the Message</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2319/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2331/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given the strings <code>key</code> and <code>message</code>, which represent a cipher key and a secret message, respectively. The steps to decode <code>message</code> are as follows:</p>
+<ol>
+<li>Use the <strong>first</strong> appearance of all 26 lowercase English letters in <code>key</code> as the <strong>order</strong> of the substitution table.</li>
+<li>Align the substitution table with the regular English alphabet.</li>
+<li>Each letter in <code>message</code> is then <strong>substituted</strong> using the table.</li>
+<li>
+<p>Spaces <code>' '</code> are transformed to themselves.</p>
+</li>
+<li>
+<p>For example, given <code>key = "**hap**p**y** **bo**y "</code> (actual key would have <strong>at least one</strong> instance of each letter in the alphabet), we have the partial substitution table of (<code>'h' -&gt; 'a'</code>, <code>'a' -&gt; 'b'</code>, <code>'p' -&gt; 'c'</code>, <code>'y' -&gt; 'd'</code>, <code>'b' -&gt; 'e'</code>, <code>'o' -&gt; 'f'</code>).</p>
+</li>
+</ol>
+<p>Return <em>the decoded message</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> key =  "the quick brown fox jumps over the lazy dog ", message =  "vkbs bs t suepuv "
+<strong>Output:</strong>  "this is a secret "
+<strong>Explanation:</strong> The diagram above shows the substitution table.
+It is obtained by taking the first appearance of each letter in  "<strong>the</strong> <strong>quick</strong> <strong>brown</strong> <strong>f</strong>o<strong>x</strong> <strong>j</strong>u<strong>mps</strong> o<strong>v</strong>er the <strong>lazy</strong> <strong>d</strong>o<strong>g</strong> ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> key =  "eljuxhpwnyrdgtqkviszcfmabo ", message =  "zwx hnfx lqantp mnoeius ycgk vcnjrdb "
+<strong>Output:</strong>  "the five boxing wizards jump quickly "
+<strong>Explanation:</strong> The diagram above shows the substitution table.
+It is obtained by taking the first appearance of each letter in  "<strong>eljuxhpwnyrdgtqkviszcfmabo</strong> ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>26 &lt;= key.length &lt;= 2000</code></li>
+<li><code>key</code> consists of lowercase English letters and <code>' '</code>.</li>
+<li><code>key</code> contains every letter in the English alphabet (<code>'a'</code> to <code>'z'</code>) <strong>at least once</strong>.</li>
+<li><code>1 &lt;= message.length &lt;= 2000</code></li>
+<li><code>message</code> consists of lowercase English letters and <code>' '</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/decode-the-message/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=*), parameter :: key = "**hap**p** **bo**y "
+    character(len=*), parameter :: message = "vkbs bs t suepuv "
+    character(len=:), allocatable :: decoded_message
+
+    call decode_message(key, message, decoded_message)
+    write (*,*) decoded_message
+
+contains
+
+subroutine decode_message(key, message, decoded_message)
+    implicit none
+    character(len=*), intent(in) :: key
+    character(len=*), intent(in) :: message
+    character(len=:), allocatable, intent(out) :: decoded_message
+
+    integer :: i, j, k
+    character(len=1), dimension(26) :: order
+    character(len=1), dimension(26) :: alphabet
+    character(len=1), dimension(:), allocatable :: substitution_table
+
+    ! Initialize the substitution table
+    do i = 1, 26
+        order(i) = key(i:i)
+        alphabet(i) = char(97 + i - 1)
+    end do
+
+    ! Create the substitution table
+    allocate(substitution_table(26))
+    do i = 1, 26
+        j = index(alphabet, order(i))
+        substitution_table(j) = alphabet(i)
+    end do
+
+    ! Substitute each letter in the message
+    allocate(character(len=len(message)) :: decoded_message)
+    do i = 1, len(message)
+        if (message(i:i) == ' ') then
+            decoded_message(i:i) = ' '
+        else
+            k = index(alphabet, message(i:i))
+            decoded_message(i:i) = substitution_table(k)
+        end if
+    end do
+end subroutine decode_message
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:33:8:
+
+   33 |         j = index(alphabet, order(i))
+      |        1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:43:12:
+
+   43 |             k = index(alphabet, message(i:i))
+      |            1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Decrypts a message using a substitution cipher based on a given key.
+!
+! Input:
+! - key: a string containing the cipher key
+! - message: a string containing the encrypted message
+!
+! Output:
+! - the decrypted message
+
+program decrypt
+  implicit none
+
+  character(len=*), parameter :: alphabet = "abcdefghijklmnopqrstuvwxyz"
+  character(len=*), parameter :: space = " "
+
+  character(len=*) :: key, message
+  character(len=*) :: decrypted_message
+
+  integer :: i, j, k, l
+
+  ! Initialize the substitution table
+  character(len=1), dimension(26) :: substitution_table
+  do i = 1, 26
+    substitution_table(i) = alphabet(i:i)
+  end do
+
+  ! Align the substitution table with the regular English alphabet
+  do i = 1, 26
+    j = 1
+    do while (substitution_table(i) /= alphabet(j:j))
+      j = j + 1
+    end do
+    substitution_table(i) = alphabet(j:j)
+  end do
+
+  ! Decode the message
+  decrypted_message = ""
+  do i = 1, len(message)
+    if (message(i:i) == space) then
+      decrypted_message = decrypted_message // space
+    else
+      k = 1
+      do while (substitution_table(k) /= message(i:i))
+        k = k + 1
+      end do
+      decrypted_message = decrypted_message // substitution_table(k)
+    end if
+  end do
+
+  ! Print the decrypted message
+  print *, decrypted_message
+
+end program decrypt
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:17:39:
+
+   17 |   character(len=*) :: decrypted_message
+      |                                       1
+Error: Entity with assumed character length at (1) must be a dummy argument or a PARAMETER
+temp.f95:16:25:
+
+   16 |   character(len=*) :: key, message
+      |                         1
+Error: Entity with assumed character length at (1) must be a dummy argument or a PARAMETER
+temp.f95:16:34:
+
+   16 |   character(len=*) :: key, message
+      |                                  1
+Error: Entity with assumed character length at (1) must be a dummy argument or a PARAMETER
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def valid_selections(s: str) -&gt; int:
+    res = 0
+    for i in range(1, len(s) - 1):
+        if s[i - 1] != s[i] and s[i] != s[i + 1] and s[i - 1] != s[i + 1]:
+            res += 1
+    return res
+</code></pre>
+<p>We iterate through the binary string <code>s</code> starting from index 1 till the second-last character in the string. For each character <code>s[i]</code>, we check three conditions: 
+1. s[i-1] should be different from s[i]
+2. s[i] should be different from s[i+1]
+3. s[i+1] should be different from s[i-1]</p>
+<p>If all these conditions are met for the current index <code>i</code>, then we can increment the result counter. Finally, we return the result counter, which is the number of valid ways to select 3 buildings.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+
+int validSelections(const std::string&amp; s) {
+    int res = 0;
+    for (int i = 1; i &lt; s.size() - 1; ++i) {
+        if (s[i - 1] != s[i] &amp;&amp; s[i] != s[i + 1] &amp;&amp; s[i + 1] != s[i - 1]) {
+            res++;
+        }
+    }
+    return res;
+}
+</code></pre>
+<p>We iterate through the binary string <code>s</code> starting from index 1 till the second-last character in the string. For each character <code>s[i]</code>, we check three conditions: 
+1. s[i-1] should be different from s[i]
+2. s[i] should be different from s[i+1]
+3. s[i+1] should be different from s[i-1]</p>
+<p>If all these conditions are met for the current index <code>i</code>, then we can increment the result counter. Finally, we return the result counter, which is the number of valid ways to select 3 buildings.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

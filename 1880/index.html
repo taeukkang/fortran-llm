@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Check if Word Equals Summation of Two Words</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1876/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1886/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>The <strong>letter value</strong> of a letter is its position in the alphabet <strong>starting from 0</strong> (i.e. <code>'a' -&gt; 0</code>, <code>'b' -&gt; 1</code>, <code>'c' -&gt; 2</code>, etc.).</p>
+<p>The <strong>numerical value</strong> of some string of lowercase English letters <code>s</code> is the <strong>concatenation</strong> of the <strong>letter values</strong> of each letter in <code>s</code>, which is then <strong>converted</strong> into an integer.</p>
+<ul>
+<li>For example, if <code>s = "acb "</code>, we concatenate each letter's letter value, resulting in <code>"021 "</code>. After converting it, we get <code>21</code>.</li>
+</ul>
+<p>You are given three strings <code>firstWord</code>, <code>secondWord</code>, and <code>targetWord</code>, each consisting of lowercase English letters <code>'a'</code> through <code>'j'</code> <strong>inclusive</strong>.</p>
+<p>Return <code>true</code> <em>if the <strong>summation</strong> of the <strong>numerical values</strong> of</em> <code>firstWord</code> <em>and</em> <code>secondWord</code> <em>equals the <strong>numerical value</strong> of</em> <code>targetWord</code><em>, or</em> <code>false</code> <em>otherwise.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> firstWord =  "acb ", secondWord =  "cba ", targetWord =  "cdb "
+<strong>Output:</strong> true
+<strong>Explanation:</strong>
+The numerical value of firstWord is  "acb " -&gt;  "021 " -&gt; 21.
+The numerical value of secondWord is  "cba " -&gt;  "210 " -&gt; 210.
+The numerical value of targetWord is  "cdb " -&gt;  "231 " -&gt; 231.
+We return true because 21 + 210 == 231.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> firstWord =  "aaa ", secondWord =  "a ", targetWord =  "aab "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> 
+The numerical value of firstWord is  "aaa " -&gt;  "000 " -&gt; 0.
+The numerical value of secondWord is  "a " -&gt;  "0 " -&gt; 0.
+The numerical value of targetWord is  "aab " -&gt;  "001 " -&gt; 1.
+We return false because 0 + 0 != 1.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> firstWord =  "aaa ", secondWord =  "a ", targetWord =  "aaaa "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> 
+The numerical value of firstWord is  "aaa " -&gt;  "000 " -&gt; 0.
+The numerical value of secondWord is  "a " -&gt;  "0 " -&gt; 0.
+The numerical value of targetWord is  "aaaa " -&gt;  "0000 " -&gt; 0.
+We return true because 0 + 0 == 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= firstWord.length,</code> <code>secondWord.length,</code> <code>targetWord.length &lt;= 8</code></li>
+<li><code>firstWord</code>, <code>secondWord</code>, and <code>targetWord</code> consist of lowercase English letters from <code>'a'</code> to <code>'j'</code> <strong>inclusive</strong>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/check-if-word-equals-summation-of-two-words/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=8) :: firstWord, secondWord, targetWord
+    logical :: result
+
+    ! Example 1
+    firstWord = 'acb '
+    secondWord = 'cba '
+    targetWord = 'cdb '
+    result = checkSum(firstWord, secondWord, targetWord)
+    write(*,*) result
+
+    ! Example 2
+    firstWord = 'aaa '
+    secondWord = 'a '
+    targetWord = 'aab '
+    result = checkSum(firstWord, secondWord, targetWord)
+    write(*,*) result
+
+    ! Example 3
+    firstWord = 'aaa '
+    secondWord = 'a '
+    targetWord = 'aaaa '
+    result = checkSum(firstWord, secondWord, targetWord)
+    write(*,*) result
+
+contains
+
+    function checkSum(firstWord, secondWord, targetWord) result(result_)
+        implicit none
+        character(len=*), intent(in) :: firstWord, secondWord, targetWord
+        logical :: result_
+        integer :: firstWordNumericalValue, secondWordNumericalValue, targetWordNumericalValue
+
+        firstWordNumericalValue = numericalValue(firstWord)
+        secondWordNumericalValue = numericalValue(secondWord)
+        targetWordNumericalValue = numericalValue(targetWord)
+
+        result_ = firstWordNumericalValue + secondWordNumericalValue == targetWordNumericalValue
+    end function checkSum
+
+    function numericalValue(string) result(value)
+        implicit none
+        character(len=*), intent(in) :: string
+        integer :: value
+        integer :: i
+
+        value = 0
+        do i = 1, len(string)
+            value = value * 10 + ichar(string(i:i)) - ichar('a')
+        end do
+    end function numericalValue
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> F
+ F
+ F
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM main
+
+IMPLICIT NONE
+
+CHARACTER(LEN=8) :: firstWord, secondWord, targetWord
+INTEGER :: firstWordValue, secondWordValue, targetWordValue
+
+! Read input
+READ(*,*) firstWord, secondWord, targetWord
+
+! Calculate the numerical value of each word
+firstWordValue = 0
+DO i = 1, LEN(firstWord)
+    firstWordValue = firstWordValue * 10 + ICHAR(firstWord(i:i)) - ICHAR('a')
+END DO
+
+secondWordValue = 0
+DO i = 1, LEN(secondWord)
+    secondWordValue = secondWordValue * 10 + ICHAR(secondWord(i:i)) - ICHAR('a')
+END DO
+
+targetWordValue = 0
+DO i = 1, LEN(targetWord)
+    targetWordValue = targetWordValue * 10 + ICHAR(targetWord(i:i)) - ICHAR('a')
+END DO
+
+! Check if the sum of the numerical values of the first two words equals the numerical value of the third word
+IF (firstWordValue + secondWordValue == targetWordValue) THEN
+    PRINT *, "True"
+ELSE
+    PRINT *, "False"
+END IF
+
+END PROGRAM main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:13:4:
+
+   13 | DO i = 1, LEN(firstWord)
+      |    1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def largest_merge(word1: str, word2: str) -&gt; str:
+    merge = []
+    while word1 or word2:
+        if word1 &gt; word2:
+            merge.append(word1[0])
+            word1 = word1[1:]
+        else:
+            merge.append(word2[0])
+            word2 = word2[1:]
+    return ''.join(merge)
+</code></pre>
+<p>The algorithm starts with two given strings, <code>word1</code> and <code>word2</code>. The goal is to create the lexicographically largest <code>merge</code> string by choosing characters from either of the input strings. The algorithm operates in a <code>while</code> loop that continues until both input strings are empty.</p>
+<p>In each iteration of the loop, the algorithm compares the input strings lexicographically. If <code>word1</code> is lexicographically larger, it takes the first character of <code>word1</code>, appends it to the <code>merge</code> string, and removes it from the input string. If <code>word2</code> is lexicographically larger or equal, it does the same operation for <code>word2</code>.</p>
+<p>This process continues until both input strings are empty, resulting in the lexicographically largest possible <code>merge</code> string. Then the <code>merge</code> string is returned.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+
+std::string largestMerge(std::string word1, std::string word2) {
+    std::string merge = &quot;&quot;;
+    while (!word1.empty() || !word2.empty()) {
+        if (word1 &gt; word2) {
+            merge += word1[0];
+            word1 = word1.substr(1);
+        } else {
+            merge += word2[0];
+            word2 = word2.substr(1);
+        }
+    }
+    return merge;
+}
+</code></pre>
+<p>The algorithm starts with two given strings, <code>word1</code> and <code>word2</code>. The goal is to create the lexicographically largest <code>merge</code> string by choosing characters from either of the input strings. The algorithm operates in a <code>while</code> loop that continues until both input strings are empty.</p>
+<p>In each iteration of the loop, the algorithm compares the input strings lexicographically. If <code>word1</code> is lexicographically larger, it takes the first character of <code>word1</code>, appends it to the <code>merge</code> string, and removes it from the input string. If <code>word2</code> is lexicographically larger or equal, it does the same operation for <code>word2</code>.</p>
+<p>This process continues until both input strings are empty, resulting in the lexicographically largest possible <code>merge</code> string. Then the <code>merge</code> string is returned.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

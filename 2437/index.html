@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Number of Valid Clock Times</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2432/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2441/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string of length <code>5</code> called <code>time</code>, representing the current time on a digital clock in the format <code>"hh:mm "</code>. The <strong>earliest</strong> possible time is <code>"00:00 "</code> and the <strong>latest</strong> possible time is <code>"23:59 "</code>.</p>
+<p>In the string <code>time</code>, the digits represented by the <code>?</code> symbol are <strong>unknown</strong>, and must be <strong>replaced</strong> with a digit from <code>0</code> to <code>9</code>.</p>
+<p>Return <em>an integer</em> <code>answer</code><em>, the number of valid clock times that can be created by replacing every</em> <code>?</code> <em>with a digit from</em> <code>0</code> <em>to</em> <code>9</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> time =  "?5:00 "
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> We can replace the ? with either a 0 or 1, producing  "05:00 " or  "15:00 ". Note that we cannot replace it with a 2, since the time  "25:00 " is invalid. In total, we have two choices.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> time =  "0?:0? "
+<strong>Output:</strong> 100
+<strong>Explanation:</strong> Each ? can be replaced by any digit from 0 to 9, so we have 100 total choices.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> time =  "??:?? "
+<strong>Output:</strong> 1440
+<strong>Explanation:</strong> There are 24 possible choices for the hours, and 60 possible choices for the minutes. In total, we have 24 * 60 = 1440 choices.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>time</code> is a valid string of length <code>5</code> in the format <code>"hh:mm "</code>.</li>
+<li><code>"00 " &lt;= hh &lt;= "23 "</code></li>
+<li><code>"00 " &lt;= mm &lt;= "59 "</code></li>
+<li>Some of the digits might be replaced with <code>'?'</code> and need to be replaced with digits from <code>0</code> to <code>9</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/number-of-valid-clock-times/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=5) :: time
+    integer :: answer
+
+    time = "?5:00 "
+    call solve(time, answer)
+    print '(I0)', answer
+
+    time = "0?:0? "
+    call solve(time, answer)
+    print '(I0)', answer
+
+    time = "??:?? "
+    call solve(time, answer)
+    print '(I0)', answer
+
+contains
+
+    subroutine solve(time, answer)
+        implicit none
+        character(len=*), intent(in) :: time
+        integer, intent(out) :: answer
+
+        integer :: i, j, k, l, m
+        logical :: valid
+
+        do i = 0, 9
+            do j = 0, 9
+                do k = 0, 9
+                    do l = 0, 9
+                        do m = 0, 9
+                            if (i == 0 .and. j == 0 .and. k == 0 .and. l == 0 .and. m == 0) then
+                                cycle
+                            end if
+
+                            valid = .true.
+
+                            if (time(1:1) == '?') then
+                                if (i < 0 .or. i > 9) then
+                                    valid = .false.
+                                end if
+                            else
+                                if (i /= int(time(1:1)) - 48) then
+                                    valid = .false.
+                                end if
+                            end if
+
+                            if (valid) then
+                                if (time(2:2) == '?') then
+                                    if (j < 0 .or. j > 9) then
+                                        valid = .false.
+                                    end if
+                                else
+                                    if (j /= int(time(2:2)) - 48) then
+                                        valid = .false.
+                                    end if
+                                end if
+                            end if
+
+                            if (valid) then
+                                if (time(3:3) == '?') then
+                                    if (k < 0 .or. k > 9) then
+                                        valid = .false.
+                                    end if
+                                else
+                                    if (k /= int(time(3:3)) - 48) then
+                                        valid = .false.
+                                    end if
+                                end if
+                            end if
+
+                            if (valid) then
+                                if (time(4:4) == '?') then
+                                    if (l < 0 .or. l > 9) then
+                                        valid = .false.
+                                    end if
+                                else
+                                    if (l /= int(time(4:4)) - 48) then
+                                        valid = .false.
+                                    end if
+                                end if
+                            end if
+
+                            if (valid) then
+                                if (time(5:5) == '?') then
+                                    if (m < 0 .or. m > 9) then
+                                        valid = .false.
+                                    end if
+                                else
+                                    if (m /= int(time(5:5)) - 48) then
+                                        valid = .false.
+                                    end if
+                                end if
+                            end if
+
+                            if (valid) then
+                                answer = answer + 1
+                            end if
+                        end do
+                    end do
+                end do
+            end do
+        end do
+    end subroutine solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:45:45:
+
+   45 |                                 if (i /= int(time(1:1)) - 48) then
+      |                                             1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+temp.f95:56:49:
+
+   56 |                                     if (j /= int(time(2:2)) - 48) then
+      |                                                 1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+temp.f95:68:49:
+
+   68 |                                     if (k /= int(time(3:3)) - 48) then
+      |                                                 1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+temp.f95:80:49:
+
+   80 |                                     if (l /= int(time(4:4)) - 48) then
+      |                                                 1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+temp.f95:92:49:
+
+   92 |                                     if (m /= int(time(5:5)) - 48) then
+      |                                                 1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module clock_times
+
+implicit none
+
+contains
+
+integer function count_clock_times(time) result(answer)
+
+character(len=*), intent(in) :: time
+
+integer :: i, j, hh, mm
+
+answer = 0
+
+! Iterate over all possible values of hh and mm
+do i = 0, 23
+    do j = 0, 59
+        ! Convert hh and mm to strings
+        write(hh, '(i2.2)') i
+        write(mm, '(i2.2)') j
+
+        ! Check if the current time is valid
+        if (is_valid_time(hh, mm, time)) then
+            answer = answer + 1
+        end if
+    end do
+end do
+
+end function count_clock_times
+
+logical function is_valid_time(hh, mm, time) result(valid)
+
+integer, intent(in) :: hh, mm
+character(len=*), intent(in) :: time
+
+valid = .false.
+
+! Check if the current time is within the valid range
+if (hh >= 0 .and. hh <= 23 .and. mm >= 0 .and. mm <= 59) then
+    ! Check if the current time is a valid time
+    if (time(1:2) == hh .and. time(3:4) == mm) then
+        valid = .true.
+    end if
+end if
+
+end function is_valid_time
+
+end module clock_times
+
+program main
+
+use clock_times
+
+implicit none
+
+integer :: answer
+
+! Test case 1:
+!answer = count_clock_times("?5:00 ")
+!write (*,*) answer
+
+! Test case 2:
+!answer = count_clock_times("0?:0? ")
+!write (*,*) answer
+
+! Test case 3:
+!answer = count_clock_times("??:?? ")
+!write (*,*) answer
+
+! Test case 4:
+!answer = count_clock_times("00:00 ")
+!write (*,*) answer
+
+! Test case 5:
+!answer = count_clock_times("23:59 ")
+!write (*,*) answer
+
+! Test case 6:
+!answer = count_clock_times("00:00 ")
+!write (*,*) answer
+
+! Test case 7:
+!answer = count_clock_times("23:59 ")
+!write (*,*) answer
+
+! Test case 8:
+!answer = count_clock_times("00:00 ")
+!write (*,*) answer
+
+! Test case 9:
+!answer = count_clock_times("23:59 ")
+!write (*,*) answer
+
+! Test case 10:
+!answer = count_clock_times("00:00 ")
+!write (*,*) answer
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:41:29:
+
+   41 |     if (time(1:2) == hh .and. time(3:4) == mm) then
+      |                             1
+Error: Operands of comparison operator ‘==’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:52:5:
+
+   52 | use clock_times
+      |     1
+Fatal Error: Cannot open module file ‘clock_times.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def count_valid_times(time: str) -&gt; int:
+    count = 1
+    if time[0] == '?':
+        count *= 3 if time[1] == '?' or time[1] &lt; '4' else 2
+    if time[1] == '?':
+        count *= 4 if time[0] == '2' else 10
+    if time[3] == '?':
+        count *= 6
+    if time[4] == '?':
+        count *= 10
+    return count
+</code></pre>
+<pre><code>1. If the first character is '?', check if the second character is also '?' or less than '4', in that case the valid possibilities for the first character are '0', '1' or '2', so we multiply our count by 3. If the second character is greater than or equal to '4', then the valid possibilities for the first character are only '0' or '1', so we multiply our count by 2.
+</code></pre>
+<ol>
+<li>If the second character is '?', check if the first character is '2', in that case, the valid possibilities for the second character are '0', '1', '2' and '3', so we multiply our count by 4. If the first character is not '2', then the valid possibilities for the second character are 0 to 9, so we multiply our count by 10.</li>
+<li>If the third character is '?', the valid possibilities are '0' to '5', so we multiply our count by 6.</li>
+<li>If the fourth character is '?', the valid possibilities are 0 to 9, so we multiply our count by 10.</li>
+</ol>
+<p>At the end, return the <code>count</code> value which represents the number of valid clock times that can be created by replacing '?' with a digit from 0 to 9.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int countValidTimes(std::string time) {
+    int count = 1;
+    if(time[0] == '?') {
+        count *= (time[1] == '?' || time[1] &lt; '4') ? 3 : 2;
+    }
+    if(time[1] == '?') {
+        count *= (time[0] == '2') ? 4 : 10;
+    }
+    if(time[3] == '?') {
+        count *= 6;
+    }
+    if(time[4] == '?') {
+        count *= 10;
+    }
+    return count;
+}
+</code></pre>
+<pre><code>1. If the first character is '?', check if the second character is also '?' or less than '4', in that case the valid possibilities for the first character are '0', '1' or '2', so we multiply our count by 3. If the second character is greater than or equal to '4', then the valid possibilities for the first character are only '0' or '1', so we multiply our count by 2.
+</code></pre>
+<ol>
+<li>If the second character is '?', check if the first character is '2', in that case, the valid possibilities for the second character are '0', '1', '2' and '3', so we multiply our count by 4. If the first character is not '2', then the valid possibilities for the second character are 0 to 9, so we multiply our count by 10.</li>
+<li>If the third character is '?', the valid possibilities are '0' to '5', so we multiply our count by 6.</li>
+<li>If the fourth character is '?', the valid possibilities are 0 to 9, so we multiply our count by 10.</li>
+</ol>
+<p>At the end, return the <code>count</code> value which represents the number of valid clock times that can be created by replacing '?' with a digit from 0 to 9.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Unique Number of Occurrences</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1200/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1213/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of integers <code>arr</code>, return <code>true</code> <em>if the number of occurrences of each value in the array is <strong>unique</strong> or</em> <code>false</code> <em>otherwise</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [1,2,2,1,1,3]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The value 1 has 3 occurrences, 2 has 2 and 3 has 1. No two values have the same number of occurrences.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [1,2]
+<strong>Output:</strong> false</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> arr = [-3,0,1,-3,1,1,1,-3,10,0]
+<strong>Output:</strong> true</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= arr.length &lt;= 1000</code></li>
+<li><code>-1000 &lt;= arr[i] &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/unique-number-of-occurrences/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 10
+    integer, dimension(n) :: arr
+    logical :: result
+
+    ! Example 1
+    arr = [1, 2, 2, 1, 1, 3]
+    write (*, '(A)') 'Example 1:'
+    write (*, '(A)') 'Input:  ', arr
+    result = uniqueOccurrences(arr)
+    write (*, '(A, L1)') 'Output: ', result
+    write (*, *)
+
+    ! Example 2
+    arr = [1, 2]
+    write (*, '(A)') 'Example 2:'
+    write (*, '(A)') 'Input:  ', arr
+    result = uniqueOccurrences(arr)
+    write (*, '(A, L1)') 'Output: ', result
+    write (*, *)
+
+    ! Example 3
+    arr = [-3, 0, 1, -3, 1, 1, 1, -3, 10, 0]
+    write (*, '(A)') 'Example 3:'
+    write (*, '(A)') 'Input:  ', arr
+    result = uniqueOccurrences(arr)
+    write (*, '(A, L1)') 'Output: ', result
+    write (*, *)
+
+contains
+
+    function uniqueOccurrences(arr) result(result_)
+        implicit none
+        integer, dimension(:), intent(in) :: arr
+        logical :: result_
+
+        integer :: i, j
+        integer :: count
+
+        do i = 1, size(arr) - 1
+            count = 0
+            do j = i + 1, size(arr)
+                if (arr(i) == arr(j)) then
+                    count = count + 1
+                end if
+            end do
+            if (count > 0) then
+                result_ = .false.
+                return
+            end if
+        end do
+
+        result_ = .true.
+    end function uniqueOccurrences
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:4:
+
+    9 |     arr = [1, 2, 2, 1, 1, 3]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 6)
+temp.f95:17:4:
+
+   17 |     arr = [1, 2]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module UniqueOccurrences
+
+implicit none
+
+contains
+
+function uniqueOccurrences(arr) result(output)
+
+integer, intent(in) :: arr(:)
+logical :: output
+
+integer :: i, count
+
+output = .true.
+
+do i = 1, size(arr)
+
+count = countOccurrences(arr, arr(i))
+
+if (count > 1) then
+
+output = .false.
+
+exit
+
+end if
+
+end do
+
+end function uniqueOccurrences
+
+function countOccurrences(arr, value) result(count)
+
+integer, intent(in) :: arr(:), value
+integer :: count
+
+count = count(arr == value)
+
+end function countOccurrences
+
+end module UniqueOccurrences
+
+program test
+
+use UniqueOccurrences
+
+implicit none
+
+integer, parameter :: N = 10
+integer :: arr(N)
+
+arr = [1, 2, 2, 1, 1, 3, -1, -1, -1, -1]
+
+if (uniqueOccurrences(arr)) then
+
+print *, "Unique occurrences"
+
+else
+
+print *, "Non-unique occurrences"
+
+end if
+
+arr = [1, 2]
+
+if (uniqueOccurrences(arr)) then
+
+print *, "Unique occurrences"
+
+else
+
+print *, "Non-unique occurrences"
+
+end if
+
+arr = [-3, 0, 1, -3, 1, 1, 1, -3, 10, 0]
+
+if (uniqueOccurrences(arr)) then
+
+print *, "Unique occurrences"
+
+else
+
+print *, "Non-unique occurrences"
+
+end if
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:26:
+
+    7 | function uniqueOccurrences(arr) result(output)
+      |                          1
+Error: MODULE attribute of ‘uniqueoccurrences’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:29:
+
+    9 | integer, intent(in) :: arr(:)
+      |                             1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:17:
+
+   10 | logical :: output
+      |                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:19:
+
+   12 | integer :: i, count
+      |                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:15:
+
+   14 | output = .true.
+      |               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:19:
+
+   16 | do i = 1, size(arr)
+      |                   1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:18:37:
+
+   18 | count = countOccurrences(arr, arr(i))
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:19:
+
+   20 | if (count > 1) then
+      |                   1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:22:16:
+
+   22 | output = .false.
+      |                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:4:
+
+   24 | exit
+      |    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:26:3:
+
+   26 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:3:
+
+   28 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:3:
+
+   30 | end function uniqueOccurrences
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:45:5:
+
+   45 | use UniqueOccurrences
+      |     1
+Fatal Error: Cannot open module file ‘uniqueoccurrences.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+
+def delNodes(root, to_delete):
+    forest = []
+    to_delete_set = set(to_delete)
+    helper(root, True, to_delete_set, forest)
+    return forest
+
+def helper(node, isRoot, to_delete, forest):
+    if not node:
+        return None
+    deleted = node.val in to_delete
+    if isRoot and not deleted:
+        forest.append(node)
+    node.left = helper(node.left, deleted, to_delete, forest)
+    node.right = helper(node.right, deleted, to_delete, forest)
+    return None if deleted else node
+</code></pre>
+<pre><code>The algorithm performs a post-order traversal, visiting each node of the tree. It starts with the root of the tree and checks whether it's a root node or not. If it's a root node, it adds the node to the forest; otherwise, it continues traversal. Left and right children are updated for each node. If a node's value is found in the `to_delete` list, this function returns nullptr (Python: None, JavaScript: null, Java: null) otherwise, it returns the current node. This way, the tree nodes will be combined with their new parents after the deletion, and the forest will have the roots of the disjoint trees.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;memory&gt;
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+std::vector&lt;TreeNode*&gt; delNodes(TreeNode* root, std::vector&lt;int&gt;&amp; to_delete) {
+    std::vector&lt;TreeNode*&gt; forest;
+    std::set&lt;int&gt; toDelete(to_delete.begin(), to_delete.end());
+    helper(root, true, toDelete, forest);
+    return forest;
+}
+
+TreeNode* helper(TreeNode* node, bool isRoot, std::set&lt;int&gt;&amp; toDelete, std::vector&lt;TreeNode*&gt;&amp; forest) {
+    if (!node) return nullptr;
+    bool deleted = toDelete.count(node-&gt;val);
+    if (isRoot &amp;&amp; !deleted) forest.push_back(node);
+    node-&gt;left = helper(node-&gt;left, deleted, toDelete, forest);
+    node-&gt;right = helper(node-&gt;right, deleted, toDelete, forest);
+    return deleted ? nullptr : node;
+}
+</code></pre>
+<pre><code>The algorithm performs a post-order traversal, visiting each node of the tree. It starts with the root of the tree and checks whether it's a root node or not. If it's a root node, it adds the node to the forest; otherwise, it continues traversal. Left and right children are updated for each node. If a node's value is found in the `to_delete` list, this function returns nullptr (Python: None, JavaScript: null, Java: null) otherwise, it returns the current node. This way, the tree nodes will be combined with their new parents after the deletion, and the forest will have the roots of the disjoint trees.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

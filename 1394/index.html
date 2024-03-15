@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find Lucky Integer in an Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1385/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1399/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of integers <code>arr</code>, a <strong>lucky integer</strong> is an integer that has a frequency in the array equal to its value.</p>
+<p>Return <em>the largest <strong>lucky integer</strong> in the array</em>. If there is no <strong>lucky integer</strong> return <code>-1</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [2,2,3,4]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The only lucky number in the array is 2 because frequency[2] == 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [1,2,2,3,3,3]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> 1, 2 and 3 are all lucky numbers, return the largest of them.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> arr = [2,2,2,3,3]
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> There are no lucky numbers in the array.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= arr.length &lt;= 500</code></li>
+<li><code>1 &lt;= arr[i] &lt;= 500</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-lucky-integer-in-an-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 5
+    integer, dimension(n) :: arr
+    integer :: i, max_freq, max_val
+
+    ! Example 1
+    arr = [2, 2, 3, 4]
+    write(*, '(A, I0)') 'Example 1: ', max_lucky_int(arr)
+
+    ! Example 2
+    arr = [1, 2, 2, 3, 3, 3]
+    write(*, '(A, I0)') 'Example 2: ', max_lucky_int(arr)
+
+    ! Example 3
+    arr = [2, 2, 2, 3, 3]
+    write(*, '(A, I0)') 'Example 3: ', max_lucky_int(arr)
+
+contains
+
+    function max_lucky_int(arr) result(max_val)
+        implicit none
+        integer, intent(in) :: arr(:)
+        integer :: freq(size(arr)), max_freq, max_val
+
+        freq = count(arr == arr)
+        max_freq = maxval(freq)
+        max_val = -1
+        do i = 1, size(arr)
+            if (freq(i) == max_freq .and. arr(i) > max_val) then
+                max_val = arr(i)
+            end if
+        end do
+    end function max_lucky_int
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:4:
+
+    9 |     arr = [2, 2, 3, 4]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (5 and 4)
+temp.f95:13:4:
+
+   13 |     arr = [1, 2, 2, 3, 3, 3]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (5 and 6)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module LuckyInteger
+    implicit none
+    private
+    public :: luckyInteger
+contains
+    integer function luckyInteger(arr) result(largestLuckyInteger)
+        integer, intent(in) :: arr(:)
+        integer :: i, frequency(500)
+
+        ! Initialize frequency array
+        frequency = 0
+
+        ! Count frequency of each integer in the array
+        do i = 1, size(arr)
+            frequency(arr(i)) = frequency(arr(i)) + 1
+        end do
+
+        ! Find the largest lucky integer
+        largestLuckyInteger = -1
+        do i = 1, size(arr)
+            if (frequency(arr(i)) == arr(i)) then
+                if (largestLuckyInteger < arr(i)) then
+                    largestLuckyInteger = arr(i)
+                end if
+            end if
+        end do
+    end function
+end module
+
+program test_luckyInteger
+    use LuckyInteger
+    implicit none
+    integer :: arr(5)
+
+    ! Test case 1
+    arr = [2, 2, 3, 4]
+    write (*,*) 'Largest lucky integer in ', arr, ' is ', luckyInteger(arr)
+
+    ! Test case 2
+    arr = [1, 2, 2, 3, 3, 3]
+    write (*,*) 'Largest lucky integer in ', arr, ' is ', luckyInteger(arr)
+
+    ! Test case 3
+    arr = [2, 2, 2, 3, 3]
+    write (*,*) 'Largest lucky integer in ', arr, ' is ', luckyInteger(arr)
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:26:
+
+    4 |     public :: luckyInteger
+      |                          1
+Error: PUBLIC attribute applied to MODULE luckyinteger at (1)
+temp.f95:6:33:
+
+    6 |     integer function luckyInteger(arr) result(largestLuckyInteger)
+      |                                 1
+Error: MODULE attribute of ‘luckyinteger’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:37:
+
+    7 |         integer, intent(in) :: arr(:)
+      |                                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:36:
+
+    8 |         integer :: i, frequency(500)
+      |                                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:21:
+
+   11 |         frequency = 0
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:14:27:
+
+   14 |         do i = 1, size(arr)
+      |                           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:15:53:
+
+   15 |             frequency(arr(i)) = frequency(arr(i)) + 1
+      |                                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:11:
+
+   16 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:19:32:
+
+   19 |         largestLuckyInteger = -1
+      |                                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:27:
+
+   20 |         do i = 1, size(arr)
+      |                           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:21:49:
+
+   21 |             if (frequency(arr(i)) == arr(i)) then
+      |                                                 1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:22:54:
+
+   22 |                 if (largestLuckyInteger < arr(i)) then
+      |                                                      1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:23:48:
+
+   23 |                     largestLuckyInteger = arr(i)
+      |                                                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:19:
+
+   24 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:15:
+
+   25 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:11:
+
+   26 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:27:7:
+
+   27 |     end function
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:31:9:
+
+   31 |     use LuckyInteger
+      |         1
+Fatal Error: Cannot open module file ‘luckyinteger.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def find_lucky(arr):
+    freq = {}
+    for num in arr:
+        freq[num] = freq.get(num, 0) + 1
+    max_lucky = -1
+    for num, count in freq.items():
+        if num == count:
+            max_lucky = max(max_lucky, num)
+    return max_lucky
+</code></pre>
+<p>The algorithm iterates over the input array, computing the frequency of each number. It then iterates through the frequencies and checks if the number and its frequency match. If they do, it keeps track of the maximum such number. Finally, the algorithm returns the maximum lucky integer. If no lucky integer is found, the function returns -1.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int findLucky(vector&lt;int&gt;&amp; arr) {
+    unordered_map&lt;int, int&gt; freq;
+    for (int num : arr) {
+        freq[num]++;
+    }
+    int maxLucky = -1;
+    for (auto&amp; pair : freq) {
+        if (pair.first == pair.second) {
+            maxLucky = max(maxLucky, pair.first);
+        }
+    }
+    return maxLucky;
+}
+</code></pre>
+<p>The algorithm iterates over the input array, computing the frequency of each number. It then iterates through the frequencies and checks if the number and its frequency match. If they do, it keeps track of the maximum such number. Finally, the algorithm returns the maximum lucky integer. If no lucky integer is found, the function returns -1.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

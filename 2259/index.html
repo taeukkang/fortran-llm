@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Remove Digit From Number to Maximize Result</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2255/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2264/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>number</code> representing a <strong>positive integer</strong> and a character <code>digit</code>.</p>
+<p>Return <em>the resulting string after removing <strong>exactly one occurrence</strong> of</em> <code>digit</code> <em>from</em> <code>number</code> <em>such that the value of the resulting string in <strong>decimal</strong> form is <strong>maximized</strong></em>. The test cases are generated such that <code>digit</code> occurs at least once in <code>number</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> number =  "123 ", digit =  "3 "
+<strong>Output:</strong>  "12 "
+<strong>Explanation:</strong> There is only one '3' in  "123 ". After removing '3', the result is  "12 ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> number =  "1231 ", digit =  "1 "
+<strong>Output:</strong>  "231 "
+<strong>Explanation:</strong> We can remove the first '1' to get  "231 " or remove the second '1' to get  "123 ".
+Since 231 &gt; 123, we return  "231 ".</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> number =  "551 ", digit =  "5 "
+<strong>Output:</strong>  "51 "
+<strong>Explanation:</strong> We can remove either the first or second '5' from  "551 ".
+Both result in the string  "51 ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= number.length &lt;= 100</code></li>
+<li><code>number</code> consists of digits from <code>'1'</code> to <code>'9'</code>.</li>
+<li><code>digit</code> is a digit from <code>'1'</code> to <code>'9'</code>.</li>
+<li><code>digit</code> occurs at least once in <code>number</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/remove-digit-from-number-to-maximize-result/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=100) :: number
+    character(len=100) :: digit
+    character(len=100) :: result
+
+    ! Examples
+    number = "123"
+    digit = "3"
+    call solve(number, digit, result)
+    write (*,*) trim(result)
+
+    number = "1231"
+    digit = "1"
+    call solve(number, digit, result)
+    write (*,*) trim(result)
+
+    number = "551"
+    digit = "5"
+    call solve(number, digit, result)
+    write (*,*) trim(result)
+
+contains
+
+    subroutine solve(number, digit, result)
+        implicit none
+        character(len=*), intent(in) :: number
+        character(len=*), intent(in) :: digit
+        character(len=*), intent(out) :: result
+
+        integer :: i
+        integer :: j
+        integer :: n
+        integer :: d
+
+        n = len_trim(number)
+        d = len_trim(digit)
+
+        do i = 1, n - d + 1
+            if (number(i:i+d-1) == digit) then
+                result = number(:i-1) // number(i+d:)
+                exit
+            end if
+        end do
+
+    end subroutine solve
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> 12
+ 231
+ 51
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module MaximumValueAfterRemovingDigit
+    implicit none
+    private
+    public :: maximumValueAfterRemovingDigit
+contains
+    function maximumValueAfterRemovingDigit(number, digit) result(result)
+        implicit none
+        character(len=*), intent(in) :: number
+        character(len=*), intent(in) :: digit
+        character(len=len(number)) :: result
+        integer :: i, j, k, n, d
+        logical :: found
+
+        ! Initialize result to empty string
+        result = ""
+
+        ! Find the first occurrence of digit in number
+        found = .false.
+        do i = 1, len(number)
+            if (number(i:i) == digit) then
+                found = .true.
+                exit
+            end if
+        end do
+
+        ! If digit is not found in number, return empty string
+        if (.not. found) then
+            return
+        end if
+
+        ! Copy the part of number before the first occurrence of digit
+        ! to the result string
+        do i = 1, len(number)
+            if (i < i - 1) then
+                result(i:i) = number(i:i)
+            end if
+        end do
+
+        ! Remove the first occurrence of digit from the result string
+        do i = 1, len(result)
+            if (result(i:i) == digit) then
+                result(i:i) = ""
+                exit
+            end if
+        end do
+
+        ! Find the maximum value of the resulting string in decimal form
+        n = len(result)
+        d = 0
+        do i = n, 1, -1
+            d = d * 10 + ichar(result(i:i)) - ichar("0")
+        end do
+
+        ! Return the maximum value
+        result = d
+    end function maximumValueAfterRemovingDigit
+end module MaximumValueAfterRemovingDigit
+
+program test_maximumValueAfterRemovingDigit
+    use MaximumValueAfterRemovingDigit
+    implicit none
+    integer :: i
+
+    do i = 1, size(test_cases)
+        write (*,*) "Test case #", i
+        write (*,*) "Input: ", test_cases(i)%number, ", ", test_cases(i)%digit
+        write (*,*) "Output: ", maximumValueAfterRemovingDigit(test_cases(i)%number, test_cases(i)%digit)
+        write (*,*)
+    end do
+
+contains
+    type TestCase
+        character(len=100) :: number
+        character(len=100) :: digit
+    end type TestCase
+
+    type(TestCase), parameter :: test_cases(*) = &
+        (/TestCase("123 ", "3 "), &
+        TestCase("1231 ", "1 "), &
+        TestCase("551 ", "5 ")/)
+end program test_maximumValueAfterRemovingDigit
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:44:
+
+    4 |     public :: maximumValueAfterRemovingDigit
+      |                                            1
+Error: PUBLIC attribute applied to MODULE maximumvalueafterremovingdigit at (1)
+temp.f95:6:43:
+
+    6 |     function maximumValueAfterRemovingDigit(number, digit) result(result)
+      |                                           1
+Error: MODULE attribute of ‘maximumvalueafterremovingdigit’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:21:
+
+    7 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:8:46:
+
+    8 |         character(len=*), intent(in) :: number
+      |                                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:45:
+
+    9 |         character(len=*), intent(in) :: digit
+      |                                             1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:26:
+
+   10 |         character(len=len(number)) :: result
+      |                          1
+Error: Symbol ‘number’ is used before it is typed at (1)
+temp.f95:11:32:
+
+   11 |         integer :: i, j, k, n, d
+      |                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:24:
+
+   12 |         logical :: found
+      |                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:19:
+
+   15 |         result = ""
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:18:23:
+
+   18 |         found = .false.
+      |                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:29:
+
+   19 |         do i = 1, len(number)
+      |                             1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:20:25:
+
+   20 |             if (number(i:i) == digit) then
+      |                         1
+Error: Syntax error in argument list at (1)
+temp.f95:21:30:
+
+   21 |                 found = .true.
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:20:
+
+   22 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:23:15:
+
+   23 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:24:11:
+
+   24 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:27:29:
+
+   27 |         if (.not. found) then
+      |                             1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:28:18:
+
+   28 |             return
+      |                  1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:29:11:
+
+   29 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:33:29:
+
+   33 |         do i = 1, len(number)
+      |                             1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:34:31:
+
+   34 |             if (i < i - 1) then
+      |                               1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:36:15:
+
+   36 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:37:11:
+
+   37 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:40:29:
+
+   40 |         do i = 1, len(result)
+      |                             1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:41:25:
+
+   41 |             if (result(i:i) == digit) then
+      |                         1
+Error: Syntax error in argument list at (1)
+temp.f95:43:20:
+
+   43 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:44:15:
+
+   44 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:45:11:
+
+   45 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:48:23:
+
+   48 |         n = len(result)
+      |                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:49:13:
+
+   49 |         d = 0
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:50:23:
+
+   50 |         do i = n, 1, -1
+      |                       1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:51:40:
+
+   51 |             d = d * 10 + ichar(result(i:i)) - ichar("0")
+      |                                        1
+Error: Syntax error in argument list at (1)
+temp.f95:52:11:
+
+   52 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:55:18:
+
+   55 |         result = d
+      |                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:56:7:
+
+   56 |     end function maximumValueAfterRemovingDigit
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:60:9:
+
+   60 |     use MaximumValueAfterRemovingDigit
+      |         1
+Fatal Error: Cannot open module file ‘maximumvalueafterremovingdigit.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def max_number_after_remove_digit(number: str, digit: str) -&gt; str:
+    index = number.find(digit)
+    return number[:index] + number[index + 1:]
+</code></pre>
+<p>The algorithm for all the implementations is as follows:</p>
+<ol>
+<li>Find the index of the first occurrence of the <code>digit</code> in the <code>number</code> string.</li>
+<li>Make a copy of the <code>number</code> string (this is done implicitly for Java, Python, and JavaScript when manipulating strings), removing the digit at the found index.</li>
+<li>Return the new string as the result.</li>
+</ol>
+<p>In all language implementations, we first use string methods like <code>find</code>, <code>indexOf</code>, or <code>search</code> to find the index of the first occurrence of the digit in the number string. After that, we create a new string by removing the digit at that index using different string methods like <code>erase</code> (in C++), <code>substring</code> (in Java), string slicing (in Python), or <code>slice</code> method (in JavaScript).</p>
+<p>The time complexity for this algorithm is O(n) where n is the length of the number string. This is because finding the index of the digit and removing the digit from the string takes linear time.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">std::string maxNumberAfterRemoveDigit(const std::string&amp; number, const char digit) {
+    size_t index = number.find(digit);
+    std::string result = number;
+    result.erase(index, 1);
+    return result;
+}
+</code></pre>
+<p>The algorithm for all the implementations is as follows:</p>
+<ol>
+<li>Find the index of the first occurrence of the <code>digit</code> in the <code>number</code> string.</li>
+<li>Make a copy of the <code>number</code> string (this is done implicitly for Java, Python, and JavaScript when manipulating strings), removing the digit at the found index.</li>
+<li>Return the new string as the result.</li>
+</ol>
+<p>In all language implementations, we first use string methods like <code>find</code>, <code>indexOf</code>, or <code>search</code> to find the index of the first occurrence of the digit in the number string. After that, we create a new string by removing the digit at that index using different string methods like <code>erase</code> (in C++), <code>substring</code> (in Java), string slicing (in Python), or <code>slice</code> method (in JavaScript).</p>
+<p>The time complexity for this algorithm is O(n) where n is the length of the number string. This is because finding the index of the digit and removing the digit from the string takes linear time.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

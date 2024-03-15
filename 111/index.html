@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Depth of Binary Tree</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/110/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/112/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a binary tree, find its minimum depth.</p>
+<p>The minimum depth is the number of nodes along the shortest path from the root node down to the nearest leaf node.</p>
+<p><strong>Note:</strong> A leaf is a node with no children.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [3,9,20,null,null,15,7]
+<strong>Output:</strong> 2</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [2,null,3,null,4,null,5,null,6]
+<strong>Output:</strong> 5</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[0, 105]</code>.</li>
+<li><code>-1000 &lt;= Node.val &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-depth-of-binary-tree/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program min_depth_binary_tree
+    implicit none
+
+    type :: node
+        integer :: val
+        type(node), pointer :: left => null(), right => null()
+    end type
+
+    type(node), target :: root
+    type(node), pointer :: current
+    integer :: i, j, n
+
+    ! Examples
+    n = 1
+    allocate(root%left)
+    root%left%val = 3
+    allocate(root%right)
+    root%right%val = 9
+    allocate(root%left%left)
+    root%left%left%val = 20
+    allocate(root%right%left)
+    root%right%left%val = 15
+    allocate(root%right%right)
+    root%right%right%val = 7
+    call print_min_depth(root)
+
+    n = 2
+    deallocate(root%left)
+    deallocate(root%right)
+    allocate(root%left)
+    root%left%val = 2
+    do i = 1, 5
+        allocate(current%left)
+        current%left%val = i
+        if (i /= 5) then
+            allocate(current%right)
+            current%right%val = i + 1
+        end if
+        current => current%left
+    end do
+    call print_min_depth(root)
+
+contains
+
+    subroutine print_min_depth(root)
+        type(node), intent(in) :: root
+        integer :: min_depth
+
+        min_depth = min_depth_recursive(root)
+        write (*, '(A, I0)') 'Minimum depth of the binary tree is ', min_depth
+
+    contains
+
+        function min_depth_recursive(current) result(min_depth)
+            type(node), intent(in), pointer :: current
+            integer :: min_depth
+
+            if (.not. associated(current)) then
+                min_depth = 0
+            else
+                min_depth = 1 + min([min_depth_recursive(current%left), &
+                                     min_depth_recursive(current%right)])
+            end if
+        end function
+
+    end subroutine
+
+end program</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:52:12:
+
+   52 |     contains
+      |            1
+Error: CONTAINS statement at (1) is already in a contained program unit
+temp.f95:55:54:
+
+   55 |             type(node), intent(in), pointer :: current
+      |                                                      1
+Error: Unexpected data declaration statement at (1)
+temp.f95:56:32:
+
+   56 |             integer :: min_depth
+      |                                1
+Error: Symbol ‘min_depth’ at (1) already has basic type of INTEGER
+temp.f95:64:11:
+
+   64 |         end function
+      |           1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:49:20:
+
+   49 |         min_depth = min_depth_recursive(root)
+      |                    1
+Error: Function ‘min_depth_recursive’ at (1) has no IMPLICIT type
+temp.f95:61:37:
+
+   61 |                 min_depth = 1 + min([min_depth_recursive(current%left), &
+      |                                     1
+Error: Function ‘min_depth_recursive’ at (1) has no IMPLICIT type
+temp.f95:61:71:
+
+   61 |                 min_depth = 1 + min([min_depth_recursive(current%left), &
+      |                                                                       1
+Error: Function ‘min_depth_recursive’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module min_depth
+
+contains
+
+function min_depth_helper(root) result(min_depth)
+
+! Declare variables
+integer :: min_depth
+type(node), pointer :: root
+
+! Base case
+if (root == null()) then
+    min_depth = 0
+    return
+end if
+
+! Recursive case
+min_depth = 1 + min(min_depth_helper(root%left), min_depth_helper(root%right))
+
+end function min_depth_helper
+
+function min_depth(root) result(min_depth)
+
+! Declare variables
+integer :: min_depth
+type(node), pointer :: root
+
+! Call helper function
+min_depth = min_depth_helper(root)
+
+end function min_depth
+
+end module min_depth
+
+program main
+
+use min_depth
+
+implicit none
+
+! Declare variables
+type(node), pointer :: root
+integer :: min_depth
+
+! Create binary tree
+root = new_node(3)
+root%left = new_node(9)
+root%right = new_node(20)
+root%left%left = new_node(15)
+root%left%right = new_node(7)
+
+! Find minimum depth
+min_depth = min_depth(root)
+
+! Print minimum depth
+write (*,*) "Minimum depth:", min_depth
+
+! Free memory
+call delete_node(root)
+
+end program main
+
+type node
+    integer :: val
+    type(node), pointer :: left
+    type(node), pointer :: right
+end type node
+
+type(node), pointer :: new_node(val)
+
+function new_node(val) result(node)
+
+! Declare variables
+type(node), pointer :: node
+integer :: val
+
+! Allocate memory
+allocate(node)
+
+! Set node value
+node%val = val
+node%left = null()
+node%right = null()
+
+end function new_node
+
+subroutine delete_node(root)
+
+! Declare variables
+type(node), pointer :: root
+
+! Free memory
+deallocate(root)
+
+end subroutine delete_node
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:11:
+
+    9 | type(node), pointer :: root
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:18:43:
+
+   18 | min_depth = 1 + min(min_depth_helper(root%left), min_depth_helper(root%right))
+      |                                           1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:22:18:
+
+   22 | function min_depth(root) result(min_depth)
+      |                  1
+Error: MODULE attribute of ‘min_depth’ conflicts with PROCEDURE attribute at (1)
+temp.f95:25:20:
+
+   25 | integer :: min_depth
+      |                    1
+Error: Symbol ‘min_depth’ at (1) has already been host associated
+temp.f95:26:11:
+
+   26 | type(node), pointer :: root
+      |           1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:29:10:
+
+   29 | min_depth = min_depth_helper(root)
+      |          1
+Error: Symbol ‘min_depth’ at (1) has already been host associated
+temp.f95:31:3:
+
+   31 | end function min_depth
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:12:4:
+
+   12 | if (root == null()) then
+      |    1
+Error: Invalid context for NULL() pointer at (1)
+temp.f95:37:5:
+
+   37 | use min_depth
+      |     1
+Fatal Error: Cannot open module file ‘min_depth.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minDepth(root):
+    if not root:
+        return 0
+    left = minDepth(root.left)
+    right = minDepth(root.right)
+    return (left == 0 or right == 0) and left + right + 1 or min(left, right) + 1
+</code></pre>
+<p>We perform a depth-first search on the tree. The base case would be an empty tree with a depth of 0.</p>
+<p>For each non-null subtree, we recursively find the minimum depth of the left and right children. Then, we have three cases:
+1. If both left and right children are null, then the current node is a leaf node, and the minimum depth is 1.
+2. If either left or right child is null, we return the depth of the other child + 1.
+3. If both children are non-null, we take the minimum depth of both children and add 1.</p>
+<p>To handle all the cases in a single line, we use a ternary conditional expression in C++, Java, and JavaScript, and use the <code>and</code>-<code>or</code> short-circuit syntax in Python. We check if either left or right is 0, and in that case return left + right + 1 which handles cases 1 and 2; otherwise, we return the minimum depth of both children + 1, which handles case 3.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minDepth(TreeNode* root) {
+    if (!root) return 0;
+    int left = minDepth(root-&gt;left);
+    int right = minDepth(root-&gt;right);
+    return (left == 0 || right == 0) ? left + right + 1 : min(left, right) + 1;
+}
+</code></pre>
+<p>We perform a depth-first search on the tree. The base case would be an empty tree with a depth of 0.</p>
+<p>For each non-null subtree, we recursively find the minimum depth of the left and right children. Then, we have three cases:
+1. If both left and right children are null, then the current node is a leaf node, and the minimum depth is 1.
+2. If either left or right child is null, we return the depth of the other child + 1.
+3. If both children are non-null, we take the minimum depth of both children and add 1.</p>
+<p>To handle all the cases in a single line, we use a ternary conditional expression in C++, Java, and JavaScript, and use the <code>and</code>-<code>or</code> short-circuit syntax in Python. We check if either left or right is 0, and in that case return left + right + 1 which handles cases 1 and 2; otherwise, we return the minimum depth of both children + 1, which handles case 3.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

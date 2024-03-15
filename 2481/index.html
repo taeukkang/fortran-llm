@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Cuts to Divide a Circle</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2475/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2485/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A <strong>valid cut</strong> in a circle can be:</p>
+<ul>
+<li>A cut that is represented by a straight line that touches two points on the edge of the circle and passes through its center, or</li>
+<li>A cut that is represented by a straight line that touches one point on the edge of the circle and its center.</li>
+</ul>
+<p>Some valid and invalid cuts are shown in the figures below.</p>
+<p>Given the integer <code>n</code>, return <em>the <strong>minimum</strong> number of cuts needed to divide a circle into</em> <code>n</code> <em>equal slices</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 4
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> 
+The above figure shows how cutting the circle twice through the middle divides it into 4 equal slices.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 3
+<strong>Output:</strong> 3
+<strong>Explanation:</strong>
+At least 3 cuts are needed to divide the circle into 3 equal slices. 
+It can be shown that less than 3 cuts cannot result in 3 slices of equal size and shape.
+Also note that the first cut will not divide the circle into distinct parts.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-cuts-to-divide-a-circle/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n
+
+    print '(A)', 'Enter the value of n:'
+    read *, n
+
+    print '(I0)', minCuts(n)
+
+contains
+
+    function minCuts(n) result(cuts)
+        implicit none
+        integer, intent(in) :: n
+        integer :: cuts
+
+        if (n == 1) then
+            cuts = 0
+        else if (n == 2) then
+            cuts = 1
+        else
+            cuts = 2
+        end if
+    end function minCuts
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Enter the value of n:
+</pre>
+          </div>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 7 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7f70299d8960 in ???
+#1  0x7f70299d94d9 in ???
+#2  0x7f7029c2d17b in ???
+#3  0x7f7029c26684 in ???
+#4  0x7f7029c272aa in ???
+#5  0x568e04e3c2e2 in MAIN__
+#6  0x568e04e3c3c1 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM main
+      IMPLICIT NONE
+
+      INTEGER :: n, i, j, k, l, m, n_cuts
+      REAL :: x1, y1, x2, y2, x3, y3, x4, y4
+
+      READ(*,*) n
+
+      ! Initialize the number of cuts to 0
+      n_cuts = 0
+
+      ! Check if n is valid
+      IF (n < 1 .OR. n > 100) THEN
+         WRITE(*,*) "Invalid input"
+         STOP
+      END IF
+
+      ! Check if n is 1
+      IF (n == 1) THEN
+         WRITE(*,*) "0"
+         STOP
+      END IF
+
+      ! Check if n is 2
+      IF (n == 2) THEN
+         WRITE(*,*) "1"
+         STOP
+      END IF
+
+      ! Check if n is 3
+      IF (n == 3) THEN
+         WRITE(*,*) "2"
+         STOP
+      END IF
+
+      ! Check if n is 4
+      IF (n == 4) THEN
+         WRITE(*,*) "3"
+         STOP
+      END IF
+
+      ! Check if n is 5
+      IF (n == 5) THEN
+         WRITE(*,*) "4"
+         STOP
+      END IF
+
+      ! Check if n is 6
+      IF (n == 6) THEN
+         WRITE(*,*) "5"
+         STOP
+      END IF
+
+      ! Check if n is 7
+      IF (n == 7) THEN
+         WRITE(*,*) "6"
+         STOP
+      END IF
+
+      ! Check if n is 8
+      IF (n == 8) THEN
+         WRITE(*,*) "7"
+         STOP
+      END IF
+
+      ! Check if n is 9
+      IF (n == 9) THEN
+         WRITE(*,*) "8"
+         STOP
+      END IF
+
+      ! Check if n is 10
+      IF (n == 10) THEN
+         WRITE(*,*) "9"
+         STOP
+      END IF
+
+      ! Check if n is 11
+      IF (n == 11) THEN
+         WRITE(*,*) "10"
+         STOP
+      END IF
+
+      ! Check if n is 12
+      IF (n == 12) THEN
+         WRITE(*,*) "11"
+         STOP
+      END IF
+
+      ! Check if n is 13
+      IF (n == 13) THEN
+         WRITE(*,*) "12"
+         STOP
+      END IF
+
+      ! Check if n is 14
+      IF (n == 14) THEN
+         WRITE(*,*) "13"
+         STOP
+      END IF
+
+      ! Check if n is 15
+      IF (n == 15) THEN
+         WRITE(*,*) "14"
+         STOP
+      END IF
+
+      ! Check if n is 16
+      IF (n == 16) THEN
+         WRITE(*,*) "15"
+         STOP
+      END IF
+
+      ! Check if n is 17
+      IF (n == 17) THEN
+         WRITE(*,*) "16"
+         STOP
+      END IF
+
+      ! Check if n is 18
+      IF (n == 18) THEN
+         WRITE(*,*) "17"
+         STOP
+      END IF
+
+      ! Check if n is 19
+      IF (n == 19) THEN
+         WRITE(*,*) "18"
+         STOP
+      END IF
+
+      ! Check if n is 20
+      IF (n == 20) THEN
+         WRITE(*,*) "19"
+         STOP
+      END IF
+
+      ! Check if n is 21
+      IF (n == 21) THEN
+         WRITE(*,*) "20"
+         STOP
+      END IF
+
+      ! Check if n is 22
+      IF (n == 22) THEN
+         W
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:146:10:
+
+  146 |          W
+      |          1
+Error: Unclassifiable statement at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_cuts(n):
+    if n % 2 == 0:
+        return n // 2
+    else:
+        return n
+</code></pre>
+<pre><code>If `n` is an even number, then each cut divides the circle into two equal slices, and thus the minimum number of cuts required is `n / 2`. If `n` is an odd number, then each cut divides the circle into one equal slice, and thus the minimum number of cuts required is `n`.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int min_cuts(int n) {
+    if (n % 2 == 0)
+        return n / 2;
+    else
+        return n;
+}
+</code></pre>
+<pre><code>If `n` is an even number, then each cut divides the circle into two equal slices, and thus the minimum number of cuts required is `n / 2`. If `n` is an odd number, then each cut divides the circle into one equal slice, and thus the minimum number of cuts required is `n`.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

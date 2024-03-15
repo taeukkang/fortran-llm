@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Contains Duplicate</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/206/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/219/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code>, return <code>true</code> if any value appears <strong>at least twice</strong> in the array, and return <code>false</code> if every element is distinct.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,3,1]
+<strong>Output:</strong> true</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,3,4]
+<strong>Output:</strong> false</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [1,1,1,3,3,4,3,2,4,2]
+<strong>Output:</strong> true</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 105</code></li>
+<li><code>-109 &lt;= nums[i] &lt;= 109</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/contains-duplicate/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 10
+    integer, dimension(n) :: nums
+    logical :: result
+
+    ! Example 1
+    nums = [1, 2, 3, 1]
+    result = repeated_element(nums)
+    write (*, '(L1)') result
+
+    ! Example 2
+    nums = [1, 2, 3, 4]
+    result = repeated_element(nums)
+    write (*, '(L1)') result
+
+    ! Example 3
+    nums = [1, 1, 1, 3, 3, 4, 3, 2, 4, 2]
+    result = repeated_element(nums)
+    write (*, '(L1)') result
+
+contains
+
+    function repeated_element(nums) result(result_)
+        implicit none
+        integer, intent(in) :: nums(:)
+        logical :: result_
+
+        integer :: i, j
+
+        do i = 1, size(nums) - 1
+            do j = i + 1, size(nums)
+                if (nums(i) == nums(j)) then
+                    result_ = .true.
+                    exit
+                end if
+            end do
+            if (result_) exit
+        end do
+
+    end function repeated_element
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:4:
+
+    9 |     nums = [1, 2, 3, 1]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 4)
+temp.f95:14:4:
+
+   14 |     nums = [1, 2, 3, 4]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 4)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">```
+program duplicate_elements
+    implicit none
+    integer, parameter :: int64 = selected_int_kind(13)
+    integer, dimension(:), allocatable :: nums
+    logical :: has_duplicates
+
+    ! read input
+    read (*, *) nums
+
+    ! check for duplicates
+    has_duplicates = .false.
+    do i = 1, size(nums) - 1
+        do j = i + 1, size(nums)
+            if (nums(i) == nums(j)) then
+                has_duplicates = .true.
+                exit
+            end if
+        end do
+        if (has_duplicates) exit
+    end do
+
+    ! output result
+    if (has_duplicates) then
+        write (*, *) "true"
+    else
+        write (*, *) "false"
+    end if
+
+contains
+
+    pure function contains_duplicate(nums) result(has_duplicates)
+        implicit none
+        integer(int64), dimension(:), intent(in) :: nums
+        logical :: has_duplicates
+        integer :: i, j
+
+        has_duplicates = .false.
+        do i = 1, size(nums) - 1
+            do j = i + 1, size(nums)
+                if (nums(i) == nums(j)) then
+                    has_duplicates = .true.
+                    exit
+                end if
+            end do
+            if (has_duplicates) exit
+        end do
+    end function contains_duplicate
+end program duplicate_elements
+```
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:1:2:
+
+    1 | ```
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:50:2:
+
+   50 | ```
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:13:8:
+
+   13 |     do i = 1, size(nums) - 1
+      |        1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:14:12:
+
+   14 |         do j = i + 1, size(nums)
+      |            1
+Error: Symbol ‘j’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def containsDuplicate(nums):
+    return len(nums) != len(set(nums))
+</code></pre>
+<pre><code>The algorithm starts by creating an empty set. Then it iterates through the input array. For each number in the array, it checks if the number is already in the set. If the number is in the set, it means there's a duplicate, so it returns true. If the number is not in the set, it adds the number to the set. If the function has not returned true after iterating through the entire array, it means that there are no duplicates, so it returns false.
+</code></pre>
+<p>In Python, we use the fact that sets don't allow duplicates, so we can directly compare the length of the original list with the length of the set created from the list. If they are not equal, it means there are duplicates in the list, and the function returns true. Otherwise, it returns false.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool containsDuplicate(vector&lt;int&gt;&amp; nums) {
+    unordered_set&lt;int&gt; s;
+    for (int num : nums) {
+        if (s.find(num) != s.end()) {
+            return true;
+        }
+        s.insert(num);
+    }
+    return false;
+}
+</code></pre>
+<pre><code>The algorithm starts by creating an empty set. Then it iterates through the input array. For each number in the array, it checks if the number is already in the set. If the number is in the set, it means there's a duplicate, so it returns true. If the number is not in the set, it adds the number to the set. If the function has not returned true after iterating through the entire array, it means that there are no duplicates, so it returns false.
+</code></pre>
+<p>In Python, we use the fact that sets don't allow duplicates, so we can directly compare the length of the original list with the length of the set created from the list. If they are not equal, it means there are duplicates in the list, and the function returns true. Otherwise, it returns false.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

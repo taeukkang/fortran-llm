@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Sentence Similarity</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/733/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/744/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>We can represent a sentence as an array of words, for example, the sentence <code>"I am happy with leetcode "</code> can be represented as <code>arr = [ "I ", "am ",happy ", "with ", "leetcode "]</code>.</p>
+<p>Given two sentences <code>sentence1</code> and <code>sentence2</code> each represented as a string array and given an array of string pairs <code>similarPairs</code> where <code>similarPairs[i] = [xi, yi]</code> indicates that the two words <code>xi</code> and <code>yi</code> are similar.</p>
+<p>Return <em><code>true</code> if <code>sentence1</code> and <code>sentence2</code> are similar, or <code>false</code> if they are not similar</em>.</p>
+<p>Two sentences are similar if:</p>
+<ul>
+<li>They have <strong>the same length</strong> (i.e., the same number of words)</li>
+<li><code>sentence1[i]</code> and <code>sentence2[i]</code> are similar.</li>
+</ul>
+<p>Notice that a word is always similar to itself, also notice that the similarity relation is not transitive. For example, if the words <code>a</code> and <code>b</code> are similar, and the words <code>b</code> and <code>c</code> are similar, <code>a</code> and <code>c</code> are <strong>not necessarily similar</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> sentence1 = [ "great ", "acting ", "skills "], sentence2 = [ "fine ", "drama ", "talent "], similarPairs = [[ "great ", "fine "],[ "drama ", "acting "],[ "skills ", "talent "]]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The two sentences have the same length and each word i of sentence1 is also similar to the corresponding word in sentence2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> sentence1 = [ "great "], sentence2 = [ "great "], similarPairs = []
+<strong>Output:</strong> true
+<strong>Explanation:</strong> A word is similar to itself.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> sentence1 = [ "great "], sentence2 = [ "doubleplus ", "good "], similarPairs = [[ "great ", "doubleplus "]]
+<strong>Output:</strong> false
+<strong>Explanation:</strong> As they don't have the same length, we return false.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= sentence1.length, sentence2.length &lt;= 1000</code></li>
+<li><code>1 &lt;= sentence1[i].length, sentence2[i].length &lt;= 20</code></li>
+<li><code>sentence1[i]</code> and <code>sentence2[i]</code> consist of English letters.</li>
+<li><code>0 &lt;= similarPairs.length &lt;= 1000</code></li>
+<li><code>similarPairs[i].length == 2</code></li>
+<li><code>1 &lt;= xi.length, yi.length &lt;= 20</code></li>
+<li><code>xi</code> and <code>yi</code> consist of lower-case and upper-case English letters.</li>
+<li>All the pairs <code>(xi, yi)</code> are <strong>distinct</strong>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/sentence-similarity/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, n, m
+    character(len=20), allocatable :: arr(:)
+    character(len=20), allocatable :: sentence1(:), sentence2(:)
+    character(len=20), allocatable :: xi(:), yi(:)
+    logical :: result
+
+    ! Examples
+    n = 5
+    allocate(arr(n))
+    arr = ["I ", "am ", "happy ", "with ", "leetcode "]
+    call print_array(arr)
+
+    n = 4
+    allocate(sentence1(n))
+    sentence1 = ["great ", "acting ", "skills "]
+    allocate(sentence2(n))
+    sentence2 = ["fine ", "drama ", "talent "]
+    allocate(xi(2))
+    allocate(yi(2))
+    xi = ["great ", "drama "]
+    yi = ["fine ", "acting "]
+    result = are_sentences_similar(sentence1, sentence2, xi, yi)
+    write (*, '(A, L1)') "Example 1:", result
+
+    n = 1
+    allocate(sentence1(n))
+    sentence1 = ["great "]
+    allocate(sentence2(n))
+    sentence2 = ["great "]
+    allocate(xi(0))
+    allocate(yi(0))
+    result = are_sentences_similar(sentence1, sentence2, xi, yi)
+    write (*, '(A, L1)') "Example 2:", result
+
+    n = 1
+    allocate(sentence1(n))
+    sentence1 = ["great "]
+    allocate(sentence2(n))
+    sentence2 = ["doubleplus ", "good "]
+    allocate(xi(1))
+    allocate(yi(1))
+    xi = ["great "]
+    yi = ["doubleplus "]
+    result = are_sentences_similar(sentence1, sentence2, xi, yi)
+    write (*, '(A, L1)') "Example 3:", result
+
+contains
+
+    subroutine print_array(arr)
+        implicit none
+        character(len=20), intent(in) :: arr(:)
+        do i = 1, size(arr)
+            write (*, '(A)', advance='no') trim(arr(i)) // " "
+        end do
+        write (*, *) ""
+    end subroutine print_array
+
+end program main
+
+function are_sentences_similar(sentence1, sentence2, similarPairs) result(result)
+    implicit none
+    character(len=20), intent(in) :: sentence1(:), sentence2(:)
+    character(len=20), intent(in) :: similarPairs(:, :)
+    logical :: result
+    integer :: i, j, k, l
+
+    ! Check if both sentences have the same length
+    if (size(sentence1) /= size(sentence2)) then
+        result = .false.
+        return
+    end if
+
+    ! Check if each word in sentence1 is similar to the corresponding word in sentence2
+    do i = 1, size(sentence1)
+        do j = 1, size(similarPairs, dim=1)
+            if (sentence1(i) == similarPairs(j, 1) .and. &
+                sentence2(i) == similarPairs(j, 2)) then
+                exit
+            end if
+        end do
+        if (j > size(similarPairs, dim=1)) then
+            result = .false.
+            return
+        end if
+    end do
+
+    result = .true.
+
+end function are_sentences_similar</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:13:16:
+
+   13 |     arr = ["I ", "am ", "happy ", "with ", "leetcode "]
+      |                1
+Error: Different CHARACTER lengths (2/3) in array constructor at (1)
+temp.f95:18:26:
+
+   18 |     sentence1 = ["great ", "acting ", "skills "]
+      |                          1
+Error: Different CHARACTER lengths (6/7) in array constructor at (1)
+temp.f95:20:25:
+
+   20 |     sentence2 = ["fine ", "drama ", "talent "]
+      |                         1
+Error: Different CHARACTER lengths (5/6) in array constructor at (1)
+temp.f95:24:18:
+
+   24 |     yi = ["fine ", "acting "]
+      |                  1
+Error: Different CHARACTER lengths (5/7) in array constructor at (1)
+temp.f95:25:34:
+
+   25 |     result = are_sentences_similar(sentence1, sentence2, xi, yi)
+      |                                  1
+Error: Return type mismatch of function ‘are_sentences_similar’ at (1) (UNKNOWN/LOGICAL(4))
+temp.f95:25:13:
+
+   25 |     result = are_sentences_similar(sentence1, sentence2, xi, yi)
+      |             1
+Error: Function ‘are_sentences_similar’ at (1) has no IMPLICIT type
+temp.f95:25:34:
+
+   25 |     result = are_sentences_similar(sentence1, sentence2, xi, yi)
+      |                                  1
+Error: Return type mismatch of function ‘are_sentences_similar’ at (1) (UNKNOWN/LOGICAL(4))
+temp.f95:35:13:
+
+   35 |     result = are_sentences_similar(sentence1, sentence2, xi, yi)
+      |             1
+Error: Function ‘are_sentences_similar’ at (1) has no IMPLICIT type
+temp.f95:42:31:
+
+   42 |     sentence2 = ["doubleplus ", "good "]
+      |                               1
+Error: Different CHARACTER lengths (11/5) in array constructor at (1)
+temp.f95:25:34:
+
+   25 |     result = are_sentences_similar(sentence1, sentence2, xi, yi)
+      |                                  1
+Error: Return type mismatch of function ‘are_sentences_similar’ at (1) (UNKNOWN/LOGICAL(4))
+temp.f95:47:13:
+
+   47 |     result = are_sentences_similar(sentence1, sentence2, xi, yi)
+      |             1
+Error: Function ‘are_sentences_similar’ at (1) has no IMPLICIT type
+temp.f95:25:57:
+
+   25 |     result = are_sentences_similar(sentence1, sentence2, xi, yi)
+      |                                                         1
+Error: Rank mismatch in argument ‘similarpairs’ at (1) (rank-2 and rank-1)
+temp.f95:35:57:
+
+   35 |     result = are_sentences_similar(sentence1, sentence2, xi, yi)
+      |                                                         1
+Error: Rank mismatch in argument ‘similarpairs’ at (1) (rank-2 and rank-1)
+temp.f95:47:57:
+
+   47 |     result = are_sentences_similar(sentence1, sentence2, xi, yi)
+      |                                                         1
+Error: Rank mismatch in argument ‘similarpairs’ at (1) (rank-2 and rank-1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module is_similar_sentence
+
+contains
+
+  function is_similar_sentence(sentence1, sentence2, similar_pairs) result(is_similar)
+    implicit none
+    character(len=*), intent(in) :: sentence1(:), sentence2(:)
+    character(len=*), intent(in) :: similar_pairs(:, :)
+    logical :: is_similar
+    integer :: i, j, k
+
+    ! Check if the sentences have the same length
+    if (size(sentence1) /= size(sentence2)) then
+      is_similar = .false.
+      return
+    end if
+
+    ! Check if each word in sentence1 is similar to the corresponding word in sentence2
+    do i = 1, size(sentence1)
+      do j = 1, size(similar_pairs, 1)
+        if (sentence1(i) == similar_pairs(j, 1) .and. sentence2(i) == similar_pairs(j, 2)) then
+          exit
+        end if
+      end do
+      if (j > size(similar_pairs, 1)) then
+        is_similar = .false.
+        return
+      end if
+    end do
+
+    ! If we reach this point, the sentences are similar
+    is_similar = .true.
+
+  end function is_similar_sentence
+
+end module is_similar_sentence
+
+program test_is_similar_sentence
+  use is_similar_sentence
+  implicit none
+  character(len=*), parameter :: sentence1(3) = ["I ", "am ", "happy "]
+  character(len=*), parameter :: sentence2(3) = ["I ", "am ", "happy "]
+  character(len=*), parameter :: similar_pairs(2, 2) = reshape([character(len=20) :: "I ", "am ", "happy ", "I ", "am ", "happy "], shape(similar_pairs))
+  logical :: is_similar
+
+  is_similar = is_similar_sentence(sentence1, sentence2, similar_pairs)
+  if (is_similar) then
+    print *, "The sentences are similar."
+  else
+    print *, "The sentences are not similar."
+  end if
+
+  ! Test case 2:
+  character(len=*), parameter :: sentence3(2) = ["I ", "am "]
+  character(len=*), parameter :: sentence4(3) = ["I ", "am ", "happy "]
+  character(len=*), parameter :: similar_pairs2(1, 2) = reshape([character(len=20) :: "I ", "am "], shape(similar_pairs2))
+
+  is_similar = is_similar_sentence(sentence3, sentence4, similar_pairs2)
+  if (is_similar) then
+    print *, "The sentences are similar."
+  else
+    print *, "The sentences are not similar."
+  end if
+
+  ! Test case 3:
+  character(len=*), parameter :: sentence5(2) = ["I ", "am "]
+  character(len=*), parameter :: sentence6(2) = ["I ", "am "]
+  character(len=*), parameter :: similar_pairs3(0, 2) = reshape([character(len=20) ::], shape(similar_pairs3))
+
+  is_similar = is_similar_sentence(sentence5, sentence6, similar_pairs3)
+  if (is_similar) then
+    print *, "The sentences are similar."
+  else
+    print *, "The sentences are not similar."
+  end if
+
+end program test_is_similar_sentence
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:30:
+
+    5 |   function is_similar_sentence(sentence1, sentence2, similar_pairs) result(is_similar)
+      |                              1
+Error: MODULE attribute of ‘is_similar_sentence’ conflicts with PROCEDURE attribute at (1)
+temp.f95:6:17:
+
+    6 |     implicit none
+      |                 1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:7:62:
+
+    7 |     character(len=*), intent(in) :: sentence1(:), sentence2(:)
+      |                                                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:55:
+
+    8 |     character(len=*), intent(in) :: similar_pairs(:, :)
+      |                                                       1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:25:
+
+    9 |     logical :: is_similar
+      |                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:22:
+
+   10 |     integer :: i, j, k
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:48:
+
+   13 |     if (size(sentence1) /= size(sentence2)) then
+      |                                                1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:14:26:
+
+   14 |       is_similar = .false.
+      |                          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:12:
+
+   15 |       return
+      |            1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:16:7:
+
+   16 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:19:29:
+
+   19 |     do i = 1, size(sentence1)
+      |                             1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:20:38:
+
+   20 |       do j = 1, size(similar_pairs, 1)
+      |                                      1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:21:95:
+
+   21 |         if (sentence1(i) == similar_pairs(j, 1) .and. sentence2(i) == similar_pairs(j, 2)) then
+      |                                                                                               1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:22:14:
+
+   22 |           exit
+      |              1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:23:11:
+
+   23 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:24:9:
+
+   24 |       end do
+      |         1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:42:
+
+   25 |       if (j > size(similar_pairs, 1)) then
+      |                                          1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:26:28:
+
+   26 |         is_similar = .false.
+      |                            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:27:14:
+
+   27 |         return
+      |              1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:28:9:
+
+   28 |       end if
+      |         1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:7:
+
+   29 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:32:23:
+
+   32 |     is_similar = .true.
+      |                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:34:5:
+
+   34 |   end function is_similar_sentence
+      |     1
+Error: Expecting END MODULE statement at (1)
+temp.f95:39:7:
+
+   39 |   use is_similar_sentence
+      |       1
+Fatal Error: Cannot open module file ‘is_similar_sentence.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from collections import defaultdict
+
+def areSentencesSimilar(sentence1, sentence2, similarPairs):
+    if len(sentence1) != len(sentence2): return False
+    similarityMap = defaultdict(set)
+    for pair in similarPairs:
+        similarityMap[pair[0]].add(pair[1])
+        similarityMap[pair[1]].add(pair[0])
+    for i in range(len(sentence1)):
+        if sentence1[i] != sentence2[i] and sentence2[i] not in similarityMap[sentence1[i]]:
+            return False
+    return True
+</code></pre>
+<pre><code>1. If the lengths of the given sentences are unequal, the sentences cannot be similar, hence return false.
+</code></pre>
+<ol>
+<li>Create a mapping from each word in similarPairs to its set of similar words.</li>
+<li>Iterate over each word in both sentences and check whether they are similar. If not, return false.</li>
+<li>If all words in sentence1 are similar to words at same indices in sentence2, return true.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+using namespace std;
+
+bool areSentencesSimilar(vector&lt;string&gt;&amp; sentence1, vector&lt;string&gt;&amp; sentence2, vector&lt;vector&lt;string&gt;&gt;&amp; similarPairs) {
+    if (sentence1.size() != sentence2.size()) return false;
+    unordered_map&lt;string, unordered_set&lt;string&gt;&gt; similarityMap;
+    for (const auto&amp; pair : similarPairs) {
+        similarityMap[pair[0]].insert(pair[1]);
+        similarityMap[pair[1]].insert(pair[0]);
+    }
+    for (int i = 0; i &lt; sentence1.size(); ++i) {
+        if (sentence1[i] != sentence2[i] &amp;&amp; !similarityMap[sentence1[i]].count(sentence2[i]))
+            return false;
+    }
+    return true;
+}
+</code></pre>
+<pre><code>1. If the lengths of the given sentences are unequal, the sentences cannot be similar, hence return false.
+</code></pre>
+<ol>
+<li>Create a mapping from each word in similarPairs to its set of similar words.</li>
+<li>Iterate over each word in both sentences and check whether they are similar. If not, return false.</li>
+<li>If all words in sentence1 are similar to words at same indices in sentence2, return true.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Most Common Word</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/812/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/821/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string <code>paragraph</code> and a string array of the banned words <code>banned</code>, return <em>the most frequent word that is not banned</em>. It is <strong>guaranteed</strong> there is <strong>at least one word</strong> that is not banned, and that the answer is <strong>unique</strong>.</p>
+<p>The words in <code>paragraph</code> are <strong>case-insensitive</strong> and the answer should be returned in <strong>lowercase</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> paragraph =  "Bob hit a ball, the hit BALL flew far after it was hit. ", banned = [ "hit "]
+<strong>Output:</strong>  "ball "
+<strong>Explanation:</strong> 
+ "hit " occurs 3 times, but it is a banned word.
+ "ball " occurs twice (and no other word does), so it is the most frequent non-banned word in the paragraph. 
+Note that words in the paragraph are not case sensitive,
+that punctuation is ignored (even if adjacent to words, such as  "ball, "), 
+and that  "hit " isn't the answer even though it occurs more because it is banned.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> paragraph =  "a. ", banned = []
+<strong>Output:</strong>  "a "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= paragraph.length &lt;= 1000</code></li>
+<li>paragraph consists of English letters, space <code>' '</code>, or one of the symbols: <code>"!?',;. "</code>.</li>
+<li><code>0 &lt;= banned.length &lt;= 100</code></li>
+<li><code>1 &lt;= banned[i].length &lt;= 10</code></li>
+<li><code>banned[i]</code> consists of only lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/most-common-word/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: paragraph
+    character(len=:), allocatable :: banned(:)
+    integer :: i, j, count, max_count
+    character(len=:), allocatable :: most_frequent_word
+
+    ! Examples
+    paragraph = "Bob hit a ball, the hit BALL flew far after it was hit. "
+    banned = ["hit"]
+    call solve(paragraph, banned, most_frequent_word)
+    print *, most_frequent_word
+
+    paragraph = "a. "
+    banned = []
+    call solve(paragraph, banned, most_frequent_word)
+    print *, most_frequent_word
+
+contains
+
+    subroutine solve(paragraph, banned, most_frequent_word)
+        implicit none
+        character(len=*), intent(in) :: paragraph
+        character(len=*), intent(in) :: banned(:)
+        character(len=:), allocatable, intent(out) :: most_frequent_word
+        logical :: is_banned
+        integer :: i, j, count, max_count
+
+        ! Initialize variables
+        max_count = 0
+        most_frequent_word = ""
+
+        ! Loop through each word in the paragraph
+        do i = 1, len_trim(paragraph)
+            ! Check if current word is banned
+            is_banned = .false.
+            do j = 1, size(banned)
+                if (trim(adjustl(banned(j))) == trim(adjustl(paragraph(i:)))) then
+                    is_banned = .true.
+                    exit
+                end if
+            end do
+
+            ! If current word is not banned, increment its frequency
+            if (.not. is_banned) then
+                count = count + 1
+            end if
+
+            ! Update maximum frequency
+            if (count > max_count) then
+                max_count = count
+                most_frequent_word = trim(adjustl(paragraph(i:)))
+            end if
+        end do
+
+        ! Convert most_frequent_word to lowercase
+        most_frequent_word = trim(adjustl(most_frequent_word)) // " "
+        most_frequent_word = tolower(most_frequent_word)
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:16:15:
+
+   16 |     banned = []
+      |               1
+Error: Empty array constructor at (1) is not allowed
+temp.f95:59:29:
+
+   59 |         most_frequent_word = tolower(most_frequent_word)
+      |                             1
+Error: Function ‘tolower’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program most_frequent_word
+      implicit none
+
+      integer :: i, j, k, l
+      character(len=1000) :: paragraph
+      character(len=1000), dimension(:) :: banned
+      character(len=1000), dimension(:) :: words
+      integer, dimension(:), allocatable :: counts
+      integer :: max_count
+      character(len=1000) :: most_frequent_word
+
+      ! Read input
+      read (*, '(A)') paragraph
+      read (*, *) banned
+
+      ! Initialize variables
+      words = ''
+      counts = 0
+      max_count = 0
+      most_frequent_word = ''
+
+      ! Tokenize paragraph into words
+      do i = 1, len_trim(paragraph)
+          if (paragraph(i:i) .eq. ' ') then
+              words(l) = ''
+              l = l + 1
+          else
+              words(l) = words(l) // paragraph(i:i)
+          end if
+      end do
+
+      ! Count occurrences of words
+      do i = 1, l
+          do j = 1, size(banned)
+              if (words(i) .eq. banned(j)) then
+                  counts(i) = 0
+                  exit
+              end if
+          end do
+          if (counts(i) .ne. 0) then
+              counts(i) = counts(i) + 1
+              if (counts(i) .gt. max_count) then
+                  max_count = counts(i)
+                  most_frequent_word = words(i)
+              end if
+          end if
+      end do
+
+      ! Print output
+      write (*, '(A)') most_frequent_word
+
+      end program most_frequent_word
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:10:47:
+
+   10 |       character(len=1000) :: most_frequent_word
+      |                                               1
+Error: Symbol ‘most_frequent_word’ at (1) cannot have a type
+temp.f95:20:25:
+
+   20 |       most_frequent_word = ''
+      |                         1
+Error: ‘most_frequent_word’ at (1) is not a variable
+temp.f95:44:37:
+
+   44 |                   most_frequent_word = words(i)
+      |                                     1
+Error: ‘most_frequent_word’ at (1) is not a variable
+temp.f95:50:41:
+
+   50 |       write (*, '(A)') most_frequent_word
+      |                                         1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:6:49:
+
+    6 |       character(len=1000), dimension(:) :: banned
+      |                                                 1
+Error: Array ‘banned’ at (1) cannot have a deferred shape
+temp.f95:7:48:
+
+    7 |       character(len=1000), dimension(:) :: words
+      |                                                1
+Error: Array ‘words’ at (1) cannot have a deferred shape
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minSwaps(nums1, nums2):
+    n = len(nums1)
+    noSwap = [float('inf')] * n
+    doSwap = [float('inf')] * n
+    noSwap[0] = 0
+    doSwap[0] = 1
+
+    for i in range(1, n):
+        if nums1[i] &gt; nums1[i - 1] and nums2[i] &gt; nums2[i - 1]:
+            noSwap[i] = noSwap[i - 1]
+            doSwap[i] = doSwap[i - 1] + 1
+        if nums1[i] &gt; nums2[i - 1] and nums2[i] &gt; nums1[i - 1]:
+            noSwap[i] = min(noSwap[i], doSwap[i - 1])
+            doSwap[i] = min(doSwap[i], noSwap[i - 1] + 1)
+
+    return min(noSwap[n - 1], doSwap[n - 1])
+</code></pre>
+<p>The algorithm uses dynamic programming. We maintain two arrays <code>noSwap</code> and <code>doSwap</code> to track the minimum number of swaps needed at each index without swapping and with swapping nums1[i] and nums2[i], respectively. The base cases are <code>noSwap[0] = 0</code> and <code>doSwap[0] = 1</code>.</p>
+<p>For each index i, we check the following conditions:
+1. If <code>nums1[i] &gt; nums1[i - 1]</code> and <code>nums2[i] &gt; nums2[i - 1]</code>, we don't need to swap at index i. So, we update <code>noSwap[i]</code> and <code>doSwap[i]</code> accordingly.
+2. If <code>nums1[i] &gt; nums2[i - 1]</code> and <code>nums2[i] &gt; nums1[i - 1]</code>, we need to swap either at index i or index i - 1. We update <code>noSwap[i]</code> and <code>doSwap[i]</code> with the minimum possible value.</p>
+<p>Finally, we return the minimum of <code>noSwap[n - 1]</code> and <code>doSwap[n - 1]</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minSwaps(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+    int n = nums1.size();
+    vector&lt;int&gt; noSwap(n, INT_MAX);
+    vector&lt;int&gt; doSwap(n, INT_MAX);
+    noSwap[0] = 0;
+    doSwap[0] = 1;
+
+    for (int i = 1; i &lt; n; i++) {
+        if (nums1[i] &gt; nums1[i - 1] &amp;&amp; nums2[i] &gt; nums2[i - 1]) {
+            noSwap[i] = noSwap[i - 1];
+            doSwap[i] = doSwap[i - 1] + 1;
+        }
+        if (nums1[i] &gt; nums2[i - 1] &amp;&amp; nums2[i] &gt; nums1[i - 1]) {
+            noSwap[i] = min(noSwap[i], doSwap[i - 1]);
+            doSwap[i] = min(doSwap[i], noSwap[i - 1] + 1);
+        }
+    }
+
+    return min(noSwap[n - 1], doSwap[n - 1]);
+}
+</code></pre>
+<p>The algorithm uses dynamic programming. We maintain two arrays <code>noSwap</code> and <code>doSwap</code> to track the minimum number of swaps needed at each index without swapping and with swapping nums1[i] and nums2[i], respectively. The base cases are <code>noSwap[0] = 0</code> and <code>doSwap[0] = 1</code>.</p>
+<p>For each index i, we check the following conditions:
+1. If <code>nums1[i] &gt; nums1[i - 1]</code> and <code>nums2[i] &gt; nums2[i - 1]</code>, we don't need to swap at index i. So, we update <code>noSwap[i]</code> and <code>doSwap[i]</code> accordingly.
+2. If <code>nums1[i] &gt; nums2[i - 1]</code> and <code>nums2[i] &gt; nums1[i - 1]</code>, we need to swap either at index i or index i - 1. We update <code>noSwap[i]</code> and <code>doSwap[i]</code> with the minimum possible value.</p>
+<p>Finally, we return the minimum of <code>noSwap[n - 1]</code> and <code>doSwap[n - 1]</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

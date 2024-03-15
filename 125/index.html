@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Valid Palindrome</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/121/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/136/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A phrase is a <strong>palindrome</strong> if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers.</p>
+<p>Given a string <code>s</code>, return <code>true</code> <em>if it is a <strong>palindrome</strong>, or</em> <code>false</code> <em>otherwise</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "A man, a plan, a canal: Panama "
+<strong>Output:</strong> true
+<strong>Explanation:</strong>  "amanaplanacanalpanama " is a palindrome.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "race a car "
+<strong>Output:</strong> false
+<strong>Explanation:</strong>  "raceacar " is not a palindrome.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "  "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> s is an empty string  " " after removing non-alphanumeric characters.
+Since an empty string reads the same forward and backward, it is a palindrome.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 2 * 105</code></li>
+<li><code>s</code> consists only of printable ASCII characters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/valid-palindrome/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: s
+    logical :: result
+
+    ! Example 1
+    s = "A man, a plan, a canal: Panama "
+    result = isPalindrome(s)
+    write(*,*) "Example 1:"
+    write(*,*) "Input: ", s
+    write(*,*) "Output: ", result
+    write(*,*) ""
+
+    ! Example 2
+    s = "race a car "
+    result = isPalindrome(s)
+    write(*,*) "Example 2:"
+    write(*,*) "Input: ", s
+    write(*,*) "Output: ", result
+    write(*,*) ""
+
+    ! Example 3
+    s = "  "
+    result = isPalindrome(s)
+    write(*,*) "Example 3:"
+    write(*,*) "Input: ", s
+    write(*,*) "Output: ", result
+    write(*,*) ""
+
+contains
+
+    function isPalindrome(s) result(result_)
+        implicit none
+        character(len=*), intent(in) :: s
+        character(len=:), allocatable :: lowercase
+        integer :: i, j
+        logical :: result_
+
+        lowercase = toLowerCase(s)
+        i = 1
+        j = len(lowercase)
+        do while (i < j)
+            if (lowercase(i:i) /= lowercase(j:j)) then
+                result_ = .false.
+                return
+            end if
+            i = i + 1
+            j = j - 1
+        end do
+        result_ = .true.
+    end function isPalindrome
+
+    function toLowerCase(s) result(lowercase)
+        implicit none
+        character(len=*), intent(in) :: s
+        character(len=:), allocatable :: lowercase
+        integer :: i
+
+        allocate(character(len=len(s)) :: lowercase)
+        do i = 1, len(s)
+            select case (s(i:i))
+                case ('A':'Z')
+                    lowercase(i:i) = char(iachar(s(i:i)) + 32)
+                case default
+                    lowercase(i:i) = s(i:i)
+            end select
+        end do
+    end function toLowerCase
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Example 1:
+ Input: A man, a plan, a canal: Panama 
+ Output:  F
+ 
+ Example 2:
+ Input: race a car 
+ Output:  F
+ 
+ Example 3:
+ Input:   
+ Output:  T
+ 
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM is_palindrome
+
+IMPLICIT NONE
+
+CHARACTER(len=*) :: s
+LOGICAL :: is_palindrome
+
+is_palindrome = .TRUE.
+
+! Convert all uppercase letters to lowercase
+s = LOWER(s)
+
+! Remove all non-alphanumeric characters
+s = TRIM(s)
+
+! Check if the string is a palindrome
+DO i = 1, LEN(s)/2
+    IF (s(i:i) /= s(LEN(s)-i+1:LEN(s)-i+1)) THEN
+        is_palindrome = .FALSE.
+        EXIT
+    END IF
+END DO
+
+! Print the result
+IF (is_palindrome) THEN
+    WRITE (*,*) "The string is a palindrome."
+ELSE
+    WRITE (*,*) "The string is not a palindrome."
+END IF
+
+END PROGRAM is_palindrome
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:24:
+
+    6 | LOGICAL :: is_palindrome
+      |                        1
+Error: Symbol ‘is_palindrome’ at (1) cannot have a type
+temp.f95:8:14:
+
+    8 | is_palindrome = .TRUE.
+      |              1
+Error: ‘is_palindrome’ at (1) is not a variable
+temp.f95:19:22:
+
+   19 |         is_palindrome = .FALSE.
+      |                      1
+Error: ‘is_palindrome’ at (1) is not a variable
+temp.f95:25:18:
+
+   25 | IF (is_palindrome) THEN
+      |                  1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:27:4:
+
+   27 | ELSE
+      |    1
+Error: Unexpected ELSE statement at (1)
+temp.f95:29:3:
+
+   29 | END IF
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:17:4:
+
+   17 | DO i = 1, LEN(s)/2
+      |    1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:5:21:
+
+    5 | CHARACTER(len=*) :: s
+      |                     1
+Error: Entity with assumed character length at (1) must be a dummy argument or a PARAMETER
+temp.f95:11:4:
+
+   11 | s = LOWER(s)
+      |    1
+Error: Function ‘lower’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def isPalindrome(s: str) -&gt; bool:
+    cleaned = &quot;&quot;.join(c.lower() for c in s if c.isalnum())
+    left, right = 0, len(cleaned) - 1
+    while left &lt; right:
+        if cleaned[left] != cleaned[right]:
+            return False
+        left += 1
+        right -= 1
+    return True
+</code></pre>
+<ol>
+<li>Clean the given string by removing non-alphanumeric characters and converting uppercase letters to lowercase.</li>
+<li>Initialize two pointers: <code>left</code> pointing to the beginning of the cleaned string and <code>right</code> pointing to the end.</li>
+<li>Iterate through the cleaning string, comparing the characters at the <code>left</code> and <code>right</code> pointers. If they are not equal, return <code>false</code> as it's not a palindrome.</li>
+<li>If the loop completes, it means the input string is a palindrome, so return <code>true</code>.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;cctype&gt;
+#include &lt;algorithm&gt;
+
+bool isPalindrome(std::string s) {
+    s.erase(std::remove_if(s.begin(), s.end(), [](char c) { return !std::isalnum(c); }), s.end());
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    int left = 0, right = s.size() - 1;
+    while (left &lt; right) {
+        if (s[left++] != s[right--]) return false;
+    }
+    return true;
+}
+</code></pre>
+<ol>
+<li>Clean the given string by removing non-alphanumeric characters and converting uppercase letters to lowercase.</li>
+<li>Initialize two pointers: <code>left</code> pointing to the beginning of the cleaned string and <code>right</code> pointing to the end.</li>
+<li>Iterate through the cleaning string, comparing the characters at the <code>left</code> and <code>right</code> pointers. If they are not equal, return <code>false</code> as it's not a palindrome.</li>
+<li>If the loop completes, it means the input string is a palindrome, so return <code>true</code>.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

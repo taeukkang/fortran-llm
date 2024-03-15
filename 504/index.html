@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Base 7</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/501/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/506/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer <code>num</code>, return <em>a string of its <strong>base 7</strong> representation</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num = 100
+<strong>Output:</strong> "202"</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num = -7
+<strong>Output:</strong> "-10"</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>-107 &lt;= num &lt;= 107</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/base-7/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: num = 100
+    character(len=:), allocatable :: str
+
+    str = base_7_repr(num)
+    write (unit=*, fmt='(A)') trim(str)
+
+contains
+
+    function base_7_repr(n) result(res)
+        implicit none
+        integer, intent(in) :: n
+        character(len=:), allocatable :: res
+
+        character(len=30), parameter :: digits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        integer :: i, sign
+
+        if (n == 0) then
+            allocate (character(len=1) :: res)
+            res = '0'
+            return
+        end if
+
+        sign = 1
+        if (n < 0) then
+            sign = -1
+        end if
+
+        i = abs(n)
+        do while (i /= 0)
+            allocate (character(len=len(res)+1) :: res)
+            res = digits(mod(i, 7)+1) // res
+            i = i / 7
+        end do
+
+        if (sign < 0) then
+            allocate (character(len=len(res)+1) :: res)
+            res = '-' // res
+        end if
+
+    end function base_7_repr
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:34:34:
+
+   34 |             res = digits(mod(i, 7)+1) // res
+      |                                  1
+Error: Invalid character in name at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">[SOURCE]
+module base_7
+    implicit none
+    private
+    public :: to_base_7
+contains
+    function to_base_7(num) result(str)
+        integer, intent(in) :: num
+        character(len=20) :: str
+
+        if (num == 0) then
+            str = '0'
+        else
+            str = ''
+            do while (num /= 0)
+                str = char(ichar('0') + mod(num, 7)) // str
+                num = num / 7
+            end do
+        end if
+    end function to_base_7
+end module base_7
+
+program main
+    use base_7
+    implicit none
+    integer :: num
+
+    num = 100
+    print *, to_base_7(num)
+
+    num = -7
+    print *, to_base_7(num)
+end program main
+[/SOURCE]
+[TESTS]
+num = 100
+call assert(to_base_7(num) == "202")
+
+num = -7
+call assert(to_base_7(num) == "-10")
+[/TESTS]
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:1:2:
+
+    1 | [SOURCE]
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:17:16:
+
+   17 |                 num = num / 7
+      |                1
+Error: Dummy argument ‘num’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:24:9:
+
+   24 |     use base_7
+      |         1
+Fatal Error: Cannot open module file ‘base_7.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def convert_to_base7(num: int) -&gt; str:
+    if num == 0:
+        return &quot;0&quot;
+    result = &quot;&quot;
+    negative = num &lt; 0
+    if negative:
+        num *= -1
+    while num &gt; 0:
+        result = str(num % 7) + result
+        num //= 7
+    return &quot;-&quot; + result if negative else result
+</code></pre>
+<p>The algorithm first checks if the input number is 0, and if so, it simply returns the base-7 representation as "0". If the number is negative, it keeps track of the sign and converts the number to positive. Then, it iteratively divides the number by 7 (integer division) and prepends the remainder (modulus) to the result string. Finally, if the input number was negative, it adds the minus sign back to the result string. The same algorithm is implemented in C++, Java, Python, and JavaScript with minor syntax adjustments.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">std::string convertToBase7(int num) {
+    if (num == 0) return &quot;0&quot;;
+    std::string result = &quot;&quot;;
+    bool negative = num &lt; 0;
+    if (negative) num *= -1;
+    while (num &gt; 0) {
+        result = std::to_string(num % 7) + result;
+        num /= 7;
+    }
+    return negative ? &quot;-&quot; + result : result;
+}
+</code></pre>
+<p>The algorithm first checks if the input number is 0, and if so, it simply returns the base-7 representation as "0". If the number is negative, it keeps track of the sign and converts the number to positive. Then, it iteratively divides the number by 7 (integer division) and prepends the remainder (modulus) to the result string. Finally, if the input number was negative, it adds the minus sign back to the result string. The same algorithm is implemented in C++, Java, Python, and JavaScript with minor syntax adjustments.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

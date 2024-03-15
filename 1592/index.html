@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Rearrange Spaces Between Words</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1588/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1598/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>text</code> of words that are placed among some number of spaces. Each word consists of one or more lowercase English letters and are separated by at least one space. It's guaranteed that <code>text</code> <strong>contains at least one word</strong>.</p>
+<p>Rearrange the spaces so that there is an <strong>equal</strong> number of spaces between every pair of adjacent words and that number is <strong>maximized</strong>. If you cannot redistribute all the spaces equally, place the <strong>extra spaces at the end</strong>, meaning the returned string should be the same length as <code>text</code>.</p>
+<p>Return <em>the string after rearranging the spaces</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> text =  "  this   is  a sentence  "
+<strong>Output:</strong>  "this   is   a   sentence "
+<strong>Explanation:</strong> There are a total of 9 spaces and 4 words. We can evenly divide the 9 spaces between the words: 9 / (4-1) = 3 spaces.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> text =  " practice   makes   perfect "
+<strong>Output:</strong>  "practice   makes   perfect  "
+<strong>Explanation:</strong> There are a total of 7 spaces and 3 words. 7 / (3-1) = 3 spaces plus 1 extra space. We place this extra space at the end of the string.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= text.length &lt;= 100</code></li>
+<li><code>text</code> consists of lowercase English letters and <code>' '</code>.</li>
+<li><code>text</code> contains at least one word.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/rearrange-spaces-between-words/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: text
+    integer :: nwords, i
+
+    call get_command_argument(1, text)
+
+    nwords = count(text == ' ') + 1
+
+    if (nwords > 1) then
+        do i = 1, nwords - 1
+            write (*,'(*(g0))') text(1:i-1), ' ', text(i+1:)
+        end do
+    else
+        write (*,'(*(g0))') text
+    end if
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:19:
+
+    9 |     nwords = count(text == ' ') + 1
+      |                   1
+Error: ‘mask’ argument of ‘count’ intrinsic at (1) must be a logical array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module rearranging_spaces
+
+implicit none
+
+contains
+
+function rearrange_spaces(text) result(result)
+
+character(len=*), intent(in) :: text
+character(len=len(text)) :: result
+
+integer :: i, j, k, n, m
+
+! Find the number of words and the number of spaces
+n = count(text == ' ') + 1
+m = count(text /= ' ')
+
+! If there is only one word, return the original string
+if (n == 1) then
+    result = text
+    return
+end if
+
+! Allocate memory for the result string
+allocate(character(len=len(text)) :: result)
+
+! Initialize the result string
+result = ''
+
+! Loop through the words and spaces
+do i = 1, n
+    ! Find the index of the next space
+    do j = i, n
+        if (text(j:j) == ' ') exit
+    end do
+
+    ! Copy the word to the result string
+    result = result // text(i:j-1)
+
+    ! If there are more spaces than words, add an extra space
+    if (j < n) then
+        result = result // ' '
+    end if
+end do
+
+end function rearrange_spaces
+
+end module
+
+program test_rearranging_spaces
+
+use rearranging_spaces, only : rearrange_spaces
+
+implicit none
+
+character(len=100) :: text
+character(len=100) :: result
+
+! Test case 1
+text = "  this   is  a sentence  "
+result = rearrange_spaces(text)
+write (*,*) result
+
+! Test case 2
+text = " practice   makes   perfect "
+result = rearrange_spaces(text)
+write (*,*) result
+
+! Test case 3
+text = "hello world"
+result = rearrange_spaces(text)
+write (*,*) result
+
+! Test case 4
+text = "a"
+result = rearrange_spaces(text)
+write (*,*) result
+
+! Test case 5
+text = " "
+result = rearrange_spaces(text)
+write (*,*) result
+
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:25:37:
+
+   25 | allocate(character(len=len(text)) :: result)
+      |                                     1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:15:10:
+
+   15 | n = count(text == ' ') + 1
+      |          1
+Error: ‘mask’ argument of ‘count’ intrinsic at (1) must be a logical array
+temp.f95:16:10:
+
+   16 | m = count(text /= ' ')
+      |          1
+Error: ‘mask’ argument of ‘count’ intrinsic at (1) must be a logical array
+temp.f95:52:5:
+
+   52 | use rearranging_spaces, only : rearrange_spaces
+      |     1
+Fatal Error: Cannot open module file ‘rearranging_spaces.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def reorderSpaces(text):
+    spaces = text.count(' ')
+    words = text.split()
+    num_words = len(words)
+
+    if num_words == 1:
+        spaces_between_words = 0
+    else:
+        spaces_between_words = spaces // (num_words - 1)
+
+    extra_spaces = spaces - spaces_between_words * (num_words - 1)
+
+    return (' ' * spaces_between_words).join(words) + ' ' * extra_spaces
+</code></pre>
+<p>To solve this problem, first we need to count the number of spaces and words in the input <code>text</code>. We iterate through the <code>text</code> and count the spaces. Then, we split the <code>text</code> into words, and count the number of words.</p>
+<p>Next, we need to calculate the number of spaces between words and the extra spaces that will be placed at the end. If there is only one word, then all spaces will be used as extra spaces. Otherwise, we divide the total number of spaces by the number of words minus 1 (to get the spaces between words), and calculate the remainder (i.e., the extra spaces).</p>
+<p>After that, we construct the result by joining the words with the calculated space between them and then adding the extra spaces at the end of the last word.</p>
+<p>In all four implementations, the core logic and step-by-step procedure are the same, only the syntax and library functions vary according to the language being used.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;sstream&gt;
+
+std::string reorderSpaces(std::string text) {
+    int spaces = 0, words = 0;
+
+    for (char c : text) {
+        if (c == ' ') spaces++;
+    }
+
+    std::istringstream iss(text);
+    std::vector&lt;std::string&gt; wordList;
+    std::string word;
+
+    while (iss &gt;&gt; word) {
+        wordList.push_back(word);
+        words++;
+    }
+
+    int spacesBetweenWords = words == 1 ? 0 : spaces / (words - 1);
+    int extraSpaces = words == 1 ? spaces : spaces % (words - 1);
+
+    std::string result;
+
+    for (int i = 0; i &lt; words; i++) {
+        result += wordList[i];
+        if (i != words - 1) {
+            result.append(spacesBetweenWords, ' ');
+        } else {
+            result.append(extraSpaces, ' ');
+        }
+    }
+
+    return result;
+}
+</code></pre>
+<p>To solve this problem, first we need to count the number of spaces and words in the input <code>text</code>. We iterate through the <code>text</code> and count the spaces. Then, we split the <code>text</code> into words, and count the number of words.</p>
+<p>Next, we need to calculate the number of spaces between words and the extra spaces that will be placed at the end. If there is only one word, then all spaces will be used as extra spaces. Otherwise, we divide the total number of spaces by the number of words minus 1 (to get the spaces between words), and calculate the remainder (i.e., the extra spaces).</p>
+<p>After that, we construct the result by joining the words with the calculated space between them and then adding the extra spaces at the end of the last word.</p>
+<p>In all four implementations, the core logic and step-by-step procedure are the same, only the syntax and library functions vary according to the language being used.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

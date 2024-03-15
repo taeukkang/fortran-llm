@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Most Visited Sector in  a Circular Track</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1556/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1566/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer <code>n</code> and an integer array <code>rounds</code>. We have a circular track which consists of <code>n</code> sectors labeled from <code>1</code> to <code>n</code>. A marathon will be held on this track, the marathon consists of <code>m</code> rounds. The <code>ith</code> round starts at sector <code>rounds[i - 1]</code> and ends at sector <code>rounds[i]</code>. For example, round 1 starts at sector <code>rounds[0]</code> and ends at sector <code>rounds[1]</code></p>
+<p>Return <em>an array of the most visited sectors</em> sorted in <strong>ascending</strong> order.</p>
+<p>Notice that you circulate the track in ascending order of sector numbers in the counter-clockwise direction (See the first example).</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 4, rounds = [1,3,1,2]
+<strong>Output:</strong> [1,2]
+<strong>Explanation:</strong> The marathon starts at sector 1. The order of the visited sectors is as follows:
+1 --&gt; 2 --&gt; 3 (end of round 1) --&gt; 4 --&gt; 1 (end of round 2) --&gt; 2 (end of round 3 and the marathon)
+We can see that both sectors 1 and 2 are visited twice and they are the most visited sectors. Sectors 3 and 4 are visited only once.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 2, rounds = [2,1,2,1,2,1,2,1,2]
+<strong>Output:</strong> [2]</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> n = 7, rounds = [1,3,5,7]
+<strong>Output:</strong> [1,2,3,4,5,6,7]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= n &lt;= 100</code></li>
+<li><code>1 &lt;= m &lt;= 100</code></li>
+<li><code>rounds.length == m + 1</code></li>
+<li><code>1 &lt;= rounds[i] &lt;= n</code></li>
+<li><code>rounds[i] != rounds[i + 1]</code> for <code>0 &lt;= i &lt; m</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/most-visited-sector-in-a-circular-track/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: n = 4, m = 4
+    integer, dimension(m+1) :: rounds = (/ 1, 3, 1, 2 /)
+    integer, dimension(:), allocatable :: visited_sectors
+    integer :: i
+
+    allocate(visited_sectors(n))
+
+    call solve(n, rounds, visited_sectors)
+
+    do i = 1, size(visited_sectors)
+        write (unit=error_unit, fmt='(I0, 1X)') visited_sectors(i)
+    end do
+
+contains
+
+    subroutine solve(n, rounds, visited_sectors)
+        implicit none
+        integer, value :: n, rounds(m+1)
+        integer, intent(out) :: visited_sectors(n)
+        integer :: current_sector, next_sector
+
+        current_sector = rounds(1)
+        visited_sectors(current_sector) = visited_sectors(current_sector) + 1
+
+        do i = 2, m+1
+            next_sector = rounds(i)
+            if (next_sector > current_sector) then
+                ! circulate the track in ascending order of sector numbers
+                ! in the counter-clockwise direction
+                visited_sectors(next_sector) = visited_sectors(next_sector) + 1
+                current_sector = next_sector
+            else
+                ! circulate the track in descending order of sector numbers
+                ! in the clockwise direction
+                visited_sectors(n + 1 - next_sector) = visited_sectors(n + 1 - next_sector) + 1
+                current_sector = n + 1 - next_sector
+            end if
+        end do
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:37:
+
+    5 |     integer, dimension(m+1) :: rounds = (/ 1, 3, 1, 2 /)
+      |                                     1
+Error: Different shape for array assignment at (1) on dimension 1 (5 and 4)
+temp.f95:21:35:
+
+   21 |         integer, value :: n, rounds(m+1)
+      |                                   1
+Error: VALUE attribute conflicts with DIMENSION attribute at (1)
+temp.f95:19:22:
+
+   19 |     subroutine solve(n, rounds, visited_sectors)
+      |                      1
+Error: Symbol ‘n’ at (1) has no IMPLICIT type
+temp.f95:19:30:
+
+   19 |     subroutine solve(n, rounds, visited_sectors)
+      |                              1
+Error: Symbol ‘rounds’ at (1) has no IMPLICIT type
+temp.f95:11:24:
+
+   11 |     call solve(n, rounds, visited_sectors)
+      |                        1
+Error: Symbol ‘rounds’ at (1) has no IMPLICIT type
+temp.f95:25:25:
+
+   25 |         current_sector = rounds(1)
+      |                         1
+Error: Function ‘rounds’ at (1) has no IMPLICIT type
+temp.f95:29:26:
+
+   29 |             next_sector = rounds(i)
+      |                          1
+Error: Function ‘rounds’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module most_visited_sectors
+  implicit none
+contains
+  subroutine solve(n, rounds, result)
+    integer, intent(in) :: n, rounds(n + 1)
+    integer, intent(out) :: result(n)
+
+    integer :: i, j, current_sector, next_sector
+    integer :: visited_sectors(n)
+
+    ! Initialize the visited sectors array
+    do i = 1, n
+      visited_sectors(i) = 0
+    end do
+
+    ! Start at sector 1
+    current_sector = 1
+
+    ! Loop through each round
+    do i = 1, n
+      ! Find the next sector
+      next_sector = rounds(i)
+
+      ! Increment the visited count for the current sector
+      visited_sectors(current_sector) = visited_sectors(current_sector) + 1
+
+      ! Update the current sector
+      current_sector = next_sector
+    end do
+
+    ! Sort the visited sectors array in ascending order
+    call sort(visited_sectors)
+
+    ! Copy the sorted visited sectors array to the result array
+    do i = 1, n
+      result(i) = visited_sectors(i)
+    end do
+  end subroutine solve
+
+  subroutine sort(array)
+    integer, intent(inout) :: array(:)
+    integer :: i, j, temp
+
+    do i = 1, size(array) - 1
+      do j = i + 1, size(array)
+        if (array(i) > array(j)) then
+          temp = array(i)
+          array(i) = array(j)
+          array(j) = temp
+        end if
+      end do
+    end do
+  end subroutine sort
+end module most_visited_sectors
+
+program test
+  use most_visited_sectors
+  implicit none
+
+  integer, parameter :: n = 4
+  integer, parameter :: rounds(n + 1) = [1, 3, 1, 2]
+  integer :: result(n)
+
+  call solve(n, rounds, result)
+
+  write (*, "(A, I0, A)") "The most visited sectors are: ", result, "."
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:61:37:
+
+   61 |   integer, parameter :: rounds(n + 1) = [1, 3, 1, 2]
+      |                                     1
+Error: Different shape for array assignment at (1) on dimension 1 (5 and 4)
+temp.f95:64:22:
+
+   64 |   call solve(n, rounds, result)
+      |                      1
+Error: Symbol ‘rounds’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def busy_student(start_time, end_time, query_time):
+    count = 0
+    for i in range(len(start_time)):
+        if start_time[i] &lt;= query_time &lt;= end_time[i]:
+            count += 1
+    return count
+</code></pre>
+<p>The algorithm consists of iterating through the startTime and endTime arrays in parallel, by checking if the queryTime lies within the range of startTime[i] and endTime[i]. If it's within the range, increment the count. Finally, return the count as the result. The code is quite similar across the different languages.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int busyStudent(vector&lt;int&gt;&amp; startTime, vector&lt;int&gt;&amp; endTime, int queryTime) {
+    int count = 0;
+    for (int i = 0; i &lt; startTime.size(); i++) {
+        if (startTime[i] &lt;= queryTime &amp;&amp; endTime[i] &gt;= queryTime) {
+            count++;
+        }
+    }
+    return count;
+}
+</code></pre>
+<p>The algorithm consists of iterating through the startTime and endTime arrays in parallel, by checking if the queryTime lies within the range of startTime[i] and endTime[i]. If it's within the range, increment the count. Finally, return the count as the result. The code is quite similar across the different languages.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

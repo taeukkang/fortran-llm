@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find Subarrays With Equal Sum</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2389/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2399/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a <strong>0-indexed</strong> integer array <code>nums</code>, determine whether there exist <strong>two</strong> subarrays of length <code>2</code> with <strong>equal</strong> sum. Note that the two subarrays must begin at <strong>different</strong> indices.</p>
+<p>Return <code>true</code> <em>if these subarrays exist, and</em> <code>false</code> <em>otherwise.</em></p>
+<p>A <strong>subarray</strong> is a contiguous non-empty sequence of elements within an array.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [4,2,4]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The subarrays with elements [4,2] and [2,4] have the same sum of 6.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,3,4,5]
+<strong>Output:</strong> false
+<strong>Explanation:</strong> No two subarrays of size 2 have the same sum.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [0,0,0]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The subarrays [nums[0],nums[1]] and [nums[1],nums[2]] have the same sum of 0. 
+Note that even though the subarrays have the same content, the two subarrays are considered different because they are in different positions in the original array.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= nums.length &lt;= 1000</code></li>
+<li><code>-109 &lt;= nums[i] &lt;= 109</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-subarrays-with-equal-sum/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, k, n
+    integer, parameter :: nmax = 1000
+    integer :: nums(nmax)
+    logical :: result
+
+    ! Example 1
+    nums = (/4, 2, 4/)
+    write(*,*) 'Example 1'
+    write(*,*) 'Input: ', nums
+    result = equal_sum_subarrays(nums)
+    write(*,*) 'Output: ', result
+    write(*,*) ''
+
+    ! Example 2
+    nums = (/1, 2, 3, 4, 5/)
+    write(*,*) 'Example 2'
+    write(*,*) 'Input: ', nums
+    result = equal_sum_subarrays(nums)
+    write(*,*) 'Output: ', result
+    write(*,*) ''
+
+    ! Example 3
+    nums = (/0, 0, 0/)
+    write(*,*) 'Example 3'
+    write(*,*) 'Input: ', nums
+    result = equal_sum_subarrays(nums)
+    write(*,*) 'Output: ', result
+    write(*,*) ''
+
+contains
+
+    function equal_sum_subarrays(nums) result(result)
+        implicit none
+        integer, intent(in) :: nums(:)
+        logical :: result
+        integer :: i, j, k, n
+
+        n = size(nums)
+        do i = 1, n - 1
+            do j = i + 1, n
+                if (sum(nums(i:j)) == sum(nums(j:i))) then
+                    result = .true.
+                    return
+                end if
+            end do
+        end do
+        result = .false.
+    end function equal_sum_subarrays
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:10:4:
+
+   10 |     nums = (/4, 2, 4/)
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (1000 and 3)
+temp.f95:18:4:
+
+   18 |     nums = (/1, 2, 3, 4, 5/)
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (1000 and 5)
+temp.f95:26:4:
+
+   26 |     nums = (/0, 0, 0/)
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (1000 and 3)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: i, j, k, l, m, n, sum1, sum2, equal_sum
+logical :: found_equal_sum
+
+! Initialize variables
+i = 1
+j = 2
+k = 3
+l = 4
+m = 5
+n = 6
+sum1 = 0
+sum2 = 0
+equal_sum = 0
+found_equal_sum = .false.
+
+! Loop through the array
+do while (i < n)
+    ! Calculate the sum of the first subarray
+    sum1 = sum(nums(i:j))
+
+    ! Calculate the sum of the second subarray
+    sum2 = sum(nums(k:l))
+
+    ! Check if the sums are equal
+    if (sum1 == sum2) then
+        ! If the sums are equal, set the flag to true
+        found_equal_sum = .true.
+
+        ! Exit the loop
+        exit
+    end if
+
+    ! Increment the indices
+    i = i + 1
+    j = j + 1
+    k = k + 1
+    l = l + 1
+end do
+
+! Output the result
+if (found_equal_sum) then
+    write (*,*) "True"
+else
+    write (*,*) "False"
+end if
+
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:20:22:
+
+   20 |     sum1 = sum(nums(i:j))
+      |                      1
+Error: Syntax error in argument list at (1)
+temp.f95:23:22:
+
+   23 |     sum2 = sum(nums(k:l))
+      |                      1
+Error: Syntax error in argument list at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def equal_sum_subarrays(nums):
+    sums = set()
+    for i in range(1, len(nums)):
+        current_sum = nums[i] + nums[i - 1]
+        if current_sum in sums:
+            return True
+        sums.add(current_sum)
+    return False
+</code></pre>
+<p>The algorithm works by iterating through the array, calculating the sum of each pair of adjacent elements, and using a set to store the seen sums. If the current sum already exists in the set, it means that there are two subarrays with equal sums, so the function returns <code>true</code>. At the end of the loop, if no such subarrays were found, the function returns <code>false</code>.</p>
+<p>Time complexity is O(n), where n is the size of the input array, since we are iterating through the elements only once. Space complexity is also O(n) as at worst we have to store all possible sums in the set.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool equalSumSubarrays(vector&lt;int&gt;&amp; nums) {
+    unordered_set&lt;int&gt; sums;
+    for (int i = 1; i &lt; nums.size(); ++i) {
+        int sum = nums[i] + nums[i - 1];
+        if (sums.count(sum)) return true;
+        sums.insert(sum);
+    }
+    return false;
+}
+</code></pre>
+<p>The algorithm works by iterating through the array, calculating the sum of each pair of adjacent elements, and using a set to store the seen sums. If the current sum already exists in the set, it means that there are two subarrays with equal sums, so the function returns <code>true</code>. At the end of the loop, if no such subarrays were found, the function returns <code>false</code>.</p>
+<p>Time complexity is O(n), where n is the size of the input array, since we are iterating through the elements only once. Space complexity is also O(n) as at worst we have to store all possible sums in the set.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Search in a Binary Search Tree</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/697/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/703/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given the <code>root</code> of a binary search tree (BST) and an integer <code>val</code>.</p>
+<p>Find the node in the BST that the node's value equals <code>val</code> and return the subtree rooted with that node. If such a node does not exist, return <code>null</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [4,2,7,1,3], val = 2
+<strong>Output:</strong> [2,1,3]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [4,2,7,1,3], val = 5
+<strong>Output:</strong> []</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[1, 5000]</code>.</li>
+<li><code>1 &lt;= Node.val &lt;= 107</code></li>
+<li><code>root</code> is a binary search tree.</li>
+<li><code>1 &lt;= val &lt;= 107</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/search-in-a-binary-search-tree/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, iostat_end
+    implicit none
+    type(node), pointer :: root
+    integer :: val
+    integer :: stat
+
+    call get_arguments(root, val)
+
+    if (associated(root)) then
+        write (unit=error_unit, fmt='(*(g0))') 'Root: ', root%value
+        write (unit=error_unit, fmt='(*(g0))') 'Val: ', val
+        write (unit=error_unit, fmt='(*(g0))') 'Result: ', find_node(root, val)
+    else
+        write (unit=error_unit, fmt='(*(g0))') 'No result found.'
+    end if
+
+contains
+
+    function find_node(root, val) result(result)
+        class(node), pointer, intent(in) :: root
+        integer, intent(in) :: val
+        class(node), pointer :: result
+
+        if (.not. associated(root)) then
+            nullify(result)
+            return
+        end if
+
+        if (root%value == val) then
+            result => root
+        else if (val < root%value) then
+            result => find_node(root%left, val)
+        else
+            result => find_node(root%right, val)
+        end if
+    end function find_node
+
+    subroutine get_arguments(root, val)
+        type(node), pointer :: root
+        integer, intent(out) :: val
+        character(len=:), allocatable :: line
+        integer :: ios
+
+        read (unit=input_unit, fmt='(A)', iostat=ios) line
+        if (ios /= 0) then
+            if (ios /= iostat_end) then
+                write (unit=error_unit, fmt='(*(g0))') 'Error reading input.'
+                stop 1
+            end if
+            return
+        end if
+
+        allocate (character(len=len(line)) :: line)
+        line = adjustl(line)
+        read (unit=line, fmt=*, iostat=ios) root, val
+        if (ios /= 0) then
+            write (unit=error_unit, fmt='(*(g0))') 'Error parsing input.'
+            stop 1
+        end if
+    end subroutine get_arguments
+
+    type, public :: node
+        integer :: value
+        class(node), pointer :: left => null(), right => null()
+    end type node
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:15:
+
+    4 |     type(node), pointer :: root
+      |               1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:11:63:
+
+   11 |         write (unit=error_unit, fmt='(*(g0))') 'Root: ', root%value
+      |                                                               1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:21:20:
+
+   21 |         class(node), pointer, intent(in) :: root
+      |                    1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:23:20:
+
+   23 |         class(node), pointer :: result
+      |                    1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:20:48:
+
+   20 |     function find_node(root, val) result(result)
+      |                                                1
+Error: Function result ‘result’ at (1) has no IMPLICIT type
+temp.f95:30:18:
+
+   30 |         if (root%value == val) then
+      |                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:32:29:
+
+   32 |         else if (val < root%value) then
+      |                             1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:33:38:
+
+   33 |             result => find_node(root%left, val)
+      |                                      1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:34:12:
+
+   34 |         else
+      |            1
+Error: Unexpected ELSE statement at (1)
+temp.f95:35:38:
+
+   35 |             result => find_node(root%right, val)
+      |                                      1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:36:11:
+
+   36 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:40:19:
+
+   40 |         type(node), pointer :: root
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:63:17:
+
+   63 |     type, public :: node
+      |                 1
+Error: Derived type at (1) can only be PUBLIC in the specification part of a module
+temp.f95:64:24:
+
+   64 |         integer :: value
+      |                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:65:20:
+
+   65 |         class(node), pointer :: left => null(), right => null()
+      |                    1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:66:7:
+
+   66 |     end type node
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:20:27:
+
+   20 |     function find_node(root, val) result(result)
+      |                           1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:39:33:
+
+   39 |     subroutine get_arguments(root, val)
+      |                                 1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:8:27:
+
+    8 |     call get_arguments(root, val)
+      |                           1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:45:29:
+
+   45 |         read (unit=input_unit, fmt='(A)', iostat=ios) line
+      |                             1
+Error: Symbol ‘input_unit’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module bst_search
+
+implicit none
+
+type :: bst_node
+    integer :: val
+    type(bst_node), pointer :: left
+    type(bst_node), pointer :: right
+end type bst_node
+
+contains
+
+type(bst_node), pointer function search(root, val) result(subtree)
+    type(bst_node), pointer :: root
+    integer :: val
+
+    if (associated(root)) then
+        if (root%val == val) then
+            subtree => root
+        else if (val < root%val) then
+            subtree => search(root%left, val)
+        else
+            subtree => search(root%right, val)
+        end if
+    end if
+end function search
+
+end module bst_search
+
+program test_bst_search
+    use bst_search
+    implicit none
+
+    type(bst_node), pointer :: root
+    integer :: val
+
+    ! Example 1
+    root => bst_node(val=4, left=>bst_node(val=2, left=>bst_node(val=1), right=>bst_node(val=3)), right=>bst_node(val=7))
+    val = 2
+    write (*,*) 'Example 1: '
+    call print_subtree(search(root, val))
+
+    ! Example 2
+    root => bst_node(val=4, left=>bst_node(val=2, left=>bst_node(val=1), right=>bst_node(val=3)), right=>bst_node(val=7))
+    val = 5
+    write (*,*) 'Example 2: '
+    call print_subtree(search(root, val))
+
+contains
+
+subroutine print_subtree(root)
+    type(bst_node), pointer :: root
+
+    if (associated(root)) then
+        write (*,*) root%val
+        call print_subtree(root%left)
+        call print_subtree(root%right)
+    end if
+end subroutine print_subtree
+
+end program test_bst_search
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:13:16:
+
+   13 | type(bst_node), pointer function search(root, val) result(subtree)
+      |                1
+Error: Invalid character in name at (1)
+temp.f95:14:35:
+
+   14 |     type(bst_node), pointer :: root
+      |                                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:18:
+
+   15 |     integer :: val
+      |                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:17:30:
+
+   17 |     if (associated(root)) then
+      |                              1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:18:18:
+
+   18 |         if (root%val == val) then
+      |                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:19:27:
+
+   19 |             subtree => root
+      |                           1
+Error: Unexpected pointer assignment statement in CONTAINS section at (1)
+temp.f95:20:29:
+
+   20 |         else if (val < root%val) then
+      |                             1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:21:36:
+
+   21 |             subtree => search(root%left, val)
+      |                                    1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:22:12:
+
+   22 |         else
+      |            1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:23:36:
+
+   23 |             subtree => search(root%right, val)
+      |                                    1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:24:11:
+
+   24 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:7:
+
+   25 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:3:
+
+   26 | end function search
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:31:9:
+
+   31 |     use bst_search
+      |         1
+Fatal Error: Cannot open module file ‘bst_search.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def searchBST(root: TreeNode, val: int) -&gt; TreeNode:
+    if not root or root.val == val:
+        return root
+    return searchBST(root.right, val) if root.val &lt; val else searchBST(root.left, val)
+</code></pre>
+<pre><code>We use a recursive search function for searching the BST. The basic logic is as follows:
+</code></pre>
+<ol>
+<li>Check if the current node is <code>null</code> or its value equals the target value. If so, return the node itself.</li>
+<li>If the target value is greater than the current node's value, search the right child.</li>
+<li>If the target value is less than the current node's value, search the left child.</li>
+</ol>
+<p>In all four programming languages, the implementation is pretty much the same:</p>
+<ol>
+<li>Define a TreeNode structure/class with value, left child, and right child properties.</li>
+<li>Apply the algorithm logic in the <code>searchBST</code> function.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+};
+
+TreeNode* searchBST(TreeNode* root, int val) {
+    if (!root || root-&gt;val == val)
+        return root;
+    return (root-&gt;val &lt; val) ? searchBST(root-&gt;right, val) : searchBST(root-&gt;left, val);
+}
+</code></pre>
+<p>We use a recursive search function for searching the BST. The basic logic is as follows:
+1. Check if the current node is <code>null</code> or its value equals the target value. If so, return the node itself.
+2. If the target value is greater than the current node's value, search the right child.
+3. If the target value is less than the current node's value, search the left child.</p>
+<p>In all four programming languages, the implementation is pretty much the same:</p>
+<ol>
+<li>Define a TreeNode structure/class with value, left child, and right child properties.</li>
+<li>Apply the algorithm logic in the <code>searchBST</code> function.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

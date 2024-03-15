@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Shortest Distance to a Character</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/819/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/824/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string <code>s</code> and a character <code>c</code> that occurs in <code>s</code>, return <em>an array of integers</em> <code>answer</code> <em>where</em> <code>answer.length == s.length</code> <em>and</em> <code>answer[i]</code> <em>is the <strong>distance</strong> from index</em> <code>i</code> <em>to the <strong>closest</strong> occurrence of character</em> <code>c</code> <em>in</em> <code>s</code>.</p>
+<p>The <strong>distance</strong> between two indices <code>i</code> and <code>j</code> is <code>abs(i - j)</code>, where <code>abs</code> is the absolute value function.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "loveleetcode ", c =  "e "
+<strong>Output:</strong> [3,2,1,0,1,0,0,1,2,2,1,0]
+<strong>Explanation:</strong> The character 'e' appears at indices 3, 5, 6, and 11 (0-indexed).
+The closest occurrence of 'e' for index 0 is at index 3, so the distance is abs(0 - 3) = 3.
+The closest occurrence of 'e' for index 1 is at index 3, so the distance is abs(1 - 3) = 2.
+For index 4, there is a tie between the 'e' at index 3 and the 'e' at index 5, but the distance is still the same: abs(4 - 3) == abs(4 - 5) = 1.
+The closest occurrence of 'e' for index 8 is at index 6, so the distance is abs(8 - 6) = 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "aaab ", c =  "b "
+<strong>Output:</strong> [3,2,1,0]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 104</code></li>
+<li><code>s[i]</code> and <code>c</code> are lowercase English letters.</li>
+<li>It is guaranteed that <code>c</code> occurs at least once in <code>s</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/shortest-distance-to-a-character/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, n
+    character(len=:), allocatable :: s
+    character :: c
+    integer, dimension(:), allocatable :: answer
+
+    ! read input
+    read(*,*) s
+    read(*,*) c
+
+    ! compute answer
+    n = len(s)
+    allocate(answer(n))
+    do i = 1, n
+        j = index(s(i:), c)
+        if (j /= 0) then
+            answer(i) = abs(i - j)
+        else
+            answer(i) = 0
+        end if
+    end do
+
+    ! print answer
+    write(*,*) answer
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 10 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7da5adef4960 in ???
+#1  0x7da5adef54d9 in ???
+#2  0x7da5ae14917b in ???
+#3  0x7da5ae142684 in ???
+#4  0x7da5ae1432aa in ???
+#5  0x5b1d0b18f289 in MAIN__
+#6  0x5b1d0b18f5ad in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module distance_to_closest_occurrence
+implicit none
+contains
+
+function distance_to_closest_occurrence(s, c) result(answer)
+! Returns an array of integers where answer[i] is the distance from index i to the closest occurrence of character c in s
+character(len=*), intent(in) :: s
+character, intent(in) :: c
+integer :: answer(len(s))
+integer :: i, j, closest_index
+
+! Initialize answer array with distances from each index to the first occurrence of c in s
+do i = 1, len(s)
+    if (s(i:i) == c) then
+        closest_index = i
+        exit
+    end if
+    answer(i) = i - closest_index
+end do
+
+! Update answer array with distances from each index to the closest occurrence of c in s
+do i = 1, len(s)
+    do j = i + 1, len(s)
+        if (s(j:j) == c) then
+            closest_index = j
+            exit
+        end if
+    end do
+    answer(i) = min(answer(i), j - i)
+end do
+
+end function distance_to_closest_occurrence
+
+end module distance_to_closest_occurrence
+
+program test_distance_to_closest_occurrence
+use distance_to_closest_occurrence
+implicit none
+
+! Examples
+print *, distance_to_closest_occurrence("loveleetcode ", "e ") ! [3,2,1,0,1,0,0,1,2,2,1,0]
+print *, distance_to_closest_occurrence("aaab ", "b ") ! [3,2,1,0]
+
+end program test_distance_to_closest_occurrence
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:39:
+
+    5 | function distance_to_closest_occurrence(s, c) result(answer)
+      |                                       1
+Error: MODULE attribute of ‘distance_to_closest_occurrence’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:33:
+
+    7 | character(len=*), intent(in) :: s
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:26:
+
+    8 | character, intent(in) :: c
+      |                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:22:
+
+    9 | integer :: answer(len(s))
+      |                      1
+Error: Symbol ‘s’ is used before it is typed at (1)
+temp.f95:10:30:
+
+   10 | integer :: i, j, closest_index
+      |                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:16:
+
+   13 | do i = 1, len(s)
+      |                1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:14:12:
+
+   14 |     if (s(i:i) == c) then
+      |            1
+Error: Syntax error in argument list at (1)
+temp.f95:15:25:
+
+   15 |         closest_index = i
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:12:
+
+   16 |         exit
+      |            1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:17:7:
+
+   17 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:18:33:
+
+   18 |     answer(i) = i - closest_index
+      |                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:3:
+
+   19 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:22:16:
+
+   22 | do i = 1, len(s)
+      |                1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:23:24:
+
+   23 |     do j = i + 1, len(s)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:24:16:
+
+   24 |         if (s(j:j) == c) then
+      |                1
+Error: Syntax error in argument list at (1)
+temp.f95:25:29:
+
+   25 |             closest_index = j
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:16:
+
+   26 |             exit
+      |                1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:27:11:
+
+   27 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:7:
+
+   28 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:37:
+
+   29 |     answer(i) = min(answer(i), j - i)
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:30:3:
+
+   30 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:32:3:
+
+   32 | end function distance_to_closest_occurrence
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:37:5:
+
+   37 | use distance_to_closest_occurrence
+      |     1
+Fatal Error: Cannot open module file ‘distance_to_closest_occurrence.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from typing import List
+
+def hitBricks(grid: List[List[int]], hits: List[List[int]]) -&gt; List[int]:
+    def dfs(x, y):
+        if not (0 &lt;= x &lt; m) or not (0 &lt;= y &lt; n) or grid[x][y] &lt;= 0:
+            return 0
+        grid[x][y] = -1
+        return 1 + sum(dfs(x + dx, y + dy) for dx, dy in directions)
+
+    m, n = len(grid), len(grid[0])
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+    for x, y in hits:
+        grid[x][y] -= 1
+
+    for j in range(n):
+        if grid[0][j] == 1:
+            dfs(0, j)
+
+    result = []
+    for x, y in hits:
+        grid[x][y] += 1
+        if grid[x][y] != 1:
+            result.append(0)
+            continue
+        for dx, dy in directions:
+            if dfs(x + dx, y + dy) != 0:
+                result.append(dfs(x, y) - 1)
+                break
+        else:
+            result.append(0)
+
+    return result
+</code></pre>
+<p>First, we subtract the presence of bricks in the grid according to the <code>hits</code>. Then, we use Depth-First Search (DFS) to determine if a brick can be reached from the top row of the grid. </p>
+<p>For every hit position, if there is a brick there, we check if any adjacent bricks are also stable. If any adjacent bricks are stable, we count the total number of bricks that become unstable starting from the hit position by calling the DFS function on its current cell. Finally, we restore the brick in the current hit position and add the number of fallen bricks to the result array.</p>
+<p>Note that we subtract and add the presence of bricks in the grid differently in each language. In C++ and Java, we use <code>grid[hit[0]][hit[1]]--</code> and <code>grid[hit[0]][hit[1]]++</code>. In Python, we use <code>grid[x][y] -= 1</code> and <code>grid[x][y] += 1</code>. In JavaScript, we use <code>grid[x][y]--</code> and <code>grid[x][y]++</code>. The rest of the implementation remains the same across all languages.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+
+std::vector&lt;int&gt; hitBricks(std::vector&lt;std::vector&lt;int&gt;&gt;&amp; grid, std::vector&lt;std::vector&lt;int&gt;&gt;&amp; hits) {
+    const int m = grid.size(), n = grid[0].size();
+    std::vector&lt;int&gt; result;
+    std::vector&lt;std::vector&lt;int&gt;&gt; directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+    for (const auto&amp; hit : hits) {
+        grid[hit[0]][hit[1]]--;
+    }
+
+    function&lt;int(int, int)&gt; dfs = [&amp;](int x, int y) {
+        if (x &lt; 0 || x &gt;= m || y &lt; 0 || y &gt;= n || grid[x][y] &lt;= 0) {
+            return 0;
+        }
+        grid[x][y] = -1;
+        int sum = 1;
+        for (const auto&amp; d : directions) {
+            sum += dfs(x + d[0], y + d[1]);
+        }
+        return sum;
+    };
+
+    for (int i = 0; i &lt; n; ++i) {
+        if (grid[0][i] == 1) {
+            dfs(0, i);
+        }
+    }
+
+    for (const auto&amp; hit : hits) {
+        grid[hit[0]][hit[1]]++;
+        if (grid[hit[0]][hit[1]] != 1) {
+            result.push_back(0);
+            continue;
+        }
+        for (const auto&amp; d : directions) {
+            if (dfs(hit[0] + d[0], hit[1] + d[1])) {
+                result.push_back(dfs(hit[0], hit[1]) - 1);
+                break;
+            }
+        }
+    }
+
+    return result;
+}
+</code></pre>
+<p>First, we subtract the presence of bricks in the grid according to the <code>hits</code>. Then, we use Depth-First Search (DFS) to determine if a brick can be reached from the top row of the grid. </p>
+<p>For every hit position, if there is a brick there, we check if any adjacent bricks are also stable. If any adjacent bricks are stable, we count the total number of bricks that become unstable starting from the hit position by calling the DFS function on its current cell. Finally, we restore the brick in the current hit position and add the number of fallen bricks to the result array.</p>
+<p>Note that we subtract and add the presence of bricks in the grid differently in each language. In C++ and Java, we use <code>grid[hit[0]][hit[1]]--</code> and <code>grid[hit[0]][hit[1]]++</code>. In Python, we use <code>grid[x][y] -= 1</code> and <code>grid[x][y] += 1</code>. In JavaScript, we use <code>grid[x][y]--</code> and <code>grid[x][y]++</code>. The rest of the implementation remains the same across all languages.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>First Letter to Appear Twice</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2347/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2357/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string <code>s</code> consisting of lowercase English letters, return <em>the first letter to appear <strong>twice</strong></em>.</p>
+<p><strong>Note</strong>:</p>
+<ul>
+<li>A letter <code>a</code> appears twice before another letter <code>b</code> if the <strong>second</strong> occurrence of <code>a</code> is before the <strong>second</strong> occurrence of <code>b</code>.</li>
+<li><code>s</code> will contain at least one letter that appears twice.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "abccbaacz "
+<strong>Output:</strong>  "c "
+<strong>Explanation:</strong>
+The letter 'a' appears on the indexes 0, 5 and 6.
+The letter 'b' appears on the indexes 1 and 4.
+The letter 'c' appears on the indexes 2, 3 and 7.
+The letter 'z' appears on the index 8.
+The letter 'c' is the first letter to appear twice, because out of all the letters the index of its second occurrence is the smallest.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "abcdd "
+<strong>Output:</strong>  "d "
+<strong>Explanation:</strong>
+The only letter that appears twice is 'd' so we return 'd'.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= s.length &lt;= 100</code></li>
+<li><code>s</code> consists of lowercase English letters.</li>
+<li><code>s</code> has at least one repeated letter.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/first-letter-to-appear-twice/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=100) :: s
+    integer :: i, j, n
+    logical :: found
+
+    ! read input
+    read(*,*) s
+
+    ! find first repeated letter
+    do i = 1, len_trim(s)-1
+        found = .false.
+        do j = i+1, len_trim(s)
+            if (s(i:i) == s(j:j)) then
+                found = .true.
+                exit
+            end if
+        end do
+        if (found) then
+            write(*,'(A)') s(i:i)
+            exit
+        end if
+    end do
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 9 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x79f2d323f960 in ???
+#1  0x79f2d32404d9 in ???
+#2  0x79f2d349417b in ???
+#3  0x79f2d348d684 in ???
+#4  0x79f2d348e2aa in ???
+#5  0x5c1df4d2321c in MAIN__
+#6  0x5c1df4d2339f in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module first_repeated_letter
+
+implicit none
+
+contains
+
+function first_repeated_letter(s) result(first_letter)
+
+character(len=*), intent(in) :: s
+character :: first_letter
+
+integer :: i, j
+
+do i = 1, len(s) - 1
+
+    do j = i + 1, len(s)
+
+        if (s(i:i) == s(j:j)) then
+
+            first_letter = s(i:i)
+            return
+
+        end if
+
+    end do
+
+end do
+
+end function first_repeated_letter
+
+end module first_repeated_letter
+
+program main
+
+use first_repeated_letter
+
+implicit none
+
+character(len=100) :: s
+character :: first_letter
+
+s = "abccbaacz "
+
+first_letter = first_repeated_letter(s)
+
+write (*,*) "First repeated letter in '", s, "' is '", first_letter, "'."
+
+s = "abcdd "
+
+first_letter = first_repeated_letter(s)
+
+write (*,*) "First repeated letter in '", s, "' is '", first_letter, "'."
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:30:
+
+    7 | function first_repeated_letter(s) result(first_letter)
+      |                              1
+Error: MODULE attribute of ‘first_repeated_letter’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:33:
+
+    9 | character(len=*), intent(in) :: s
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:25:
+
+   10 | character :: first_letter
+      |                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:15:
+
+   12 | integer :: i, j
+      |               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:20:
+
+   14 | do i = 1, len(s) - 1
+      |                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:16:24:
+
+   16 |     do j = i + 1, len(s)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:18:16:
+
+   18 |         if (s(i:i) == s(j:j)) then
+      |                1
+Error: Syntax error in argument list at (1)
+temp.f95:20:31:
+
+   20 |             first_letter = s(i:i)
+      |                               1
+Error: Syntax error in argument list at (1)
+temp.f95:21:18:
+
+   21 |             return
+      |                  1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:23:11:
+
+   23 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:7:
+
+   25 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:27:3:
+
+   27 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:3:
+
+   29 | end function first_repeated_letter
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:35:5:
+
+   35 | use first_repeated_letter
+      |     1
+Fatal Error: Cannot open module file ‘first_repeated_letter.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def first_letter_to_appear_twice(s: str) -&gt; str:
+    occurrences = [0] * 26
+    for c in s:
+        occurrences[ord(c) - ord('a')] += 1
+        if occurrences[ord(c) - ord('a')] == 2:
+            return c
+    return '?'
+</code></pre>
+<p>The solution in each programming language follows the same algorithm. First, we create an array to store the occurrences of each lowercase English letter. Then, we iterate through the given string, incrementing the count of the current character in the occurrences array. If an element in the occurrences array reaches 2, that means we've found a letter that appears twice, so we return that letter.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">char firstLetterToAppearTwice(std::string s) {
+    std::array&lt;int, 26&gt; occurrences;
+    occurrences.fill(0);
+    for (char c : s) {
+        occurrences[c - 'a']++;
+        if (occurrences[c - 'a'] == 2) {
+            return c;
+        }
+    }
+    return '?';
+}
+</code></pre>
+<p>The solution in each programming language follows the same algorithm. First, we create an array to store the occurrences of each lowercase English letter. Then, we iterate through the given string, incrementing the count of the current character in the occurrences array. If an element in the occurrences array reaches 2, that means we've found a letter that appears twice, so we return that letter.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

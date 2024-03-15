@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Valid Word Abbreviation</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/405/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/409/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A string can be <strong>abbreviated</strong> by replacing any number of <strong>non-adjacent</strong>, <strong>non-empty</strong> substrings with their lengths. The lengths <strong>should not</strong> have leading zeros.</p>
+<p>For example, a string such as <code>"substitution "</code> could be abbreviated as (but not limited to):</p>
+<ul>
+<li><code>"s10n "</code> ( <code>"s ubstitutio n "</code>)</li>
+<li><code>"sub4u4 "</code> ( <code>"sub stit u tion "</code>)</li>
+<li><code>"12 "</code> ( <code>"substitution "</code>)</li>
+<li><code>"su3i1u2on "</code> ( <code>"su bst i t u ti on "</code>)</li>
+<li><code>"substitution "</code> (no substrings replaced)</li>
+</ul>
+<p>The following are <strong>not valid</strong> abbreviations:</p>
+<ul>
+<li><code>"s55n "</code> ( <code>"s ubsti tutio n "</code>, the replaced substrings are adjacent)</li>
+<li><code>"s010n "</code> (has leading zeros)</li>
+<li><code>"s0ubstitution "</code> (replaces an empty substring)</li>
+</ul>
+<p>Given a string <code>word</code> and an abbreviation <code>abbr</code>, return <em>whether the string <strong>matches</strong> the given abbreviation</em>.</p>
+<p>A <strong>substring</strong> is a contiguous <strong>non-empty</strong> sequence of characters within a string.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> word =  "internationalization ", abbr =  "i12iz4n "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The word  "internationalization " can be abbreviated as  "i12iz4n " ( "i nternational iz atio n ").</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> word =  "apple ", abbr =  "a2e "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The word  "apple " cannot be abbreviated as  "a2e ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= word.length &lt;= 20</code></li>
+<li><code>word</code> consists of only lowercase English letters.</li>
+<li><code>1 &lt;= abbr.length &lt;= 10</code></li>
+<li><code>abbr</code> consists of lowercase English letters and digits.</li>
+<li>All the integers in <code>abbr</code> will fit in a 32-bit integer.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/valid-word-abbreviation/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=*), parameter :: word = "substitution "
+    character(len=*), parameter :: abbr = "s10n "
+    logical :: matches
+
+    write(*,*) 'word: ', trim(word)
+    write(*,*) 'abbr: ', trim(abbr)
+    write(*,*) 'matches: ', matches(word, abbr)
+
+contains
+
+    function matches(str, abbr) result(res)
+        implicit none
+        character(len=*), intent(in) :: str, abbr
+        logical :: res
+        integer :: i, j, k, l
+
+        res = .false.
+        i = 1
+        do while (i <= len_trim(str))
+            j = index(str(i:), ' ')
+            if (j == 0) then
+                exit
+            end if
+            k = index(abbr, ' ')
+            if (k /= 0) then
+                ! there is a space in the abbreviation
+                if (j > k) then
+                    ! the substring before the space in the abbreviation is longer than the actual substring
+                    exit
+                else
+                    ! the substring before the space in the abbreviation is shorter or equal to the actual substring
+                    i = i + j - 1
+                    cycle
+                end if
+            else
+                ! no space in the abbreviation
+                if (j > len_trim(abbr)) then
+                    ! the actual substring is longer than the abbreviation
+                    exit
+                else
+                    ! the actual substring is shorter or equal to the abbreviation
+                    i = i + j - 1
+                    cycle
+                end if
+            end if
+            l = len_trim(str(i:i+j-1))
+            if (l > 0) then
+                ! the actual substring is not empty
+                if (index(abbr, l) == 0) then
+                    ! the length of the actual substring is not found in the abbreviation
+                    exit
+                else
+                    ! the length of the actual substring is found in the abbreviation
+                    i = i + j
+                    cycle
+                end if
+            else
+                ! the actual substring is empty
+                exit
+            end if
+        end do
+        if (i == len_trim(str)+1) then
+            ! we reached the end of the string without finding a mismatch
+            res = .true.
+        end if
+    end function matches
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:14:21:
+
+   14 |     function matches(str, abbr) result(res)
+      |                     1
+Error: Procedure ‘matches’ at (1) has an explicit interface from a previous declaration
+temp.f95:15:21:
+
+   15 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:16:49:
+
+   16 |         character(len=*), intent(in) :: str, abbr
+      |                                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:17:22:
+
+   17 |         logical :: res
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:18:29:
+
+   18 |         integer :: i, j, k, l
+      |                             1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:20:21:
+
+   20 |         res = .false.
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:21:13:
+
+   21 |         i = 1
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:37:
+
+   22 |         do while (i <= len_trim(str))
+      |                                     1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:23:28:
+
+   23 |             j = index(str(i:), ' ')
+      |                            1
+Error: Syntax error in argument list at (1)
+temp.f95:24:28:
+
+   24 |             if (j == 0) then
+      |                            1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:25:20:
+
+   25 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:26:15:
+
+   26 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:27:32:
+
+   27 |             k = index(abbr, ' ')
+      |                                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:28:28:
+
+   28 |             if (k /= 0) then
+      |                            1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:30:31:
+
+   30 |                 if (j > k) then
+      |                               1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:32:24:
+
+   32 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:33:20:
+
+   33 |                 else
+      |                    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:35:33:
+
+   35 |                     i = i + j - 1
+      |                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:36:25:
+
+   36 |                     cycle
+      |                         1
+Error: CYCLE statement at (1) is not within a construct
+temp.f95:37:19:
+
+   37 |                 end if
+      |                   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:38:16:
+
+   38 |             else
+      |                1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:40:44:
+
+   40 |                 if (j > len_trim(abbr)) then
+      |                                            1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:42:24:
+
+   42 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:43:20:
+
+   43 |                 else
+      |                    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:45:33:
+
+   45 |                     i = i + j - 1
+      |                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:46:25:
+
+   46 |                     cycle
+      |                         1
+Error: CYCLE statement at (1) is not within a construct
+temp.f95:47:19:
+
+   47 |                 end if
+      |                   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:48:15:
+
+   48 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:49:31:
+
+   49 |             l = len_trim(str(i:i+j-1))
+      |                               1
+Error: Syntax error in argument list at (1)
+temp.f95:50:27:
+
+   50 |             if (l > 0) then
+      |                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:52:45:
+
+   52 |                 if (index(abbr, l) == 0) then
+      |                                             1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:54:24:
+
+   54 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:55:20:
+
+   55 |                 else
+      |                    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:57:29:
+
+   57 |                     i = i + j
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:58:25:
+
+   58 |                     cycle
+      |                         1
+Error: CYCLE statement at (1) is not within a construct
+temp.f95:59:19:
+
+   59 |                 end if
+      |                   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:60:16:
+
+   60 |             else
+      |                1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:62:20:
+
+   62 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:63:15:
+
+   63 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:64:11:
+
+   64 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:65:38:
+
+   65 |         if (i == len_trim(str)+1) then
+      |                                      1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:67:24:
+
+   67 |             res = .true.
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:68:11:
+
+   68 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:69:7:
+
+   69 |     end function matches
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+      implicit none
+
+      integer :: i, j, k, l
+      character(len=20) :: word, abbr
+      logical :: match
+
+      ! test case 1
+      word = "internationalization "
+      abbr = "i12iz4n "
+      match = match_abbr(word, abbr)
+      if (match) then
+        print *, "Test case 1: PASS"
+      else
+        print *, "Test case 1: FAIL"
+      end if
+
+      ! test case 2
+      word = "apple "
+      abbr = "a2e "
+      match = match_abbr(word, abbr)
+      if (.not. match) then
+        print *, "Test case 2: PASS"
+      else
+        print *, "Test case 2: FAIL"
+      end if
+
+      ! test case 3
+      word = "substitution "
+      abbr = "s10n "
+      match = match_abbr(word, abbr)
+      if (match) then
+        print *, "Test case 3: PASS"
+      else
+        print *, "Test case 3: FAIL"
+      end if
+
+      ! test case 4
+      word = "substitution "
+      abbr = "sub4u4 "
+      match = match_abbr(word, abbr)
+      if (match) then
+        print *, "Test case 4: PASS"
+      else
+        print *, "Test case 4: FAIL"
+      end if
+
+      ! test case 5
+      word = "substitution "
+      abbr = "12 "
+      match = match_abbr(word, abbr)
+      if (match) then
+        print *, "Test case 5: PASS"
+      else
+        print *, "Test case 5: FAIL"
+      end if
+
+      ! test case 6
+      word = "substitution "
+      abbr = "su3i1u2on "
+      match = match_abbr(word, abbr)
+      if (match) then
+        print *, "Test case 6: PASS"
+      else
+        print *, "Test case 6: FAIL"
+      end if
+
+      ! test case 7
+      word = "substitution "
+      abbr = "substitution "
+      match = match_abbr(word, abbr)
+      if (match) then
+        print *, "Test case 7: PASS"
+      else
+        print *, "Test case 7: FAIL"
+      end if
+
+      ! test case 8
+      word = "substitution "
+      abbr = "s55n "
+      match = match_abbr(word, abbr)
+      if (match) then
+        print *, "Test case 8: PASS"
+      else
+        print *, "Test case 8: FAIL"
+      end if
+
+      ! test case 9
+      word = "substitution "
+      abbr = "s010n "
+      match = match_abbr(word, abbr)
+      if (match) then
+        print *, "Test case 9: PASS"
+      else
+        print *, "Test case 9: FAIL"
+      end if
+
+      ! test case 10
+      word = "substitution "
+      abbr = "s0ubstitution "
+      match = match_abbr(word, abbr)
+      if (match) then
+        print *, "Test case 10: PASS"
+      else
+        print *, "Test case 10: FAIL"
+      end if
+
+      contains
+
+      function match_abbr(word, abbr) result(match)
+      implicit none
+      character(len=*), intent(in) :: word, abbr
+      logical :: match
+      integer :: i, j, k, l
+
+      match = .false.
+      i = 1
+      j = 1
+      k = 1
+      l = 1
+      do while (i <= len(word) .and. j <= len(abbr))
+        if (abbr(j:j) == '0') then
+          j = j + 1
+          cycle
+        end if
+        if (
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:126:12:
+
+  126 |         if (
+      |            1
+Error: Invalid character in name at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def validWordAbbreviation(word, abbr):
+    i, j = 0, 0
+    while i &lt; len(word) and j &lt; len(abbr):
+        if abbr[j].isdigit():
+            if abbr[j] == '0': return False  # leading zero
+            num = 0
+            while j &lt; len(abbr) and abbr[j].isdigit():
+                num = num * 10 + int(abbr[j])
+                j += 1
+            i += num
+        else:
+            if word[i] != abbr[j]: return False
+            i, j = i + 1, j + 1
+    return i == len(word) and j == len(abbr)
+</code></pre>
+<p>The algorithm uses two pointers, i and j, to compare the characters in the word and the abbr. If the current character in abbr is a digit, we check if it's a leading zero and return false if so. Then, we sum all the consecutive digits to calculate the number and update i accordingly. If the current character is a letter, we compare the characters in word and abbr and return false if they're not equal. Finally, we check if we've reached the end of both the word and the abbr and return true if so.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool validWordAbbreviation(string word, string abbr) {
+    int i = 0, j = 0;
+    while (i &lt; word.size() &amp;&amp; j &lt; abbr.size()) {
+        if (isdigit(abbr[j])) {
+            if (abbr[j] == '0') return false; // leading zero
+            int num = 0;
+            while (j &lt; abbr.size() &amp;&amp; isdigit(abbr[j]))
+                num = num * 10 + (abbr[j++] - '0');
+            i += num;
+        } else {
+            if (word[i++] != abbr[j++]) return false;
+        }
+    }
+    return i == word.size() &amp;&amp; j == abbr.size();
+}
+</code></pre>
+<p>The algorithm uses two pointers, i and j, to compare the characters in the word and the abbr. If the current character in abbr is a digit, we check if it's a leading zero and return false if so. Then, we sum all the consecutive digits to calculate the number and update i accordingly. If the current character is a letter, we compare the characters in word and abbr and return false if they're not equal. Finally, we check if we've reached the end of both the word and the abbr and return true if so.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

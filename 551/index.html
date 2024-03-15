@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Student Attendance Record I</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/543/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/557/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>s</code> representing an attendance record for a student where each character signifies whether the student was absent, late, or present on that day. The record only contains the following three characters:</p>
+<ul>
+<li><code>'A'</code>: Absent.</li>
+<li><code>'L'</code>: Late.</li>
+<li><code>'P'</code>: Present.</li>
+</ul>
+<p>The student is eligible for an attendance award if they meet <strong>both</strong> of the following criteria:</p>
+<ul>
+<li>The student was absent (<code>'A'</code>) for <strong>strictly</strong> fewer than 2 days <strong>total</strong>.</li>
+<li>The student was <strong>never</strong> late (<code>'L'</code>) for 3 or more <strong>consecutive</strong> days.</li>
+</ul>
+<p>Return <code>true</code> <em>if the student is eligible for an attendance award, or</em> <code>false</code> <em>otherwise</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "PPALLP "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The student has fewer than 2 absences and was never late 3 or more consecutive days.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "PPALLL "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The student was late 3 consecutive days in the last 3 days, so is not eligible for the award.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 1000</code></li>
+<li><code>s[i]</code> is either <code>'A'</code>, <code>'L'</code>, or <code>'P'</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/student-attendance-record-i/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=1000) :: s
+    logical :: result
+
+    ! Example 1
+    s = "PPALLP "
+    write(*,*) solve(s), "Expected: True"
+
+    ! Example 2
+    s = "PPALLL "
+    write(*,*) solve(s), "Expected: False"
+
+contains
+
+    function solve(s) result(result)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer :: i, j, k, n_absent, n_late
+        logical :: is_eligible
+
+        n_absent = 0
+        n_late = 0
+        is_eligible = .false.
+
+        do i = 1, len(s) - 2
+            if (s(i:i+2) == 'AA') then
+                n_absent = n_absent + 1
+            end if
+            if (s(i:i+2) == 'LLL') then
+                n_late = n_late + 1
+            end if
+            if (n_absent < 2 .and. n_late == 0) then
+                is_eligible = .true.
+            else if (n_absent >= 2 .or. n_late >= 3) then
+                exit
+            end if
+        end do
+
+        result = is_eligible
+    end function solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:17:36:
+
+   17 |     function solve(s) result(result)
+      |                                    1
+Error: Function result ‘result’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: i, j, k, n, m, count_absences, count_consecutive_late
+character(len=1000) :: s
+
+! Read input
+read(*,*) s
+
+! Initialize variables
+n = len(s)
+m = 0
+count_absences = 0
+count_consecutive_late = 0
+
+! Loop through the string
+do i = 1, n
+    if (s(i:i) == 'A') then
+        count_absences = count_absences + 1
+    else if (s(i:i) == 'L') then
+        count_consecutive_late = count_consecutive_late + 1
+    else
+        count_consecutive_late = 0
+    end if
+
+    ! Check if the student is eligible for the award
+    if (count_absences < 2 .and. count_consecutive_late == 0) then
+        write(*,*) "true"
+        return
+    end if
+end do
+
+! If the student is not eligible for the award, print "false"
+write(*,*) "false"
+
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 6 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7d86f5ad9960 in ???
+#1  0x7d86f5ada4d9 in ???
+#2  0x7d86f5d2e17b in ???
+#3  0x7d86f5d27684 in ???
+#4  0x7d86f5d282aa in ???
+#5  0x5a4a691d120c in MAIN__
+#6  0x5a4a691d13bc in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def checkRecord(s: str) -&gt; bool:
+    late, absent = 0, 0
+    for c in s:
+        if c == 'A':
+            absent += 1
+            late = 0
+        elif c == 'L':
+            late += 1
+        else:
+            late = 0
+
+        if absent &gt;= 2 or late &gt;= 3:
+            return False
+    return True
+</code></pre>
+<p>The algorithm initializes variables <code>late</code> and <code>absent</code> as counters for late and absent days, respectively. 
+1. Iterate through each character of the string <code>s</code>.
+2. If the current character is 'A', increment the <code>absent</code> counter and set <code>late</code> counter to zero.
+3. If the current character is 'L', increment the <code>late</code> counter.
+4. If the current character is 'P', set the <code>late</code> counter to zero.
+5. After processing each character, check if <code>absent</code> is greater or equal to 2, or if <code>late</code> is greater or equal to 3. If either condition is met, return false (ineligible for an attendance award).
+6. If the entire string has been processed without meeting the conditions, return true (eligible for an attendance award).</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+
+bool checkRecord(std::string s) {
+    int late = 0, absent = 0;
+    for (int i = 0; i &lt; s.length(); i++) {
+        if (s[i] == 'A') {
+            absent++;
+            late = 0;
+        } else if (s[i] == 'L') {
+            late++;
+        } else {
+            late = 0;
+        }
+
+        if (absent &gt;= 2 || late &gt;= 3) return false;
+    }
+    return true;
+}
+</code></pre>
+<p>The algorithm initializes variables <code>late</code> and <code>absent</code> as counters for late and absent days, respectively. 
+1. Iterate through each character of the string <code>s</code>.
+2. If the current character is 'A', increment the <code>absent</code> counter and set <code>late</code> counter to zero.
+3. If the current character is 'L', increment the <code>late</code> counter.
+4. If the current character is 'P', set the <code>late</code> counter to zero.
+5. After processing each character, check if <code>absent</code> is greater or equal to 2, or if <code>late</code> is greater or equal to 3. If either condition is met, return false (ineligible for an attendance award).
+6. If the entire string has been processed without meeting the conditions, return true (eligible for an attendance award).</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

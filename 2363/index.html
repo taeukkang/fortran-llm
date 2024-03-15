@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Merge Similar Items</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2357/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2367/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given two 2D integer arrays, <code>items1</code> and <code>items2</code>, representing two sets of items. Each array <code>items</code> has the following properties:</p>
+<ul>
+<li><code>items[i] = [valuei, weighti]</code> where <code>valuei</code> represents the <strong>value</strong> and <code>weighti</code> represents the <strong>weight</strong> of the <code>ith</code> item.</li>
+<li>The value of each item in <code>items</code> is <strong>unique</strong>.</li>
+</ul>
+<p>Return <em>a 2D integer array</em> <code>ret</code> <em>where</em> <code>ret[i] = [valuei, weighti]</code><em>,</em> <em>with</em> <code>weighti</code> <em>being the <strong>sum of weights</strong> of all items with value</em> <code>valuei</code>.</p>
+<p><strong>Note:</strong> <code>ret</code> should be returned in <strong>ascending</strong> order by value.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> items1 = [[1,1],[4,5],[3,8]], items2 = [[3,1],[1,5]]
+<strong>Output:</strong> [[1,6],[3,9],[4,5]]
+<strong>Explanation:</strong> 
+The item with value = 1 occurs in items1 with weight = 1 and in items2 with weight = 5, total weight = 1 + 5 = 6.
+The item with value = 3 occurs in items1 with weight = 8 and in items2 with weight = 1, total weight = 8 + 1 = 9.
+The item with value = 4 occurs in items1 with weight = 5, total weight = 5.<br />
+Therefore, we return [[1,6],[3,9],[4,5]].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> items1 = [[1,1],[3,2],[2,3]], items2 = [[2,1],[3,2],[1,3]]
+<strong>Output:</strong> [[1,4],[2,4],[3,4]]
+<strong>Explanation:</strong> 
+The item with value = 1 occurs in items1 with weight = 1 and in items2 with weight = 3, total weight = 1 + 3 = 4.
+The item with value = 2 occurs in items1 with weight = 3 and in items2 with weight = 1, total weight = 3 + 1 = 4.
+The item with value = 3 occurs in items1 with weight = 2 and in items2 with weight = 2, total weight = 2 + 2 = 4.
+Therefore, we return [[1,4],[2,4],[3,4]].</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> items1 = [[1,3],[2,2]], items2 = [[7,1],[2,2],[1,4]]
+<strong>Output:</strong> [[1,7],[2,4],[7,1]]
+<strong>Explanation:</strong>
+The item with value = 1 occurs in items1 with weight = 3 and in items2 with weight = 4, total weight = 3 + 4 = 7. 
+The item with value = 2 occurs in items1 with weight = 2 and in items2 with weight = 2, total weight = 2 + 2 = 4. 
+The item with value = 7 occurs in items2 with weight = 1, total weight = 1.
+Therefore, we return [[1,7],[2,4],[7,1]].</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= items1.length, items2.length &lt;= 1000</code></li>
+<li><code>items1[i].length == items2[i].length == 2</code></li>
+<li><code>1 &lt;= valuei, weighti &lt;= 1000</code></li>
+<li>Each <code>valuei</code> in <code>items1</code> is <strong>unique</strong>.</li>
+<li>Each <code>valuei</code> in <code>items2</code> is <strong>unique</strong>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/merge-similar-items/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: n = 3
+    integer, dimension(n, 2) :: items1 = reshape([1,1,4,5,3,8],[n,2])
+    integer, dimension(n, 2) :: items2 = reshape([3,1,1,5],[n,2])
+    integer, dimension(:, :), allocatable :: ret
+
+    allocate(ret(n, 2))
+
+    call solve(items1, items2, ret)
+
+    write (unit=error_unit, fmt='(*(I0, 1X))') ret
+
+contains
+
+    subroutine solve(items1, items2, ret)
+        implicit none
+        integer, intent(in) :: items1(:, :)
+        integer, intent(in) :: items2(:, :)
+        integer, intent(out) :: ret(:, :)
+        integer :: i, j, k
+        integer :: sum_weights
+
+        do i = 1, size(items1, 1)
+            do j = 1, size(items2, 1)
+                if (items1(i, 1) == items2(j, 1)) then
+                    sum_weights = items1(i, 2) + items2(j, 2)
+                    do k = 1, size(ret, 1)
+                        if (ret(k, 1) == items1(i, 1)) then
+                            ret(k, 2) = sum_weights
+                            exit
+                        end if
+                    end do
+                end if
+            end do
+        end do
+
+        ! sort ret by value
+        call sort(ret, 1)
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:49:
+
+    6 |     integer, dimension(n, 2) :: items2 = reshape([3,1,1,5],[n,2])
+      |                                                 1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+temp.f95:11:29:
+
+   11 |     call solve(items1, items2, ret)
+      |                             1
+Error: Symbol ‘items2’ at (1) has no IMPLICIT type; did you mean ‘items1’?
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module main
+
+implicit none
+
+integer, parameter :: dp = selected_real_kind(15, 307)
+
+integer, intent(in) :: items1(:, :)
+integer, intent(in) :: items2(:, :)
+integer :: ret(size(items1, 1), 2)
+
+integer :: i, j, k, l, m
+integer :: value, weight
+
+! Initialize the ret array with the values and weights of items1
+do i = 1, size(items1, 1)
+    ret(i, 1) = items1(i, 1)
+    ret(i, 2) = items1(i, 2)
+end do
+
+! Sort the ret array in ascending order by value
+call sort(ret, 1, size(ret, 1), 2, order='ascending')
+
+! Loop through items2 and add the weights of items with the same value as in items1
+do i = 1, size(items2, 1)
+    value = items2(i, 1)
+    weight = items2(i, 2)
+
+    ! Find the index of the first item with the same value as in items2
+    do j = 1, size(ret, 1)
+        if (ret(j, 1) == value) exit
+    end do
+
+    ! Add the weight of items with the same value as in items2
+    do k = j, size(ret, 1)
+        if (ret(k, 1) /= value) exit
+        ret(k, 2) = ret(k, 2) + weight
+    end do
+end do
+
+! Print the result
+do i = 1, size(ret, 1)
+    write (*, '(i5, x, i5)') ret(i, 1), ret(i, 2)
+end do
+
+contains
+
+subroutine sort(array, low, high, dim, order)
+implicit none
+
+integer, intent(inout) :: array(:, :)
+integer, intent(in) :: low, high, dim
+character(len=*), intent(in) :: order
+
+integer :: i, j, temp
+
+if (low < high) then
+    ! Partition the array
+    i = low - 1
+    j = high + 1
+    do
+        do while (array(low, dim) < array(j, dim))
+            j = j - 1
+        end do
+        do while (array(i, dim) > array(low, dim))
+            i = i + 1
+        end do
+        if (i < j) then
+            do l = 1, dim - 1
+                temp = array(i, l)
+                array(i, l) = array(j, l)
+                array(j, l) = temp
+            end do
+            do l = 1, 2
+                temp = array(i, l)
+                array(i, l) = array(j, l)
+                array(j, l) = temp
+            end do
+            i = i + 1
+            j = j - 1
+        else
+            exit
+        end if
+    end do
+
+    ! Recursively sort the partitions
+    call sort(array, low, j, dim, order)
+    call sort(array, i, high, dim, order)
+end if
+
+end subroutine sort
+
+end module main
+
+program test
+use main
+implicit none
+
+integer, parameter :: items1(3, 2) = reshape([1, 1, 4, 5, 3, 8], shape(items1))
+integer, parameter :: items2(2, 2) = reshape([3, 1, 1, 5], shape(items2))
+
+integer :: ret(size(items1, 1), 2)
+
+call solve(items1, items2, ret)
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:34:
+
+    9 | integer :: ret(size(items1, 1), 2)
+      |                                  1
+Error: Explicit shaped array with nonconstant bounds at (1)
+temp.f95:15:25:
+
+   15 | do i = 1, size(items1, 1)
+      |                         1
+Error: Unexpected DO statement in MODULE at (1)
+temp.f95:16:28:
+
+   16 |     ret(i, 1) = items1(i, 1)
+      |                            1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:17:28:
+
+   17 |     ret(i, 2) = items1(i, 2)
+      |                            1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:18:3:
+
+   18 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:21:53:
+
+   21 | call sort(ret, 1, size(ret, 1), 2, order='ascending')
+      |                                                     1
+Error: Unexpected CALL statement in MODULE at (1)
+temp.f95:24:25:
+
+   24 | do i = 1, size(items2, 1)
+      |                         1
+Error: Unexpected DO statement in MODULE at (1)
+temp.f95:25:24:
+
+   25 |     value = items2(i, 1)
+      |                        1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:26:25:
+
+   26 |     weight = items2(i, 2)
+      |                         1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:29:26:
+
+   29 |     do j = 1, size(ret, 1)
+      |                          1
+Error: Unexpected DO statement in MODULE at (1)
+temp.f95:30:36:
+
+   30 |         if (ret(j, 1) == value) exit
+      |                                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:31:7:
+
+   31 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:26:
+
+   34 |     do k = j, size(ret, 1)
+      |                          1
+Error: Unexpected DO statement in MODULE at (1)
+temp.f95:35:36:
+
+   35 |         if (ret(k, 1) /= value) exit
+      |                                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:36:38:
+
+   36 |         ret(k, 2) = ret(k, 2) + weight
+      |                                      1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:37:7:
+
+   37 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:38:3:
+
+   38 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:41:22:
+
+   41 | do i = 1, size(ret, 1)
+      |                      1
+Error: Unexpected DO statement in MODULE at (1)
+temp.f95:42:49:
+
+   42 |     write (*, '(i5, x, i5)') ret(i, 1), ret(i, 2)
+      |                                                 1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:43:3:
+
+   43 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:7:35:
+
+    7 | integer, intent(in) :: items1(:, :)
+      |                                   1
+Error: Symbol at (1) is not a DUMMY variable
+temp.f95:8:35:
+
+    8 | integer, intent(in) :: items2(:, :)
+      |                                   1
+Error: Symbol at (1) is not a DUMMY variable
+temp.f95:86:40:
+
+   86 |     call sort(array, low, j, dim, order)
+      |                                        1
+Error: SUBROUTINE ‘sort’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:87:41:
+
+   87 |     call sort(array, i, high, dim, order)
+      |                                         1
+Error: SUBROUTINE ‘sort’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:95:5:
+
+   95 | use main
+      |     1
+Fatal Error: Cannot open module file ‘main.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def sum_weights(items1, items2):
+    weight_sums = {}
+    result = []
+
+    for value, weight in items1:
+        weight_sums[value] = weight_sums.get(value, 0) + weight
+    for value, weight in items2:
+        weight_sums[value] = weight_sums.get(value, 0) + weight
+
+    for value, weight in sorted(weight_sums.items()):
+        result.append([value, weight])
+
+    return result
+</code></pre>
+<ol>
+<li>Create a map called <code>weightSums</code> to store the sum of weights for every <code>value</code>. Initialize an empty list <code>result</code> for returning the solution.</li>
+<li>Iterate over the <code>items1</code> and <code>items2</code> arrays. For each <code>[value, weight]</code> pair, add the weight to the <code>weightSums</code> map for that value. If the value is not present in the map, set its value to be equal to the current weight.</li>
+<li>Loop through the sorted <code>weightSums</code> items (by key/values in ascending order), and append each <code>[value, weight]</code> to the <code>result</code> list.</li>
+<li>Return the <code>result</code> list.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;map&gt;
+using namespace std;
+
+vector&lt;vector&lt;int&gt;&gt; sumWeights(vector&lt;vector&lt;int&gt;&gt;&amp; items1, vector&lt;vector&lt;int&gt;&gt;&amp; items2) {
+    map&lt;int, int&gt; weightSums;
+    vector&lt;vector&lt;int&gt;&gt; result;
+
+    for (const auto&amp; item : items1) {
+        weightSums[item[0]] += item[1];
+    }
+    for (const auto&amp; item : items2) {
+        weightSums[item[0]] += item[1];
+    }
+
+    for (const auto&amp; entry : weightSums) {
+        result.push_back({entry.first, entry.second});
+    }
+
+    return result;
+}
+</code></pre>
+<ol>
+<li>Create a map called <code>weightSums</code> to store the sum of weights for every <code>value</code>. Initialize an empty list <code>result</code> for returning the solution.</li>
+<li>Iterate over the <code>items1</code> and <code>items2</code> arrays. For each <code>[value, weight]</code> pair, add the weight to the <code>weightSums</code> map for that value. If the value is not present in the map, set its value to be equal to the current weight.</li>
+<li>Loop through the sorted <code>weightSums</code> items (by key/values in ascending order), and append each <code>[value, weight]</code> to the <code>result</code> list.</li>
+<li>Return the <code>result</code> list.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

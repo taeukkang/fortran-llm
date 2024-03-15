@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Maximum Product of Two Elements in an Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1460/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1469/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the array of integers <code>nums</code>, you will choose two different indices <code>i</code> and <code>j</code> of that array. <em>Return the maximum value of</em> <code>(nums[i]-1)*(nums[j]-1)</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [3,4,5,2]
+<strong>Output:</strong> 12 
+<strong>Explanation:</strong> If you choose the indices i=1 and j=2 (indexed from 0), you will get the maximum value, that is, (nums[1]-1)*(nums[2]-1) = (4-1)*(5-1) = 3*4 = 12. </p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,5,4,5]
+<strong>Output:</strong> 16
+<strong>Explanation:</strong> Choosing the indices i=1 and j=3 (indexed from 0), you will get the maximum value of (5-1)*(5-1) = 16.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [3,7]
+<strong>Output:</strong> 12</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= nums.length &lt;= 500</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 10^3</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/maximum-product-of-two-elements-in-an-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 500
+    integer, dimension(n) :: nums
+    integer :: i, j, max_val
+
+    ! Example 1
+    nums = [3, 4, 5, 2]
+    call solve(nums, i, j, max_val)
+    write (*, '(A, I0, A, I0, A, I0)') &
+        'Example 1: ', nums(i), ' * ', nums(j), ' = ', max_val
+
+    ! Example 2
+    nums = [1, 5, 4, 5]
+    call solve(nums, i, j, max_val)
+    write (*, '(A, I0, A, I0, A, I0)') &
+        'Example 2: ', nums(i), ' * ', nums(j), ' = ', max_val
+
+    ! Example 3
+    nums = [3, 7]
+    call solve(nums, i, j, max_val)
+    write (*, '(A, I0, A, I0, A, I0)') &
+        'Example 3: ', nums(i), ' * ', nums(j), ' = ', max_val
+
+contains
+
+    subroutine solve(nums, i, j, max_val)
+        implicit none
+        integer, dimension(:), intent(in) :: nums
+        integer, intent(out) :: i, j, max_val
+
+        integer :: ii, jj, val
+
+        do ii = 1, size(nums) - 1
+            do jj = ii + 1, size(nums)
+                val = (nums(ii) - 1) * (nums(jj) - 1)
+                if (val > max_val) then
+                    max_val = val
+                    i = ii
+                    j = jj
+                end if
+            end do
+        end do
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:4:
+
+    9 |     nums = [3, 4, 5, 2]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (500 and 4)
+temp.f95:15:4:
+
+   15 |     nums = [1, 5, 4, 5]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (500 and 4)
+temp.f95:21:4:
+
+   21 |     nums = [3, 7]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (500 and 2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module MaxProductOfTwoElements
+    implicit none
+    private
+    public :: max_product
+
+contains
+
+    function max_product(nums) result(max_prod)
+        integer, intent(in) :: nums(:)
+        integer :: max_prod, i, j, prod
+
+        max_prod = 0
+        do i = 1, size(nums) - 1
+            do j = i + 1, size(nums)
+                prod = (nums(i) - 1) * (nums(j) - 1)
+                if (prod > max_prod) then
+                    max_prod = prod
+                end if
+            end do
+        end do
+    end function max_product
+end module MaxProductOfTwoElements
+
+program test_max_product
+    use MaxProductOfTwoElements
+    implicit none
+    integer :: nums(4)
+
+    nums = [3, 4, 5, 2]
+    write (*, '(A, I0)') 'Max product of two elements in nums = ', &
+                         max_product(nums)
+
+    nums = [1, 5, 4, 5]
+    write (*, '(A, I0)') 'Max product of two elements in nums = ', &
+                         max_product(nums)
+
+    nums = [3, 7]
+    write (*, '(A, I0)') 'Max product of two elements in nums = ', &
+                         max_product(nums)
+end program test_max_product
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:37:4:
+
+   37 |     nums = [3, 7]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (4 and 2)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from collections import Counter
+
+def minSetSize(arr):
+    count = Counter(arr)
+    freq = list(count.values())
+    freq.sort(reverse=True)
+
+    removed, setSize = 0, 0
+    for f in freq:
+        removed += f
+        setSize += 1
+        if removed * 2 &gt;= len(arr):
+            return setSize
+
+    return 0
+</code></pre>
+<pre><code>1. Create a map (or dictionary) to store the count of each unique integer in the input array.
+</code></pre>
+<ol>
+<li>Iterate through the input array, incrementing the count for each number in the map.</li>
+<li>Create an array (or list) of the counts in the map, sorted in descending order.</li>
+<li>Initialize variables <code>removed</code> and <code>setSize</code> to zero. <code>removed</code> tracks the number of elements removed so far, and <code>setSize</code> is the size of the set of integers.</li>
+<li>Iterate through the sorted count array, adding the count to the <code>removed</code> variable and incrementing <code>setSize</code>. If the number of <code>removed</code> elements is at least half the size of the input array, return <code>setSize</code>.</li>
+<li>If the loop completes without returning, return 0.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;unordered_map&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int minSetSize(std::vector&lt;int&gt;&amp; arr) {
+    std::unordered_map&lt;int, int&gt; count;
+    for (auto value : arr)
+        count[value]++;
+
+    std::vector&lt;int&gt; freq;
+    for (auto&amp; entry : count)
+        freq.push_back(entry.second);
+
+    std::sort(freq.rbegin(), freq.rend());
+
+    int removed = 0, setSize = 0;
+    for (auto f : freq) {
+        removed += f;
+        setSize++;
+        if (removed * 2 &gt;= arr.size())
+            return setSize;
+    }
+
+    return 0;
+}
+</code></pre>
+<pre><code>1. Create a map (or dictionary) to store the count of each unique integer in the input array.
+</code></pre>
+<ol>
+<li>Iterate through the input array, incrementing the count for each number in the map.</li>
+<li>Create an array (or list) of the counts in the map, sorted in descending order.</li>
+<li>Initialize variables <code>removed</code> and <code>setSize</code> to zero. <code>removed</code> tracks the number of elements removed so far, and <code>setSize</code> is the size of the set of integers.</li>
+<li>Iterate through the sorted count array, adding the count to the <code>removed</code> variable and incrementing <code>setSize</code>. If the number of <code>removed</code> elements is at least half the size of the input array, return <code>setSize</code>.</li>
+<li>If the loop completes without returning, return 0.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

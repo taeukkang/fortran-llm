@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Next Greater Element I</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/495/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/500/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>The <strong>next greater element</strong> of some element <code>x</code> in an array is the <strong>first greater</strong> element that is <strong>to the right</strong> of <code>x</code> in the same array.</p>
+<p>You are given two <strong>distinct 0-indexed</strong> integer arrays <code>nums1</code> and <code>nums2</code>, where <code>nums1</code> is a subset of <code>nums2</code>.</p>
+<p>For each <code>0 &lt;= i &lt; nums1.length</code>, find the index <code>j</code> such that <code>nums1[i] == nums2[j]</code> and determine the <strong>next greater element</strong> of <code>nums2[j]</code> in <code>nums2</code>. If there is no next greater element, then the answer for this query is <code>-1</code>.</p>
+<p>Return <em>an array</em> <code>ans</code> <em>of length</em> <code>nums1.length</code> <em>such that</em> <code>ans[i]</code> <em>is the <strong>next greater element</strong> as described above.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums1 = [4,1,2], nums2 = [1,3,4,2]
+<strong>Output:</strong> [-1,3,-1]
+<strong>Explanation:</strong> The next greater element for each value of nums1 is as follows:
+- 4 is underlined in nums2 = [1,3,4,2]. There is no next greater element, so the answer is -1.
+- 1 is underlined in nums2 = [1,3,4,2]. The next greater element is 3.
+- 2 is underlined in nums2 = [1,3,4,2]. There is no next greater element, so the answer is -1.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums1 = [2,4], nums2 = [1,2,3,4]
+<strong>Output:</strong> [3,-1]
+<strong>Explanation:</strong> The next greater element for each value of nums1 is as follows:
+- 2 is underlined in nums2 = [1,2,3,4]. The next greater element is 3.
+- 4 is underlined in nums2 = [1,2,3,4]. There is no next greater element, so the answer is -1.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums1.length &lt;= nums2.length &lt;= 1000</code></li>
+<li><code>0 &lt;= nums1[i], nums2[i] &lt;= 104</code></li>
+<li>All integers in <code>nums1</code> and <code>nums2</code> are <strong>unique</strong>.</li>
+<li>All the integers of <code>nums1</code> also appear in <code>nums2</code>.</li>
+</ul>
+<p><strong>Follow up:</strong> Could you find an <code>O(nums1.length + nums2.length)</code> solution?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/next-greater-element-i/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 3 ! number of elements in nums1
+    integer, parameter :: m = 4 ! number of elements in nums2
+    integer, dimension(n) :: nums1 = [4, 1, 2] ! subset of nums2
+    integer, dimension(m) :: nums2 = [1, 3, 4, 2]
+    integer, dimension(n) :: ans
+
+    call solve(nums1, nums2, ans)
+
+    write (*, '(A)') 'ans = ', ans
+
+contains
+
+    subroutine solve(nums1, nums2, ans)
+        implicit none
+        integer, intent(in) :: nums1(:), nums2(:)
+        integer, intent(out) :: ans(:)
+        integer :: i, j, k
+
+        do i = 1, size(nums1)
+            j = 1
+            k = 1
+            do while (k <= size(nums2))
+                if (nums1(i) == nums2(k)) then
+                    exit
+                end if
+                k = k + 1
+            end do
+            if (k > size(nums2)) then
+                ans(i) = -1
+            else
+                ans(i) = nums2(k+1)
+            end if
+        end do
+    end subroutine solve
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>ans = 
+   
+   
+    
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module next_greater_element
+implicit none
+contains
+function next_greater_element(nums1, nums2) result(ans)
+integer, intent(in) :: nums1(:), nums2(:)
+integer :: ans(size(nums1))
+! Initialize the answer array with -1
+ans = -1
+! Loop through the elements of nums1
+do i = 1, size(nums1)
+! Find the index of the current element in nums2
+j = index(nums2, nums1(i))
+! If the element is not found, continue to the next iteration
+if (j == 0) cycle
+! If the element is found, check if there is a greater element to the right
+if (j < size(nums2) .and. nums2(j+1) > nums2(j)) then
+! If there is a greater element to the right, set the answer
+ans(i) = nums2(j+1)
+else
+! If there is no greater element to the right, set the answer to -1
+ans(i) = -1
+endif
+enddo
+end function
+end module
+
+program test
+use next_greater_element
+implicit none
+integer, parameter :: nums1(3) = [4, 1, 2]
+integer, parameter :: nums2(4) = [1, 3, 4, 2]
+integer :: ans(size(nums1))
+ans = next_greater_element(nums1, nums2)
+write (*,*) ans
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:29:
+
+    4 | function next_greater_element(nums1, nums2) result(ans)
+      |                             1
+Error: MODULE attribute of ‘next_greater_element’ conflicts with PROCEDURE attribute at (1)
+temp.f95:5:41:
+
+    5 | integer, intent(in) :: nums1(:), nums2(:)
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:6:20:
+
+    6 | integer :: ans(size(nums1))
+      |                    1
+Error: Symbol ‘nums1’ is used before it is typed at (1)
+temp.f95:8:8:
+
+    8 | ans = -1
+      |        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:10:21:
+
+   10 | do i = 1, size(nums1)
+      |                     1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:12:26:
+
+   12 | j = index(nums2, nums1(i))
+      |                          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:14:17:
+
+   14 | if (j == 0) cycle
+      |                 1
+Error: CYCLE statement at (1) is not within a construct
+temp.f95:16:53:
+
+   16 | if (j < size(nums2) .and. nums2(j+1) > nums2(j)) then
+      |                                                     1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:18:19:
+
+   18 | ans(i) = nums2(j+1)
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:4:
+
+   19 | else
+      |    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:21:11:
+
+   21 | ans(i) = -1
+      |           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:3:
+
+   22 | endif
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:3:
+
+   23 | enddo
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:24:3:
+
+   24 | end function
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:5:
+
+   28 | use next_greater_element
+      |     1
+Fatal Error: Cannot open module file ‘next_greater_element.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def next_greater_element(nums1, nums2):
+    next_greater = {}
+    stack = []
+
+    for num in nums2:
+        while stack and stack[-1] &lt; num:
+            next_greater[stack.pop()] = num
+        stack.append(num)
+
+    return [next_greater.get(n, -1) for n in nums1]
+</code></pre>
+<p>The algorithm uses a stack, following these steps:
+1. Initialize an empty stack.
+2. Iterate through nums2 elements:
+   a. While the stack is not empty and the top of the stack is less than the current nums2 element, add the next greater element of the top of the stack as the current nums2 element and pop it.
+   b. Push the current nums2 element into the stack.
+3. For every element in nums1, get the next greater element found in step 2 or -1 if no such element was found.
+4. Return the result array.</p>
+<p>The key point is using the stack to keep track of the previous elements that still need to find their next greater element while iterating nums2 in a single pass. This ensures that the algorithm runs in linear O(n) time complexity.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;stack&gt;
+#include &lt;unordered_map&gt;
+
+std::vector&lt;int&gt; nextGreaterElement(std::vector&lt;int&gt;&amp; nums1, std::vector&lt;int&gt;&amp; nums2) {
+    std::unordered_map&lt;int, int&gt; nextGreater;
+    std::stack&lt;int&gt; stk;
+
+    for (int num : nums2) {
+        while (!stk.empty() &amp;&amp; stk.top() &lt; num) {
+            nextGreater[stk.top()] = num;
+            stk.pop();
+        }
+        stk.push(num);
+    }
+
+    std::vector&lt;int&gt; result(nums1.size());
+    for (size_t i = 0; i &lt; nums1.size(); ++i) {
+        result[i] = nextGreater.count(nums1[i]) ? nextGreater[nums1[i]] : -1;
+    }
+
+    return result;
+}
+</code></pre>
+<p>The algorithm uses a stack, following these steps:
+1. Initialize an empty stack.
+2. Iterate through nums2 elements:
+   a. While the stack is not empty and the top of the stack is less than the current nums2 element, add the next greater element of the top of the stack as the current nums2 element and pop it.
+   b. Push the current nums2 element into the stack.
+3. For every element in nums1, get the next greater element found in step 2 or -1 if no such element was found.
+4. Return the result array.</p>
+<p>The key point is using the stack to keep track of the previous elements that still need to find their next greater element while iterating nums2 in a single pass. This ensures that the algorithm runs in linear O(n) time complexity.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

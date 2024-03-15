@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find Greatest Common Divisor of Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1974/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1984/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code>, return <em>the <strong>greatest common divisor</strong> of the smallest number and largest number in</em> <code>nums</code>.</p>
+<p>The <strong>greatest common divisor</strong> of two numbers is the largest positive integer that evenly divides both numbers.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [2,5,6,9,10]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong>
+The smallest number in nums is 2.
+The largest number in nums is 10.
+The greatest common divisor of 2 and 10 is 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [7,5,6,8,3]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong>
+The smallest number in nums is 3.
+The largest number in nums is 8.
+The greatest common divisor of 3 and 8 is 1.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [3,3]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong>
+The smallest number in nums is 3.
+The largest number in nums is 3.
+The greatest common divisor of 3 and 3 is 3.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= nums.length &lt;= 1000</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-greatest-common-divisor-of-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program gcd_of_smallest_and_largest
+    implicit none
+
+    integer :: i, n, nums(1000), smallest, largest, gcd
+
+    do while (get_line(n) > 0)
+        read (*, *) nums(1:n)
+
+        smallest = minval(nums(1:n))
+        largest = maxval(nums(1:n))
+
+        gcd = gcd_of_two(smallest, largest)
+
+        write (*, '(I0)') gcd
+    end do
+
+contains
+
+    function gcd_of_two(a, b) result(gcd)
+        implicit none
+
+        integer, intent(in) :: a, b
+        integer :: gcd
+
+        if (b == 0) then
+            gcd = a
+        else
+            gcd = gcd_of_two(b, mod(a, b))
+        end if
+    end function gcd_of_two
+
+end program gcd_of_smallest_and_largest</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:28:18:
+
+   28 |             gcd = gcd_of_two(b, mod(a, b))
+      |                  1
+Error: Function ‘gcd_of_two’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:6:14:
+
+    6 |     do while (get_line(n) > 0)
+      |              1
+Error: Function ‘get_line’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module greatest_common_divisor
+    implicit none
+    private
+    public :: gcd
+contains
+    integer function gcd(nums) result(gcd_val)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: smallest, largest
+
+        smallest = minval(nums)
+        largest = maxval(nums)
+
+        gcd_val = gcd_helper(smallest, largest)
+    end function gcd
+
+    integer function gcd_helper(a, b) result(gcd_val)
+        implicit none
+        integer, intent(in) :: a, b
+        integer :: remainder
+
+        if (b == 0) then
+            gcd_val = a
+        else
+            remainder = mod(a, b)
+            gcd_val = gcd_helper(b, remainder)
+        end if
+    end function gcd_helper
+end module greatest_common_divisor
+
+program test_greatest_common_divisor
+    use greatest_common_divisor
+    implicit none
+    integer, parameter :: nums(4) = [2, 5, 6, 9, 10]
+    integer :: gcd_val
+
+    gcd_val = gcd(nums)
+    write (*,*) 'The greatest common divisor of the smallest and largest number in nums is:', gcd_val
+
+    gcd_val = gcd([7, 5, 6, 8, 3])
+    write (*,*) 'The greatest common divisor of the smallest and largest number in nums is:', gcd_val
+
+    gcd_val = gcd([3, 3])
+    write (*,*) 'The greatest common divisor of the smallest and largest number in nums is:', gcd_val
+end program test_greatest_common_divisor
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:26:22:
+
+   26 |             gcd_val = gcd_helper(b, remainder)
+      |                      1
+Error: Function ‘gcd_helper’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:32:9:
+
+   32 |     use greatest_common_divisor
+      |         1
+Fatal Error: Cannot open module file ‘greatest_common_divisor.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def findGCD(nums):
+    min_val, max_val = min(nums), max(nums)
+    while max_val % min_val != 0:
+        min_val, max_val = max_val % min_val, min_val
+    return min_val
+</code></pre>
+<ol>
+<li>First, find the minimum and maximum elements in the <code>nums</code> array.</li>
+<li>Initialize two variables <code>min_val</code> and <code>max_val</code> with the values of the minimum and maximum elements, respectively.</li>
+<li>Calculate the greatest common divisor (GCD) of <code>min_val</code> and <code>max_val</code> using the Euclidean algorithm. Keep performing the modulo operation and swapping them until <code>max_val % min_val</code> is equal to zero.</li>
+<li>Return the <code>min_val</code> as the GCD of the two numbers.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int findGCD(vector&lt;int&gt;&amp; nums) {
+    auto min_max = minmax_element(nums.begin(), nums.end());
+    int min_val = *min_max.first;
+    int max_val = *min_max.second;
+    while(max_val % min_val != 0) {
+        int temp = min_val;
+        min_val = max_val % min_val;
+        max_val = temp;
+    }
+    return min_val;
+}
+</code></pre>
+<ol>
+<li>First, find the minimum and maximum elements in the <code>nums</code> array.</li>
+<li>Initialize two variables <code>min_val</code> and <code>max_val</code> with the values of the minimum and maximum elements, respectively.</li>
+<li>Calculate the greatest common divisor (GCD) of <code>min_val</code> and <code>max_val</code> using the Euclidean algorithm. Keep performing the modulo operation and swapping them until <code>max_val % min_val</code> is equal to zero.</li>
+<li>Return the <code>min_val</code> as the GCD of the two numbers.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

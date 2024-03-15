@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Binary Number with Alternating Bits</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/682/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/696/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a positive integer, check whether it has alternating bits: namely, if two adjacent bits will always have different values.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 5
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The binary representation of 5 is: 101</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 7
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The binary representation of 7 is: 111.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> n = 11
+<strong>Output:</strong> false
+<strong>Explanation:</strong> The binary representation of 11 is: 1011.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 231 - 1</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/binary-number-with-alternating-bits/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n
+    logical :: result
+
+    ! Example 1
+    n = 5
+    result = alternating_bits(n)
+    write (*, '(A, L1)') 'Example 1: ', result
+
+    ! Example 2
+    n = 7
+    result = alternating_bits(n)
+    write (*, '(A, L1)') 'Example 2: ', result
+
+    ! Example 3
+    n = 11
+    result = alternating_bits(n)
+    write (*, '(A, L1)') 'Example 3: ', result
+
+contains
+
+    function alternating_bits(n) result(result)
+        implicit none
+        integer, intent(in) :: n
+        logical :: result
+
+        integer :: i, j
+        logical :: bit_diff
+
+        bit_diff = .false.
+        do i = 1, 8
+            j = mod(i-1, 8) + 1
+            if (bit(n, i) /= bit(n, j)) then
+                bit_diff = .true.
+                exit
+            end if
+        end do
+
+        result = bit_diff
+    end function alternating_bits
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:35:28:
+
+   35 |             if (bit(n, i) /= bit(n, j)) then
+      |                            1
+Error: Function ‘bit’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">```
+program alternating_bits
+    implicit none
+    integer :: n, i, j
+    logical :: has_alternating_bits
+
+    ! Read input
+    read *, n
+
+    ! Initialize variables
+    i = 0
+    j = 1
+    has_alternating_bits = .true.
+
+    ! Check if the binary representation of n has alternating bits
+    do while (i < 32)
+        if (mod(n, 2) == 0) then
+            if (j == 1) then
+                has_alternating_bits = .false.
+                exit
+            end if
+        else
+            if (j == 0) then
+                has_alternating_bits = .false.
+                exit
+            end if
+        end if
+        i = i + 1
+        j = mod(n, 2)
+        n = n / 2
+    end do
+
+    ! Output result
+    if (has_alternating_bits) then
+        print *, "Yes"
+    else
+        print *, "No"
+    end if
+end program alternating_bits
+```
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:1:2:
+
+    1 | ```
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:40:2:
+
+   40 | ```
+      |  1
+Error: Invalid character in name at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def has_alternating_bits(n):
+    prev_bit = n % 2
+    n //= 2
+    while n &gt; 0:
+        curr_bit = n % 2
+        if curr_bit == prev_bit:
+            return False
+        prev_bit = curr_bit
+        n //= 2
+    return True
+</code></pre>
+<pre><code>The algorithm initializes `prevBit` with the least significant bit of `n`. Then, it divides `n` by 2 to eliminate the least significant bit. While `n` is greater than 0, the algorithm retrieves the least significant bit of `n` and compares it to `prevBit`. If they are equal, it means the adjacent bits are not alternating, so the function returns false. Otherwise, it assigns the least significant bit to `prevBit` and divides `n` by 2 again to move on to the next bit. When `n` becomes 0, it means all adjacent bits in the given integer are alternating, and the function returns true.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool hasAlternatingBits(int n) {
+    int prevBit = n % 2;
+    n /= 2;
+    while (n &gt; 0) {
+        int currBit = n % 2;
+        if (currBit == prevBit) return false;
+        prevBit = currBit;
+        n /= 2;
+    }
+    return true;
+}
+</code></pre>
+<pre><code>The algorithm initializes `prevBit` with the least significant bit of `n`. Then, it divides `n` by 2 to eliminate the least significant bit. While `n` is greater than 0, the algorithm retrieves the least significant bit of `n` and compares it to `prevBit`. If they are equal, it means the adjacent bits are not alternating, so the function returns false. Otherwise, it assigns the least significant bit to `prevBit` and divides `n` by 2 again to move on to the next bit. When `n` becomes 0, it means all adjacent bits in the given integer are alternating, and the function returns true.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

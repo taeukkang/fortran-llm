@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Teemo Attacking</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/492/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/496/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Our hero Teemo is attacking an enemy Ashe with poison attacks! When Teemo attacks Ashe, Ashe gets poisoned for a exactly <code>duration</code> seconds. More formally, an attack at second <code>t</code> will mean Ashe is poisoned during the <strong>inclusive</strong> time interval <code>[t, t + duration - 1]</code>. If Teemo attacks again <strong>before</strong> the poison effect ends, the timer for it is <strong>reset</strong>, and the poison effect will end <code>duration</code> seconds after the new attack.</p>
+<p>You are given a <strong>non-decreasing</strong> integer array <code>timeSeries</code>, where <code>timeSeries[i]</code> denotes that Teemo attacks Ashe at second <code>timeSeries[i]</code>, and an integer <code>duration</code>.</p>
+<p>Return <em>the <strong>total</strong> number of seconds that Ashe is poisoned</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> timeSeries = [1,4], duration = 2
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> Teemo's attacks on Ashe go as follows:
+- At second 1, Teemo attacks, and Ashe is poisoned for seconds 1 and 2.
+- At second 4, Teemo attacks, and Ashe is poisoned for seconds 4 and 5.
+Ashe is poisoned for seconds 1, 2, 4, and 5, which is 4 seconds in total.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> timeSeries = [1,2], duration = 2
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> Teemo's attacks on Ashe go as follows:
+- At second 1, Teemo attacks, and Ashe is poisoned for seconds 1 and 2.
+- At second 2 however, Teemo attacks again and resets the poison timer. Ashe is poisoned for seconds 2 and 3.
+Ashe is poisoned for seconds 1, 2, and 3, which is 3 seconds in total.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= timeSeries.length &lt;= 104</code></li>
+<li><code>0 &lt;= timeSeries[i], duration &lt;= 107</code></li>
+<li><code>timeSeries</code> is sorted in <strong>non-decreasing</strong> order.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/teemo-attacking/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 2
+    integer, dimension(n) :: timeSeries = (/ 1, 4 /)
+    integer, parameter :: duration = 2
+    integer :: i
+
+    write (*, '(A)') 'Total seconds Ashe is poisoned:'
+    do i = 1, n
+        write (*, '(I0)') solve(timeSeries(i), duration)
+    end do
+
+contains
+
+    function solve(time, dur) result(res)
+        implicit none
+        integer, intent(in) :: time, dur
+        integer :: res
+
+        if (time < dur) then
+            res = dur
+        else
+            res = time + dur - 1
+        end if
+    end function solve
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Total seconds Ashe is poisoned:
+2
+5
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module poisoned_ashe
+    implicit none
+    integer, parameter :: dp = selected_real_kind(15, 307) ! double precision
+
+contains
+
+    function solve(timeSeries, duration) result(totalPoisonedTime)
+        integer, intent(in) :: timeSeries(:), duration
+        integer :: totalPoisonedTime, currentTime, previousTime
+
+        currentTime = 0
+        previousTime = 0
+        totalPoisonedTime = 0
+
+        do i = 1, size(timeSeries)
+            currentTime = timeSeries(i)
+            if (currentTime - previousTime < duration) then
+                ! Poison effect is still active, reset the timer
+                totalPoisonedTime = max(totalPoisonedTime, currentTime + duration)
+            else
+                ! Poison effect has ended, add the current time to the total
+                totalPoisonedTime = totalPoisonedTime + currentTime
+            end if
+            previousTime = currentTime
+        end do
+
+        totalPoisonedTime = totalPoisonedTime + currentTime
+
+    end function solve
+
+end module poisoned_ashe
+
+program test
+    use poisoned_ashe
+    implicit none
+    integer, parameter :: timeSeries(2) = [1, 4]
+    integer :: duration = 2
+    integer :: totalPoisonedTime
+
+    totalPoisonedTime = solve(timeSeries, duration)
+    write (*,*) "Total poisoned time:", totalPoisonedTime
+
+    duration = 2
+    totalPoisonedTime = solve(timeSeries, duration)
+    write (*,*) "Total poisoned time:", totalPoisonedTime
+
+    duration = 2
+    totalPoisonedTime = solve([1, 2], duration)
+    write (*,*) "Total poisoned time:", totalPoisonedTime
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:12:
+
+   15 |         do i = 1, size(timeSeries)
+      |            1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:34:9:
+
+   34 |     use poisoned_ashe
+      |         1
+Fatal Error: Cannot open module file ‘poisoned_ashe.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def find_poisoned_duration(time_series, duration):
+    if not time_series:
+        return 0
+    total = 0
+    for i in range(1, len(time_series)):
+        total += min(time_series[i] - time_series[i - 1], duration)
+    return total + duration
+</code></pre>
+<p>Iterate through the <code>timeSeries</code> array and for each element, calculate the difference between the current element and the previous element. If the difference is less than <code>duration</code>, add that difference to the total time poisoned; otherwise, add the <code>duration</code> to the total time poisoned. In the end, add one more <code>duration</code> to the total to account for the last attack.</p>
+<p>By doing this, we ensure that we only count the poisoned time without overlapping, since consecutive poisoned times will add up to the original duration.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int findPoisonedDuration(vector&lt;int&gt;&amp; timeSeries, int duration) {
+    if (timeSeries.empty()) return 0;
+    int total = 0;
+    for (int i = 1; i &lt; timeSeries.size(); ++i) {
+        total += min(timeSeries[i] - timeSeries[i - 1], duration);
+    }
+    return total + duration;
+}
+</code></pre>
+<p>Iterate through the <code>timeSeries</code> array and for each element, calculate the difference between the current element and the previous element. If the difference is less than <code>duration</code>, add that difference to the total time poisoned; otherwise, add the <code>duration</code> to the total time poisoned. In the end, add one more <code>duration</code> to the total to account for the last attack.</p>
+<p>By doing this, we ensure that we only count the poisoned time without overlapping, since consecutive poisoned times will add up to the original duration.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

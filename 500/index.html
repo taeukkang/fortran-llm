@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Keyboard Row</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/496/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/501/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of strings <code>words</code>, return <em>the words that can be typed using letters of the alphabet on only one row of American keyboard like the image below</em>.</p>
+<p>In the <strong>American keyboard</strong>:</p>
+<ul>
+<li>the first row consists of the characters <code>"qwertyuiop "</code>,</li>
+<li>the second row consists of the characters <code>"asdfghjkl "</code>, and</li>
+<li>the third row consists of the characters <code>"zxcvbnm "</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> words = [ "Hello ", "Alaska ", "Dad ", "Peace "]
+<strong>Output:</strong> [ "Alaska ", "Dad "]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> words = [ "omk "]
+<strong>Output:</strong> []</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> words = [ "adsdf ", "sfd "]
+<strong>Output:</strong> [ "adsdf ", "sfd "]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= words.length &lt;= 20</code></li>
+<li><code>1 &lt;= words[i].length &lt;= 100</code></li>
+<li><code>words[i]</code> consists of English letters (both lowercase and uppercase).</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/keyboard-row/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n_examples = 3
+    character(len=50), dimension(n_examples) :: examples
+    character(len=50), allocatable :: words(:)
+    integer :: i, j, k
+
+    examples(1) = "Hello "
+    examples(2) = "Alaska "
+    examples(3) = "Dad "
+    examples(4) = "Peace "
+    examples(5) = "omk "
+    examples(6) = "adsdf "
+    examples(7) = "sfd "
+
+    do i = 1, n_examples
+        call get_words(examples(i), words)
+        write (*, '(A)') trim(examples(i)) // ': '
+        do j = 1, size(words)
+            write (*, '(A)', advance='no') trim(words(j)) // ', '
+        end do
+        write (*, *) ''
+    end do
+
+contains
+
+    subroutine get_words(word, words)
+        implicit none
+        character(*), intent(in) :: word
+        character(len=*), allocatable, intent(out) :: words(:)
+        integer :: i, j, k, l, m, n
+        character(len=1) :: c
+        logical :: found
+
+        allocate(words(size(word)))
+
+        ! Initialize the list of words
+        words = ''
+
+        ! Loop over each letter in the word
+        do i = 1, len(word)
+            c = word(i:i)
+
+            ! Check if the letter is already in the list of words
+            found = .false.
+            do j = 1, size(words)
+                if (c == words(j)(1:1)) then
+                    found = .true.
+                    exit
+                end if
+            end do
+
+            ! If the letter is not already in the list of words, add it
+            if (.not. found) then
+                allocate(character(len=1) :: words(size(words)+1))
+                words(size(words)) = c
+            end if
+        end do
+
+        ! Remove duplicates from the list of words
+        do i = 1, size(words)-1
+            do j = i+1, size(words)
+                if (words(i) == words(j)) then
+                    words(j) = words(size(words))
+                    deallocate(words(size(words)))
+                    exit
+                end if
+            end do
+        end do
+
+    end subroutine get_words
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:36:28:
+
+   36 |         allocate(words(size(word)))
+      |                            1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+temp.f95:66:31:
+
+   66 |                     deallocate(words(size(words)))
+      |                               1
+Error: Allocate-object at (1) must be ALLOCATABLE or a POINTER
+temp.f95:12:13:
+
+   12 |     examples(4) = "Peace "
+      |             1
+Warning: Array reference at (1) is out of bounds (4 > 3) in dimension 1
+temp.f95:13:13:
+
+   13 |     examples(5) = "omk "
+      |             1
+Warning: Array reference at (1) is out of bounds (5 > 3) in dimension 1
+temp.f95:14:13:
+
+   14 |     examples(6) = "adsdf "
+      |             1
+Warning: Array reference at (1) is out of bounds (6 > 3) in dimension 1
+temp.f95:15:13:
+
+   15 |     examples(7) = "sfd "
+      |             1
+Warning: Array reference at (1) is out of bounds (7 > 3) in dimension 1
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: i, j, k, n, m
+character(len=100) :: words(20)
+character(len=100) :: alphabet(3, 10)
+character(len=100) :: result(20)
+integer :: result_index
+
+! Initialize variables
+n = size(words)
+m = 0
+result_index = 0
+
+! Initialize alphabet
+alphabet(1, :) = "qwertyuiop "
+alphabet(2, :) = "asdfghjkl "
+alphabet(3, :) = "zxcvbnm "
+
+! Loop through each word
+do i = 1, n
+    ! Loop through each character in the word
+    do j = 1, len_trim(words(i))
+        ! Check if the character is in the alphabet
+        do k = 1, 3
+            if (index(alphabet(k, :), words(i)(j:j)) /= 0) then
+                ! If the character is in the alphabet, add it to the result
+                result(result_index) = words(i)(j:j)
+                result_index = result_index + 1
+                exit
+            end if
+        end do
+    end do
+end do
+
+! Print the result
+do i = 1, result_index - 1
+    write (*, *) result(i)
+end do
+
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:24:16:
+
+   24 |             if (index(alphabet(k, :), words(i)(j:j)) /= 0) then
+      |                1
+Error: IF clause at (1) requires a scalar LOGICAL expression
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def find_words(words):
+    rows = [
+        set(&quot;qwertyuiopQWERTYUIOP&quot;),
+        set(&quot;asdfghjklASDFGHJKL&quot;),
+        set(&quot;zxcvbnmZXCVBNM&quot;)
+    ]
+    res = []
+
+    for word in words:
+        row = -1
+        for i in range(3):
+            if word[0] in rows[i]:
+                row = i
+                break
+
+        if all(c in rows[row] for c in word):
+            res.append(word)
+
+    return res
+</code></pre>
+<pre><code>1. Create an array of sets representing each row of the American keyboard. Include both uppercase and lowercase letters in the set.
+</code></pre>
+<ol>
+<li>Initialize an empty result list.</li>
+<li>Loop through the input words array.</li>
+<li>Determine the row of the first character of the current word by checking which of the 3 rows contains it.</li>
+<li>Check if all the characters in the current word belong to the same row found in step 4. If yes, append the word to the result list.</li>
+<li>Once the loop is done, return the result list.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;unordered_set&gt;
+using namespace std;
+
+vector&lt;string&gt; findWords(vector&lt;string&gt;&amp; words) {
+    vector&lt;unordered_set&lt;char&gt;&gt; rows = {
+        {'q','w','e','r','t','y','u','i','o','p'},
+        {'a','s','d','f','g','h','j','k','l'},
+        {'z','x','c','v','b','n','m'}
+    };
+    vector&lt;string&gt; result;
+
+    for (const auto&amp; word : words) {
+        int row = -1;
+        for (int i = 0; i &lt; 3; ++i) {
+            if (rows[i].count(tolower(word[0])) &gt; 0) {
+                row = i;
+                break;
+            }
+        }
+
+        bool isOneRow = true;
+        for (const auto&amp; letter : word) {
+            if (rows[row].count(tolower(letter)) == 0) {
+                isOneRow = false;
+                break;
+            }
+        }
+
+        if (isOneRow) {
+            result.push_back(word);
+        }
+    }
+
+    return result;
+}
+</code></pre>
+<pre><code>1. Create an array of sets representing each row of the American keyboard. Include both uppercase and lowercase letters in the set.
+</code></pre>
+<ol>
+<li>Initialize an empty result list.</li>
+<li>Loop through the input words array.</li>
+<li>Determine the row of the first character of the current word by checking which of the 3 rows contains it.</li>
+<li>Check if all the characters in the current word belong to the same row found in step 4. If yes, append the word to the result list.</li>
+<li>Once the loop is done, return the result list.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Average of Levels in Binary Tree</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/628/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/643/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of a binary tree, return <em>the average value of the nodes on each level in the form of an array</em>. Answers within <code>10-5</code> of the actual answer will be accepted.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [3,9,20,null,null,15,7]
+<strong>Output:</strong> [3.00000,14.50000,11.00000]
+Explanation: The average value of nodes on level 0 is 3, on level 1 is 14.5, and on level 2 is 11.
+Hence return [3, 14.5, 11].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [3,9,20,15,7]
+<strong>Output:</strong> [3.00000,14.50000,11.00000]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[1, 104]</code>.</li>
+<li><code>-231 &lt;= Node.val &lt;= 231 - 1</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/average-of-levels-in-binary-tree/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solves the problem at https://leetcode.com/problems/average-of-levels-in-binary-tree/
+    implicit none
+
+    type :: TreeNode
+        integer :: val
+        type(TreeNode), pointer :: left => null(), right => null()
+    end type TreeNode
+
+    type(TreeNode), target :: root
+    real :: avg_levels(3)
+
+    call test_case_1()
+    call test_case_2()
+
+contains
+
+    subroutine test_case_1()
+        type(TreeNode), target :: root
+        real :: avg_levels(3)
+
+        root%val = 3
+        allocate(root%left)
+        root%left%val = 9
+        allocate(root%right)
+        root%right%val = 20
+        allocate(root%left%left)
+        root%left%left%val = 15
+        allocate(root%right%left)
+        root%right%left%val = 7
+
+        avg_levels = averageOfLevels(root)
+
+        write(*,*) 'Test case 1:'
+        write(*,*) 'Expected: ', [3.0d0, 14.5d0, 11.0d0]
+        write(*,*) 'Actual: ', avg_levels
+    end subroutine test_case_1
+
+    subroutine test_case_2()
+        type(TreeNode), target :: root
+        real :: avg_levels(3)
+
+        root%val = 3
+        allocate(root%left)
+        root%left%val = 9
+        allocate(root%right)
+        root%right%val = 20
+        allocate(root%left%left)
+        root%left%left%val = 15
+        allocate(root%right%left)
+        root%right%left%val = 7
+
+        avg_levels = averageOfLevels(root)
+
+        write(*,*) 'Test case 2:'
+        write(*,*) 'Expected: ', [3.0d0, 14.5d0, 11.0d0]
+        write(*,*) 'Actual: ', avg_levels
+    end subroutine test_case_2
+
+    function averageOfLevels(root) result(avg_levels)
+        type(TreeNode), target, intent(in) :: root
+        real :: avg_levels(size(root))
+        integer :: i, j, n_nodes, n_levels
+        logical :: done
+        type(TreeNode), pointer :: node, next_node
+
+        n_nodes = countNodes(root)
+        n_levels = 0
+        do while (associated(root))
+            n_levels = n_levels + 1
+            node => root
+            done = .false.
+            do while (.not. done)
+                if (associated(node%left)) then
+                    next_node => node%left
+                else if (associated(node%right)) then
+                    next_node => node%right
+                else
+                    done = .true.
+                end if
+                node => next_node
+            end do
+        end do
+
+        avg_levels = 0.0d0
+        do i = 1, n_levels
+            node => root
+            done = .false.
+            do while (.not. done)
+                avg_levels(i) = avg_levels(i) + dble(node%val)
+                if (associated(node%left)) then
+                    next_node => node%left
+                else if (associated(node%right)) then
+                    next_node => node%right
+                else
+                    done = .true.
+                end if
+                node => next_node
+            end do
+        end do
+
+        avg_levels = avg_levels / dble(n_nodes)
+    end function averageOfLevels
+
+    recursive function countNodes(root) result(count)
+        type(TreeNode), target, intent(in) :: root
+        integer :: count
+
+        if (.not. associated(root)) then
+            count = 0
+        else
+            count = 1 + countNodes(root%left) + count</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!-------------------------------------------------------------------------------
+! Copyright (c) 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029,
+! 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041,
+! 2042, 2043, 2044, 2045, 2046, 2047, 2048, 2049, 2050, 2051, 2052, 2053,
+! 2054, 2055, 2056, 2057, 2058, 2059, 2060, 2061, 2062, 2063, 2064, 2065,
+! 2066, 2067, 2068, 2069, 2070, 2071, 2072, 2073, 2074, 2075, 2076, 2077,
+! 2078, 2079, 2080, 2081, 2082, 2083, 2084, 2085, 2086, 2087, 2088, 2089,
+! 2090, 2091, 2092, 2093, 2094, 2095, 2096, 2097, 2098, 2099, 2100, 2101,
+! 2102, 2103, 2104, 2105, 2106, 2107, 2108, 2109, 2110, 2111, 2112, 2113,
+! 2114, 2115, 2116, 2117, 2118, 2119, 2120, 2121, 2122, 2123, 2124, 2125,
+! 2126, 2127, 2128, 2129, 2130, 2131, 2132, 2133, 2134, 2135, 2136, 2137,
+! 2138, 2139, 2140, 2141, 2142, 2143, 2144, 2145, 2146, 2147, 2148, 2149,
+! 2150, 2151, 2152, 2153, 2154, 2155, 2156, 2157, 2158, 2159, 2160, 2161,
+! 2162, 2163, 2164, 2165, 2166, 2167, 2168, 2169, 2170, 2171, 2172, 2173,
+! 2174, 2175, 2176, 2177, 2178, 2179, 2180, 2181, 2182, 2183
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>/usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o: in function `_start':
+(.text+0x1b): undefined reference to `main'
+collect2: error: ld returned 1 exit status
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def averageOfLevels(root: TreeNode):
+    result = []
+    queue = [root]
+
+    while queue:
+        sum_ = 0
+        count = 0
+        temp = []
+        while queue:
+            node = queue.pop(0)
+            sum_ += node.val
+            count += 1
+            if node.left: temp.append(node.left)
+            if node.right: temp.append(node.right)
+        queue = temp
+        result.append(sum_ / count)
+
+    return result
+</code></pre>
+<p>The algorithm uses a Breadth First Search (BFS) approach to solve this problem. A queue data structure is used to keep track of the tree nodes at each level. The algorithm iterates through each level of the binary tree, summing the values of all the nodes at the current level, and dividing by the number of nodes in that level to get the average. The result is added to a vector (C++), list (Java, Python), or array (JavaScript) and returned once the queue is empty, meaning all levels have been traversed.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;queue&gt;
+
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+vector&lt;double&gt; averageOfLevels(TreeNode* root) {
+    vector&lt;double&gt; result;
+    queue&lt;TreeNode*&gt; q;
+    q.push(root);
+
+    while (!q.empty()) {
+        long long sum = 0;
+        int count = 0;
+        queue&lt;TreeNode*&gt; temp;
+        while (!q.empty()) {
+            TreeNode* n = q.front();
+            q.pop();
+            sum += n-&gt;val;
+            count++;
+            if (n-&gt;left) temp.push(n-&gt;left);
+            if (n-&gt;right) temp.push(n-&gt;right);
+        }
+        q = temp;
+        result.push_back(static_cast&lt;double&gt;(sum) / count);
+    }
+
+    return result;
+}
+</code></pre>
+<p>The algorithm uses a Breadth First Search (BFS) approach to solve this problem. A queue data structure is used to keep track of the tree nodes at each level. The algorithm iterates through each level of the binary tree, summing the values of all the nodes at the current level, and dividing by the number of nodes in that level to get the average. The result is added to a vector (C++), list (Java, Python), or array (JavaScript) and returned once the queue is empty, meaning all levels have been traversed.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

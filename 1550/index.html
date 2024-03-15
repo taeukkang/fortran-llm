@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Three Consecutive Odds</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1544/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1556/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>arr</code>, return <code>true</code> if there are three consecutive odd numbers in the array. Otherwise, return <code>false</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [2,6,4,1]
+<strong>Output:</strong> false
+<strong>Explanation:</strong> There are no three consecutive odds.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [1,2,34,3,4,5,7,23,12]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> [5,7,23] are three consecutive odds.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= arr.length &lt;= 1000</code></li>
+<li><code>1 &lt;= arr[i] &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/three-consecutive-odds/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 9
+    integer :: i, j, k
+    integer :: arr(n) = [2, 6, 4, 1, 3, 5, 7, 23, 12]
+    logical :: result
+
+    do i = 1, n - 2
+        do j = i + 1, n - 1
+            do k = j + 1, n
+                if (mod(arr(i), 2) /= 0 .and. mod(arr(j), 2) /= 0 .and. &
+                    mod(arr(k), 2) /= 0) then
+                    write (*, '(A, L1)') 'Result: ', (arr(i) == arr(j) + 1 .and. arr(j) == arr(k) + 1)
+                    exit
+                end if
+            end do
+        end do
+    end do
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Result: F
+Result: F
+Result: F
+Result: F
+Result: F
+Result: F
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program consecutive_odd
+      implicit none
+
+      integer, parameter :: int64 = selected_int_kind(13)
+
+      integer(int64), dimension(:), allocatable :: arr
+      integer(int64) :: i, n
+      logical :: result
+
+      ! read input
+      read(*,*) n
+      allocate(arr(n))
+      do i = 1, n
+        read(*,*) arr(i)
+      end do
+
+      ! solve problem
+      result = consecutive_odd_sub(arr, n)
+
+      ! print output
+      write(*,*) result
+
+      contains
+
+        function consecutive_odd_sub(arr, n) result(consecutive_odd)
+          implicit none
+
+          integer(int64), dimension(:), intent(in) :: arr
+          integer(int64), intent(in) :: n
+          logical :: consecutive_odd
+
+          integer(int64) :: i
+
+          consecutive_odd = .false.
+
+          do i = 1, n - 2
+            if (mod(arr(i), 2) == 1 .and. mod(arr(i+1), 2) == 1 .and. mod(arr(i+2), 2) == 1) then
+              consecutive_odd = .true.
+              exit
+            end if
+          end do
+
+        end function consecutive_odd_sub
+
+      end program consecutive_odd
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 11 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x78d112217960 in ???
+#1  0x78d1122184d9 in ???
+#2  0x78d11246c17b in ???
+#3  0x78d112465684 in ???
+#4  0x78d1124662aa in ???
+#5  0x580b3532b3ca in MAIN__
+#6  0x580b3532b698 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">import heapq
+
+def kthSmallest(mat, k):
+    m, n = len(mat), len(mat[0])
+
+    minHeap = [(mat[0][0], 0, 0)]
+    visited = [[False for _ in range(n)] for _ in range(m)]
+    visited[0][0] = True
+
+    for _ in range(k):
+        res, i, j = heapq.heappop(minHeap)
+
+        if i &lt; m - 1 and not visited[i+1][j]:
+            heapq.heappush(minHeap, (res - mat[i][j] + mat[i + 1][j], i + 1, j))
+            visited[i+1][j] = True
+        if j &lt; n - 1 and not visited[i][j+1]:
+            heapq.heappush(minHeap, (res - mat[i][j] + mat[i][j + 1], i, j + 1))
+            visited[i][j+1] = True
+
+    return res
+</code></pre>
+<p>The algorithm uses a min-heap data structure initialized with the smallest element (top-left corner) of the matrix. We maintain a matrix <code>visited</code> of booleans that tells if an element of the matrix is in the heap.</p>
+<p>In each iteration, the algorithm pops the smallest element from the min-heap, updates the result, and inserts the elements below and to the right of the matrix, if they have not been visited yet. This process is repeated k times. After the kth iteration, the result holds the sum of the kth smallest array.</p>
+<p>The algorithm has a time complexity of O(k * (m + n)), since in the worst case we have to visit all elements of all rows and columns m and n times (when k = m * n).</p>
+<p>Note that in JavaScript, we do not use a priority queue implementation. Instead, we add elements to the array and sort the array each time after adding elements. This gives slightly worse performance in practice, but for the given problem size, it should suffice.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;queue&gt;
+
+int kthSmallest(const std::vector&lt;std::vector&lt;int&gt;&gt;&amp; mat, int k) {
+    int m = mat.size(), n = mat[0].size();
+
+    auto comp = [&amp;](const std::vector&lt;int&gt;&amp; a, const std::vector&lt;int&gt;&amp; b) {
+        return a[0] &gt; b[0];
+    };
+
+    std::priority_queue&lt;std::vector&lt;int&gt;, std::vector&lt;std::vector&lt;int&gt;&gt;, decltype(comp)&gt; minHeap(comp);
+    minHeap.push({mat[0][0], 0, 0});
+
+    std::vector&lt;std::vector&lt;bool&gt;&gt; visited(m, std::vector&lt;bool&gt;(n, false));
+    visited[0][0] = true;
+
+    int res;
+    while (k--) {
+        auto cur = minHeap.top(); minHeap.pop();
+        res = cur[0];
+        int i = cur[1], j = cur[2];
+
+        if (i &lt; m - 1 &amp;&amp; !visited[i+1][j]) {
+            minHeap.push({res - mat[i][j] + mat[i + 1][j], i + 1, j});
+            visited[i+1][j] = true;
+        }
+        if (j &lt; n - 1 &amp;&amp; !visited[i][j+1]) {
+            minHeap.push({res - mat[i][j] + mat[i][j + 1], i, j + 1});
+            visited[i][j+1] = true;
+        }
+    }
+
+    return res;
+}
+</code></pre>
+<p>The algorithm uses a min-heap data structure initialized with the smallest element (top-left corner) of the matrix. We maintain a matrix <code>visited</code> of booleans that tells if an element of the matrix is in the heap.</p>
+<p>In each iteration, the algorithm pops the smallest element from the min-heap, updates the result, and inserts the elements below and to the right of the matrix, if they have not been visited yet. This process is repeated k times. After the kth iteration, the result holds the sum of the kth smallest array.</p>
+<p>The algorithm has a time complexity of O(k * (m + n)), since in the worst case we have to visit all elements of all rows and columns m and n times (when k = m * n).</p>
+<p>Note that in JavaScript, we do not use a priority queue implementation. Instead, we add elements to the array and sort the array each time after adding elements. This gives slightly worse performance in practice, but for the given problem size, it should suffice.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

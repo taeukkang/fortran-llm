@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Split With Minimum Sum</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2574/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2582/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a positive integer <code>num</code>, split it into two non-negative integers <code>num1</code> and <code>num2</code> such that:</p>
+<ul>
+<li>The concatenation of <code>num1</code> and <code>num2</code> is a permutation of <code>num</code>.<ul>
+<li>In other words, the sum of the number of occurrences of each digit in <code>num1</code> and <code>num2</code> is equal to the number of occurrences of that digit in <code>num</code>.</li>
+</ul>
+</li>
+<li><code>num1</code> and <code>num2</code> can contain leading zeros.</li>
+</ul>
+<p>Return <em>the <strong>minimum</strong> possible sum of</em> <code>num1</code> <em>and</em> <code>num2</code>.</p>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>It is guaranteed that <code>num</code> does not contain any leading zeros.</li>
+<li>The order of occurrence of the digits in <code>num1</code> and <code>num2</code> may differ from the order of occurrence of <code>num</code>.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num = 4325
+<strong>Output:</strong> 59
+<strong>Explanation:</strong> We can split 4325 so that <code>num1</code> is 24 and num2 <code>is</code> 35, giving a sum of 59. We can prove that 59 is indeed the minimal possible sum.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num = 687
+<strong>Output:</strong> 75
+<strong>Explanation:</strong> We can split 687 so that <code>num1</code> is 68 and <code>num2</code> is 7, which would give an optimal sum of 75.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>10 &lt;= num &lt;= 109</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/split-with-minimum-sum/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: num, num1, num2, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
+    character(len=10) :: str
+
+    ! Examples
+    num = 4325
+    call solve(num, num1, num2)
+    write (*, '(A, I0, A, I0)') 'Minimum sum: ', num1 + num2, ' (', num1, ', ', num2, ')'
+
+    num = 687
+    call solve(num, num1, num2)
+    write (*, '(A, I0, A, I0)') 'Minimum sum: ', num1 + num2, ' (', num1, ', ', num2, ')'
+
+contains
+
+    subroutine solve(num, num1, num2)
+        implicit none
+        integer, intent(in) :: num
+        integer, intent(out) :: num1, num2
+        integer :: count(10), perm(10), tmp(10)
+
+        ! Initialize counts for each digit
+        do i = 1, 10
+            count(i) = 0
+        end do
+
+        ! Count the number of occurrences of each digit in num
+        do i = 1, len_trim(str(num))
+            count(ichar(str(num)(i:i))) = count(ichar(str(num)(i:i))) + 1
+        end do
+
+        ! Generate a permutation of the digits
+        perm(:) = (/ (j, j=1,10) /)
+        call shuffle(perm)
+
+        ! Find the first digit that has a count greater than its position in the permutation
+        do i = 1, 10
+            if (count(perm(i)) > i) then
+                exit
+            end if
+        end do
+
+        ! If no such digit exists, return 0
+        if (i == 11) then
+            num1 = 0
+            num2 = 0
+            return
+        end if
+
+        ! Set num1 to the first digit
+        num1 = perm(i)
+
+        ! Remove the first digit from the count array
+        count(perm(i)) = 0
+
+        ! Find the next digit that has a count greater than its position in the permutation
+        do j = i + 1, 10
+            if (count(perm(j)) > j) then
+                exit
+            end if
+        end do
+
+        ! If no such digit exists, return 0
+        if (j == 11) then
+            num1 = 0
+            num2 = 0
+            return
+        end if
+
+        ! Set num2 to the second digit
+        num2 = perm(j)
+
+        ! Remove the second digit from the count array
+        count(perm(j)) = 0
+
+        ! Find the third digit that has a count greater than its position in the permutation
+        do k = j + 1, 10
+            if (count(perm(k)) > k) then
+                exit
+            end if
+        end do
+
+        ! If no such digit exists, return 0
+        if (k == 11) then
+            num1 = 0
+            num2 = 0
+            return
+        end if
+
+        ! Set num3 to the third digit
+        num3 = perm(k)
+
+        ! Remove the third digit from the count array
+        count(perm(k)) = 0
+
+        ! Find the fourth digit that has a count greater than its position in the permutation
+        do l = k + 1, 10
+            if (count(perm(l)) > l) then
+                exit
+            end if
+        end do
+
+        ! If no such digit exists, return 0
+        if (l == 11) then
+            num1 = 0
+            num2 = 0
+            return
+        end if
+
+        ! Set num4 to the fourth digit
+        num4 = perm(l)
+
+        ! Remove the fourth digit from the count array
+        count(perm(l)) = 0
+
+        ! Find the fifth digit that has a count greater than its position in the permutation
+        do m = l + 1, 10
+            if</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:31:33:
+
+   31 |             count(ichar(str(num)(i:i))) = count(ichar(str(num)(i:i))) + 1
+      |                                 1
+Error: Syntax error in argument list at (1)
+temp.f95:120:14:
+
+  120 |             if
+      |              1
+Error: Missing ‘(’ in IF-expression at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! This is a full Fortran script with a valid main entry point that solves the problem.
+
+program split_num
+implicit none
+
+! Declare the variables
+integer :: num, num1, num2, i, j, count, sum
+character(len=10) :: num_str
+
+! Read the input
+read(*,*) num
+
+! Convert the input to a string
+write(num_str,*) num
+
+! Initialize the variables
+num1 = 0
+num2 = 0
+sum = 0
+
+! Loop through each digit in the input
+do i = 1, len_trim(num_str)
+    ! Get the current digit
+    j = ichar(num_str(i:i)) - ichar('0')
+
+    ! Increment the count of the current digit
+    count = count + 1
+
+    ! Check if the current digit is in the first half of the input
+    if (i <= len_trim(num_str)/2) then
+        ! Increment the sum
+        sum = sum + count
+
+        ! Increment the first half of the input
+        num1 = num1 * 10 + j
+    else
+        ! Increment the second half of the input
+        num2 = num2 * 10 + j
+    end if
+end do
+
+! Print the output
+write(*,*) sum
+
+end program split_num
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 11 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7d33016ad960 in ???
+#1  0x7d33016ae4d9 in ???
+#2  0x7d330190217b in ???
+#3  0x7d33018fb684 in ???
+#4  0x7d33018fc2aa in ???
+#5  0x58c4cf9c621a in MAIN__
+#6  0x58c4cf9c6409 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_sum_of_two_numbers(num: str) -&gt; int:
+    cnt = [0] * 10
+    for c in num:
+        cnt[int(c)] += 1
+
+    num1, num2 = 0, 0
+    for i in range(1, 10, 2):
+        temp = cnt[i]
+        while temp &gt; 0:
+            num1 = num1 * 10 + i
+            temp -= 1
+    for i in range(0, 10, 2):
+        temp = cnt[i]
+        while temp &gt; 0:
+            num2 = num2 * 10 + i
+            temp -= 1
+    return num1 + num2
+</code></pre>
+<p>The algorithm first creates a frequency count of each digit in the given number. Then, it initializes two variables representing <code>num1</code> and <code>num2</code>. Next, the algorithm iterates through the frequency count array, adding all odd digits to <code>num1</code> and all even digits to <code>num2</code>. Finally, the algorithm returns the sum of <code>num1</code> and <code>num2</code>.</p>
+<p>Note that the algorithm for each language is quite similar, with minor variations in syntax or the ways to compute the counts.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minSumOfTwoNumbers(string num) {
+    vector&lt;int&gt; cnt(10, 0);
+    for (char c : num) 
+        cnt[c - '0']++;
+
+    int num1 = 0, num2 = 0;
+    for (int i = 1; i &lt;= 9; i += 2) {
+        int temp = cnt[i];
+        while (temp--)
+            num1 = num1 * 10 + i;
+    }
+    for (int i = 0; i &lt;= 9; i += 2) {
+        int temp = cnt[i];
+        while (temp--)
+            num2 = num2 * 10 + i;
+    }
+    return num1 + num2;
+}
+</code></pre>
+<p>The algorithm first creates a frequency count of each digit in the given number. Then, it initializes two variables representing <code>num1</code> and <code>num2</code>. Next, the algorithm iterates through the frequency count array, adding all odd digits to <code>num1</code> and all even digits to <code>num2</code>. Finally, the algorithm returns the sum of <code>num1</code> and <code>num2</code>.</p>
+<p>Note that the algorithm for each language is quite similar, with minor variations in syntax or the ways to compute the counts.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

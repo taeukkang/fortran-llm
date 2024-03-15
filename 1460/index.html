@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Make Two Arrays Equal by Reversing Subarrays</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1455/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1464/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given two integer arrays of equal length <code>target</code> and <code>arr</code>. In one step, you can select any <strong>non-empty subarray</strong> of <code>arr</code> and reverse it. You are allowed to make any number of steps.</p>
+<p>Return <code>true</code> <em>if you can make</em> <code>arr</code> <em>equal to</em> <code>target</code> <em>or</em> <code>false</code> <em>otherwise</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> target = [1,2,3,4], arr = [2,4,1,3]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> You can follow the next steps to convert arr to target:
+1- Reverse subarray [2,4,1], arr becomes [1,4,2,3]
+2- Reverse subarray [4,2], arr becomes [1,2,4,3]
+3- Reverse subarray [4,3], arr becomes [1,2,3,4]
+There are multiple ways to convert arr to target, this is not the only way to do so.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> target = [7], arr = [7]
+<strong>Output:</strong> true
+<strong>Explanation:</strong> arr is equal to target without any reverses.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> target = [3,7,9], arr = [3,7,11]
+<strong>Output:</strong> false
+<strong>Explanation:</strong> arr does not have value 9 and it can never be converted to target.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>target.length == arr.length</code></li>
+<li><code>1 &lt;= target.length &lt;= 1000</code></li>
+<li><code>1 &lt;= target[i] &lt;= 1000</code></li>
+<li><code>1 &lt;= arr[i] &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/make-two-arrays-equal-by-reversing-subarrays/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, dimension(n) :: target = [1, 2, 3, 4]
+    integer, dimension(n) :: arr = [2, 4, 1, 3]
+    logical :: result
+
+    print '(L1)', solve(target, arr)
+
+contains
+
+    function solve(target, arr) result(res)
+        implicit none
+        integer, intent(in) :: target(:), arr(:)
+        logical :: res
+
+        integer :: i, j, k
+        integer, allocatable :: tmp(:)
+
+        if (size(target) /= size(arr)) then
+            stop "Error: arrays must have same size"
+        end if
+
+        res = .false.
+
+        ! check if arr is already equal to target
+        if (all(target == arr)) then
+            res = .true.
+            return
+        end if
+
+        allocate(tmp(size(arr)))
+
+        ! try to find a non-empty subarray in arr that we can reverse
+        do i = 1, size(arr) - 1
+            if (arr(i) /= arr(i+1)) then
+                ! found a non-empty subarray, now check if we can reverse it
+                do j = i + 1, size(arr)
+                    if (arr(j) /= arr(j-1)) exit
+                end do
+                if (j > i + 1) then
+                    ! reverse the subarray
+                    do k = i + 1, (j - 1) / 2
+                        tmp(k) = arr(j - k + i)
+                        tmp(j - k + i) = arr(k)
+                    end do
+                    arr = tmp
+                    deallocate(tmp)
+                    allocate(tmp(size(arr)))
+                    tmp = arr
+                    arr = tmp
+                    deallocate(tmp)
+                    allocate(tmp(size(arr)))
+
+                    ! check if arr is now equal to target
+                    if (all(target == arr)) then
+                        res = .true.
+                        return
+                    end if
+                end if
+            end if
+        end do
+
+        deallocate(tmp)
+
+        res = .false.
+
+    end function solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:48:20:
+
+   48 |                     arr = tmp
+      |                    1
+Error: Dummy argument ‘arr’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:52:20:
+
+   52 |                     arr = tmp
+      |                    1
+Error: Dummy argument ‘arr’ with INTENT(IN) in variable definition context (assignment) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module reversible_array
+implicit none
+private
+public :: reversible_array
+
+type :: reversible_array
+    integer, allocatable :: arr(:)
+    integer :: length
+contains
+    procedure, public :: reverse
+    procedure, public :: is_equal
+end type reversible_array
+
+contains
+
+subroutine reverse(this, start, end)
+    class(reversible_array), intent(inout) :: this
+    integer, intent(in) :: start, end
+    integer :: i
+
+    do i = start, (end + start) / 2
+        this%arr(i) = this%arr(i) + this%arr(end + 1 - i)
+        this%arr(end + 1 - i) = this%arr(i) - this%arr(end + 1 - i)
+        this%arr(i) = this%arr(i) - this%arr(end + 1 - i)
+    end do
+end subroutine reverse
+
+function is_equal(this, other) result(is_equal)
+    class(reversible_array), intent(in) :: this, other
+    logical :: is_equal
+    integer :: i
+
+    if (this%length /= other%length) then
+        is_equal = .false.
+        return
+    end if
+
+    do i = 1, this%length
+        if (this%arr(i) /= other%arr(i)) then
+            is_equal = .false.
+            return
+        end if
+    end do
+
+    is_equal = .true.
+end function is_equal
+
+end module reversible_array
+
+program main
+    use reversible_array
+    implicit none
+    integer, parameter :: n = 4
+    integer, parameter :: target(n) = [1, 2, 3, 4]
+    integer, parameter :: arr(n) = [2, 4, 1, 3]
+    type(reversible_array) :: ra
+
+    ra%arr = arr
+    ra%length = n
+
+    if (ra%is_equal(target)) then
+        write (*,*) "True"
+    else
+        write (*,*) "False"
+    end if
+
+    call ra%reverse(1, 2)
+
+    if (ra%is_equal(target)) then
+        write (*,*) "True"
+    else
+        write (*,*) "False"
+    end if
+
+    call ra%reverse(3, 4)
+
+    if (ra%is_equal(target)) then
+        write (*,*) "True"
+    else
+        write (*,*) "False"
+    end if
+
+    call ra%reverse(1, 4)
+
+    if (ra%is_equal(target)) then
+        write (*,*) "True"
+    else
+        write (*,*) "False"
+    end if
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:26:
+
+    4 | public :: reversible_array
+      |                          1
+Error: PUBLIC attribute applied to MODULE reversible_array at (1)
+temp.f95:6:24:
+
+    6 | type :: reversible_array
+      |                        1
+Error: MODULE attribute of ‘reversible_array’ conflicts with PROCEDURE attribute at (1)
+temp.f95:12:3:
+
+   12 | end type reversible_array
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:14:8:
+
+   14 | contains
+      |        1
+Error: Unexpected CONTAINS statement in CONTAINS section at (1)
+temp.f95:17:28:
+
+    1 | module reversible_array
+      |                       2     
+......
+   17 |     class(reversible_array), intent(inout) :: this
+      |                            1
+Error: Type name ‘reversible_array’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:22:14:
+
+   22 |         this%arr(i) = this%arr(i) + this%arr(end + 1 - i)
+      |              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:23:14:
+
+   23 |         this%arr(end + 1 - i) = this%arr(i) - this%arr(end + 1 - i)
+      |              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:24:14:
+
+   24 |         this%arr(i) = this%arr(i) - this%arr(end + 1 - i)
+      |              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:28:47:
+
+   28 | function is_equal(this, other) result(is_equal)
+      |                                               1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:29:28:
+
+    1 | module reversible_array
+      |                       2     
+......
+   29 |     class(reversible_array), intent(in) :: this, other
+      |                            1
+Error: Type name ‘reversible_array’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:30:23:
+
+   30 |     logical :: is_equal
+      |                       1
+Error: Symbol ‘is_equal’ at (1) has already been host associated
+temp.f95:31:16:
+
+   31 |     integer :: i
+      |                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:33:14:
+
+   33 |     if (this%length /= other%length) then
+      |              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:34:17:
+
+   34 |         is_equal = .false.
+      |                 1
+Error: Symbol ‘is_equal’ at (1) has already been host associated
+temp.f95:35:14:
+
+   35 |         return
+      |              1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:36:7:
+
+   36 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:38:20:
+
+   38 |     do i = 1, this%length
+      |                    1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:39:18:
+
+   39 |         if (this%arr(i) /= other%arr(i)) then
+      |                  1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:40:21:
+
+   40 |             is_equal = .false.
+      |                     1
+Error: Symbol ‘is_equal’ at (1) has already been host associated
+temp.f95:41:18:
+
+   41 |             return
+      |                  1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:42:11:
+
+   42 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:43:7:
+
+   43 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:45:13:
+
+   45 |     is_equal = .true.
+      |             1
+Error: Symbol ‘is_equal’ at (1) has already been host associated
+temp.f95:46:3:
+
+   46 | end function is_equal
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:16:23:
+
+   16 | subroutine reverse(this, start, end)
+      |                       1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:51:9:
+
+   51 |     use reversible_array
+      |         1
+Fatal Error: Cannot open module file ‘reversible_array.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def numberOfSubstrings(s: str) -&gt; int:
+    res, i, count = 0, 0, [0, 0, 0]
+
+    for j, ch in enumerate(s):
+        count[ord(ch) - ord('a')] += 1
+
+        while count[0] &gt; 0 and count[1] &gt; 0 and count[2] &gt; 0:
+            count[ord(s[i]) - ord('a')] -= 1
+            i += 1
+
+        res += i
+
+    return res
+</code></pre>
+<ol>
+<li>Initialize three pointers <code>res</code>, <code>i</code> (or <code>left</code>), and a count list, where <code>res</code> is the result of total numbers of substrings containing a, b, and c.</li>
+<li>Iterate through the string <code>s</code>, increment the count of the current character.</li>
+<li>Use a while loop inside the iteration to check if all characters' count values are greater than 0.</li>
+<li>If all are greater than 0, continuously decrease the count of the character at the current index <code>i</code> while incrementing the <code>i</code>.</li>
+<li>For each iteration, increase the result <code>res</code> by <code>i</code> (or <code>left</code>).</li>
+<li>Return the result <code>res</code>.</li>
+</ol>
+<p>The algorithm uses a sliding window method to keep track of the substrings. The complexity is O(N), where N is the length of the string s.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int numberOfSubstrings(string s) {
+    int res = 0, i = 0;
+    vector&lt;int&gt; count(3, 0);
+
+    for (int j = 0; j &lt; s.length(); j++) {
+        count[s[j] - 'a']++;
+
+        while(count[0] &gt; 0 &amp;&amp; count[1] &gt; 0 &amp;&amp; count[2] &gt; 0) {
+            count[s[i++] - 'a']--;
+        }
+
+        res += i;
+    }
+
+    return res;
+}
+</code></pre>
+<ol>
+<li>Initialize three pointers <code>res</code>, <code>i</code> (or <code>left</code>), and a count list, where <code>res</code> is the result of total numbers of substrings containing a, b, and c.</li>
+<li>Iterate through the string <code>s</code>, increment the count of the current character.</li>
+<li>Use a while loop inside the iteration to check if all characters' count values are greater than 0.</li>
+<li>If all are greater than 0, continuously decrease the count of the character at the current index <code>i</code> while incrementing the <code>i</code>.</li>
+<li>For each iteration, increase the result <code>res</code> by <code>i</code> (or <code>left</code>).</li>
+<li>Return the result <code>res</code>.</li>
+</ol>
+<p>The algorithm uses a sliding window method to keep track of the substrings. The complexity is O(N), where N is the length of the string s.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

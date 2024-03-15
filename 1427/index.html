@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Perform String Shifts</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1426/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1431/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>s</code> containing lowercase English letters, and a matrix <code>shift</code>, where <code>shift[i] = [directioni, amounti]</code>:</p>
+<ul>
+<li><code>directioni</code> can be <code>0</code> (for left shift) or <code>1</code> (for right shift).</li>
+<li><code>amounti</code> is the amount by which string <code>s</code> is to be shifted.</li>
+<li>A left shift by 1 means remove the first character of <code>s</code> and append it to the end.</li>
+<li>Similarly, a right shift by 1 means remove the last character of <code>s</code> and add it to the beginning.</li>
+</ul>
+<p>Return the final string after all operations.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "abc ", shift = [[0,1],[1,2]]
+<strong>Output:</strong>  "cab "
+<strong>Explanation:</strong> 
+[0,1] means shift to left by 1.  "abc " -&gt;  "bca "
+[1,2] means shift to right by 2.  "bca " -&gt;  "cab "</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "abcdefg ", shift = [[1,1],[1,1],[0,2],[1,3]]
+<strong>Output:</strong>  "efgabcd "
+<strong>Explanation:</strong><br />
+[1,1] means shift to right by 1.  "abcdefg " -&gt;  "gabcdef "
+[1,1] means shift to right by 1.  "gabcdef " -&gt;  "fgabcde "
+[0,2] means shift to left by 2.  "fgabcde " -&gt;  "abcdefg "
+[1,3] means shift to right by 3.  "abcdefg " -&gt;  "efgabcd "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 100</code></li>
+<li><code>s</code> only contains lower case English letters.</li>
+<li><code>1 &lt;= shift.length &lt;= 100</code></li>
+<li><code>shift[i].length == 2</code></li>
+<li><code>directioni</code> is either <code>0</code> or <code>1</code>.</li>
+<li><code>0 &lt;= amounti &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/perform-string-shifts/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, n
+    character(len=:), allocatable :: s
+    integer, dimension(:,:), allocatable :: shift
+
+    ! read input
+    read(*,*) s
+    read(*,*) n
+    allocate(shift(n,2))
+    do i = 1, n
+        read(*,*) shift(i,:)
+    end do
+
+    ! solve problem
+    call solve(s, shift)
+
+    ! print output
+    write(*,'(a)') s
+
+contains
+
+    subroutine solve(s, shift)
+        implicit none
+        character(len=:), allocatable :: s
+        integer, dimension(:,:), allocatable :: shift
+        integer :: i, direction, amount
+
+        do i = 1, size(shift,1)
+            direction = shift(i,1)
+            amount = shift(i,2)
+            if (direction == 0) then
+                call left_shift(s, amount)
+            else
+                call right_shift(s, amount)
+            end if
+        end do
+    end subroutine solve
+
+    subroutine left_shift(s, amount)
+        implicit none
+        character(len=:), allocatable :: s
+        integer :: amount
+        character(len=:), allocatable :: tmp
+
+        allocate(tmp, source=s(2:))
+        deallocate(s)
+        allocate(s, source=' '//tmp)
+        deallocate(tmp)
+    end subroutine left_shift
+
+    subroutine right_shift(s, amount)
+        implicit none
+        character(len=:), allocatable :: s
+        integer :: amount
+        character(len=:), allocatable :: tmp
+
+        allocate(tmp, source=s(1:size(s)-1))
+        deallocate(s)
+        allocate(s, source=tmp//' ')
+        deallocate(tmp)
+    end subroutine right_shift
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:59:38:
+
+   59 |         allocate(tmp, source=s(1:size(s)-1))
+      |                                      1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module shift_string
+
+implicit none
+
+contains
+
+function shift_string(s, shift) result(final_string)
+
+! Declare the string and matrix types
+type(string_type) :: s
+type(matrix_type) :: shift
+type(string_type) :: final_string
+
+! Declare the variables
+integer :: i, j, direction, amount
+character(len=:), allocatable :: temp_string
+
+! Initialize the final string
+final_string = s
+
+! Loop through each shift operation
+do i = 1, size(shift, 1)
+
+    ! Get the direction and amount of the current shift operation
+    direction = shift(i, 1)
+    amount = shift(i, 2)
+
+    ! Perform the shift operation
+    if (direction == 0) then ! Left shift
+        temp_string = final_string%get_substring(amount+1, final_string%length()) // &
+            final_string%get_substring(1, amount)
+    else ! Right shift
+        temp_string = final_string%get_substring(final_string%length()-amount+1, final_string%length()) // &
+            final_string%get_substring(1, final_string%length()-amount)
+    end if
+
+    ! Update the final string
+    final_string = temp_string
+
+end do
+
+end function shift_string
+
+end module shift_string
+
+! Test the shift_string function with the given examples
+program test_shift_string
+
+use shift_string
+
+implicit none
+
+! Examples
+type(string_type) :: s
+type(matrix_type) :: shift
+type(string_type) :: final_string
+
+! Example 1
+s = string_type("abc ")
+shift = matrix_type([[0, 1], [1, 2]])
+final_string = shift_string(s, shift)
+write (*, *) "Example 1: " // final_string%get_string()
+
+! Example 2
+s = string_type("abcdefg ")
+shift = matrix_type([[1, 1], [1, 1], [0, 2], [1, 3]])
+final_string = shift_string(s, shift)
+write (*, *) "Example 2: " // final_string%get_string()
+
+end program test_shift_string
+
+! Define the string and matrix types
+type string_type
+
+! Declare the string length
+integer :: length
+
+! Declare the string characters
+character(len=:), allocatable :: characters
+
+contains
+
+! Get the string length
+pure integer function get_length()
+
+get_length = length
+
+end function get_length
+
+! Get the string characters
+pure character(len=:), allocatable function get_characters()
+
+get_characters = characters
+
+end function get_characters
+
+! Get a substring of the string
+pure type(string_type) function get_substring(start, end) result(substring)
+
+! Declare the variables
+integer :: start, end
+
+! Initialize the substring
+substring = string_type("")
+
+! Check if the start and end indices are valid
+if (start < 1 .or. end > length) then
+    return
+end if
+
+! Get the substring characters
+substring%characters = characters(start:end)
+
+! Set the substring length
+substring%length = end - start + 1
+
+end function get_substring
+
+end type string_type
+
+type matrix_type
+
+! Declare the matrix dimensions
+integer :: rows, cols
+
+! Declare the matrix elements
+integer, allocatable :: elements(:, :)
+
+contains
+
+! Get the matrix dimensions
+pure integer function get_dimensions() result(dimensions)
+
+dimensions = rows
+
+end function get_dimensions
+
+! Get a matrix element
+pure integer function get_element(row, col) result(element)
+
+! Declare the variables
+integer :: row, col
+
+! Check if the row and column indices are valid
+if (row < 1 .or. row > rows .or. col < 1 .or. col > cols) then
+    element = 0
+    return
+end if
+
+! Get the matrix element
+element = elements(row, col)
+
+end function get_element
+
+end type matrix_type
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:21:
+
+    7 | function shift_string(s, shift) result(final_string)
+      |                     1
+Error: MODULE attribute of ‘shift_string’ conflicts with PROCEDURE attribute at (1)
+temp.f95:10:18:
+
+   10 | type(string_type) :: s
+      |                  1
+Error: Derived type ‘string_type’ at (1) is being used before it is defined
+temp.f95:11:18:
+
+   11 | type(matrix_type) :: shift
+      |                  1
+Error: Derived type ‘matrix_type’ at (1) is being used before it is defined
+temp.f95:12:18:
+
+   12 | type(string_type) :: final_string
+      |                  1
+Error: Derived type ‘string_type’ at (1) is being used before it is defined
+temp.f95:15:34:
+
+   15 | integer :: i, j, direction, amount
+      |                                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:16:44:
+
+   16 | character(len=:), allocatable :: temp_string
+      |                                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:19:16:
+
+   19 | final_string = s
+      |                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:24:
+
+   22 | do i = 1, size(shift, 1)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:25:27:
+
+   25 |     direction = shift(i, 1)
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:24:
+
+   26 |     amount = shift(i, 2)
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:29:41:
+
+   29 |     if (direction == 0) then ! Left shift
+      |                                         1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:30:36:
+
+   30 |         temp_string = final_string%get_substring(amount+1, final_string%length()) // &
+      |                                    1
+Error: Symbol ‘final_string’ at (1) has no IMPLICIT type
+temp.f95:32:22:
+
+   32 |     else ! Right shift
+      |                      1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:33:36:
+
+   33 |         temp_string = final_string%get_substring(final_string%length()-amount+1, final_string%length()) // &
+      |                                    1
+Error: Symbol ‘final_string’ at (1) has no IMPLICIT type
+temp.f95:35:7:
+
+   35 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:38:30:
+
+   38 |     final_string = temp_string
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:40:3:
+
+   40 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:42:3:
+
+   42 | end function shift_string
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:49:5:
+
+   49 | use shift_string
+      |     1
+Fatal Error: Cannot open module file ‘shift_string.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def inorder(root):
+    output = []
+    stack = []
+    current = root
+
+    while current or stack:
+        while current:
+            stack.append(current)
+            current = current.left
+        current = stack.pop()
+        output.append(current.val)
+        current = current.right
+
+    return output
+
+def getAllElements(root1, root2):
+    tree1 = inorder(root1)
+    tree2 = inorder(root2)
+    result = []
+    i, j = 0, 0
+
+    while i &lt; len(tree1) or j &lt; len(tree2):
+        if i &lt; len(tree1) and (j &gt;= len(tree2) or tree1[i] &lt;= tree2[j]):
+            result.append(tree1[i])
+            i += 1
+        else:
+            result.append(tree2[j])
+            j += 1
+
+    return result
+</code></pre>
+<ol>
+<li>Create a helper function, <code>inorder</code>, which takes a root node and returns the inorder traversal of the tree, in the form of an array/vector/list.</li>
+<li>The <code>inorder</code> function uses a stack and a while loop to iterate through each node. It starts with the left-most node and iterates through to the right-most node.</li>
+<li>Call the <code>inorder</code> function on both <code>root1</code> and <code>root2</code> and store the results in two separate arrays.</li>
+<li>Initialize two pointers <code>i</code> and <code>j</code> and iterate through both arrays together.</li>
+<li>Compare the current element of both arrays, and push the smaller element onto the result array, incrementing the corresponding pointer.</li>
+<li>If one array reaches the end, push the remaining elements from the other array to the result array.</li>
+<li>Return the result array containing the sorted elements from both trees.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;stack&gt;
+
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
+};
+
+void inorder(TreeNode* root, vector&lt;int&gt;&amp; output) {
+    stack&lt;TreeNode*&gt; s;
+    TreeNode* current = root;
+
+    while (current || !s.empty()) {
+        while (current) {
+            s.push(current);
+            current = current-&gt;left;
+        }
+        current = s.top();
+        s.pop();
+        output.push_back(current-&gt;val);
+        current = current-&gt;right;
+    }
+}
+
+vector&lt;int&gt; getAllElements(TreeNode* root1, TreeNode* root2) {
+    vector&lt;int&gt; tree1, tree2;
+    inorder(root1, tree1);
+    inorder(root2, tree2);
+
+    vector&lt;int&gt; result;
+    int i = 0, j = 0;
+    while (i &lt; tree1.size() || j &lt; tree2.size()) {
+        if (i &lt; tree1.size() &amp;&amp; (j &gt;= tree2.size() || tree1[i] &lt;= tree2[j])) {
+            result.push_back(tree1[i++]);
+        } else {
+            result.push_back(tree2[j++]);
+        }
+    }
+
+    return result;
+}
+</code></pre>
+<ol>
+<li>Create a helper function, <code>inorder</code>, which takes a root node and returns the inorder traversal of the tree, in the form of an array/vector/list.</li>
+<li>The <code>inorder</code> function uses a stack and a while loop to iterate through each node. It starts with the left-most node and iterates through to the right-most node.</li>
+<li>Call the <code>inorder</code> function on both <code>root1</code> and <code>root2</code> and store the results in two separate arrays.</li>
+<li>Initialize two pointers <code>i</code> and <code>j</code> and iterate through both arrays together.</li>
+<li>Compare the current element of both arrays, and push the smaller element onto the result array, incrementing the corresponding pointer.</li>
+<li>If one array reaches the end, push the remaining elements from the other array to the result array.</li>
+<li>Return the result array containing the sorted elements from both trees.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

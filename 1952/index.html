@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Three Divisors</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1945/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1957/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer <code>n</code>, return <code>true</code> <em>if</em> <code>n</code> <em>has <strong>exactly three positive divisors</strong>. Otherwise, return</em> <code>false</code>.</p>
+<p>An integer <code>m</code> is a <strong>divisor</strong> of <code>n</code> if there exists an integer <code>k</code> such that <code>n = k * m</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 2
+<strong>Output:</strong> false
+<strong>Explantion:</strong> 2 has only two divisors: 1 and 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 4
+<strong>Output:</strong> true
+<strong>Explantion:</strong> 4 has three divisors: 1, 2, and 4.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 104</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/three-divisors/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n
+    logical :: result
+
+    ! Example 1
+    n = 2
+    result = hasThreePositiveDivisors(n)
+    print '(L1)', result
+
+    ! Example 2
+    n = 4
+    result = hasThreePositiveDivisors(n)
+    print '(L1)', result
+
+contains
+
+    function hasThreePositiveDivisors(n) result(result)
+        implicit none
+        integer, value :: n
+        logical :: result
+        integer :: i
+
+        result = .false.
+        do i = 1, n - 1
+            if (mod(n, i) == 0) then
+                result = result .or. hasThreePositiveDivisors(i)
+                if (result) exit
+            end if
+        end do
+    end function hasThreePositiveDivisors
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:28:36:
+
+   28 |                 result = result .or. hasThreePositiveDivisors(i)
+      |                                    1
+Error: Function ‘hasthreepositivedivisors’ at (1) cannot be called recursively, as it is not RECURSIVE
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module example
+
+implicit none
+
+contains
+
+function has_three_divisors(n) result(has_divisors)
+
+integer, intent(in) :: n
+logical :: has_divisors
+
+integer :: i, divisors
+
+divisors = 0
+
+do i = 1, n
+    if (n / i == n) then
+        divisors = divisors + 1
+    end if
+end do
+
+has_divisors = (divisors == 3)
+
+end function has_three_divisors
+
+end module example
+
+program test
+
+use example
+
+implicit none
+
+integer :: n
+
+n = 2
+write (*,*) has_three_divisors(n)
+
+n = 4
+write (*,*) has_three_divisors(n)
+
+n = 6
+write (*,*) has_three_divisors(n)
+
+end program test
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> F
+ F
+ F
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minSideJumps(obstacles):
+    n = len(obstacles)
+    dp = [[n] * 3 for _ in range(n)]
+    dp[0][1] = 0
+    dp[0][0] = dp[0][2] = 1
+
+    for i in range(1, n):
+        if obstacles[i] != 1:
+            dp[i][0] = min(dp[i - 1][0], dp[i - 1][1] + 1, dp[i - 1][2] + 1)
+        if obstacles[i] != 2:
+            dp[i][1] = min(dp[i - 1][1], dp[i - 1][0] + 1, dp[i - 1][2] + 1)
+        if obstacles[i] != 3:
+            dp[i][2] = min(dp[i - 1][2], dp[i - 1][0] + 1, dp[i - 1][1] + 1)
+
+    return min(dp[-1])
+</code></pre>
+<pre><code>We maintain a dynamic programming table (dp) with dimensions n x 3 where each row i represents the current point and each column j with [0, 2] represents the lanes. The value stored in dp[i][j] is the minimum number of side jumps needed to reach the lane j at point i. We initially set all values in the table to n (the maximum possible number of side jumps), and set the values for the initial point (dp[0]) accordingly.
+</code></pre>
+<p>We then iterate through each point from 1 to n-1, checking if there is no obstacle for each lane. If there is no obstacle for lane j, we update the values in the table dp[i][j] by taking the minimum value between the previous value in the same lane or one plus the previous value in the other two lanes.</p>
+<p>After filling the table, we return the minimum value in the last row, which represents the minimum number of side jumps needed to reach any lane at point n.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int minSideJumps(vector&lt;int&gt;&amp; obstacles) {
+    vector&lt;vector&lt;int&gt;&gt; dp(obstacles.size(), vector&lt;int&gt;(3, obstacles.size()));
+    dp[0][1] = 0;
+    dp[0][0] = 1;
+    dp[0][2] = 1;
+
+    for (size_t i = 1; i &lt; obstacles.size(); ++i) {
+        if (obstacles[i] != 1) dp[i][0] = min(dp[i-1][0], min(dp[i-1][1] + 1, dp[i-1][2] + 1));
+        if (obstacles[i] != 2) dp[i][1] = min(dp[i-1][1], min(dp[i-1][0] + 1, dp[i-1][2] + 1));
+        if (obstacles[i] != 3) dp[i][2] = min(dp[i-1][2], min(dp[i-1][0] + 1, dp[i-1][1] + 1));
+    }
+    return min(dp.back()[0], min(dp.back()[1], dp.back()[2]));
+}
+</code></pre>
+<pre><code>We maintain a dynamic programming table (dp) with dimensions n x 3 where each row i represents the current point and each column j with [0, 2] represents the lanes. The value stored in dp[i][j] is the minimum number of side jumps needed to reach the lane j at point i. We initially set all values in the table to n (the maximum possible number of side jumps), and set the values for the initial point (dp[0]) accordingly.
+</code></pre>
+<p>We then iterate through each point from 1 to n-1, checking if there is no obstacle for each lane. If there is no obstacle for lane j, we update the values in the table dp[i][j] by taking the minimum value between the previous value in the same lane or one plus the previous value in the other two lanes.</p>
+<p>After filling the table, we return the minimum value in the last row, which represents the minimum number of side jumps needed to reach any lane at point n.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

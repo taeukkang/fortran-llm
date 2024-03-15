@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Long Pressed Name</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/922/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/929/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Your friend is typing his <code>name</code> into a keyboard. Sometimes, when typing a character <code>c</code>, the key might get <em>long pressed</em>, and the character will be typed 1 or more times.</p>
+<p>You examine the <code>typed</code> characters of the keyboard. Return <code>True</code> if it is possible that it was your friends name, with some characters (possibly none) being long pressed.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> name =  "alex ", typed =  "aaleex "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> 'a' and 'e' in 'alex' were long pressed.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> name =  "saeed ", typed =  "ssaaedd "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> 'e' must have been pressed twice, but it was not in the typed output.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= name.length, typed.length &lt;= 1000</code></li>
+<li><code>name</code> and <code>typed</code> consist of only lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/long-pressed-name/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i
+    character(len=1000) :: name, typed
+
+    do i = 1, size(examples)
+        read(examples(i), *) name, typed
+        write(*,*) solve(name, typed)
+    end do
+
+contains
+
+    function solve(name, typed) result(res)
+        implicit none
+        character(len=*), intent(in) :: name, typed
+        logical :: res
+
+        ! TODO: Implement me
+
+    end function solve
+
+    character(len=1000), parameter :: examples(3) = ["alex ", &
+                                                     "saeed ", &
+                                                     "leelee "]
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:23:61:
+
+   23 |     character(len=1000), parameter :: examples(3) = ["alex ", &
+      |                                                             1
+Error: Different CHARACTER lengths (5/6) in array constructor at (1)
+temp.f95:8:13:
+
+    8 |         read(examples(i), *) name, typed
+      |             1
+Error: Function ‘examples’ at (1) has no IMPLICIT type
+temp.f95:7:27:
+
+    7 |     do i = 1, size(examples)
+      |                           1
+Error: Symbol ‘examples’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module long_pressed_name
+
+implicit none
+
+contains
+
+function is_long_pressed_name(name, typed) result(is_valid)
+
+! Declare the input and output variables
+character(len=*), intent(in) :: name
+character(len=*), intent(in) :: typed
+logical :: is_valid
+
+! Declare the local variables
+integer :: i, j
+
+! Initialize the output variable
+is_valid = .false.
+
+! Check if the length of the name and typed strings are the same
+if (len(name) /= len(typed)) then
+    return
+endif
+
+! Initialize the indices for the name and typed strings
+i = 1
+j = 1
+
+! Loop through the characters of the name and typed strings
+do while (i <= len(name) .and. j <= len(typed))
+    ! Check if the characters match
+    if (name(i:i) == typed(j:j)) then
+        ! Increment the indices
+        i = i + 1
+        j = j + 1
+    else
+        ! Check if the typed character is the same as the previous character
+        if (j > 1 .and. typed(j-1:j-1) == typed(j:j)) then
+            ! Increment the index of the typed string
+            j = j + 1
+        else
+            ! The characters do not match, return false
+            return
+        endif
+    endif
+enddo
+
+! Check if all the characters of the name have been matched
+if (i > len(name)) then
+    is_valid = .true.
+endif
+
+end function is_long_pressed_name
+
+end module long_pressed_name
+
+! Test the function with the provided examples
+program test_long_pressed_name
+
+use long_pressed_name
+
+implicit none
+
+! Declare the variables
+character(len=1000) :: name
+character(len=1000) :: typed
+logical :: is_valid
+
+! Test case 1:
+name = "alex "
+typed = "aaleex "
+is_valid = is_long_pressed_name(name, typed)
+if (is_valid) then
+    print *, "Test case 1: Pass"
+else
+    print *, "Test case 1: Fail"
+endif
+
+! Test case 2:
+name = "saeed "
+typed = "ssaaedd "
+is_valid = is_long_pressed_name(name, typed)
+if (.not. is_valid) then
+    print *, "Test case 2: Pass"
+else
+    print *, "Test case 2: Fail"
+endif
+
+! Test case 3:
+name = "leelee "
+typed = "lleeelee "
+is_valid = is_long_pressed_name(name, typed)
+if (is_valid) then
+    print *, "Test case 3: Pass"
+else
+    print *, "Test case 3: Fail"
+endif
+
+! Test case 4:
+name = "laiden "
+typed = "laiden "
+is_valid = is_long_pressed_name(name, typed)
+if (is_valid) then
+    print *, "Test case 4: Pass"
+else
+    print *, "Test case 4: Fail"
+endif
+
+! Test case 5:
+name = "laiden "
+typed = "laiden "
+is_valid = is_long_pressed_name(name, typed)
+if (is_valid) then
+    print *, "Test case 5: Pass"
+else
+    print *, "Test case 5: Fail"
+endif
+
+end program test_long_pressed_name
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Test case 1: Fail
+ Test case 2: Pass
+ Test case 3: Fail
+ Test case 4: Pass
+ Test case 5: Pass
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+class Solution:
+    def constructFromPrePost(self, pre, post):
+        def buildTree(preStart, preEnd, postStart, postEnd):
+            if preStart == preEnd:
+                return None
+
+            root = TreeNode(pre[preStart])
+
+            if preStart + 1 == preEnd:
+                return root
+
+            leftRoot = pre[preStart + 1]
+
+            leftSize = 0
+            for i in range(postStart, postEnd):
+                if post[i] == leftRoot:
+                    leftSize = i - postStart + 1
+                    break
+
+            root.left = buildTree(preStart + 1, preStart + 1 + leftSize, postStart, postStart + leftSize)
+            root.right = buildTree(preStart + 1 + leftSize, preEnd, postStart + leftSize, postEnd - 1)
+
+            return root
+
+        return buildTree(0, len(pre), 0, len(post))
+</code></pre>
+<p>The reconstruction of binary tree can be done using a divide-and-conquer strategy.</p>
+<ol>
+<li>The first element of the preorder array is the root node.</li>
+<li>The second element of the preorder array is the root of the left subtree.</li>
+<li>Find the index of the left subtree root in the postorder array. The left subtree size can be calculated as <code>index - postStart + 1</code>.</li>
+<li>The left subtree ranges can be found using <code>preStart + 1</code> and <code>preStart + 1 + leftSize</code> in the preorder array, <code>postStart</code> and <code>postStart + leftSize</code> in the postorder array.</li>
+<li>The right subtree ranges can be found with <code>preStart + 1 + leftSize</code> and <code>preEnd</code> in the preorder array, <code>postStart + leftSize</code> and <code>postEnd - 1</code> in the postorder array.</li>
+<li>Recursively build the left subtree and right subtree with the calculated ranges.</li>
+<li>Connect the left subtree and right subtree to the current root node.</li>
+</ol>
+<p>The overall time complexity is O(N^2) due to finding the index of the left subtree root. The space complexity is O(N) because of the recursion stack.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+class Solution {
+public:
+    TreeNode* constructFromPrePost(vector&lt;int&gt;&amp; preorder, vector&lt;int&gt;&amp; postorder) {
+        return buildTree(preorder, 0, preorder.size(), postorder, 0, postorder.size());
+    }
+
+    TreeNode* buildTree(vector&lt;int&gt;&amp; pre, int preStart, int preEnd, vector&lt;int&gt;&amp; post, int postStart, int postEnd) {
+        if (preStart == preEnd) return nullptr;
+
+        TreeNode* root = new TreeNode(pre[preStart]);
+
+        if (preStart + 1 == preEnd) return root;
+
+        int leftRoot = pre[preStart + 1];
+
+        int leftSize = 0;
+        for (int i = postStart; i &lt; postEnd; ++i) {
+            if (post[i] == leftRoot) {
+                leftSize = i - postStart + 1;
+                break;
+            }
+        }
+
+        root-&gt;left = buildTree(pre, preStart + 1, preStart + 1 + leftSize, post, postStart, postStart + leftSize);
+        root-&gt;right = buildTree(pre, preStart + 1 + leftSize, preEnd, post, postStart + leftSize, postEnd - 1);
+
+        return root;
+    }
+};
+</code></pre>
+<p>The reconstruction of binary tree can be done using a divide-and-conquer strategy.</p>
+<ol>
+<li>The first element of the preorder array is the root node.</li>
+<li>The second element of the preorder array is the root of the left subtree.</li>
+<li>Find the index of the left subtree root in the postorder array. The left subtree size can be calculated as <code>index - postStart + 1</code>.</li>
+<li>The left subtree ranges can be found using <code>preStart + 1</code> and <code>preStart + 1 + leftSize</code> in the preorder array, <code>postStart</code> and <code>postStart + leftSize</code> in the postorder array.</li>
+<li>The right subtree ranges can be found with <code>preStart + 1 + leftSize</code> and <code>preEnd</code> in the preorder array, <code>postStart + leftSize</code> and <code>postEnd - 1</code> in the postorder array.</li>
+<li>Recursively build the left subtree and right subtree with the calculated ranges.</li>
+<li>Connect the left subtree and right subtree to the current root node.</li>
+</ol>
+<p>The overall time complexity is O(N^2) due to finding the index of the left subtree root. The space complexity is O(N) because of the recursion stack.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

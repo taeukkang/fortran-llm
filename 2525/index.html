@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Categorize Box According to Criteria</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2520/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2529/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given four integers <code>length</code>, <code>width</code>, <code>height</code>, and <code>mass</code>, representing the dimensions and mass of a box, respectively, return <em>a string representing the <strong>category</strong> of the box</em>.</p>
+<ul>
+<li>The box is <code>"Bulky "</code> if:<ul>
+<li><strong>Any</strong> of the dimensions of the box is greater or equal to <code>104</code>.</li>
+<li>Or, the <strong>volume</strong> of the box is greater or equal to <code>109</code>.</li>
+</ul>
+</li>
+<li>If the mass of the box is greater or equal to <code>100</code>, it is <code>"Heavy ".</code></li>
+<li>If the box is both <code>"Bulky "</code> and <code>"Heavy "</code>, then its category is <code>"Both "</code>.</li>
+<li>If the box is neither <code>"Bulky "</code> nor <code>"Heavy "</code>, then its category is <code>"Neither "</code>.</li>
+<li>If the box is <code>"Bulky "</code> but not <code>"Heavy "</code>, then its category is <code>"Bulky "</code>.</li>
+<li>If the box is <code>"Heavy "</code> but not <code>"Bulky "</code>, then its category is <code>"Heavy "</code>.</li>
+</ul>
+<p><strong>Note</strong> that the volume of the box is the product of its length, width and height.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> length = 1000, width = 35, height = 700, mass = 300
+<strong>Output:</strong>  "Heavy "
+<strong>Explanation:</strong> 
+None of the dimensions of the box is greater or equal to 104. 
+Its volume = 24500000 &lt;= 109. So it cannot be categorized as  "Bulky ".
+However mass &gt;= 100, so the box is  "Heavy ".
+Since the box is not  "Bulky " but  "Heavy ", we return  "Heavy ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> length = 200, width = 50, height = 800, mass = 50
+<strong>Output:</strong>  "Neither "
+<strong>Explanation:</strong> 
+None of the dimensions of the box is greater or equal to 104.
+Its volume = 8 * 106 &lt;= 109. So it cannot be categorized as  "Bulky ".
+Its mass is also less than 100, so it cannot be categorized as  "Heavy " either. 
+Since its neither of the two above categories, we return  "Neither ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= length, width, height &lt;= 105</code></li>
+<li><code>1 &lt;= mass &lt;= 103</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/categorize-box-according-to-criteria/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+
+! This program solves the following problem:
+!
+! Given four integers length, width, height, and mass, representing the dimensions and mass of a box, respectively,
+! return a string representing the category of the box.
+!
+! The box is "Bulky " if:
+!     Any of the dimensions of the box is greater or equal to 104.
+!     Or, the volume of the box is greater or equal to 109.
+! If the mass of the box is greater or equal to 100, it is "Heavy ".
+! If the box is both "Bulky " and "Heavy ", then its category is "Both ".
+! If the box is neither "Bulky " nor "Heavy ", then its category is "Neither ".
+! If the box is "Bulky " but not "Heavy ", then its category is "Bulky ".
+! If the box is "Heavy " but not "Bulky ", then its category is "Heavy ".
+!
+! Note that the volume of the box is the product of its length, width and height.
+!
+! Examples:
+!
+! Input: length = 1000, width = 35, height = 700, mass = 300
+! Output: "Heavy "
+!
+! Input: length = 200, width = 50, height = 800, mass = 50
+! Output: "Neither "
+!
+! Constraints:
+!     1 <= length, width, height <= 105
+!     1 <= mass <= 103
+
+implicit none
+
+integer :: length, width, height, mass
+character(len=10) :: category
+
+print '("Enter length, width, height, and mass: ")', &
+        '(A, I0, A, I0, A, I0, A, I0)', &
+        'length = ', length, ', ', &
+        'width = ', width, ', ', &
+        'height = ', height, ', ', &
+        'mass = ', mass
+
+call get_category(length, width, height, mass, category)
+
+print '("The category of the box is: ", A)', category
+
+contains
+
+subroutine get_category(length, width, height, mass, category)
+    implicit none
+    integer, intent(in) :: length, width, height, mass
+    character(len=10), intent(out) :: category
+
+    ! Bulky boxes have any dimension greater or equal to 104 or volume greater or equal to 109
+    if (any(shape=</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:55:18:
+
+   55 |     if (any(shape=
+      |                  1
+Error: Syntax error in argument list at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! This is a comment
+
+PROGRAM box_category
+
+IMPLICIT NONE
+
+INTEGER, PARAMETER :: length = 1000, width = 35, height = 700, mass = 300
+
+CHARACTER(len=10) :: category
+
+! Calculate the volume of the box
+INTEGER :: volume
+volume = length * width * height
+
+! Check if the box is bulky
+IF (ANY(length >= 104, width >= 104, height >= 104)) THEN
+    category = "Bulky "
+ELSE IF (volume >= 109) THEN
+    category = "Bulky "
+END IF
+
+! Check if the box is heavy
+IF (mass >= 100) THEN
+    category = "Heavy "
+END IF
+
+! Check if the box is both bulky and heavy
+IF (category == "Bulky " .AND. mass >= 100) THEN
+    category = "Both "
+ELSE IF (category == "Heavy " .AND. mass >= 100) THEN
+    category = "Both "
+END IF
+
+! Check if the box is neither bulky nor heavy
+IF (category /= "Bulky " .AND. category /= "Heavy ") THEN
+    category = "Neither "
+END IF
+
+! Check if the box is bulky but not heavy
+IF (category == "Bulky " .AND. category /= "Heavy ") THEN
+    category = "Bulky "
+END IF
+
+! Check if the box is heavy but not bulky
+IF (category == "Heavy " .AND. category /= "Bulky ") THEN
+    category = "Heavy "
+END IF
+
+! Print the category of the box
+WRITE (*,*) category
+
+END PROGRAM box_category
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:16:4:
+
+   16 | IF (ANY(length >= 104, width >= 104, height >= 104)) THEN
+      |    1
+Error: Too many arguments in call to ‘any’ at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def boxCategory(length: int, width: int, height: int, mass: int) -&gt; str:
+    bulky = length &gt;= 10000 or width &gt;= 10000 or height &gt;= 10000 or int(length) * width * height &gt;= 1000000000
+    heavy = mass &gt;= 100
+
+    if bulky and heavy:
+        return &quot;Both &quot;
+    if bulky:
+        return &quot;Bulky &quot;
+    if heavy:
+        return &quot;Heavy &quot;
+    return &quot;Neither &quot;
+</code></pre>
+<p>The algorithm first checks if the box is bulky by verifying if any of the dimensions equal or exceed 10^4, or if the volume of the box is equal to or greater than 10^9. If the mass of the box is greater or equal to 100, then it's considered heavy.</p>
+<p>We then use conditional statements to determine the category of the box according to the values of the bulky and heavy variables.</p>
+<p>If both the bulky and heavy conditions are true, we return "Both ". If bulky is true and heavy is false, we return "Bulky ". If heavy is true and bulky is false, we return "Heavy ". Otherwise, if neither condition is true, we return "Neither ".</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+
+std::string boxCategory(int length, int width, int height, int mass) {
+    bool bulky = length &gt;= 10000 || width &gt;= 10000 || height &gt;= 10000 || (long)length * width * height &gt;= 1000000000;
+    bool heavy = mass &gt;= 100;
+
+    if (bulky &amp;&amp; heavy) return &quot;Both &quot;;
+    if (bulky) return &quot;Bulky &quot;;
+    if (heavy) return &quot;Heavy &quot;;
+    return &quot;Neither &quot;;
+}
+</code></pre>
+<p>The algorithm first checks if the box is bulky by verifying if any of the dimensions equal or exceed 10^4, or if the volume of the box is equal to or greater than 10^9. If the mass of the box is greater or equal to 100, then it's considered heavy.</p>
+<p>We then use conditional statements to determine the category of the box according to the values of the bulky and heavy variables.</p>
+<p>If both the bulky and heavy conditions are true, we return "Both ". If bulky is true and heavy is false, we return "Bulky ". If heavy is true and bulky is false, we return "Heavy ". Otherwise, if neither condition is true, we return "Neither ".</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

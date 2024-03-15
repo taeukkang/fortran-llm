@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Maximum Product of Three Numbers</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/617/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/637/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code>, <em>find three numbers whose product is maximum and return the maximum product</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,3]
+<strong>Output:</strong> 6</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,3,4]
+<strong>Output:</strong> 24</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [-1,-2,-3]
+<strong>Output:</strong> -6</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>3 &lt;= nums.length &lt;= 104</code></li>
+<li><code>-1000 &lt;= nums[i] &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/maximum-product-of-three-numbers/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program max_product
+    implicit none
+
+    integer, parameter :: n = 3
+    integer, dimension(n) :: nums
+    integer :: i, j, k
+    integer :: max_prod
+
+    ! Example 1
+    nums = (/ 1, 2, 3 /)
+    write (*, '(A, I0)') 'Example 1: ', max_product_sub(nums)
+
+    ! Example 2
+    nums = (/ 1, 2, 3, 4 /)
+    write (*, '(A, I0)') 'Example 2: ', max_product_sub(nums)
+
+    ! Example 3
+    nums = (/ -1, -2, -3 /)
+    write (*, '(A, I0)') 'Example 3: ', max_product_sub(nums)
+
+contains
+
+    function max_product_sub(nums) result(max_prod)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: i, j, k
+        integer :: max_prod
+
+        max_prod = 0
+        do i = 1, size(nums) - 2
+            do j = i + 1, size(nums) - 1
+                do k = j + 1, size(nums)
+                    if (nums(i) * nums(j) * nums(k) > max_prod) then
+                        max_prod = nums(i) * nums(j) * nums(k)
+                    end if
+                end do
+            end do
+        end do
+    end function max_product_sub
+
+end program max_product</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:14:4:
+
+   14 |     nums = (/ 1, 2, 3, 4 /)
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (3 and 4)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">```
+program max_product
+    implicit none
+    integer, parameter :: int64 = selected_int_kind(13)
+    integer, dimension(:), allocatable :: nums
+    integer :: i, j, k, n, max_product
+
+    ! Read the input
+    read (*, *) n
+    allocate (nums(n))
+    do i = 1, n
+        read (*, *) nums(i)
+    end do
+
+    ! Find the maximum product of three numbers
+    max_product = 0
+    do i = 1, n-2
+        do j = i+1, n-1
+            do k = j+1, n
+                if (nums(i) * nums(j) * nums(k) > max_product) then
+                    max_product = nums(i) * nums(j) * nums(k)
+                end if
+            end do
+        end do
+    end do
+
+    ! Output the result
+    write (*, *) max_product
+
+end program max_product
+```
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:1:2:
+
+    1 | ```
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:6:38:
+
+    6 |     integer :: i, j, k, n, max_product
+      |                                      1
+Error: Symbol ‘max_product’ at (1) cannot have a type
+temp.f95:16:16:
+
+   16 |     max_product = 0
+      |                1
+Error: ‘max_product’ at (1) is not a variable
+temp.f95:20:62:
+
+   20 |                 if (nums(i) * nums(j) * nums(k) > max_product) then
+      |                                                              1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:21:32:
+
+   21 |                     max_product = nums(i) * nums(j) * nums(k)
+      |                                1
+Error: ‘max_product’ at (1) is not a variable
+temp.f95:22:19:
+
+   22 |                 end if
+      |                   1
+Error: Expecting END DO statement at (1)
+temp.f95:28:28:
+
+   28 |     write (*, *) max_product
+      |                            1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:31:2:
+
+   31 | ```
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:11:8:
+
+   11 |     do i = 1, n
+      |        1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:18:12:
+
+   18 |         do j = i+1, n-1
+      |            1
+Error: Symbol ‘j’ at (1) has no IMPLICIT type
+temp.f95:19:16:
+
+   19 |             do k = j+1, n
+      |                1
+Error: Symbol ‘k’ at (1) has no IMPLICIT type
+temp.f95:9:17:
+
+    9 |     read (*, *) n
+      |                 1
+Error: Symbol ‘n’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def maximumProduct(nums):
+    nums.sort()
+    n = len(nums)
+    return max(nums[0] * nums[1] * nums[-1], nums[-1] * nums[-2] * nums[-3])
+</code></pre>
+<p>First, we sort the input array in non-decreasing order. After sorting, we can determine the maximum product using two possible scenarios.</p>
+<ol>
+<li>
+<p>The maximum product is formed by the product of the three highest numbers in the array. We can get this by multiplying the last three elements of the sorted array.</p>
+</li>
+<li>
+<p>The maximum product is formed by the product of the two lowest (most negative) numbers and the highest number in the array. We can get this by multiplying the first two elements and the last element of the sorted array.</p>
+</li>
+</ol>
+<p>We take the maximum of these two results to get the final answer.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int maximumProduct(vector&lt;int&gt;&amp; nums) {
+    sort(nums.begin(), nums.end());
+    int n = nums.size();
+    return max(nums[0] * nums[1] * nums[n-1], nums[n-1] * nums[n-2] * nums[n-3]);
+}
+</code></pre>
+<p>First, we sort the input array in non-decreasing order. After sorting, we can determine the maximum product using two possible scenarios.</p>
+<ol>
+<li>
+<p>The maximum product is formed by the product of the three highest numbers in the array. We can get this by multiplying the last three elements of the sorted array.</p>
+</li>
+<li>
+<p>The maximum product is formed by the product of the two lowest (most negative) numbers and the highest number in the array. We can get this by multiplying the first two elements and the last element of the sorted array.</p>
+</li>
+</ol>
+<p>We take the maximum of these two results to get the final answer.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

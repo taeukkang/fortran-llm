@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Palindrome Permutation</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/263/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/268/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string <code>s</code>, return <code>true</code> <em>if a permutation of the string could form a</em> <em><strong>palindrome</strong></em> <em>and</em> <code>false</code> <em>otherwise</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "code "
+<strong>Output:</strong> false</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "aab "
+<strong>Output:</strong> true</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "carerac "
+<strong>Output:</strong> true</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 5000</code></li>
+<li><code>s</code> consists of only lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/palindrome-permutation/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: s
+    logical :: is_palindrome
+
+    ! Example 1
+    s = "code "
+    print '(L1)', is_palindrome(s)
+
+    ! Example 2
+    s = "aab "
+    print '(L1)', is_palindrome(s)
+
+    ! Example 3
+    s = "carerac "
+    print '(L1)', is_palindrome(s)
+
+contains
+
+    function is_palindrome(str) result(res)
+        implicit none
+        character(len=*), intent(in) :: str
+        integer :: i, j
+        logical :: res
+
+        res = .false.
+
+        do i = 1, len(str)/2
+            if (str(i:i) /= str(len(str)-i+1:len(str)-i)) then
+                exit
+            end if
+        end do
+
+        if (i == len(str)/2 + 1) then
+            res = .true.
+        end if
+    end function is_palindrome
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:21:27:
+
+   21 |     function is_palindrome(str) result(res)
+      |                           1
+Error: Procedure ‘is_palindrome’ at (1) has an explicit interface from a previous declaration
+temp.f95:22:21:
+
+   22 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:23:43:
+
+   23 |         character(len=*), intent(in) :: str
+      |                                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:24:23:
+
+   24 |         integer :: i, j
+      |                       1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:25:22:
+
+   25 |         logical :: res
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:27:21:
+
+   27 |         res = .false.
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:29:28:
+
+   29 |         do i = 1, len(str)/2
+      |                            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:30:22:
+
+   30 |             if (str(i:i) /= str(len(str)-i+1:len(str)-i)) then
+      |                      1
+Error: Syntax error in argument list at (1)
+temp.f95:31:20:
+
+   31 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:32:15:
+
+   32 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:33:11:
+
+   33 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:35:37:
+
+   35 |         if (i == len(str)/2 + 1) then
+      |                                     1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:36:24:
+
+   36 |             res = .true.
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:37:11:
+
+   37 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:38:7:
+
+   38 |     end function is_palindrome
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module palindrome
+
+implicit none
+
+contains
+
+function is_palindrome_permutation(s) result(is_palindrome)
+
+! Given a string s, return true if a permutation of the string could form a palindrome, and false otherwise.
+
+character(len=*), intent(in) :: s
+logical :: is_palindrome
+
+! Edge case: empty string
+if (len_trim(s) == 0) then
+    is_palindrome = .false.
+    return
+end if
+
+! Check if the string is a palindrome
+if (s == reverse(s)) then
+    is_palindrome = .true.
+    return
+end if
+
+! Check if the string is a permutation of a palindrome
+is_palindrome = .false.
+do i = 1, len_trim(s) - 1
+    do j = i + 1, len_trim(s)
+        if (s(i:j) == reverse(s(i:j))) then
+            is_palindrome = .true.
+            return
+        end if
+    end do
+end do
+
+end function is_palindrome_permutation
+
+end module palindrome
+
+program main
+
+use palindrome
+implicit none
+
+! Test cases
+character(len=5000) :: s
+
+s = "code "
+write (*,*) is_palindrome_permutation(s)
+
+s = "aab "
+write (*,*) is_palindrome_permutation(s)
+
+s = "carerac "
+write (*,*) is_palindrome_permutation(s)
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:28:4:
+
+   28 | do i = 1, len_trim(s) - 1
+      |    1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:29:8:
+
+   29 |     do j = i + 1, len_trim(s)
+      |        1
+Error: Symbol ‘j’ at (1) has no IMPLICIT type
+temp.f95:21:8:
+
+   21 | if (s == reverse(s)) then
+      |        1
+Error: Function ‘reverse’ at (1) has no IMPLICIT type
+temp.f95:43:5:
+
+   43 | use palindrome
+      |     1
+Fatal Error: Cannot open module file ‘palindrome.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def canPermutePalindrome(s: str) -&gt; bool:
+    count = {}
+    for c in s:
+        if c in count:
+            count[c] += 1
+        else:
+            count[c] = 1
+    odd_count = 0
+    for value in count.values():
+        if value % 2:
+            odd_count += 1
+    return odd_count &lt;= 1
+</code></pre>
+<p>The algorithm counts the occurrences of each character in the string using a hash map (or dictionary for Python). Then, it iterates through the count values in the hash map and checks how many characters have odd occurrences. If the string can form a palindrome, there should be at most one character having an odd number of occurrences.</p>
+<p>The logic is based on the fact that a string can form a palindrome if it meets the following condition: If the string length is even, there should be an even number of occurrences for each character. If the string length is odd, there should be only one character having odd occurrences and the rest should have even occurrences.</p>
+<p>The algorithm simply returns true if the odd_count is less than or equal to 1, indicating the string can form a palindrome; otherwise, it returns false.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool canPermutePalindrome(string s) {
+    unordered_map&lt;char, int&gt; count;
+    for (char c : s) {
+        count[c]++;
+    }
+    int odd_count = 0;
+    for (auto it = count.begin(); it != count.end(); ++it) {
+        if (it-&gt;second % 2) {
+            odd_count++;
+        }
+    }
+    return odd_count &lt;= 1;
+}
+</code></pre>
+<p>The algorithm counts the occurrences of each character in the string using a hash map (or dictionary for Python). Then, it iterates through the count values in the hash map and checks how many characters have odd occurrences. If the string can form a palindrome, there should be at most one character having an odd number of occurrences.</p>
+<p>The logic is based on the fact that a string can form a palindrome if it meets the following condition: If the string length is even, there should be an even number of occurrences for each character. If the string length is odd, there should be only one character having odd occurrences and the rest should have even occurrences.</p>
+<p>The algorithm simply returns true if the odd_count is less than or equal to 1, indicating the string can form a palindrome; otherwise, it returns false.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

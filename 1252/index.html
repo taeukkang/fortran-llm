@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Cells with Odd Values in a Matrix</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1243/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1260/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>There is an <code>m x n</code> matrix that is initialized to all <code>0</code>'s. There is also a 2D array <code>indices</code> where each <code>indices[i] = [ri, ci]</code> represents a <strong>0-indexed location</strong> to perform some increment operations on the matrix.</p>
+<p>For each location <code>indices[i]</code>, do <strong>both</strong> of the following:</p>
+<ol>
+<li>Increment <strong>all</strong> the cells on row <code>ri</code>.</li>
+<li>Increment <strong>all</strong> the cells on column <code>ci</code>.</li>
+</ol>
+<p>Given <code>m</code>, <code>n</code>, and <code>indices</code>, return <em>the <strong>number of odd-valued cells</strong> in the matrix after applying the increment to all locations in</em> <code>indices</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> m = 2, n = 3, indices = [[0,1],[1,1]]
+<strong>Output:</strong> 6
+<strong>Explanation:</strong> Initial matrix = [[0,0,0],[0,0,0]].
+After applying first increment it becomes [[1,2,1],[0,1,0]].
+The final matrix is [[1,3,1],[1,3,1]], which contains 6 odd numbers.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> m = 2, n = 2, indices = [[1,1],[0,0]]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> Final matrix = [[2,2],[2,2]]. There are no odd numbers in the final matrix.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= m, n &lt;= 50</code></li>
+<li><code>1 &lt;= indices.length &lt;= 100</code></li>
+<li><code>0 &lt;= ri &lt; m</code></li>
+<li><code>0 &lt;= ci &lt; n</code></li>
+</ul>
+<p><strong>Follow up:</strong> Could you solve this in <code>O(n + m + indices.length)</code> time with only <code>O(n + m)</code> extra space?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/cells-with-odd-values-in-a-matrix/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solves the problem described in the comment block
+    implicit none
+
+    integer :: m, n, i, j, ri, ci, num_odd
+    integer, dimension(:, :), allocatable :: matrix
+    integer, dimension(:, :), allocatable :: indices
+
+    ! Read input
+    read *, m, n
+    allocate(matrix(m, n))
+    allocate(indices(size(matrix, 1), size(matrix, 2)))
+    do i = 1, size(matrix, 1)
+        do j = 1, size(matrix, 2)
+            read *, matrix(i, j)
+        end do
+    end do
+    do i = 1, size(indices, 1)
+        read *, indices(i, :)
+    end do
+
+    ! Apply increments
+    do i = 1, size(indices, 1)
+        ri = indices(i, 1)
+        ci = indices(i, 2)
+        matrix(ri, :) = matrix(ri, :) + 1
+        matrix(:, ci) = matrix(:, ci) + 1
+    end do
+
+    ! Count number of odd values
+    num_odd = 0
+    do i = 1, size(matrix, 1)
+        do j = 1, size(matrix, 2)
+            if (mod(matrix(i, j), 2) /= 0) then
+                num_odd = num_odd + 1
+            end if
+        end do
+    end do
+
+    ! Output result
+    write (*, '(I0)') num_odd
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 10 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7856fa24d960 in ???
+#1  0x7856fa24e4d9 in ???
+#2  0x7856fa4a217b in ???
+#3  0x7856fa49b684 in ???
+#4  0x7856fa49c2aa in ???
+#5  0x5cedf4d222d9 in MAIN__
+#6  0x5cedf4d22ce3 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!DEC$ IF DEFINED (WINDOWS)
+!DEC$ ATTRIBUTES STDCALL ::
+!DEC$ ENDIF
+
+PROGRAM OddCells
+
+  IMPLICIT NONE
+
+  INTEGER, PARAMETER :: INTEGER_SIZE = SELECTED_INT_KIND(9)
+  INTEGER(KIND=INTEGER_SIZE) :: m, n, indices_size
+  INTEGER(KIND=INTEGER_SIZE), DIMENSION(:,:), ALLOCATABLE :: matrix
+  INTEGER(KIND=INTEGER_SIZE), DIMENSION(:,:), ALLOCATABLE :: indices
+  INTEGER(KIND=INTEGER_SIZE) :: i, j, ri, ci, odd_count
+
+  ! Read input
+  READ(*,*) m, n, indices_size
+  ALLOCATE(matrix(m,n))
+  ALLOCATE(indices(indices_size,2))
+  DO i = 1, m
+    READ(*,*) matrix(i,:)
+  END DO
+  DO i = 1, indices_size
+    READ(*,*) indices(i,:)
+  END DO
+
+  ! Apply increment operations
+  DO i = 1, indices_size
+    ri = indices(i,1)
+    ci = indices(i,2)
+    matrix(ri,:) = matrix(ri,:) + 1
+    matrix(:,ci) = matrix(:,ci) + 1
+  END DO
+
+  ! Count odd numbers
+  odd_count = 0
+  DO i = 1, m
+    DO j = 1, n
+      IF (MOD(matrix(i,j),2) /= 0) odd_count = odd_count + 1
+    END DO
+  END DO
+
+  ! Print output
+  WRITE(*,*) odd_count
+
+  ! Deallocate memory
+  DEALLOCATE(matrix)
+  DEALLOCATE(indices)
+
+END PROGRAM OddCells
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 16 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7c755018d960 in ???
+#1  0x7c755018e4d9 in ???
+#2  0x7c75503e217b in ???
+#3  0x7c75503db684 in ???
+#4  0x7c75503dc2aa in ???
+#5  0x5b73250862d6 in MAIN__
+#6  0x5b7325086ca6 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def break_palindrome(palindrome: str) -&gt; str:
+    n = len(palindrome)
+    if n &lt; 2:
+        return &quot;&quot;
+
+    palindrome = list(palindrome)
+    for i in range(n // 2):
+        if palindrome[i] != 'a':
+            palindrome[i] = 'a'
+            return &quot;&quot;.join(palindrome)
+
+    palindrome[-1] = 'b'
+    return &quot;&quot;.join(palindrome)
+</code></pre>
+<p>The algorithm starts by checking if the length of the input string is less than 2, in which case it returns an empty string, as there is no way to make it non-palindrome with a single character replacement. </p>
+<p>Then, it iterates over the characters of the string up to the middle position (length / 2). If it finds a character different from 'a', it replaces the character with 'a' to ensure lexicographically smallest result, and returns the modified string.</p>
+<p>If the loop ends and all characters up to the middle are 'a's, then it replaces the last character of the string with 'b' and returns the modified string. This ensures that the string is no longer a palindrome, and retains the lexicographically smallest property.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+
+std::string breakPalindrome(std::string palindrome) {
+    int n = palindrome.size();
+    if (n &lt; 2) return &quot;&quot;;
+
+    for (int i = 0; i &lt; n / 2; i++) {
+        if (palindrome[i] != 'a') {
+            palindrome[i] = 'a';
+            return palindrome;
+        }
+    }
+
+    palindrome[n - 1] = 'b';
+    return palindrome;
+}
+</code></pre>
+<p>The algorithm starts by checking if the length of the input string is less than 2, in which case it returns an empty string, as there is no way to make it non-palindrome with a single character replacement. </p>
+<p>Then, it iterates over the characters of the string up to the middle position (length / 2). If it finds a character different from 'a', it replaces the character with 'a' to ensure lexicographically smallest result, and returns the modified string.</p>
+<p>If the loop ends and all characters up to the middle are 'a's, then it replaces the last character of the string with 'b' and returns the modified string. This ensures that the string is no longer a palindrome, and retains the lexicographically smallest property.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

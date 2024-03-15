@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Apply Operations to an Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2455/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2465/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>0-indexed</strong> array <code>nums</code> of size <code>n</code> consisting of <strong>non-negative</strong> integers.</p>
+<p>You need to apply <code>n - 1</code> operations to this array where, in the <code>ith</code> operation (<strong>0-indexed</strong>), you will apply the following on the <code>ith</code> element of <code>nums</code>:</p>
+<ul>
+<li>If <code>nums[i] == nums[i + 1]</code>, then multiply <code>nums[i]</code> by <code>2</code> and set <code>nums[i + 1]</code> to <code>0</code>. Otherwise, you skip this operation.</li>
+</ul>
+<p>After performing <strong>all</strong> the operations, <strong>shift</strong> all the <code>0</code>'s to the <strong>end</strong> of the array.</p>
+<ul>
+<li>For example, the array <code>[1,0,2,0,0,1]</code> after shifting all its <code>0</code>'s to the end, is <code>[1,2,1,0,0,0]</code>.</li>
+</ul>
+<p>Return <em>the resulting array</em>.</p>
+<p><strong>Note</strong> that the operations are applied <strong>sequentially</strong>, not all at once.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,2,1,1,0]
+<strong>Output:</strong> [1,4,2,0,0,0]
+<strong>Explanation:</strong> We do the following operations:
+- i = 0: nums[0] and nums[1] are not equal, so we skip this operation.
+- i = 1: nums[1] and nums[2] are equal, we multiply nums[1] by 2 and change nums[2] to 0. The array becomes [1,<strong>4</strong>,<strong>0</strong>,1,1,0].
+- i = 2: nums[2] and nums[3] are not equal, so we skip this operation.
+- i = 3: nums[3] and nums[4] are equal, we multiply nums[3] by 2 and change nums[4] to 0. The array becomes [1,4,0,<strong>2</strong>,<strong>0</strong>,0].
+- i = 4: nums[4] and nums[5] are equal, we multiply nums[4] by 2 and change nums[5] to 0. The array becomes [1,4,0,2,<strong>0</strong>,<strong>0</strong>].
+After that, we shift the 0's to the end, which gives the array [1,4,2,0,0,0].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [0,1]
+<strong>Output:</strong> [1,0]
+<strong>Explanation:</strong> No operation can be applied, we just shift the 0 to the end.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>2 &lt;= nums.length &lt;= 2000</code></li>
+<li><code>0 &lt;= nums[i] &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/apply-operations-to-an-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 6
+    integer, dimension(n) :: nums
+    integer :: i
+
+    ! Example 1
+    nums = [1, 2, 2, 1, 1, 0]
+    call solve(nums)
+    write (*, '(A)') 'Example 1:'
+    write (*, '(*(G0))') nums
+
+    ! Example 2
+    nums = [0, 1]
+    call solve(nums)
+    write (*, '(A)') 'Example 2:'
+    write (*, '(*(G0))') nums
+
+contains
+
+subroutine solve(nums)
+    implicit none
+    integer, dimension(:), intent(inout) :: nums
+    integer :: i
+
+    do i = 1, size(nums) - 1
+        if (nums(i) == nums(i + 1)) then
+            nums(i) = nums(i) * 2
+            nums(i + 1) = 0
+        end if
+    end do
+
+    nums = pack(nums, nums /= 0)
+end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:4:
+
+   15 |     nums = [0, 1]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (6 and 2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! This is a full Fortran script with a valid main entry point that solves the problem.
+! The program should run with all provided examples and output to stdout.
+
+! You are given a 0-indexed array nums of size n consisting of non-negative integers.
+! You need to apply n - 1 operations to this array where, in the ith operation (0-indexed), you will apply the following on the ith element of nums:
+! If nums[i] == nums[i + 1], then multiply nums[i] by 2 and set nums[i + 1] to 0. Otherwise, you skip this operation.
+
+! After performing all the operations, shift all the 0's to the end of the array.
+! For example, the array [1,0,2,0,0,1] after shifting all its 0's to the end, is [1,2,1,0,0,0].
+
+! Return the resulting array.
+
+! Note that the operations are applied sequentially, not all at once.
+
+! Example 1:
+! Input: nums = [1,2,2,1,1,0]
+! Output: [1,4,2,0,0,0]
+! Explanation: We do the following operations:
+! - i = 0: nums[0] and nums[1] are not equal, so we skip this operation.
+! - i = 1: nums[1] and nums[2] are equal, we multiply nums[1] by 2 and change nums[2] to 0. The array becomes [1,**4**,**0**,1,1,0].
+! - i = 2: nums[2] and nums[3] are not equal, so we skip this operation.
+! - i = 3: nums[3] and nums[4] are equal, we multiply nums[3] by 2 and change nums[4] to 0. The array becomes [1,4,0,**2**,**0**,0].
+! - i = 4: nums[4] and nums[5] are equal, we multiply nums[4] by 2 and change nums[5] to 0. The array becomes [1,4,0,2,**0**,**0**].
+! After that, we shift the 0's to the end, which gives the array [1,4,2,0,0,0].
+
+! Example 2:
+! Input: nums = [0,1]
+! Output: [1,0]
+! Explanation: No operation can be applied, we just shift the 0 to the end.
+
+! Constraints:
+! 2 <= nums.length <= 2000
+! 0 <= nums[i] <= 1000
+
+! This is a full Fortran script with a valid main entry point that solves the problem.
+! The program should run with all provided examples and output to stdout.
+
+! You are given a 0-indexed array nums of size n consisting of non-negative integers.
+! You need to apply n - 1 operations to this array where, in the ith operation (0-indexed), you will apply the following on the ith element of nums:
+! If nums[i] == nums[i + 1], then multiply nums[i] by 2 and set nums[i + 1] to 0. Otherwise, you skip this operation.
+
+! After performing all the operations, shift all the 0's to the end of the array.
+! For example, the array [1,0,2,0,0,1] after shifting all its 0's to the end, is [1,2,1,0,0,0].
+
+! Return the resulting array.
+
+! Note that the operations are applied sequentially, not all at once.
+
+! Example 1:
+! Input: nums = [1,2,2,1,1,0]
+! Output: [1,4,2,0,0,0]
+! Explanation: We do the following operations:
+! - i = 0: nums[0] and nums[1] are not equal, so we skip this operation.
+! - i = 1: nums[1] and nums[2] are equal, we multiply nums
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>/usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o: in function `_start':
+(.text+0x1b): undefined reference to `main'
+collect2: error: ld returned 1 exit status
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def performOps(nums):
+    n = len(nums)
+    for i in range(n - 1):
+        if nums[i] == nums[i + 1]:
+            nums[i] *= 2
+            nums[i + 1] = 0
+    nonZeroIndex = 0
+    for i in range(n):
+        if nums[i] != 0:
+            nums[nonZeroIndex] = nums[i]
+            nonZeroIndex += 1
+    while(nonZeroIndex &lt; n):
+        nums[nonZeroIndex] = 0
+        nonZeroIndex += 1
+    return nums
+</code></pre>
+<p>Iterate through the <code>nums</code> array from index <code>0</code> to <code>n - 2</code>.
+For each index <code>i</code>, check if <code>nums[i]</code> equals <code>nums[i + 1]</code>. If equal, multiply <code>nums[i]</code> by <code>2</code> and set <code>nums[i + 1]</code> to <code>0</code>.
+After the operations, shift all <code>0</code>'s to the end of the array. To do this, keep track of a <code>nonZeroIndex</code> and copy only non-zero elements to that index. Increment the <code>nonZeroIndex</code> for every non-zero element copied. Finally, fill the rest of the array with <code>0</code>'s starting from the <code>nonZeroIndex</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+using namespace std;
+
+vector&lt;int&gt; performOps(vector&lt;int&gt;&amp; nums) {
+    int n = nums.size();
+    for (int i = 0; i &lt; n - 1; ++i) {
+        if (nums[i] == nums[i + 1]) {
+            nums[i] *= 2;
+            nums[i + 1] = 0;
+        }
+    }
+    int nonZeroIndex = 0;
+    for (int i = 0; i &lt; n; ++i) {
+        if (nums[i] != 0) {
+            nums[nonZeroIndex++] = nums[i];
+        }
+    }
+    while (nonZeroIndex &lt; n) {
+        nums[nonZeroIndex++] = 0;
+    }
+    return nums;
+}
+</code></pre>
+<p>Iterate through the <code>nums</code> array from index <code>0</code> to <code>n - 2</code>.
+For each index <code>i</code>, check if <code>nums[i]</code> equals <code>nums[i + 1]</code>. If equal, multiply <code>nums[i]</code> by <code>2</code> and set <code>nums[i + 1]</code> to <code>0</code>.
+After the operations, shift all <code>0</code>'s to the end of the array. To do this, keep track of a <code>nonZeroIndex</code> and copy only non-zero elements to that index. Increment the <code>nonZeroIndex</code> for every non-zero element copied. Finally, fill the rest of the array with <code>0</code>'s starting from the <code>nonZeroIndex</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Check if Number Has Equal Digit Count and Digit Value</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2278/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2287/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>0-indexed</strong> string <code>num</code> of length <code>n</code> consisting of digits.</p>
+<p>Return <code>true</code> <em>if for <strong>every</strong> index</em> <code>i</code> <em>in the range</em> <code>0 &lt;= i &lt; n</code><em>, the digit</em> <code>i</code> <em>occurs</em> <code>num[i]</code> <em>times in</em> <code>num</code><em>, otherwise return</em> <code>false</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num =  "1210 "
+<strong>Output:</strong> true
+<strong>Explanation:</strong>
+num[0] = '1'. The digit 0 occurs once in num.
+num[1] = '2'. The digit 1 occurs twice in num.
+num[2] = '1'. The digit 2 occurs once in num.
+num[3] = '0'. The digit 3 occurs zero times in num.
+The condition holds true for every index in  "1210 ", so return true.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num =  "030 "
+<strong>Output:</strong> false
+<strong>Explanation:</strong>
+num[0] = '0'. The digit 0 should occur zero times, but actually occurs twice in num.
+num[1] = '3'. The digit 1 should occur three times, but actually occurs zero times in num.
+num[2] = '0'. The digit 2 occurs zero times in num.
+The indices 0 and 1 both violate the condition, so return false.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == num.length</code></li>
+<li><code>1 &lt;= n &lt;= 10</code></li>
+<li><code>num</code> consists of digits.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/check-if-number-has-equal-digit-count-and-digit-value/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=10) :: num
+    integer :: n
+    logical :: result
+
+    ! Example 1
+    num = "1210"
+    n = len(trim(num))
+    result = checkOccurrences(num, n)
+    if (result) then
+        print *, "Example 1: True"
+    else
+        print *, "Example 1: False"
+    end if
+
+    ! Example 2
+    num = "030"
+    n = len(trim(num))
+    result = checkOccurrences(num, n)
+    if (result) then
+        print *, "Example 2: True"
+    else
+        print *, "Example 2: False"
+    end if
+
+contains
+
+    function checkOccurrences(num, n) result(res)
+        implicit none
+        character(len=*), intent(in) :: num
+        integer, intent(in) :: n
+        logical :: res
+        integer :: i, count
+
+        do i = 0, n - 1
+            count = 0
+            do j = 1, n
+                if (num(j:j) == char(48 + i)) then
+                    count = count + 1
+                end if
+            end do
+            if (count /= num(i+1:i+1)) then
+                res = .false.
+                return
+            end if
+        end do
+        res = .true.
+    end function checkOccurrences
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:39:16:
+
+   39 |             do j = 1, n
+      |                1
+Error: Symbol ‘j’ at (1) has no IMPLICIT type
+temp.f95:44:16:
+
+   44 |             if (count /= num(i+1:i+1)) then
+      |                1
+Error: Operands of comparison operator ‘/=’ at (1) are INTEGER(4)/CHARACTER(*)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module e99_every_digit_occurs_n_times
+
+implicit none
+
+interface
+
+    function is_every_digit_occurs_n_times(num) result(res)
+        implicit none
+        character(len=*), intent(in) :: num
+        logical :: res
+    end function is_every_digit_occurs_n_times
+
+end interface
+
+contains
+
+    function is_every_digit_occurs_n_times(num) result(res)
+        implicit none
+        character(len=*), intent(in) :: num
+        integer :: i, j, n, digit
+        logical :: res
+
+        n = len(num)
+        res = .true.
+
+        do i = 0, n - 1
+            digit = ichar(num(i + 1:i + 1)) - ichar('0')
+            do j = 0, n - 1
+                if (j /= i .and. num(j + 1:j + 1) == num(i + 1:i + 1)) then
+                    res = .false.
+                    exit
+                end if
+            end do
+            if (.not. res) exit
+        end do
+
+    end function is_every_digit_occurs_n_times
+
+end module e99_every_digit_occurs_n_times
+
+program test_e99_every_digit_occurs_n_times
+    use e99_every_digit_occurs_n_times
+    implicit none
+    logical :: res
+
+    res = is_every_digit_occurs_n_times("1210")
+    if (res) then
+        write (*,*) "Passed!"
+    else
+        write (*,*) "Failed!"
+    end if
+
+    res = is_every_digit_occurs_n_times("030")
+    if (res) then
+        write (*,*) "Passed!"
+    else
+        write (*,*) "Failed!"
+    end if
+
+    res = is_every_digit_occurs_n_times("123456789")
+    if (res) then
+        write (*,*) "Passed!"
+    else
+        write (*,*) "Failed!"
+    end if
+
+    res = is_every_digit_occurs_n_times("0123456789")
+    if (res) then
+        write (*,*) "Passed!"
+    else
+        write (*,*) "Failed!"
+    end if
+
+end program test_e99_every_digit_occurs_n_times
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:17:43:
+
+    7 |     function is_every_digit_occurs_n_times(num) result(res)
+      |    2                                       
+......
+   17 |     function is_every_digit_occurs_n_times(num) result(res)
+      |                                           1
+Error: Procedure ‘is_every_digit_occurs_n_times’ at (1) is already defined at (2)
+temp.f95:18:21:
+
+   18 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:19:43:
+
+   19 |         character(len=*), intent(in) :: num
+      |                                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:20:33:
+
+   20 |         integer :: i, j, n, digit
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:21:22:
+
+   21 |         logical :: res
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:23:20:
+
+   23 |         n = len(num)
+      |                    1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:20:
+
+   24 |         res = .true.
+      |                    1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:23:
+
+   26 |         do i = 0, n - 1
+      |                       1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:27:36:
+
+   27 |             digit = ichar(num(i + 1:i + 1)) - ichar('0')
+      |                                    1
+Error: Syntax error in argument list at (1)
+temp.f95:28:27:
+
+   28 |             do j = 0, n - 1
+      |                           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:29:43:
+
+   29 |                 if (j /= i .and. num(j + 1:j + 1) == num(i + 1:i + 1)) then
+      |                                           1
+Error: Syntax error in argument list at (1)
+temp.f95:30:33:
+
+   30 |                     res = .false.
+      |                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:31:24:
+
+   31 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:32:19:
+
+   32 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:33:15:
+
+   33 |             end do
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:31:
+
+   34 |             if (.not. res) exit
+      |                               1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:35:11:
+
+   35 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:37:7:
+
+   37 |     end function is_every_digit_occurs_n_times
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:42:9:
+
+   42 |     use e99_every_digit_occurs_n_times
+      |         1
+Fatal Error: Cannot open module file ‘e99_every_digit_occurs_n_times.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def rearrange_array(nums):
+    nums.sort()
+    for i in range(1, len(nums) - 1, 2):
+        nums[i], nums[i + 1] = nums[i + 1], nums[i]
+    return nums
+</code></pre>
+<p>The algorithm starts by sorting the given integer array <code>nums</code> in ascending order. Then, iterates through the sorted array using a for-loop, swapping the numbers at the even index with the number immediately after it. The next step in the loop is done by incrementing the iterator by 2 (i.e., <code>i += 2</code>). The algorithm continues until the entire array is rearranged. Finally, the rearranged array is returned.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+vector&lt;int&gt; rearrangeArray(vector&lt;int&gt;&amp; nums) {
+    sort(nums.begin(), nums.end());
+    for (int i = 1; i &lt; nums.size() - 1; i += 2) {
+        swap(nums[i], nums[i + 1]);
+    }
+    return nums;
+}
+</code></pre>
+<p>The algorithm starts by sorting the given integer array <code>nums</code> in ascending order. Then, iterates through the sorted array using a for-loop, swapping the numbers at the even index with the number immediately after it. The next step in the loop is done by incrementing the iterator by 2 (i.e., <code>i += 2</code>). The algorithm continues until the entire array is rearranged. Finally, the rearranged array is returned.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

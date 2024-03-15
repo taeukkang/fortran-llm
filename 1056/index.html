@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Confusing Number</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1051/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1064/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A <strong>confusing number</strong> is a number that when rotated <code>180</code> degrees becomes a different number with <strong>each digit valid</strong>.</p>
+<p>We can rotate digits of a number by <code>180</code> degrees to form new digits.</p>
+<ul>
+<li>When <code>0</code>, <code>1</code>, <code>6</code>, <code>8</code>, and <code>9</code> are rotated <code>180</code> degrees, they become <code>0</code>, <code>1</code>, <code>9</code>, <code>8</code>, and <code>6</code> respectively.</li>
+<li>When <code>2</code>, <code>3</code>, <code>4</code>, <code>5</code>, and <code>7</code> are rotated <code>180</code> degrees, they become <strong>invalid</strong>.</li>
+</ul>
+<p>Note that after rotating a number, we can ignore leading zeros.</p>
+<ul>
+<li>For example, after rotating <code>8000</code>, we have <code>0008</code> which is considered as just <code>8</code>.</li>
+</ul>
+<p>Given an integer <code>n</code>, return <code>true</code> <em>if it is a <strong>confusing number</strong>, or</em> <code>false</code> <em>otherwise</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 6
+<strong>Output:</strong> true
+<strong>Explanation:</strong> We get 9 after rotating 6, 9 is a valid number, and 9 != 6.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 89
+<strong>Output:</strong> true
+<strong>Explanation:</strong> We get 68 after rotating 89, 68 is a valid number and 68 != 89.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> n = 11
+<strong>Output:</strong> false
+<strong>Explanation:</strong> We get 11 after rotating 11, 11 is a valid number but the value remains the same, thus 11 is not a confusing number</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= n &lt;= 109</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/confusing-number/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, n
+    logical :: confusing
+
+    ! Examples
+    do i = 1, size(examples)
+        read (examples(i), *) n
+        write (*, '(A, I0, A)', advance='no') 'Confusing number ', n, '? '
+        confusing = confusing_number(n)
+        if (confusing) then
+            write (*, '(A)') 'Yes'
+        else
+            write (*, '(A)') 'No'
+        end if
+    end do
+
+contains
+
+    function confusing_number(n) result(confusing)
+        implicit none
+        integer, intent(in) :: n
+        logical :: confusing
+        integer :: rotated
+
+        confused = .false.
+
+        ! Rotate the digits of n by 180 degrees
+        rotated = modulo(n * 10 + 10 - n, 100)
+
+        ! Check if rotated is a valid number
+        select case (rotated)
+            case (0, 1, 6, 8, 9)
+                confusing = .true.
+            case default
+                confusing = .false.
+        end select
+
+        ! Ignore leading zeros
+        rotated = abs(rotated)
+
+        ! Check if rotated is equal to n
+        if (rotated == n) then
+            confusing = .false.
+        end if
+
+    end function confusing_number
+
+end program main
+
+integer, parameter :: examples(3) = (/ 6, 89, 11 /)</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:1:12:
+
+    1 | program main
+      |            1
+......
+   52 | integer, parameter :: examples(3) = (/ 6, 89, 11 /)
+      |                                                   2
+Error: Two main PROGRAMs at (1) and (2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program confusing_number
+      implicit none
+
+      integer :: n, rotated_n, digit, i
+      logical :: is_confusing
+
+      ! Read the input number
+      read (*, *) n
+
+      ! Initialize the is_confusing flag
+      is_confusing = .false.
+
+      ! Rotate the number by 180 degrees
+      rotated_n = n
+      do i = 1, 180
+        rotated_n = rotated_n * 10
+        digit = mod(rotated_n, 10)
+        if (digit == 0 .or. digit == 1 .or. digit == 6 .or. digit == 8 .or. digit == 9) then
+          rotated_n = rotated_n / 10
+        else
+          is_confusing = .true.
+          exit
+        end if
+      end do
+
+      ! Check if the rotated number is a valid number
+      if (is_confusing) then
+        ! Check if the rotated number is different from the original number
+        if (rotated_n /= n) then
+          print *, "True"
+        else
+          print *, "False"
+        end if
+      else
+        print *, "False"
+      end if
+
+      end program confusing_number
+
+This program uses a loop to rotate the input number by 180 degrees. It checks if each digit after rotation is valid (i.e., it is either 0, 1, 6, 8, or 9) and if it is not, it sets the is_confusing flag to true. If the is_confusing flag is true, it checks if the rotated number is different from the original number and prints "True" if it is, and "False" otherwise. If the is_confusing flag is false, it prints "False".
+
+Note that this program assumes that the input number is non-negative. If the input number can be negative, you will need to add a check for this case.
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:40:132:
+
+   40 | This program uses a loop to rotate the input number by 180 degrees. It checks if each digit after rotation is valid (i.e., it is either 0, 1, 6, 8, or 9) and if it is not, it sets the is_confusing flag to true. If the is_confusing flag is true, it checks if the rotated number is different from the original number and prints "True" if it is, and "False" otherwise. If the is_confusing flag is false, it prints "False".
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:42:132:
+
+   42 | Note that this program assumes that the input number is non-negative. If the input number can be negative, you will need to add a check for this case.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-javascript">function shipWithinDays(weights, days) {
+    let left = Math.max(...weights), right = weights.reduce((a, b) =&gt; a + b, 0);
+    while (left &lt; right) {
+        let mid = left + ((right - left) / 2) | 0;
+        let day_count = 1, curr_capacity = 0;
+        for (const w of weights) {
+            curr_capacity += w;
+            if (curr_capacity &gt; mid) {
+                day_count++;
+                curr_capacity = w;
+            }
+        }
+        if (day_count &gt; days) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return left;
+}
+</code></pre>
+<p>The algorithm employs binary search to find the least weight capacity. It starts by setting the initial search range to the maximum weight among packages (left) and the total weight of all packages (right). Then, the algorithm does the following steps until left is not less than right:
+1. Compute the middle value (mid) of the search range.
+2. Go through the packages' weights and count the days needed to ship them with the current mid value as the capacity. If the accumulated weight of packages exceeds the current capacity (mid), increment the day count and reset the accumulated weight.
+3. If the calculated days needed is greater than the given days, we need a bigger capacity, so we update left to mid + 1. Otherwise, update right to mid.</p>
+<p>After the loop, left is the least weight capacity that will ship all packages within days days.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int shipWithinDays(std::vector&lt;int&gt;&amp; weights, int days) {
+    int left = *max_element(weights.begin(), weights.end());
+    int right = accumulate(weights.begin(), weights.end(), 0);
+    while (left &lt; right) {
+        int mid = left + (right - left) / 2;
+        int day_count = 1, curr_capacity = 0;
+        for (int w : weights) {
+            curr_capacity += w;
+            if (curr_capacity &gt; mid) {
+                day_count++;
+                curr_capacity = w;
+            }
+        }
+        if (day_count &gt; days) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+    return left;
+}
+</code></pre>
+<p>The algorithm employs binary search to find the least weight capacity. It starts by setting the initial search range to the maximum weight among packages (left) and the total weight of all packages (right). Then, the algorithm does the following steps until left is not less than right:
+1. Compute the middle value (mid) of the search range.
+2. Go through the packages' weights and count the days needed to ship them with the current mid value as the capacity. If the accumulated weight of packages exceeds the current capacity (mid), increment the day count and reset the accumulated weight.
+3. If the calculated days needed is greater than the given days, we need a bigger capacity, so we update left to mid + 1. Otherwise, update right to mid.</p>
+<p>After the loop, left is the least weight capacity that will ship all packages within days days.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

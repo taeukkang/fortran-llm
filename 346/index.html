@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Moving Average from Data Stream</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/345/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/349/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a stream of integers and a window size, calculate the moving average of all integers in the sliding window.</p>
+<p>Implement the <code>MovingAverage</code> class:</p>
+<ul>
+<li><code>MovingAverage(int size)</code> Initializes the object with the size of the window <code>size</code>.</li>
+<li><code>double next(int val)</code> Returns the moving average of the last <code>size</code> values of the stream.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input</strong>
+[ "MovingAverage ",  "next ",  "next ",  "next ",  "next "]
+[[3], [1], [10], [3], [5]]
+<strong>Output</strong>
+[null, 1.0, 5.5, 4.66667, 6.0]</p>
+<p><strong>Explanation</strong>
+MovingAverage movingAverage = new MovingAverage(3);
+movingAverage.next(1); // return 1.0 = 1 / 1
+movingAverage.next(10); // return 5.5 = (1 + 10) / 2
+movingAverage.next(3); // return 4.66667 = (1 + 10 + 3) / 3
+movingAverage.next(5); // return 6.0 = (10 + 3 + 5) / 3</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= size &lt;= 1000</code></li>
+<li><code>-105 &lt;= val &lt;= 105</code></li>
+<li>At most <code>104</code> calls will be made to <code>next</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/moving-average-from-data-stream/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use :: moving_average_mod
+    implicit none
+
+    type(MovingAverage) :: moving_average
+    integer :: i, n
+    integer, parameter :: size = 3
+
+    ! Example 1
+    write (*, "(A)") "Example 1:"
+    write (*, "(A)") "Input:"
+    write (*, "(A)") "[ 'MovingAverage ', 'next ', 'next ', 'next ', 'next ']"
+    write (*, "(A)") "["
+    do i = 1, size
+        write (*, "(I0)", advance="no") i
+        if (i < size) then
+            write (*, "(A)", advance="no") ", "
+        end if
+    end do
+    write (*, *) "]"
+    write (*, "(A)") "Output:"
+    write (*, "(A)") "[null, 1.0, 5.5, 4.66667, 6.0]"
+    write (*, "(A)") ""
+
+    moving_average = MovingAverage(size)
+    do i = 1, size
+        call moving_average%next(i)
+    end do
+    write (*, "(F8.5)") moving_average%next(3)
+    write (*, "(F8.5)") moving_average%next(10)
+    write (*, "(F8.5)") moving_average%next(3)
+    write (*, "(F8.5)") moving_average%next(5)
+
+    ! Example 2
+    write (*, "(A)") "Example 2:"
+    write (*, "(A)") "Input:"
+    write (*, "(A)") "[ 'MovingAverage ', 'next ', 'next ', 'next ', 'next ']"
+    write (*, "(A)") "["
+    do i = 1, size
+        write (*, "(I0)", advance="no") i
+        if (i < size) then
+            write (*, "(A)", advance="no") ", "
+        end if
+    end do
+    write (*, *) "]"
+    write (*, "(A)") "Output:"
+    write (*, "(A)") "[null, 1.0, 5.5, 4.66667, 6.0]"
+    write (*, "(A)") ""
+
+    moving_average = MovingAverage(size)
+    do i = 1, size
+        call moving_average%next(i)
+    end do
+    write (*, "(F8.5)") moving_average%next(3)
+    write (*, "(F8.5)") moving_average%next(10)
+    write (*, "(F8.5)") moving_average%next(3)
+    write (*, "(F8.5)") moving_average%next(5)
+
+end program main
+
+module moving_average_mod
+    implicit none
+    private
+
+    public :: MovingAverage
+
+    type :: MovingAverage
+        private
+        integer :: size
+        real, allocatable :: buffer(:)
+    contains
+        procedure :: next => next_moving_average
+    end type MovingAverage
+
+contains
+
+    function next_moving_average(this, val) result(res)
+        class(MovingAverage), intent(inout) :: this
+        integer, value :: val
+        real :: res
+
+        if (.not. allocated(this%buffer)) then
+            allocate(this%buffer(this%size))
+            this%buffer = 0.0
+        end if
+
+        this%buffer(1:this%size-1) = this%buffer(2:this%size)
+        this%buffer(this%size) = val
+
+        res = sum(this%buffer) / real(this%size)
+
+    end function next_moving_average
+
+end module moving_average_mod</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:2:11:
+
+    2 |     use :: moving_average_mod
+      |           1
+Fatal Error: Cannot open module file ‘moving_average_mod.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module MovingAverage
+    implicit none
+
+    type :: MovingAverage
+        integer :: size
+        real(kind=8), allocatable :: values(:)
+        real(kind=8) :: sum
+    contains
+        procedure :: next
+    end type MovingAverage
+
+    interface MovingAverage
+        module procedure :: createMovingAverage
+    end interface MovingAverage
+
+contains
+
+    function createMovingAverage(size) result(movingAverage)
+        integer, intent(in) :: size
+        type(MovingAverage) :: movingAverage
+
+        allocate(movingAverage%values(size))
+        movingAverage%size = size
+        movingAverage%sum = 0.0d0
+    end function createMovingAverage
+
+    function next(movingAverage, val) result(average)
+        class(MovingAverage), intent(inout) :: movingAverage
+        integer, intent(in) :: val
+        real(kind=8) :: average
+        integer :: i
+
+        movingAverage%sum = movingAverage%sum - movingAverage%values(1) + val
+        movingAverage%values(1:size-1) = movingAverage%values(2:size)
+        movingAverage%values(size) = val
+
+        average = movingAverage%sum / size
+    end function next
+
+end module MovingAverage
+
+program main
+    use MovingAverage
+    implicit none
+
+    integer :: i, n
+    integer, allocatable :: values(:)
+    type(MovingAverage) :: movingAverage
+
+    ! read input
+    read(*,*) n
+    allocate(values(n))
+    do i = 1, n
+        read(*,*) values(i)
+    end do
+
+    ! create moving average object
+    movingAverage = createMovingAverage(n)
+
+    ! calculate moving average for each value
+    do i = 1, n
+        write(*,*) next(movingAverage, values(i))
+    end do
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:25:
+
+    4 |     type :: MovingAverage
+      |                         1
+Error: MODULE attribute of ‘movingaverage’ conflicts with PROCEDURE attribute at (1)
+temp.f95:10:7:
+
+   10 |     end type MovingAverage
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:12:27:
+
+   12 |     interface MovingAverage
+      |                           1
+Error: Unexpected INTERFACE statement in CONTAINS section at (1)
+temp.f95:13:25:
+
+   13 |         module procedure :: createMovingAverage
+      |                         1
+Error: MODULE PROCEDURE at (1) must be in a generic module interface
+temp.f95:14:7:
+
+   14 |     end interface MovingAverage
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:16:8:
+
+   16 | contains
+      |        1
+Error: Unexpected CONTAINS statement in CONTAINS section at (1)
+temp.f95:20:27:
+
+   20 |         type(MovingAverage) :: movingAverage
+      |                           1
+Error: GENERIC attribute conflicts with RESULT attribute in ‘movingaverage’ at (1)
+temp.f95:22:32:
+
+   22 |         allocate(movingAverage%values(size))
+      |                                1
+Error: Symbol ‘movingaverage’ at (1) has no IMPLICIT type
+temp.f95:23:23:
+
+   23 |         movingAverage%size = size
+      |                       1
+Error: Symbol ‘movingaverage’ at (1) has no IMPLICIT type
+temp.f95:24:23:
+
+   24 |         movingAverage%sum = 0.0d0
+      |                       1
+Error: Symbol ‘movingaverage’ at (1) has no IMPLICIT type
+temp.f95:28:29:
+
+   28 |         class(MovingAverage), intent(inout) :: movingAverage
+      |                             1
+Error: Derived type ‘movingaverage’ at (1) is being used before it is defined
+temp.f95:33:23:
+
+   33 |         movingAverage%sum = movingAverage%sum - movingAverage%values(1) + val
+      |                       1
+Error: Symbol ‘movingaverage’ at (1) has no IMPLICIT type
+temp.f95:34:23:
+
+   34 |         movingAverage%values(1:size-1) = movingAverage%values(2:size)
+      |                       1
+Error: Symbol ‘movingaverage’ at (1) has no IMPLICIT type
+temp.f95:35:23:
+
+   35 |         movingAverage%values(size) = val
+      |                       1
+Error: Symbol ‘movingaverage’ at (1) has no IMPLICIT type
+temp.f95:37:33:
+
+   37 |         average = movingAverage%sum / size
+      |                                 1
+Error: Symbol ‘movingaverage’ at (1) has no IMPLICIT type
+temp.f95:27:31:
+
+   27 |     function next(movingAverage, val) result(average)
+      |                               1
+Error: Symbol ‘movingaverage’ at (1) has no IMPLICIT type; did you mean ‘average’?
+temp.f95:18:60:
+
+   18 |     function createMovingAverage(size) result(movingAverage)
+      |                                                            1
+Error: Result ‘movingaverage’ of contained function ‘createmovingaverage’ at (1) has no IMPLICIT type
+temp.f95:43:9:
+
+   43 |     use MovingAverage
+      |         1
+Fatal Error: Cannot open module file ‘movingaverage.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from collections import deque
+
+class MovingAverage:
+    def __init__(self, size: int):
+        self.queue = deque()
+        self.maxSize = size
+        self.sum = 0.0
+
+    def next(self, val: int) -&gt; float:
+        if len(self.queue) == self.maxSize:
+            self.sum -= self.queue.popleft()
+        self.queue.append(val)
+        self.sum += val
+        return self.sum / len(self.queue)
+</code></pre>
+<p>The algorithm uses a queue to maintain a sliding window of the last <code>size</code> values of the stream. When a new value is added, the algorithm checks the size of the queue. If it equals <code>size</code>, the oldest value is removed from the front of the queue by updating the sum and popping it. Then, the new value is added to the back of the queue, and the sum is updated. The average is returned by dividing the sum by the number of values currently in the queue. The time complexity of the <code>next</code> function is O(1).</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;queue&gt;
+using namespace std;
+
+class MovingAverage {
+public:
+    queue&lt;int&gt; q;
+    int maxSize;
+    double sum;
+
+    MovingAverage(int size) {
+        maxSize = size;
+        sum = 0;
+    }
+
+    double next(int val) {
+        if (q.size() == maxSize) {
+            sum -= q.front();
+            q.pop();
+        }
+        q.push(val);
+        sum += val;
+        return sum / q.size();
+    }
+};
+</code></pre>
+<p>The algorithm uses a queue to maintain a sliding window of the last <code>size</code> values of the stream. When a new value is added, the algorithm checks the size of the queue. If it equals <code>size</code>, the oldest value is removed from the front of the queue by updating the sum and popping it. Then, the new value is added to the back of the queue, and the sum is updated. The average is returned by dividing the sum by the number of values currently in the queue. The time complexity of the <code>next</code> function is O(1).</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

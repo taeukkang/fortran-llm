@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Subtree of Another Tree</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/566/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/575/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the roots of two binary trees <code>root</code> and <code>subRoot</code>, return <code>true</code> if there is a subtree of <code>root</code> with the same structure and node values of <code>subRoot</code> and <code>false</code> otherwise.</p>
+<p>A subtree of a binary tree <code>tree</code> is a tree that consists of a node in <code>tree</code> and all of this node's descendants. The tree <code>tree</code> could also be considered as a subtree of itself.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [3,4,5,1,2], subRoot = [4,1,2]
+<strong>Output:</strong> true</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the <code>root</code> tree is in the range <code>[1, 2000]</code>.</li>
+<li>The number of nodes in the <code>subRoot</code> tree is in the range <code>[1, 1000]</code>.</li>
+<li><code>-104 &lt;= root.val &lt;= 104</code></li>
+<li><code>-104 &lt;= subRoot.val &lt;= 104</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/subtree-of-another-tree/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: n = 7
+    real(kind=DP), dimension(n) :: root = [3._DP, 4._DP, 5._DP, 1._DP, &
+                                           2._DP, -1._DP, -2._DP]
+    real(kind=DP), dimension(n) :: subRoot = [4._DP, 1._DP, 2._DP]
+    logical :: result
+
+    print '(L1)', hasSubtree(root, subRoot)
+
+contains
+
+    function hasSubtree(root, subRoot) result(res)
+        real(kind=DP), intent(in) :: root(:), subRoot(:)
+        logical :: res
+
+        res = .false.
+
+        call hasSubtreeRecursive(root, subRoot, 1, res)
+
+    end function hasSubtree
+
+    recursive subroutine hasSubtreeRecursive(root, subRoot, idx, found)
+        real(kind=DP), intent(in) :: root(:), subRoot(:)
+        integer, value :: idx
+        logical, intent(out) :: found
+        integer :: i
+
+        if (idx > size(root)) then
+            return
+        end if
+
+        if (root(idx) == subRoot(1)) then
+            found = .true.
+            do i = 2, size(subRoot)
+                if (root(idx+i-1) /= subRoot(i)) then
+                    found = .false.
+                    exit
+                end if
+            end do
+            if (.not. found) then
+                return
+            end if
+        end if
+
+        call hasSubtreeRecursive(root, subRoot, idx+1, found)
+
+        if (.not. found) then
+            call hasSubtreeRecursive(root, subRoot, idx+size(root)-idx+1, found)
+        end if
+
+    end subroutine hasSubtreeRecursive
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:42:
+
+    7 |     real(kind=DP), dimension(n) :: subRoot = [4._DP, 1._DP, 2._DP]
+      |                                          1
+Error: Different shape for array assignment at (1) on dimension 1 (7 and 3)
+temp.f95:10:42:
+
+   10 |     print '(L1)', hasSubtree(root, subRoot)
+      |                                          1
+Error: Symbol ‘subroot’ at (1) has no IMPLICIT type; did you mean ‘root’?
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module BinaryTree
+    implicit none
+
+    type :: Node
+        integer :: val
+        type(Node), pointer :: left
+        type(Node), pointer :: right
+    end type Node
+
+    interface
+        function is_same_tree(root, subRoot) result(same)
+            type(Node), pointer, intent(in) :: root, subRoot
+            logical :: same
+        end function is_same_tree
+    end interface
+
+contains
+
+    function is_subtree(root, subRoot) result(same)
+        type(Node), pointer, intent(in) :: root, subRoot
+        logical :: same
+
+        same = is_same_tree(root, subRoot)
+
+    end function is_subtree
+
+    function is_same_tree(root, subRoot) result(same)
+        type(Node), pointer, intent(in) :: root, subRoot
+        logical :: same
+
+        if (associated(root, subRoot)) then
+            same = .true.
+        else if (associated(root)) then
+            same = is_same_tree(root%left, subRoot) .or. is_same_tree(root%right, subRoot)
+        else
+            same = .false.
+        end if
+
+    end function is_same_tree
+
+end module BinaryTree
+
+program main
+    use BinaryTree
+    implicit none
+
+    type(Node), pointer :: root, subRoot
+    logical :: same
+
+    ! Example 1
+    root => Node(val=3, left=Node(val=4, left=Node(val=1, left=Node(val=2))), right=Node(val=5))
+    subRoot => Node(val=4, left=Node(val=1, left=Node(val=2)))
+    same = is_subtree(root, subRoot)
+    write (*,*) "Example 1: ", same
+
+    ! Example 2
+    root => Node(val=3, left=Node(val=4, left=Node(val=1, left=Node(val=2))), right=Node(val=5))
+    subRoot => Node(val=4, left=Node(val=1, left=Node(val=2, left=Node(val=0))))
+    same = is_subtree(root, subRoot)
+    write (*,*) "Example 2: ", same
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:12:23:
+
+   12 |             type(Node), pointer, intent(in) :: root, subRoot
+      |                       1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:27:26:
+
+   11 |         function is_same_tree(root, subRoot) result(same)
+      |        2                  
+......
+   27 |     function is_same_tree(root, subRoot) result(same)
+      |                          1
+Error: Procedure ‘is_same_tree’ at (1) is already defined at (2)
+temp.f95:28:56:
+
+   28 |         type(Node), pointer, intent(in) :: root, subRoot
+      |                                                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:29:23:
+
+   29 |         logical :: same
+      |                       1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:31:43:
+
+   31 |         if (associated(root, subRoot)) then
+      |                                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:32:25:
+
+   32 |             same = .true.
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:33:39:
+
+   33 |         else if (associated(root)) then
+      |                                       1
+Error: Unexpected ELSE IF statement in CONTAINS section at (1)
+temp.f95:34:38:
+
+   34 |             same = is_same_tree(root%left, subRoot) .or. is_same_tree(root%right, subRoot)
+      |                                      1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:35:12:
+
+   35 |         else
+      |            1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:36:26:
+
+   36 |             same = .false.
+      |                          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:37:11:
+
+   37 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:39:7:
+
+   39 |     end function is_same_tree
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:15:
+
+   23 |         same = is_same_tree(root, subRoot)
+      |               1
+Error: Type mismatch in argument ‘root’ at (1); passed TYPE(node) to REAL(4)
+temp.f95:44:9:
+
+   44 |     use BinaryTree
+      |         1
+Fatal Error: Cannot open module file ‘binarytree.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-javascript">class TreeNode {
+    constructor(val, left = null, right = null) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+function isSubtree(root, subRoot) {
+    if (root === null) return false;
+    if (isIdentical(root, subRoot)) return true;
+    return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);
+}
+
+function isIdentical(n1, n2) {
+    if (n1 === null || n2 === null) return n1 === n2;
+    if (n1.val !== n2.val) return false;
+    return isIdentical(n1.left, n2.left) &amp;&amp; isIdentical(n1.right, n2.right);
+}
+</code></pre>
+<p>The algorithm checks if <code>subRoot</code> is a subtree of <code>root</code> by first looking whether the two trees have the same root node. If they do, it checks whether the substructures are also identical. If they are not, then <code>subRoot</code> is not a subtree at this level, and the algorithm looks further down the left and right branches of <code>root</code>. This is done by returning the logical <code>OR</code> between the result of checking left and right branches.</p>
+<p>The helper function <code>isIdentical</code> checks whether the two given trees have the same structure and node values, by comparing the current nodes and then recursively traversing the left and right substructures. If a <code>None</code> value for a node is found, the two nodes are identical if they are both <code>None</code>. Otherwise, if the node values differ, the trees are not identical.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+};
+
+bool isSubtree(TreeNode* root, TreeNode* subRoot) {
+    if (root == nullptr) return false;
+    if (isIdentical(root, subRoot)) return true;
+    return isSubtree(root-&gt;left, subRoot) || isSubtree(root-&gt;right, subRoot);
+}
+
+bool isIdentical(TreeNode* n1, TreeNode* n2) {
+    if (n1 == nullptr || n2 == nullptr) return n1 == n2;
+    if (n1-&gt;val != n2-&gt;val) return false;
+    return isIdentical(n1-&gt;left, n2-&gt;left) &amp;&amp; isIdentical(n1-&gt;right, n2-&gt;right);
+}
+</code></pre>
+<p>The algorithm checks if <code>subRoot</code> is a subtree of <code>root</code> by first looking whether the two trees have the same root node. If they do, it checks whether the substructures are also identical. If they are not, then <code>subRoot</code> is not a subtree at this level, and the algorithm looks further down the left and right branches of <code>root</code>. This is done by returning the logical <code>OR</code> between the result of checking left and right branches.</p>
+<p>The helper function <code>isIdentical</code> checks whether the two given trees have the same structure and node values, by comparing the current nodes and then recursively traversing the left and right substructures. If a <code>None</code> value for a node is found, the two nodes are identical if they are both <code>None</code>. Otherwise, if the node values differ, the trees are not identical.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

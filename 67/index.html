@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Add Binary</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/66/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/69/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two binary strings <code>a</code> and <code>b</code>, return <em>their sum as a binary string</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> a = "11", b = "1"
+<strong>Output:</strong> "100"</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> a = "1010", b = "1011"
+<strong>Output:</strong> "10101"</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= a.length, b.length &lt;= 104</code></li>
+<li><code>a</code> and <code>b</code> consist only of <code>'0'</code> or <code>'1'</code> characters.</li>
+<li>Each string does not contain leading zeros except for the zero itself.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/add-binary/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: a, b, c
+
+    a = '11'
+    b = '1'
+    call solve(a, b, c)
+    print *, c
+
+    a = '1010'
+    b = '1011'
+    call solve(a, b, c)
+    print *, c
+
+contains
+
+    subroutine solve(a, b, c)
+        implicit none
+        character(len=*), intent(in) :: a, b
+        character(len=:), allocatable, intent(out) :: c
+        integer :: i, j, k, n
+
+        n = len(a)
+        allocate(character(len=n+1) :: c)
+        c = ''
+
+        do i = 1, n
+            j = i + 1
+            if (j > n) exit
+            k = iarithmetic_sum(a(i:j), b(i:j))
+            write (c(i:i), '(I1)') k
+        end do
+
+    end subroutine solve
+
+    function iarithmetic_sum(a, b) result(c)
+        implicit none
+        character(len=*), intent(in) :: a, b
+        integer :: c
+        integer :: i, n
+
+        n = len(a)
+        c = 0
+        do i = 1, n
+            c = c + ichar(a(i:i)) - ichar('0') + ichar(b(i:i)) - ichar('0')
+        end do
+
+    end function iarithmetic_sum
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> 
+ 
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare the input and output variables
+      character(len=*) :: a, b
+      character(len=1000) :: result
+
+! Declare the variables to store the lengths of the strings
+      integer :: alen, blen
+
+! Declare the variables to store the individual digits of the strings
+      integer :: adigit, bdigit
+
+! Declare the variable to store the carry bit
+      integer :: carry
+
+! Initialize the result string to all zeros
+      result = "0"
+
+! Get the lengths of the input strings
+      alen = len_trim(a)
+      blen = len_trim(b)
+
+! Initialize the carry bit to zero
+      carry = 0
+
+! Loop through the digits of the input strings
+      do i = 1, max(alen, blen)
+! Get the individual digits of the input strings
+         adigit = ichar(a(i:i)) - ichar("0")
+         bdigit = ichar(b(i:i)) - ichar("0")
+
+! Add the digits and the carry bit
+         result(i:i) = char(mod(adigit + bdigit + carry, 2) + ichar("0"))
+
+! Set the carry bit for the next iteration
+         carry = int(adigit + bdigit + carry >= 2)
+      end do
+
+! If there is a carry bit left over, add it to the result string
+      if (carry == 1) then
+         result(i:i) = "1"
+      end if
+
+! Output the result string
+      write (*,*) result
+
+! End of the program
+      end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:2:27:
+
+    2 |       character(len=*) :: a, b
+      |                           1
+Error: Entity with assumed character length at (1) must be a dummy argument or a PARAMETER
+temp.f95:2:30:
+
+    2 |       character(len=*) :: a, b
+      |                              1
+Error: Entity with assumed character length at (1) must be a dummy argument or a PARAMETER
+temp.f95:34:21:
+
+   34 |          carry = int(adigit + bdigit + carry >= 2)
+      |                     1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def addBinary(a: str, b: str) -&gt; str:
+    result, carry, i, j = &quot;&quot;, 0, len(a) - 1, len(b) - 1
+    while i &gt;= 0 or j &gt;= 0 or carry:
+        if i &gt;= 0:
+            carry += int(a[i])
+            i -= 1
+        if j &gt;= 0:
+            carry += int(b[j])
+            j -= 1
+        result = str(carry % 2) + result
+        carry //= 2
+    return result
+</code></pre>
+<p>The algorithm initializes an empty result binary string, carry, and two pointers i and j pointing to the last element of strings a and b respectively.
+In each iteration:
+- If i is not out of bounds, add the corresponding binary number to the carry.
+- If j is not out of bounds, add the corresponding binary number to the carry.
+- Append the remainder of dividing carry by 2 to the result binary string (left side).
+- Update carry by dividing it by 2 (integer division).</p>
+<p>This process continues until i and j pointers become out of bounds and there is no carry left.</p>
+<p>Finally, return the result binary string.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">std::string addBinary(std::string a, std::string b) {
+    std::string result = &quot;&quot;;
+    int i = a.size() - 1, j = b.size() - 1, carry = 0;
+    while (i &gt;= 0 || j &gt;= 0 || carry) {
+        if (i &gt;= 0) carry += a[i--] - '0';
+        if (j &gt;= 0) carry += b[j--] - '0';
+        result = char(carry % 2 + '0') + result;
+        carry /= 2;
+    }
+    return result;
+}
+</code></pre>
+<p>The algorithm initializes an empty result binary string, carry, and two pointers i and j pointing to the last element of strings a and b respectively.
+In each iteration:
+- If i is not out of bounds, add the corresponding binary number to the carry.
+- If j is not out of bounds, add the corresponding binary number to the carry.
+- Append the remainder of dividing carry by 2 to the result binary string (left side).
+- Update carry by dividing it by 2 (integer division).</p>
+<p>This process continues until i and j pointers become out of bounds and there is no carry left.</p>
+<p>Finally, return the result binary string.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

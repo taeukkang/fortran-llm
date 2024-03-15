@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Largest 3-Same-Digit Number in String</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2259/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2269/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>num</code> representing a large integer. An integer is <strong>good</strong> if it meets the following conditions:</p>
+<ul>
+<li>It is a <strong>substring</strong> of <code>num</code> with length <code>3</code>.</li>
+<li>It consists of only one unique digit.</li>
+</ul>
+<p>Return <em>the <strong>maximum good</strong> integer as a <strong>string</strong> or an empty string</em> <code>" "</code> <em>if no such integer exists</em>.</p>
+<p>Note:</p>
+<ul>
+<li>A <strong>substring</strong> is a contiguous sequence of characters within a string.</li>
+<li>There may be <strong>leading zeroes</strong> in <code>num</code> or a good integer.</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num =  "6<strong>777</strong>133339 "
+<strong>Output:</strong>  "777 "
+<strong>Explanation:</strong> There are two distinct good integers:  "777 " and  "333 ".
+ "777 " is the largest, so we return  "777 ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num =  "23<strong>000</strong>19 "
+<strong>Output:</strong>  "000 "
+<strong>Explanation:</strong>  "000 " is the only good integer.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> num =  "42352338 "
+<strong>Output:</strong>  " "
+<strong>Explanation:</strong> No substring of length 3 consists of only one unique digit. Therefore, there are no good integers.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>3 &lt;= num.length &lt;= 1000</code></li>
+<li><code>num</code> only consists of digits.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/largest-3-same-digit-number-in-string/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: num
+    character(len=:), allocatable :: max_good_int
+
+    ! Examples taken from the problem statement
+    num = "6**777**133339"
+    call get_max_good_int(num, max_good_int)
+    write (*, '(A)') trim(max_good_int)
+
+    num = "23**000**19"
+    call get_max_good_int(num, max_good_int)
+    write (*, '(A)') trim(max_good_int)
+
+    num = "42352338"
+    call get_max_good_int(num, max_good_int)
+    write (*, '(A)') trim(max_good_int)
+
+contains
+
+    subroutine get_max_good_int(num, max_good_int)
+        implicit none
+        character(len=*), intent(in) :: num
+        character(len=:), allocatable, intent(out) :: max_good_int
+        integer :: i, j, k, n, m
+        logical :: found
+
+        ! Initialize variables
+        max_good_int = ""
+        n = len(num)
+        found = .false.
+
+        ! Iterate over all possible starting indices
+        do i = 1, n - 2
+            ! Check if the current substring has length 3
+            if (n - i < 3) exit
+
+            ! Check if the current substring consists of only one unique digit
+            found = .true.
+            do j = i + 1, i + 2
+                do k = j + 1, i + 2
+                    if (num(j:k) == num(i:j)) then
+                        found = .false.
+                        exit
+                    end if
+                end do
+                if (.not. found) exit
+            end do
+
+            ! If the current substring is good, update the maximum good integer
+            if (found) then
+                m = max(m, len(num(i:i+2)))
+                max_good_int = num(i:i+2)
+            end if
+        end do
+    end subroutine get_max_good_int
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>133
+**1
+233
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module max_good_integer
+
+implicit none
+
+contains
+
+function max_good_integer(num) result(max_good)
+
+character(len=*), intent(in) :: num
+character(len=3) :: max_good
+
+integer :: i, j, k, n
+
+max_good = " "
+
+n = len(num)
+
+do i = 1, n - 2
+    do j = i + 1, n - 1
+        do k = j + 1, n
+            if (num(i:j) == num(j:k) .and. num(j:k) /= "0") then
+                if (max_good == " " .or. len_trim(max_good) < len_trim(num(i:k))) then
+                    max_good = num(i:k)
+                end if
+            end if
+        end do
+    end do
+end do
+
+end function max_good_integer
+
+end module max_good_integer
+
+program test
+
+use max_good_integer
+
+implicit none
+
+character(len=1000) :: num
+character(len=3) :: max_good
+
+num = "6777133339"
+max_good = max_good_integer(num)
+write (*,*) "Max good integer: ", max_good
+
+num = "2300019"
+max_good = max_good_integer(num)
+write (*,*) "Max good integer: ", max_good
+
+num = "42352338"
+max_good = max_good_integer(num)
+write (*,*) "Max good integer: ", max_good
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:25:
+
+    7 | function max_good_integer(num) result(max_good)
+      |                         1
+Error: MODULE attribute of ‘max_good_integer’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:35:
+
+    9 | character(len=*), intent(in) :: num
+      |                                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:28:
+
+   10 | character(len=3) :: max_good
+      |                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:21:
+
+   12 | integer :: i, j, k, n
+      |                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:14:
+
+   14 | max_good = " "
+      |              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:12:
+
+   16 | n = len(num)
+      |            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:18:15:
+
+   18 | do i = 1, n - 2
+      |               1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:19:23:
+
+   19 |     do j = i + 1, n - 1
+      |                       1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:20:23:
+
+   20 |         do k = j + 1, n
+      |                       1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:21:22:
+
+   21 |             if (num(i:j) == num(j:k) .and. num(j:k) /= "0") then
+      |                      1
+Error: Syntax error in argument list at (1)
+temp.f95:22:77:
+
+   22 |                 if (max_good == " " .or. len_trim(max_good) < len_trim(num(i:k))) then
+      |                                                                             1
+Error: Syntax error in argument list at (1)
+temp.f95:23:37:
+
+   23 |                     max_good = num(i:k)
+      |                                     1
+Error: Syntax error in argument list at (1)
+temp.f95:24:19:
+
+   24 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:15:
+
+   25 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:11:
+
+   26 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:27:7:
+
+   27 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:3:
+
+   28 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:3:
+
+   30 | end function max_good_integer
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:36:5:
+
+   36 | use max_good_integer
+      |     1
+Fatal Error: Cannot open module file ‘max_good_integer.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def split_and_minimize(num):
+    a = num // 1000
+    b = (num % 1000) // 100
+    c = (num % 100) // 10
+    d = num % 10
+    return ((a * 10 + c) * 10 + b) * 10 + d
+</code></pre>
+<p>First, we split the given four-digit number 'num' into its individual digits a, b, c, and d.
+Then, we create two new numbers by changing the positioning of the digits in the following manner:</p>
+<ul>
+<li>new1 = a*10 + c (i.e., the first and the third digits of the original number)</li>
+<li>new2 = b*10 + d (i.e., the second and the fourth digits of the original number)</li>
+</ul>
+<p>Finally, we return the sum of these two new numbers as the minimum possible sum of new1 and new2.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int splitAndMinimize(int num) {
+    int a = num / 1000;
+    int b = (num % 1000) / 100;
+    int c = (num % 100) / 10;
+    int d = num % 10;
+    return ((a * 10 + c) * 10 + b) * 10 + d;
+}
+</code></pre>
+<p>First, we split the given four-digit number 'num' into its individual digits a, b, c, and d.
+Then, we create two new numbers by changing the positioning of the digits in the following manner:</p>
+<ul>
+<li>new1 = a*10 + c (i.e., the first and the third digits of the original number)</li>
+<li>new2 = b*10 + d (i.e., the second and the fourth digits of the original number)</li>
+</ul>
+<p>Finally, we return the sum of these two new numbers as the minimum possible sum of new1 and new2.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

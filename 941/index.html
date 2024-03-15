@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Valid Mountain Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/938/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/942/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of integers <code>arr</code>, return <em><code>true</code> if and only if it is a valid mountain array</em>.</p>
+<p>Recall that arr is a mountain array if and only if:</p>
+<ul>
+<li><code>arr.length &gt;= 3</code></li>
+<li>There exists some <code>i</code> with <code>0 &lt; i &lt; arr.length - 1</code> such that:<ul>
+<li><code>arr[0] &lt; arr[1] &lt; ... &lt; arr[i - 1] &lt; arr[i]</code></li>
+<li><code>arr[i] &gt; arr[i + 1] &gt; ... &gt; arr[arr.length - 1]</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [2,1]
+<strong>Output:</strong> false</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [3,5,5]
+<strong>Output:</strong> false</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> arr = [0,3,2,1]
+<strong>Output:</strong> true</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= arr.length &lt;= 104</code></li>
+<li><code>0 &lt;= arr[i] &lt;= 104</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/valid-mountain-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+
+! This program solves the problem described in the comment at the top of the file.
+
+implicit none
+integer :: arr(10)
+logical :: result
+
+! Example 1:
+arr = [2, 1]
+result = is_mountain_array(arr)
+print '(L1)', result
+
+! Example 2:
+arr = [3, 5, 5]
+result = is_mountain_array(arr)
+print '(L1)', result
+
+! Example 3:
+arr = [0, 3, 2, 1]
+result = is_mountain_array(arr)
+print '(L1)', result
+
+contains
+
+function is_mountain_array(arr) result(res)
+implicit none
+integer, intent(in) :: arr(:)
+logical :: res
+integer :: i
+
+if (size(arr) < 3) then
+    res = .false.
+else
+    do i = 2, size(arr) - 1
+        if (arr(i-1) < arr(i) .and. arr(i) > arr(i+1)) exit
+    end do
+    res = (i /= size(arr))
+end if
+
+end function is_mountain_array
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:10:0:
+
+   10 | arr = [2, 1]
+      | 
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 2)
+temp.f95:15:0:
+
+   15 | arr = [3, 5, 5]
+      | 
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 3)
+temp.f95:20:0:
+
+   20 | arr = [0, 3, 2, 1]
+      | 
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 4)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! This is a full Fortran script with a valid main entry point that solves the problem
+! of checking if an array is a valid mountain array.
+
+! The program should run with all provided examples and output to stdout.
+
+! Given an array of integers arr, return true if and only if it is a valid mountain array.
+! Recall that arr is a mountain array if and only if:
+! 
+! * arr.length >= 3
+! * There exists some i with 0 < i < arr.length - 1 such that:
+!   * arr[0] < arr[1] < ... < arr[i - 1] < arr[i]
+!   * arr[i] > arr[i + 1] > ... > arr[arr.length - 1]
+
+! Example 1:
+! Input: arr = [2,1]
+! Output: false
+
+! Example 2:
+! Input: arr = [3,5,5]
+! Output: false
+
+! Example 3:
+! Input: arr = [0,3,2,1]
+! Output: true
+
+! Constraints:
+! 1 <= arr.length <= 104
+! 0 <= arr[i] <= 104
+
+! This solution uses a simple approach of iterating through the array and checking
+! for the conditions of a mountain array.
+
+! The main entry point of the program.
+program mountain_array
+    implicit none
+
+    ! Declare the variables.
+    integer, dimension(:), allocatable :: arr
+    integer :: i, length
+    logical :: result
+
+    ! Read the input array from the console.
+    read (*, *) arr
+
+    ! Get the length of the array.
+    length = size(arr)
+
+    ! Check if the array is a mountain array.
+    result = mountain_array_helper(arr, length)
+
+    ! Print the result to the console.
+    write (*, *) result
+
+contains
+
+! A helper function to check if an array is a mountain array.
+function mountain_array_helper(arr, length) result(is_mountain_array)
+    implicit none
+
+    ! Declare the variables.
+    integer, dimension(:), intent(in) :: arr
+    integer, intent(in) :: length
+    logical :: is_mountain_array
+
+    ! Initialize the variables.
+    is_mountain_array = .false.
+
+    ! Check if the array is long enough to be a mountain array.
+    if (length < 3) then
+        return
+    end if
+
+    ! Find the first index where the array is not increasing.
+    do i = 2, length - 1
+        if (arr(i) < arr(i - 1)) then
+            exit
+        end if
+    end do
+
+    ! Check if the array is not decreasing from the first index to the end.
+    if (i == length - 1) then
+        return
+    end if
+
+    ! Check if the array is not increasing from the first index to the second index.
+    if (arr(i) > arr(i - 1)) then
+        return
+    end if
+
+    ! Check if the array is decreasing from the second index to the end.
+    do i = i + 1, length - 1
+        if (arr(i) < arr(i - 1)) then
+            return
+        end if
+    end do
+
+    ! If the array is not decreasing from the second index to the end, then it is a mountain array.
+    is_mountain_array = .true.
+
+end function mountain_array_helper
+end program mountain_array
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 43 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7b39745e6960 in ???
+#1  0x7b39745e74d9 in ???
+#2  0x7b397483b17b in ???
+#3  0x7b397483efd7 in ???
+#4  0x7b397483f0e3 in ???
+#5  0x57451a3d63e1 in MAIN__
+#6  0x57451a3d64c4 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def move_even_odd(nums):
+    even_index = 0
+    odd_index = len(nums) - 1
+
+    while even_index &lt; odd_index:
+        if nums[even_index] % 2 == 0:
+            even_index += 1
+        else:
+            nums[even_index], nums[odd_index] = nums[odd_index], nums[even_index]
+            odd_index -= 1
+
+    return nums
+</code></pre>
+<p>The algorithm uses two pointers, <code>evenIndex</code> and <code>oddIndex</code>. <code>evenIndex</code> starts from the beginning of the array, whereas <code>oddIndex</code> starts from the end. We iterate through the array until <code>evenIndex</code> is greater than or equal to <code>oddIndex</code>. Inside the loop, if <code>nums[evenIndex]</code> is even, we increment <code>evenIndex</code> because it's already in the correct position. If <code>nums[evenIndex]</code> is odd, we swap it with <code>nums[oddIndex]</code> and decrement <code>oddIndex</code>. Thus, we move even numbers to the beginning and odd numbers to the end of the array.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+using namespace std;
+
+void moveEvenOdd(vector&lt;int&gt;&amp; nums) {
+    int evenIndex = 0;
+    int oddIndex = nums.size() - 1;
+
+    while (evenIndex &lt; oddIndex) {
+        if (nums[evenIndex] % 2 == 0) {
+            evenIndex++;
+        } else {
+            swap(nums[evenIndex], nums[oddIndex]);
+            oddIndex--;
+        }
+    }
+}
+</code></pre>
+<p>The algorithm uses two pointers, <code>evenIndex</code> and <code>oddIndex</code>. <code>evenIndex</code> starts from the beginning of the array, whereas <code>oddIndex</code> starts from the end. We iterate through the array until <code>evenIndex</code> is greater than or equal to <code>oddIndex</code>. Inside the loop, if <code>nums[evenIndex]</code> is even, we increment <code>evenIndex</code> because it's already in the correct position. If <code>nums[evenIndex]</code> is odd, we swap it with <code>nums[oddIndex]</code> and decrement <code>oddIndex</code>. Thus, we move even numbers to the beginning and odd numbers to the end of the array.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

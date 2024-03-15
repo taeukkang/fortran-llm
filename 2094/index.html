@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Finding 3-Digit Even Numbers</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2089/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2099/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer array <code>digits</code>, where each element is a digit. The array may contain duplicates.</p>
+<p>You need to find <strong>all</strong> the <strong>unique</strong> integers that follow the given requirements:</p>
+<ul>
+<li>The integer consists of the <strong>concatenation</strong> of <strong>three</strong> elements from <code>digits</code> in <strong>any</strong> arbitrary order.</li>
+<li>The integer does not have <strong>leading zeros</strong>.</li>
+<li>The integer is <strong>even</strong>.</li>
+</ul>
+<p>For example, if the given <code>digits</code> were <code>[1, 2, 3]</code>, integers <code>132</code> and <code>312</code> follow the requirements.</p>
+<p>Return <em>a <strong>sorted</strong> array of the unique integers.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> digits = [2,1,3,0]
+<strong>Output:</strong> [102,120,130,132,210,230,302,310,312,320]
+<strong>Explanation:</strong> All the possible integers that follow the requirements are in the output array. 
+Notice that there are no <strong>odd</strong> integers or integers with <strong>leading zeros</strong>.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> digits = [2,2,8,8,2]
+<strong>Output:</strong> [222,228,282,288,822,828,882]
+<strong>Explanation:</strong> The same digit can be used as many times as it appears in digits. 
+In this example, the digit 8 is used twice each time in 288, 828, and 882. </p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> digits = [3,7,5]
+<strong>Output:</strong> []
+<strong>Explanation:</strong> No <strong>even</strong> integers can be formed using the given digits.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>3 &lt;= digits.length &lt;= 100</code></li>
+<li><code>0 &lt;= digits[i] &lt;= 9</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/finding-3-digit-even-numbers/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 100
+    integer :: digits(n)
+    integer :: i, j, k
+    logical :: found
+    integer :: unique_ints(n)
+    integer :: num_unique_ints
+
+    ! Example 1:
+    digits = [2, 1, 3, 0]
+    call solve(digits, unique_ints, num_unique_ints)
+    print '(A, I0)', 'Example 1: ', num_unique_ints
+    do i = 1, num_unique_ints
+        print '(I0)', unique_ints(i)
+    end do
+
+    ! Example 2:
+    digits = [2, 2, 8, 8, 2]
+    call solve(digits, unique_ints, num_unique_ints)
+    print '(A, I0)', 'Example 2: ', num_unique_ints
+    do i = 1, num_unique_ints
+        print '(I0)', unique_ints(i)
+    end do
+
+    ! Example 3:
+    digits = [3, 7, 5]
+    call solve(digits, unique_ints, num_unique_ints)
+    print '(A, I0)', 'Example 3: ', num_unique_ints
+    do i = 1, num_unique_ints
+        print '(I0)', unique_ints(i)
+    end do
+
+contains
+
+    subroutine solve(digits, unique_ints, num_unique_ints)
+        implicit none
+        integer, intent(in) :: digits(:)
+        integer, intent(out) :: unique_ints(:)
+        integer, intent(out) :: num_unique_ints
+        integer :: i, j, k
+        logical :: found
+
+        num_unique_ints = 0
+        do i = 1, size(digits) - 2
+            do j = i + 1, size(digits) - 1
+                do k = j + 1, size(digits)
+                    if (digits(i) /= digits(j) .and. &
+                        digits(j) /= digits(k) .and. &
+                        digits(k) /= digits(i)) then
+                        found = .false.
+                        do while (.not. found)
+                            if (digits(i)*100 + digits(j)*10 + digits(k) == 0) then
+                                exit
+                            else if (mod(digits(i)*100 + digits(j)*10 + digits(k), 2) == 0) then
+                                unique_ints(num_unique_ints+1) = digits(i)*100 + digits(j)*10 + digits(k)
+                                num_unique_ints = num_unique_ints + 1
+                                found = .true.
+                            else
+                                i = i + 1
+                            end if
+                        end do
+                    end if
+                end do
+            end do
+        end do
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:61:41:
+
+   46 |         do i = 1, size(digits) - 2
+      |                                  2       
+......
+   61 |                                 i = i + 1
+      |                                         1
+Error: Variable ‘i’ at (1) cannot be redefined inside loop beginning at (2)
+temp.f95:12:4:
+
+   12 |     digits = [2, 1, 3, 0]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (100 and 4)
+temp.f95:20:4:
+
+   20 |     digits = [2, 2, 8, 8, 2]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (100 and 5)
+temp.f95:28:4:
+
+   28 |     digits = [3, 7, 5]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (100 and 3)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module solve_problem
+  implicit none
+contains
+  subroutine solve(digits, result)
+    integer, intent(in) :: digits(:)
+    integer, intent(out) :: result(:)
+    ! Local variables
+    integer :: i, j, k, n, m, l, count
+    integer :: temp(3)
+    logical :: found
+
+    ! Initialize variables
+    n = size(digits)
+    m = 0
+    l = 0
+    count = 0
+    found = .false.
+
+    ! Loop through all possible combinations of three digits
+    do i = 1, n - 2
+      do j = i + 1, n - 1
+        do k = j + 1, n
+          ! Check if the current combination is even
+          if (mod(digits(i) * 100 + digits(j) * 10 + digits(k), 2) == 0) then
+            ! Check if the current combination does not have leading zeros
+            if (digits(i) * 100 + digits(j) * 10 + digits(k) /= 0) then
+              ! Check if the current combination is unique
+              found = .false.
+              do l = 1, m
+                if (temp(l) == digits(i) .and. temp(l + 1) == digits(j) .and. temp(l + 2) == digits(k)) then
+                  found = .true.
+                  exit
+                end if
+              end do
+              if (.not. found) then
+                ! Add the current combination to the result array
+                count = count + 1
+                temp(l + 1:l + 3) = [digits(i), digits(j), digits(k)]
+                if (l == 0) then
+                  allocate(result(count))
+                else
+                  allocate(result(1:count))
+                end if
+                result(count) = digits(i) * 100 + digits(j) * 10 + digits(k)
+                m = m + 3
+              end if
+            end if
+          end if
+        end do
+      end do
+    end do
+
+    ! Sort the result array
+    call sort(result)
+
+    ! Print the result
+    do i = 1, count
+      write (*, '(I0)') result(i)
+    end do
+
+  end subroutine solve
+end module solve_problem
+
+! Test the solve function with the given examples
+program test_solve
+  use solve_problem
+  implicit none
+  integer, parameter :: digits(3) = [2, 1, 3]
+  integer, parameter :: digits2(3) = [2, 2, 8, 8, 2]
+  integer, parameter :: digits3(3) = [3, 7, 5]
+  integer :: result(100)
+
+  call solve(digits, result)
+  call solve(digits2, result)
+  call solve(digits3, result)
+end program test_solve
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:40:27:
+
+   40 |                   allocate(result(count))
+      |                           1
+Error: Allocate-object at (1) must be ALLOCATABLE or a POINTER
+temp.f95:42:27:
+
+   42 |                   allocate(result(1:count))
+      |                           1
+Error: Allocate-object at (1) must be ALLOCATABLE or a POINTER
+temp.f95:66:7:
+
+   66 |   use solve_problem
+      |       1
+Fatal Error: Cannot open module file ‘solve_problem.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_stones_remaining(piles, k):
+    for _ in range(k):
+        max_pile_index = piles.index(max(piles))
+        piles[max_pile_index] -= piles[max_pile_index] // 2
+
+    return sum(piles)
+</code></pre>
+<pre><code>The algorithm follows these steps:
+</code></pre>
+<ol>
+<li>Iterate <code>k</code> times.</li>
+<li>For each iteration, find the index of the largest pile.</li>
+<li>Reduce the largest pile by half, rounding down, and update the value in the piles array.</li>
+<li>After all iterations, compute the sum of the remaining piles and return it.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;algorithm&gt;
+
+int minStonesRemaining(int piles[], int n, int k) {
+    for (int i = 0; i &lt; k; i++) {
+        int max_pile_index = std::distance(piles, std::max_element(piles, piles + n));
+        piles[max_pile_index] = piles[max_pile_index] - (piles[max_pile_index] / 2);
+    }
+
+    int total_stones = 0;
+    for (int i = 0; i &lt; n; i++) {
+        total_stones += piles[i];
+    }
+    return total_stones;
+}
+</code></pre>
+<pre><code>The algorithm follows these steps:
+</code></pre>
+<ol>
+<li>Iterate <code>k</code> times.</li>
+<li>For each iteration, find the index of the largest pile.</li>
+<li>Reduce the largest pile by half, rounding down, and update the value in the piles array.</li>
+<li>After all iterations, compute the sum of the remaining piles and return it.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

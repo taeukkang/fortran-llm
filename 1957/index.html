@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Delete Characters to Make Fancy String</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1952/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1961/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A <strong>fancy string</strong> is a string where no <strong>three</strong> <strong>consecutive</strong> characters are equal.</p>
+<p>Given a string <code>s</code>, delete the <strong>minimum</strong> possible number of characters from <code>s</code> to make it <strong>fancy</strong>.</p>
+<p>Return <em>the final string after the deletion</em>. It can be shown that the answer will always be <strong>unique</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "leeetcode "
+<strong>Output:</strong>  "leetcode "
+<strong>Explanation:</strong>
+Remove an 'e' from the first group of 'e's to create  "leetcode ".
+No three consecutive characters are equal, so return  "leetcode ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "aaabaaaa "
+<strong>Output:</strong>  "aabaa "
+<strong>Explanation:</strong>
+Remove an 'a' from the first group of 'a's to create  "aabaaaa ".
+Remove two 'a's from the second group of 'a's to create  "aabaa ".
+No three consecutive characters are equal, so return  "aabaa ".</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "aab "
+<strong>Output:</strong>  "aab "
+<strong>Explanation:</strong> No three consecutive characters are equal, so return  "aab ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 105</code></li>
+<li><code>s</code> consists only of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/delete-characters-to-make-fancy-string/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: s
+    integer :: i, j, k, n
+
+    ! Example 1
+    s = "leeetcode "
+    call solve(s)
+    print *, s
+
+    ! Example 2
+    s = "aaabaaaa "
+    call solve(s)
+    print *, s
+
+    ! Example 3
+    s = "aab "
+    call solve(s)
+    print *, s
+
+contains
+
+    subroutine solve(s)
+        implicit none
+        character(len=*), intent(inout) :: s
+        logical :: found
+        integer :: i, j, k
+
+        do while (any(s == "ee"))
+            found = .false.
+            do i = 1, len_trim(s)-2
+                if (s(i:i+2) == "ee") then
+                    found = .true.
+                    exit
+                end if
+            end do
+            if (.not. found) exit
+            s(i:i+2) = ""
+        end do
+
+        do while (any(s == "aa"))
+            found = .false.
+            do i = 1, len_trim(s)-2
+                if (s(i:i+2) == "aa") then
+                    found = .true.
+                    exit
+                end if
+            end do
+            if (.not. found) exit
+            s(i:i+2) = ""
+        end do
+
+        do while (any(s == "bb"))
+            found = .false.
+            do i = 1, len_trim(s)-2
+                if (s(i:i+2) == "bb") then
+                    found = .true.
+                    exit
+                end if
+            end do
+            if (.not. found) exit
+            s(i:i+2) = ""
+        end do
+
+        do while (any(s == "cc"))
+            found = .false.
+            do i = 1, len_trim(s)-2
+                if (s(i:i+2) == "cc") then
+                    found = .true.
+                    exit
+                end if
+            end do
+            if (.not. found) exit
+            s(i:i+2) = ""
+        end do
+
+        do while (any(s == "dd"))
+            found = .false.
+            do i = 1, len_trim(s)-2
+                if (s(i:i+2) == "dd") then
+                    found = .true.
+                    exit
+                end if
+            end do
+            if (.not. found) exit
+            s(i:i+2) = ""
+        end do
+
+        do while (any(s == "ff"))
+            found = .false.
+            do i = 1, len_trim(s)-2
+                if (s(i:i+2) == "ff") then
+                    found = .true.
+                    exit
+                end if
+            end do
+            if (.not. found) exit
+            s(i:i+2) = ""
+        end do
+
+        do while (any(s == "gg"))
+            found = .false.
+            do i = 1, len_trim(s)-2
+                if (s(i:i+2) == "gg") then
+                    found = .true.
+                    exit
+                end if
+            end do
+            if (.not. found) exit
+            s(i:i+2) = ""
+        end do
+
+        do while (any(s == "hh"))
+            found = .false.
+            do i = 1, len_trim(s)-2
+                if (s(i:i+2) == "hh") then
+                    found = .true.
+                    exit
+                end if
+            end do
+            if (.not. found) exit
+            s(i:i+2) = ""
+        end do
+
+        do while (any(s == "ii"))
+            found = .false.
+            do i = 1, len_trim(s)-2
+                if (s(i:i+2) == "ii") then
+                    found = .true.
+                    exit
+                end if
+            end do
+            if (.not. found) exit
+            s(</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:135:14:
+
+  135 |             s(
+      |              1
+Error: Invalid character in name at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+      implicit none
+
+      integer :: i, j, k
+      character(len=100) :: s
+      character(len=100) :: result
+
+      read(*,*) s
+
+      i = 1
+      j = 2
+      k = 3
+
+      do while (i < len(s) .and. j < len(s) .and. k < len(s))
+          if (s(i:i) == s(j:j) .and. s(j:j) == s(k:k)) then
+              result = result // s(i:i)
+              i = i + 1
+              j = j + 1
+              k = k + 1
+          else
+              j = j + 1
+              k = k + 1
+          end if
+      end do
+
+      if (i < len(s)) then
+          result = result // s(i:)
+      end if
+
+      write(*,*) result
+
+      end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 8 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7901ae486960 in ???
+#1  0x7901ae4874d9 in ???
+#2  0x7901ae6db17b in ???
+#3  0x7901ae6d4684 in ???
+#4  0x7901ae6d52aa in ???
+#5  0x5ae34d0fa25f in MAIN__
+#6  0x5ae34d0fa597 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def smallest_difference_room(rooms, queries):
+    n = len(rooms)
+    k = len(queries)
+    rooms.sort(key=lambda x: x[0])
+    results = []
+
+    for i in range(k):
+        preferred, minSize = queries[i]
+        diff = float(&quot;inf&quot;)
+        room_idx = -1
+
+        for j in range(n):
+            if rooms[j][1] &gt;= minSize:
+                tmp_diff = abs(preferred - rooms[j][0])
+                if tmp_diff &lt; diff:
+                    diff = tmp_diff
+                    room_idx = rooms[j][0]
+
+        results.append(room_idx)
+
+    return results
+</code></pre>
+<ol>
+<li>Sort the input <code>rooms</code> based on the <code>roomId</code>.</li>
+<li>Iterate through the <code>queries</code> array.</li>
+<li>For each query, initialize <code>diff</code> as the maximum possible value and <code>room_idx</code> as -1.</li>
+<li>Iterate through the <code>rooms</code> array, and for each room, check if its size is greater or equal to the minSize of the current query.</li>
+<li>If it is, calculate the absolute difference between the preferred room number and the current room number.</li>
+<li>If this absolute difference is less than the current minimum <code>diff</code>, update <code>diff</code> and <code>room_idx</code> accordingly.</li>
+<li>Once all rooms have been processed for a given query, append <code>room_idx</code> to the <code>results</code> array.</li>
+<li>Repeat this process for all queries and return the <code>results</code> array. The result array will have the same length as the number of queries and contains the answers for all queries as required.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;climits&gt;
+
+using namespace std;
+
+bool compare(const vector&lt;int&gt;&amp; a, const vector&lt;int&gt;&amp; b) {
+    return a[0] &lt; b[0];
+}
+
+vector&lt;int&gt; smallest_difference_room(vector&lt;vector&lt;int&gt;&gt;&amp; rooms, vector&lt;vector&lt;int&gt;&gt;&amp; queries) {
+    int n = rooms.size();
+    int k = queries.size();
+    sort(rooms.begin(), rooms.end(), compare);
+    vector&lt;int&gt; results;
+
+    for (int i = 0; i &lt; k; i++) {
+        int preferred = queries[i][0];
+        int minSize = queries[i][1];
+        int diff = INT_MAX;
+        int room_idx = -1;
+
+        for (int j = 0; j &lt; n; j++) {
+            if (rooms[j][1] &gt;= minSize) {
+                int tmp_diff = abs(preferred - rooms[j][0]);
+                if (tmp_diff &lt; diff) {
+                    diff = tmp_diff;
+                    room_idx = rooms[j][0];
+                }
+            }
+        }
+        results.push_back(room_idx);
+    }
+
+    return results;
+}
+</code></pre>
+<ol>
+<li>Sort the input <code>rooms</code> based on the <code>roomId</code>.</li>
+<li>Iterate through the <code>queries</code> array.</li>
+<li>For each query, initialize <code>diff</code> as the maximum possible value and <code>room_idx</code> as -1.</li>
+<li>Iterate through the <code>rooms</code> array, and for each room, check if its size is greater or equal to the minSize of the current query.</li>
+<li>If it is, calculate the absolute difference between the preferred room number and the current room number.</li>
+<li>If this absolute difference is less than the current minimum <code>diff</code>, update <code>diff</code> and <code>room_idx</code> accordingly.</li>
+<li>Once all rooms have been processed for a given query, append <code>room_idx</code> to the <code>results</code> array.</li>
+<li>Repeat this process for all queries and return the <code>results</code> array. The result array will have the same length as the number of queries and contains the answers for all queries as required.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

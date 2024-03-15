@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Index Pairs of a String</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1064/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1071/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string <code>text</code> and an array of strings <code>words</code>, return <em>an array of all index pairs</em> <code>[i, j]</code> <em>so that the substring</em> <code>text[i...j]</code> <em>is in <code>words</code></em>.</p>
+<p>Return the pairs <code>[i, j]</code> in sorted order (i.e., sort them by their first coordinate, and in case of ties sort them by their second coordinate).</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> text =  "thestoryofleetcodeandme ", words = [ "story ", "fleet ", "leetcode "]
+<strong>Output:</strong> [[3,7],[9,13],[10,17]]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> text =  "ababa ", words = [ "aba ", "ab "]
+<strong>Output:</strong> [[0,1],[0,2],[2,3],[2,4]]
+<strong>Explanation:</strong> Notice that matches can overlap, see  "aba " is found in [0,2] and [2,4].</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= text.length &lt;= 100</code></li>
+<li><code>1 &lt;= words.length &lt;= 20</code></li>
+<li><code>1 &lt;= words[i].length &lt;= 50</code></li>
+<li><code>text</code> and <code>words[i]</code> consist of lowercase English letters.</li>
+<li>All the strings of <code>words</code> are <strong>unique</strong>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/index-pairs-of-a-string/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=100) :: text
+    character(len=50), dimension(:), allocatable :: words
+    integer, dimension(:,:), allocatable :: indices
+    integer :: i, j, n, m
+
+    ! Example 1
+    text = 'thestoryofleetcodeandme '
+    allocate(character(len=50) :: words(3))
+    words(1) = 'story '
+    words(2) = 'fleet '
+    words(3) = 'leetcode '
+    call solve(text, words, indices)
+    do i = 1, size(indices, 1)
+        write(*,'(A,I0,A,I0)') '[', indices(i,1), ',', indices(i,2), ']'
+    end do
+
+    ! Example 2
+    text = 'ababa '
+    allocate(character(len=50) :: words(4))
+    words(1) = 'aba '
+    words(2) = 'ab '
+    words(3) = 'ba '
+    words(4) = 'a '
+    call solve(text, words, indices)
+    do i = 1, size(indices, 1)
+        write(*,'(A,I0,A,I0)') '[', indices(i,1), ',', indices(i,2), ']'
+    end do
+
+contains
+
+    subroutine solve(text, words, indices)
+        implicit none
+        character(len=*), intent(in) :: text
+        character(len=*), dimension(:), intent(in) :: words
+        integer, dimension(:,:), intent(out) :: indices
+        integer :: i, j, k, l, n, m
+
+        n = len(text)
+        m = size(words)
+        allocate(indices(m,2))
+
+        do i = 1, m
+            do j = 1, n-len(words(i))+1
+                do k = 1, len(words(i))
+                    if (text(j+k-1:j+k-1) /= words(i)(k:k)) exit
+                end do
+                if (k == len(words(i)+1)) then
+                    indices(i,1) = j
+                    indices(i,2) = j + len(words(i)) - 1
+                    exit
+                end if
+            end do
+        end do
+
+        indices = transpose(indices)
+        indices = merge(indices, -1, indices(:,1) < indices(:,2))
+        indices = merge(indices, -1, indices(:,1) == indices(:,2))
+        indices = merge(indices, -1, indices(:,1) > indices(:,2))
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:43:17:
+
+   43 |         allocate(indices(m,2))
+      |                 1
+Error: Allocate-object at (1) must be ALLOCATABLE or a POINTER
+temp.f95:50:29:
+
+   50 |                 if (k == len(words(i)+1)) then
+      |                             1
+Error: Operands of binary numeric operator ‘+’ at (1) are CHARACTER(*)/INTEGER(4)
+temp.f95:59:24:
+
+   59 |         indices = merge(indices, -1, indices(:,1) < indices(:,2))
+      |                        1
+Error: Incompatible ranks in arguments 'tsource' and 'mask' for intrinsic 'merge' (2 and 1) at (1)
+temp.f95:60:24:
+
+   60 |         indices = merge(indices, -1, indices(:,1) == indices(:,2))
+      |                        1
+Error: Incompatible ranks in arguments 'tsource' and 'mask' for intrinsic 'merge' (2 and 1) at (1)
+temp.f95:61:24:
+
+   61 |         indices = merge(indices, -1, indices(:,1) > indices(:,2))
+      |                        1
+Error: Incompatible ranks in arguments 'tsource' and 'mask' for intrinsic 'merge' (2 and 1) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module match_words
+
+implicit none
+
+contains
+
+function match_words_brute_force(text, words) result(matches)
+
+! Brute force solution
+
+character(len=*), intent(in) :: text
+character(len=*), intent(in) :: words(:)
+integer :: matches(size(words), 2)
+
+integer :: i, j, k, l
+
+! Initialize the matches array
+matches = reshape((/ (0, 0) /), shape(matches))
+
+! Iterate over the words
+do i = 1, size(words)
+
+    ! Iterate over the characters in the text
+    do j = 1, len_trim(text)
+
+        ! Check if the current character is in the word
+        do k = 1, len_trim(words(i))
+            if (text(j:j) == words(i)(k:k)) then
+                ! If it is, check if we have already found a match for this word
+                do l = 1, size(matches, 1)
+                    if (matches(l, 1) == i) then
+                        ! If we have, update the end index of the match
+                        matches(l, 2) = j
+                        exit
+                    end if
+                end do
+
+                ! If we haven't, add a new match
+                if (l == size(matches, 1) + 1) then
+                    matches(size(matches, 1) + 1, :) = [i, j]
+                end if
+            end if
+        end do
+    end do
+end do
+
+! Sort the matches by the first coordinate (word index) and then by the second coordinate (substring index)
+call sort_matches(matches)
+
+end function match_words_brute_force
+
+subroutine sort_matches(matches)
+
+! Sort the matches by the first coordinate (word index) and then by the second coordinate (substring index)
+
+integer, intent(inout) :: matches(:, :)
+
+integer :: i, j, temp
+
+! Sort the matches by the first coordinate (word index)
+do i = 1, size(matches, 1) - 1
+    do j = i + 1, size(matches, 1)
+        if (matches(i, 1) > matches(j, 1)) then
+            temp = matches(i, 1)
+            matches(i, 1) = matches(j, 1)
+            matches(j, 1) = temp
+
+            temp = matches(i, 2)
+            matches(i, 2) = matches(j, 2)
+            matches(j, 2) = temp
+        end if
+    end do
+end do
+
+! Sort the matches by the second coordinate (substring index)
+do i = 1, size(matches, 1) - 1
+    do j = i + 1, size(matches, 1)
+        if (matches(i, 2) > matches(j, 2)) then
+            temp = matches(i, 2)
+            matches(i, 2) = matches(j, 2)
+            matches(j, 2) = temp
+        end if
+    end do
+end do
+
+end subroutine sort_matches
+
+end module match_words
+
+program main
+
+use match_words, only : match_words_brute_force
+
+implicit none
+
+character(len=100) :: text
+character(len=50) :: words(3)
+integer :: matches(size(words), 2)
+
+! Test case 1
+text = "thestoryofleetcodeandme "
+words = ["story ", "fleet ", "leetcode "]
+matches = match_words_brute_force(text, words)
+write (*, "(A, 3(I0, A, I0))") "Test case 1: ", matches
+
+! Test case 2
+text = "ababa "
+words = ["aba ", "ab "]
+matches = match_words_brute_force(text, words)
+write (*, "(A, 4(I0, A, I0))") "Test case 2: ", matches
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:102:28:
+
+  102 | words = ["story ", "fleet ", "leetcode "]
+      |                            1
+Error: Different CHARACTER lengths (6/9) in array constructor at (1)
+temp.f95:108:16:
+
+  108 | words = ["aba ", "ab "]
+      |                1
+Error: Different CHARACTER lengths (4/3) in array constructor at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def has_all_codes_in_range(s: str, n: int) -&gt; bool:
+    substrings = set()
+    length = len(bin(n)) - 2
+    for i in range(len(s) - length + 1):
+        substrings.add(s[i:i + length])
+    return len(substrings) == n
+</code></pre>
+<pre><code>1. Initialize an empty set called `substrings` to store unique binary substrings of length equal to the binary representation of `n`.
+</code></pre>
+<ol>
+<li>Compute the length of the binary representation of <code>n</code> and store it in <code>length</code>.</li>
+<li>Loop through the binary string <code>s</code>, starting from index 0 to <code>len(s) - length</code>:
+   a. Extract the substring of <code>s</code> with length <code>length</code> starting at index <code>i</code>.
+   b. Add the extracted substring to the <code>substrings</code> set.</li>
+<li>Check if the size of <code>substrings</code> is equal to <code>n</code>. If it is, then all integers in the range <code>[1, n]</code> had their binary representation in <code>s</code>.</li>
+<li>Return the result (true if the size is equal to <code>n</code>, and false otherwise).</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool hasAllCodesInRange(const std::string&amp; s, int n) {
+    std::unordered_set&lt;std::string&gt; substrings;
+    int length = std::to_string(n).length();
+    for (int i = 0; i &lt; s.length() - length + 1; ++i) {
+        substrings.insert(s.substr(i, length));
+    }
+    return substrings.size() == n;
+}
+</code></pre>
+<pre><code>1. Initialize an empty set called `substrings` to store unique binary substrings of length equal to the binary representation of `n`.
+</code></pre>
+<ol>
+<li>Compute the length of the binary representation of <code>n</code> and store it in <code>length</code>.</li>
+<li>Loop through the binary string <code>s</code>, starting from index 0 to <code>len(s) - length</code>:
+   a. Extract the substring of <code>s</code> with length <code>length</code> starting at index <code>i</code>.
+   b. Add the extracted substring to the <code>substrings</code> set.</li>
+<li>Check if the size of <code>substrings</code> is equal to <code>n</code>. If it is, then all integers in the range <code>[1, n]</code> had their binary representation in <code>s</code>.</li>
+<li>Return the result (true if the size is equal to <code>n</code>, and false otherwise).</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

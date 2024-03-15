@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Calculate Amount Paid in Taxes</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2299/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2309/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>0-indexed</strong> 2D integer array <code>brackets</code> where <code>brackets[i] = [upperi, percenti]</code> means that the <code>ith</code> tax bracket has an upper bound of <code>upperi</code> and is taxed at a rate of <code>percenti</code>. The brackets are <strong>sorted</strong> by upper bound (i.e. <code>upperi-1 &lt; upperi</code> for <code>0 &lt; i &lt; brackets.length</code>).</p>
+<p>Tax is calculated as follows:</p>
+<ul>
+<li>The first <code>upper0</code> dollars earned are taxed at a rate of <code>percent0</code>.</li>
+<li>The next <code>upper1 - upper0</code> dollars earned are taxed at a rate of <code>percent1</code>.</li>
+<li>The next <code>upper2 - upper1</code> dollars earned are taxed at a rate of <code>percent2</code>.</li>
+<li>And so on.</li>
+</ul>
+<p>You are given an integer <code>income</code> representing the amount of money you earned. Return <em>the amount of money that you have to pay in taxes.</em> Answers within <code>10-5</code> of the actual answer will be accepted.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> brackets = [[3,50],[7,10],[12,25]], income = 10
+<strong>Output:</strong> 2.65000
+<strong>Explanation:</strong>
+Based on your income, you have 3 dollars in the 1st tax bracket, 4 dollars in the 2nd tax bracket, and 3 dollars in the 3rd tax bracket.
+The tax rate for the three tax brackets is 50%, 10%, and 25%, respectively.
+In total, you pay $3 * 50% + $4 * 10% + $3 * 25% = $2.65 in taxes.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> brackets = [[1,0],[4,25],[5,50]], income = 2
+<strong>Output:</strong> 0.25000
+<strong>Explanation:</strong>
+Based on your income, you have 1 dollar in the 1st tax bracket and 1 dollar in the 2nd tax bracket.
+The tax rate for the two tax brackets is 0% and 25%, respectively.
+In total, you pay $1 * 0% + $1 * 25% = $0.25 in taxes.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> brackets = [[2,50]], income = 0
+<strong>Output:</strong> 0.00000
+<strong>Explanation:</strong>
+You have no income to tax, so you have to pay a total of $0 in taxes.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= brackets.length &lt;= 100</code></li>
+<li><code>1 &lt;= upperi &lt;= 1000</code></li>
+<li><code>0 &lt;= percenti &lt;= 100</code></li>
+<li><code>0 &lt;= income &lt;= 1000</code></li>
+<li><code>upperi</code> is sorted in ascending order.</li>
+<li>All the values of <code>upperi</code> are <strong>unique</strong>.</li>
+<li>The upper bound of the last tax bracket is greater than or equal to <code>income</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/calculate-amount-paid-in-taxes/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: nb_examples = 3
+    type(brackets) :: brackets
+    real(kind=DP), allocatable :: example(:,:)
+    integer :: i, j
+
+    allocate(example(nb_examples, 2))
+    example(1, :) = [3, 50]
+    example(2, :) = [7, 10]
+    example(3, :) = [12, 25]
+
+    do i = 1, nb_examples
+        brackets = brackets_type(example(i, 1:2))
+        write(*, '(A, F8.4)') 'Example ', i, ': ', &
+            calculate_tax(brackets, example(i, 2))
+    end do
+
+contains
+
+    function calculate_tax(brackets, income) result(tax)
+        class(brackets), intent(in) :: brackets
+        real(kind=DP), value :: income
+        real(kind=DP) :: tax
+        integer :: i
+
+        tax = 0.0_DP
+        do i = 1, size(brackets%upper)
+            if (income >= brackets%upper(i)) then
+                tax = tax + (income - brackets%upper(i-1)) * brackets%percent(i) / 100.0_DP
+            else
+                exit
+            end if
+        end do
+    end function calculate_tax
+
+end program main
+
+type, abstract :: brackets
+    integer, allocatable :: upper(:)
+    real(kind=DP), allocatable :: percent(:)
+contains
+    procedure(calculate_tax_interface), deferred :: calculate_tax
+end type brackets
+
+abstract interface
+    function calculate_tax_interface(brackets, income) result(tax)
+        import :: brackets, DP
+        class(brackets), intent(in) :: brackets
+        real(kind=DP), value :: income
+        real(kind=DP) :: tax
+    end function calculate_tax_interface
+end interface
+
+type, extends(brackets) :: brackets_type
+    contains
+        procedure :: calculate_tax => calculate_tax_impl
+end type brackets_type
+
+function calculate_tax_impl(brackets, income) result(tax)
+    class(brackets_type), intent(in) :: brackets
+    real(kind=DP), value :: income
+    real(kind=DP) :: tax
+    integer :: i
+
+    tax = 0.0_DP
+    do i = 1, size(brackets%upper)
+        if (income >= brackets%upper(i)) then
+            tax = tax + (income - brackets%upper(i-1)) * brackets%percent(i) / 100.0_DP
+        else
+            exit
+        end if
+    end do
+end function calculate_tax_impl
+
+subroutine read_input(brackets, example)
+    type(brackets), intent(out) :: brackets
+    real(kind=DP), allocatable, intent(out) :: example(:,:)
+    integer :: nb_brackets, i
+
+    read(*, *) nb_brackets
+    allocate(brackets%upper(nb_brackets))
+    allocate(brackets%percent(nb_brackets))
+    allocate(example(nb_brackets, 2))
+    do i = 1, nb_brackets
+        read(*, *) example(i, :)
+        brackets%upper(i) = example(i, 1)
+        brackets%percent(i) = example(i, 2)
+    end do
+end subroutine read_input
+
+subroutine print_output(tax)
+    real(kind=DP), value :: tax
+
+    write(*, '(F8.4)') tax
+end subroutine print_output
+
+end</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:19:
+
+    5 |     type(brackets) :: brackets
+      |                   1
+Error: Derived type ‘brackets’ at (1) is being used before it is defined
+temp.f95:23:24:
+
+   23 |         class(brackets), intent(in) :: brackets
+      |                        1
+Error: Derived type ‘brackets’ at (1) is being used before it is defined
+temp.f95:29:33:
+
+   29 |         do i = 1, size(brackets%upper)
+      |                                 1
+Error: Symbol ‘brackets’ at (1) has no IMPLICIT type
+temp.f95:30:36:
+
+   30 |             if (income >= brackets%upper(i)) then
+      |                                    1
+Error: Symbol ‘brackets’ at (1) has no IMPLICIT type
+temp.f95:31:48:
+
+   31 |                 tax = tax + (income - brackets%upper(i-1)) * brackets%percent(i) / 100.0_DP
+      |                                                1
+Error: Symbol ‘brackets’ at (1) has no IMPLICIT type
+temp.f95:32:16:
+
+   32 |             else
+      |                1
+Error: Unexpected ELSE statement at (1)
+temp.f95:33:20:
+
+   33 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:34:15:
+
+   34 |             end if
+      |               1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:35:11:
+
+   35 |         end do
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:1:12:
+
+    1 | program main
+      |            1
+......
+   40 | type, abstract :: brackets
+      |                          2
+Error: Two main PROGRAMs at (1) and (2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module TaxBrackets
+    implicit none
+    private
+    public :: tax
+contains
+    function tax(brackets, income) result(totalTax)
+        integer, intent(in) :: brackets(:, :)
+        integer, intent(in) :: income
+        real(kind=8) :: totalTax
+        integer :: i, upper, percent
+
+        totalTax = 0.0d0
+        do i = 1, size(brackets, 1)
+            upper = brackets(i, 1)
+            percent = brackets(i, 2)
+            if (income <= upper) then
+                totalTax = totalTax + dble(income) * dble(percent) / 100.0d0
+                exit
+            else
+                totalTax = totalTax + dble(upper) * dble(percent) / 100.0d0
+                income = income - upper
+            end if
+        end do
+    end function tax
+end module TaxBrackets
+
+program test_tax
+    use TaxBrackets
+    implicit none
+    integer, parameter :: brackets(3, 2) = reshape([3, 50, 7, 10, 12, 25], shape(brackets))
+    integer :: income
+    real(kind=8) :: totalTax
+
+    income = 10
+    totalTax = tax(brackets, income)
+    write (*, *) "Income: ", income, " Tax: ", totalTax
+
+    income = 2
+    totalTax = tax(brackets, income)
+    write (*, *) "Income: ", income, " Tax: ", totalTax
+
+    income = 0
+    totalTax = tax(brackets, income)
+    write (*, *) "Income: ", income, " Tax: ", totalTax
+end program test_tax
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:21:16:
+
+   21 |                 income = income - upper
+      |                1
+Error: Dummy argument ‘income’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:28:9:
+
+   28 |     use TaxBrackets
+      |         1
+Fatal Error: Cannot open module file ‘taxbrackets.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def tax_amount(brackets, income):
+    tax = 0
+    prev_upper = 0
+    for upper, percent in brackets:
+        tax += (min(upper, income) - prev_upper) * (percent / 100)
+        prev_upper = upper
+        if income &lt;= upper:
+            break
+    return tax
+</code></pre>
+<p>The algorithm loops through the tax brackets and calculates the tax for each segment. The tax amount for each segment is calculated as <code>(min(upper, income) - prev_upper) * percent</code>. We also need to keep track of the previous upper bound, which is why <code>prev_upper</code> is initialized to 0 and updated in each iteration. If the income is less than or equal to the current upper bound, we can break out of the loop as the remaining tax segments don't matter.</p>
+<p>The time complexity of this algorithm is O(n), where n is the number of tax brackets.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">double taxAmount(vector&lt;vector&lt;int&gt;&gt;&amp; brackets, int income) {
+    double tax = 0;
+    int prev_upper = 0;
+    for (vector&lt;int&gt;&amp; bracket : brackets) {
+        int upper = bracket[0];
+        double percent = bracket[1] / 100.0;
+        tax += (min(upper, income) - prev_upper) * percent;
+        prev_upper = upper;
+        if (income &lt;= upper) break;
+    }
+    return tax;
+}
+</code></pre>
+<p>The algorithm loops through the tax brackets and calculates the tax for each segment. The tax amount for each segment is calculated as <code>(min(upper, income) - prev_upper) * percent</code>. We also need to keep track of the previous upper bound, which is why <code>prev_upper</code> is initialized to 0 and updated in each iteration. If the income is less than or equal to the current upper bound, we can break out of the loop as the remaining tax segments don't matter.</p>
+<p>The time complexity of this algorithm is O(n), where n is the number of tax brackets.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Number of Strings That Appear as Substrings in Word</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1961/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1971/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of strings <code>patterns</code> and a string <code>word</code>, return <em>the <strong>number</strong> of strings in</em> <code>patterns</code> <em>that exist as a <strong>substring</strong> in</em> <code>word</code>.</p>
+<p>A <strong>substring</strong> is a contiguous sequence of characters within a string.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> patterns = [ "a ", "abc ", "bc ", "d "], word =  "abc "
+<strong>Output:</strong> 3
+<strong>Explanation:</strong>
+-  "a " appears as a substring in  "abc ".
+-  "abc " appears as a substring in  "abc ".
+-  "bc " appears as a substring in  "abc ".
+-  "d " does not appear as a substring in  "abc ".
+3 of the strings in patterns appear as a substring in word.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> patterns = [ "a ", "b ", "c "], word =  "aaaaabbbbb "
+<strong>Output:</strong> 2
+<strong>Explanation:</strong>
+-  "a " appears as a substring in  "aaaaabbbbb ".
+-  "b " appears as a substring in  "aaaaabbbbb ".
+-  "c " does not appear as a substring in  "aaaaabbbbb ".
+2 of the strings in patterns appear as a substring in word.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> patterns = [ "a ", "a ", "a "], word =  "ab "
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> Each of the patterns appears as a substring in word  "ab ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= patterns.length &lt;= 100</code></li>
+<li><code>1 &lt;= patterns[i].length &lt;= 100</code></li>
+<li><code>1 &lt;= word.length &lt;= 100</code></li>
+<li><code>patterns[i]</code> and <code>word</code> consist of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/number-of-strings-that-appear-as-substrings-in-word/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, k
+    character(len=100) :: patterns(100), word
+    integer :: num_substrings
+
+    ! Example 1
+    patterns = ["a ", "abc ", "bc ", "d "]
+    word = "abc "
+    num_substrings = count_substrings(patterns, word)
+    write(*,*) "num_substrings =", num_substrings
+
+    ! Example 2
+    patterns = ["a ", "b ", "c "]
+    word = "aaaaabbbbb "
+    num_substrings = count_substrings(patterns, word)
+    write(*,*) "num_substrings =", num_substrings
+
+    ! Example 3
+    patterns = ["a ", "a ", "a "]
+    word = "ab "
+    num_substrings = count_substrings(patterns, word)
+    write(*,*) "num_substrings =", num_substrings
+
+contains
+
+    function count_substrings(patterns, word) result(num_substrings)
+        implicit none
+        character(len=*), intent(in) :: patterns(:), word
+        logical :: exists
+        integer :: i, j, k, num_substrings
+
+        num_substrings = 0
+        do i = 1, size(patterns)
+            exists = .false.
+            do j = 1, len(word) - len(patterns(i)) + 1
+                if (word(j:j+len(patterns(i))-1) == patterns(i)) then
+                    exists = .true.
+                    exit
+                end if
+            end do
+            if (exists) then
+                num_substrings = num_substrings + 1
+            end if
+        end do
+    end function count_substrings
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:21:
+
+    9 |     patterns = ["a ", "abc ", "bc ", "d "]
+      |                     1
+Error: Different CHARACTER lengths (2/4) in array constructor at (1)
+temp.f95:15:4:
+
+   15 |     patterns = ["a ", "b ", "c "]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (100 and 3)
+temp.f95:21:4:
+
+   21 |     patterns = ["a ", "a ", "a "]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (100 and 3)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program count_substring_patterns
+      implicit none
+
+      integer, parameter :: string_length = 100
+
+      character(len=string_length) :: patterns(100)
+      character(len=string_length) :: word
+
+      integer :: i, j, count
+
+      ! Read input
+      read(*,*) patterns
+      read(*,*) word
+
+      ! Initialize count
+      count = 0
+
+      ! Loop through patterns
+      do i = 1, size(patterns)
+         ! Loop through word
+         do j = 1, len(word) - len(patterns(i)) + 1
+            ! Check if pattern is a substring of word
+            if (word(j:j+len(patterns(i))-1) == patterns(i)) then
+               count = count + 1
+               exit
+            end if
+         end do
+      end do
+
+      ! Output result
+      write(*,*) count
+
+      end program count_substring_patterns
+
+This script uses the `len` function to get the length of the `word` and `patterns` arrays, and the `size` function to get the number of elements in the `patterns` array. It then uses a nested loop to iterate through the `patterns` array and the `word` string, checking if each pattern is a substring of the `word` string. If it is, the count is incremented and the loop is exited. The final count is output to stdout.
+
+Note that this script assumes that the `patterns` array is a 1D array of strings, and that the `word` string is a single string. If the input is not in this format, the script will need to be modified accordingly.
+
+Also note that this script uses the `implicit none` statement, which is a good practice to use in all Fortran programs. It prevents the use of undeclared variables and helps to catch errors at compile time.
+
+Also note that this script uses the `parameter` statement to define the maximum length of the `word` and `patterns` arrays. This is a good practice to use in all Fortran programs, as it helps to prevent buffer overflows and other security issues.
+
+Also note that this script uses the `character(len=string_length)` type to define the `word` and `patterns` arrays. This is a good practice to use in all Fortran programs, as it helps to prevent buffer overflows and other security issues.
+
+Also note that this script uses the `read` statement to read the input from stdin, and the `write` statement to output the result to stdout. This is a good practice to use in all Fortran programs, as it helps to make the program more flexible and reusable.
+
+Also note that this script uses the `exit` statement to exit the inner loop when a match is found. This is a good practice to use in all Fortran programs, as it helps to improve the performance of the program by avoiding unnecessary iterations.
+
+Also note that this script uses the `len` function to get the length of the `word` and `patterns` arrays, and the `size` function to get the number of elements in the `patterns` array. This is a good practice to use in all Fortran programs, as it helps to improve the performance of the program by avoiding unnecessary iterations.
+
+Also note that this script uses the `implicit none` statement, which is a good practice to use in all Fortran programs. It prevents the use of undeclared variables and helps to catch errors at compile time.
+
+Also note that this script uses the `parameter` statement to define the maximum length of the `word` and `patterns` arrays. This is a good practice to use in all Fortran programs, as it helps to prevent buffer overflows and other security issues.
+
+Also note that this script uses the `character(len=string_length)` type to define the `word` and `patterns` arrays. This is a good practice to use in all Fortran programs, as it helps to prevent buffer overflows and other security issues.
+
+Also note that this script uses the `read` statement to read the input from stdin, and the `write` statement to output the result to stdout. This is a good practice to use in all Fortran programs, as it helps to make the program more flexible and reusable.
+
+Also note that this script uses the `exit` statement to exit the inner loop when a match is found. This is a good practice to use in all Fortran programs, as it helps to improve the performance of the program by avoiding unnecessary iterations.
+
+Also
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:35:132:
+
+   35 | This script uses the `len` function to get the length of the `word` and `patterns` arrays, and the `size` function to get the number of elements in the `patterns` array. It then uses a nested loop to iterate through the `patterns` array and the `word` string, checking if each pattern is a substring of the `word` string. If it is, the count is incremented and the loop is exited. The final count is output to stdout.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:37:132:
+
+   37 | Note that this script assumes that the `patterns` array is a 1D array of strings, and that the `word` string is a single string. If the input is not in this format, the script will need to be modified accordingly.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:39:132:
+
+   39 | Also note that this script uses the `implicit none` statement, which is a good practice to use in all Fortran programs. It prevents the use of undeclared variables and helps to catch errors at compile time.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:41:132:
+
+   41 | Also note that this script uses the `parameter` statement to define the maximum length of the `word` and `patterns` arrays. This is a good practice to use in all Fortran programs, as it helps to prevent buffer overflows and other security issues.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:43:132:
+
+   43 | Also note that this script uses the `character(len=string_length)` type to define the `word` and `patterns` arrays. This is a good practice to use in all Fortran programs, as it helps to prevent buffer overflows and other security issues.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:45:132:
+
+   45 | Also note that this script uses the `read` statement to read the input from stdin, and the `write` statement to output the result to stdout. This is a good practice to use in all Fortran programs, as it helps to make the program more flexible and reusable.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:47:132:
+
+   47 | Also note that this script uses the `exit` statement to exit the inner loop when a match is found. This is a good practice to use in all Fortran programs, as it helps to improve the performance of the program by avoiding unnecessary iterations.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:49:132:
+
+   49 | Also note that this script uses the `len` function to get the length of the `word` and `patterns` arrays, and the `size` function to get the number of elements in the `patterns` array. This is a good practice to use in all Fortran programs, as it helps to improve the performance of the program by avoiding unnecessary iterations.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:51:132:
+
+   51 | Also note that this script uses the `implicit none` statement, which is a good practice to use in all Fortran programs. It prevents the use of undeclared variables and helps to catch errors at compile time.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:53:132:
+
+   53 | Also note that this script uses the `parameter` statement to define the maximum length of the `word` and `patterns` arrays. This is a good practice to use in all Fortran programs, as it helps to prevent buffer overflows and other security issues.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:55:132:
+
+   55 | Also note that this script uses the `character(len=string_length)` type to define the `word` and `patterns` arrays. This is a good practice to use in all Fortran programs, as it helps to prevent buffer overflows and other security issues.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:57:132:
+
+   57 | Also note that this script uses the `read` statement to read the input from stdin, and the `write` statement to output the result to stdout. This is a good practice to use in all Fortran programs, as it helps to make the program more flexible and reusable.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:59:132:
+
+   59 | Also note that this script uses the `exit` statement to exit the inner loop when a match is found. This is a good practice to use in all Fortran programs, as it helps to improve the performance of the program by avoiding unnecessary iterations.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def longest_beautiful_substring(word: str) -&gt; int:
+    if len(word) &lt; 5:
+        return 0
+
+    max_length = current_length = 1
+    current_vowels = word[0]
+
+    for i in range(1, len(word)):
+        if word[i] &gt;= current_vowels[-1] and word[i] not in current_vowels:
+            current_vowels += word[i]
+        elif word[i] == current_vowels[-1]:
+            pass
+        else:
+            current_vowels = word[i]
+            current_length = 0
+
+        current_length += 1
+
+        if current_vowels == &quot;aeiou&quot;:
+            max_length = max(max_length, current_length)
+
+    return max_length
+</code></pre>
+<pre><code>The algorithm starts by checking if the input word is long enough to have a beautiful substring; otherwise, it returns 0 as no such substring can exist. Then, it initializes variables to track the maximum length of the beautiful substring, the current length of a candidate substring, and a string of vowels seen so far in the order they've appeared (`currentVowels`).
+</code></pre>
+<p>In the loop that goes through the input word, the algorithm checks if the current character is greater than or equal to the previous vowel and if it is not already in the <code>currentVowels</code>. If true, it adds the current character to <code>currentVowels</code>. If the current character is equal to the previous vowel, it does nothing. If the current character doesn't satisfy either of the previous conditions, it resets <code>currentVowels</code> to the current character and sets the <code>currentLength</code> to 0.</p>
+<p>Finally, for each iteration, it increments <code>currentLength</code> and checks if the <code>currentVowels</code> matches the beautiful substring condition ("aeiou"). If true, it updates the maxLength if the <code>currentLength</code> is greater than the current maxLength.</p>
+<p>Once the loop is done, the algorithm returns the maxLength found.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+
+int longestBeautifulSubstring(const std::string&amp; word) {
+    if (word.size() &lt; 5) return 0;
+
+    int maxLength = 0, currentLength = 1;
+    std::string currentVowels = {word[0]};
+
+    for (int i = 1; i &lt; word.size(); ++i) {
+        if (word[i] &gt;= currentVowels.back() &amp;&amp; currentVowels.find(word[i]) == std::string::npos) {
+            currentVowels.push_back(word[i]);
+        } else if (word[i] == currentVowels.back()) {
+            // Do nothing
+        } else {
+            currentVowels = word[i];
+            currentLength = 0;
+        }
+
+        currentLength++;
+
+        if (currentVowels == &quot;aeiou&quot;) {
+            maxLength = std::max(maxLength, currentLength);
+        }
+    }
+
+    return maxLength;
+}
+</code></pre>
+<pre><code>The algorithm starts by checking if the input word is long enough to have a beautiful substring; otherwise, it returns 0 as no such substring can exist. Then, it initializes variables to track the maximum length of the beautiful substring, the current length of a candidate substring, and a string of vowels seen so far in the order they've appeared (`currentVowels`).
+</code></pre>
+<p>In the loop that goes through the input word, the algorithm checks if the current character is greater than or equal to the previous vowel and if it is not already in the <code>currentVowels</code>. If true, it adds the current character to <code>currentVowels</code>. If the current character is equal to the previous vowel, it does nothing. If the current character doesn't satisfy either of the previous conditions, it resets <code>currentVowels</code> to the current character and sets the <code>currentLength</code> to 0.</p>
+<p>Finally, for each iteration, it increments <code>currentLength</code> and checks if the <code>currentVowels</code> matches the beautiful substring condition ("aeiou"). If true, it updates the maxLength if the <code>currentLength</code> is greater than the current maxLength.</p>
+<p>Once the loop is done, the algorithm returns the maxLength found.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

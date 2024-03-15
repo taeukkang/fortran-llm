@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Valid Palindrome II</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/674/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/682/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string <code>s</code>, return <code>true</code> <em>if the</em> <code>s</code> <em>can be palindrome after deleting <strong>at most one</strong> character from it</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "aba "
+<strong>Output:</strong> true</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "abca "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> You could delete the character 'c'.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "abc "
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 105</code></li>
+<li><code>s</code> consists of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/valid-palindrome-ii/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: ntests = 3
+    character(len=:), allocatable :: tests(:)
+    logical :: results(:)
+
+    tests = ["aba", "abca", "abc"]
+    allocate(results(size(tests)))
+
+    results = .false.
+    do i = 1, size(tests)
+        results(i) = canPalindrome(tests(i))
+    end do
+
+    write(*, "(A)") "Results:"
+    do i = 1, size(tests)
+        write(*, "(A, L1)") trim(tests(i)), results(i)
+    end do
+
+contains
+
+    function canPalindrome(s) result(res)
+        implicit none
+        character(len=*), intent(in) :: s
+        logical :: res
+        integer :: i, j
+
+        res = .true.
+        do i = 1, len(s)/2
+            if (s(i:i) /= s(len(s)-i+1:len(s)-i)) then
+                res = .false.
+                exit
+            end if
+        end do
+    end function canPalindrome
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:12:8:
+
+   12 |     do i = 1, size(tests)
+      |        1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:6:25:
+
+    6 |     logical :: results(:)
+      |                         1
+Error: Array ‘results’ at (1) cannot have a deferred shape
+temp.f95:8:19:
+
+    8 |     tests = ["aba", "abca", "abc"]
+      |                   1
+Error: Different CHARACTER lengths (3/4) in array constructor at (1)
+temp.f95:9:13:
+
+    9 |     allocate(results(size(tests)))
+      |             1
+Error: Allocate-object at (1) must be ALLOCATABLE or a POINTER
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module palindrome
+
+implicit none
+
+contains
+
+function is_palindrome(s) result(is_palindrome)
+
+character(len=*), intent(in) :: s
+logical :: is_palindrome
+
+! Check if the string is a palindrome
+is_palindrome = .true.
+if (len(s) == 1) then
+    is_palindrome = .true.
+else
+    ! Check if the string is a palindrome after deleting at most one character
+    if (s(1:len(s)/2) == s(len(s):2:-1)) then
+        is_palindrome = .true.
+    else
+        is_palindrome = .false.
+    end if
+end if
+
+end function is_palindrome
+
+end module palindrome
+
+program main
+
+use palindrome
+implicit none
+
+! Test cases
+character(len=100) :: s
+
+! Test case 1
+s = "aba"
+if (is_palindrome(s)) then
+    write (*,*) "Test case 1: Pass"
+else
+    write (*,*) "Test case 1: Fail"
+end if
+
+! Test case 2
+s = "abca"
+if (is_palindrome(s)) then
+    write (*,*) "Test case 2: Pass"
+else
+    write (*,*) "Test case 2: Fail"
+end if
+
+! Test case 3
+s = "abc"
+if (is_palindrome(s)) then
+    write (*,*) "Test case 3: Pass"
+else
+    write (*,*) "Test case 3: Fail"
+end if
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:47:
+
+    7 | function is_palindrome(s) result(is_palindrome)
+      |                                               1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:9:33:
+
+    9 | character(len=*), intent(in) :: s
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:24:
+
+   10 | logical :: is_palindrome
+      |                        1
+Error: Symbol ‘is_palindrome’ at (1) has already been host associated
+temp.f95:13:14:
+
+   13 | is_palindrome = .true.
+      |              1
+Error: Symbol ‘is_palindrome’ at (1) has already been host associated
+temp.f95:14:21:
+
+   14 | if (len(s) == 1) then
+      |                     1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:15:18:
+
+   15 |     is_palindrome = .true.
+      |                  1
+Error: Symbol ‘is_palindrome’ at (1) has already been host associated
+temp.f95:16:4:
+
+   16 | else
+      |    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:18:12:
+
+   18 |     if (s(1:len(s)/2) == s(len(s):2:-1)) then
+      |            1
+Error: Syntax error in argument list at (1)
+temp.f95:19:22:
+
+   19 |         is_palindrome = .true.
+      |                      1
+Error: Symbol ‘is_palindrome’ at (1) has already been host associated
+temp.f95:20:8:
+
+   20 |     else
+      |        1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:21:22:
+
+   21 |         is_palindrome = .false.
+      |                      1
+Error: Symbol ‘is_palindrome’ at (1) has already been host associated
+temp.f95:22:7:
+
+   22 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:3:
+
+   23 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:3:
+
+   25 | end function is_palindrome
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:31:5:
+
+   31 | use palindrome
+      |     1
+Fatal Error: Cannot open module file ‘palindrome.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def validPalindrome(s: str) -&gt; bool:
+    i, j = 0, len(s) - 1
+    while i &lt; j:
+        if s[i] != s[j]:
+            temp1, temp2 = i + 1, j
+            while temp1 &lt; temp2 and s[temp1] == s[temp2]:
+                temp1 += 1
+                temp2 -= 1
+            if temp1 &gt;= temp2:
+                return True
+
+            temp1, temp2 = i, j - 1
+            while temp1 &lt; temp2 and s[temp1] == s[temp2]:
+                temp1 += 1
+                temp2 -= 1
+            if temp1 &gt;= temp2:
+                return True
+
+            return False
+        i += 1
+        j -= 1
+    return True
+</code></pre>
+<p>The algorithm works as follows:
+1. Initialize two pointers, <code>i</code> at the start and <code>j</code> at the end of the input string <code>s</code>.
+2. Check if characters at positions <code>i</code> and <code>j</code> are equal. If they are not,
+   1. Check if the resulting substring <code>s[i+1, j]</code> is a palindrome.
+   2. If it is not, check if the resulting substring <code>s[i, j-1]</code> is a palindrome.
+   3. If neither of the substrings is a palindrome, return false.
+3. Move both pointers towards each other and repeat step 2.
+4. If the pointers crossed each other or met, the entire string <code>s</code> can be a palindrome after deleting at most one character, so return true. </p>
+<p>The functions for all four languages follow the same logic as explained above.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool validPalindrome(string s) {
+    for (int i = 0, j = s.size() - 1; i &lt; j; i++, j--) {
+        if (s[i] != s[j]) {
+            int temp1 = i + 1, temp2 = j;
+            while (temp1 &lt; temp2 &amp;&amp; s[temp1] == s[temp2]) { temp1++; temp2--; }
+            if (temp1 &gt;= temp2) return true;
+
+            temp1 = i; temp2 = j - 1;
+            while (temp1 &lt; temp2 &amp;&amp; s[temp1] == s[temp2]) { temp1++; temp2--; }
+            if (temp1 &gt;= temp2) return true;
+
+            return false;
+        }
+    }
+    return true;
+}
+</code></pre>
+<p>The algorithm works as follows:
+1. Initialize two pointers, <code>i</code> at the start and <code>j</code> at the end of the input string <code>s</code>.
+2. Check if characters at positions <code>i</code> and <code>j</code> are equal. If they are not,
+   1. Check if the resulting substring <code>s[i+1, j]</code> is a palindrome.
+   2. If it is not, check if the resulting substring <code>s[i, j-1]</code> is a palindrome.
+   3. If neither of the substrings is a palindrome, return false.
+3. Move both pointers towards each other and repeat step 2.
+4. If the pointers crossed each other or met, the entire string <code>s</code> can be a palindrome after deleting at most one character, so return true. </p>
+<p>The functions for all four languages follow the same logic as explained above.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

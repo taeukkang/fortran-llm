@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Difference Between Highest and Lowest of K Scores</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1979/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1991/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>0-indexed</strong> integer array <code>nums</code>, where <code>nums[i]</code> represents the score of the <code>ith</code> student. You are also given an integer <code>k</code>.</p>
+<p>Pick the scores of any <code>k</code> students from the array so that the <strong>difference</strong> between the <strong>highest</strong> and the <strong>lowest</strong> of the <code>k</code> scores is <strong>minimized</strong>.</p>
+<p>Return <em>the <strong>minimum</strong> possible difference</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [90], k = 1
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There is one way to pick score(s) of one student:
+- [<strong>90</strong>]. The difference between the highest and lowest score is 90 - 90 = 0.
+The minimum possible difference is 0.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [9,4,1,7], k = 2
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> There are six ways to pick score(s) of two students:
+- [<strong>9</strong>,<strong>4</strong>,1,7]. The difference between the highest and lowest score is 9 - 4 = 5.
+- [<strong>9</strong>,4,<strong>1</strong>,7]. The difference between the highest and lowest score is 9 - 1 = 8.
+- [<strong>9</strong>,4,1,<strong>7</strong>]. The difference between the highest and lowest score is 9 - 7 = 2.
+- [9,<strong>4</strong>,<strong>1</strong>,7]. The difference between the highest and lowest score is 4 - 1 = 3.
+- [9,<strong>4</strong>,1,<strong>7</strong>]. The difference between the highest and lowest score is 7 - 4 = 3.
+- [9,4,<strong>1</strong>,<strong>7</strong>]. The difference between the highest and lowest score is 7 - 1 = 6.
+The minimum possible difference is 2.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= k &lt;= nums.length &lt;= 1000</code></li>
+<li><code>0 &lt;= nums[i] &lt;= 105</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-difference-between-highest-and-lowest-of-k-scores/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 10
+    integer, dimension(n) :: nums
+    integer :: k
+    integer :: i
+
+    ! Examples
+    nums = reshape([90, 9, 4, 1, 7, 6, 5, 4, 6, 7], shape(nums))
+    k = 1
+    write(*,*) 'Example 1:'
+    call solve(nums, k)
+    write(*,*) ''
+    nums = reshape([9, 4, 1, 7], shape(nums))
+    k = 2
+    write(*,*) 'Example 2:'
+    call solve(nums, k)
+    write(*,*) ''
+
+contains
+
+    subroutine solve(nums, k)
+        implicit none
+        integer, dimension(:), intent(in) :: nums
+        integer, intent(in) :: k
+        integer :: min_diff
+
+        if (size(nums) < k .or. k < 1) then
+            write(*,*) 'Invalid input'
+            return
+        end if
+
+        min_diff = huge(0)
+        do i = 1, size(nums) - k + 1
+            min_diff = min(min_diff, maxval(nums(i:i+k-1)) - minval(nums(i:i+k-1)))
+        end do
+
+        write(*,*) 'Minimum possible difference: ', min_diff
+
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:19:
+
+   15 |     nums = reshape([9, 4, 1, 7], shape(nums))
+      |                   1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module MinimumDifference
+    implicit none
+    private
+    public :: minimumDifference
+contains
+    function minimumDifference(nums, k) result(minDiff)
+        integer, intent(in) :: nums(:)
+        integer, intent(in) :: k
+        integer :: minDiff
+        integer :: i, j, n, temp
+
+        ! Sort the array in ascending order
+        do i = 1, size(nums) - 1
+            do j = i + 1, size(nums)
+                if (nums(i) > nums(j)) then
+                    temp = nums(i)
+                    nums(i) = nums(j)
+                    nums(j) = temp
+                end if
+            end do
+        end do
+
+        ! Initialize the minimum difference
+        minDiff = huge(0)
+
+        ! Loop through all possible combinations of k elements
+        do i = 1, size(nums) - k + 1
+            n = nums(i + k - 1) - nums(i)
+            if (n < minDiff) then
+                minDiff = n
+            end if
+        end do
+    end function minimumDifference
+end module MinimumDifference
+
+! Test the module with the given examples
+program testMinimumDifference
+    use MinimumDifference
+    implicit none
+    integer, parameter :: nums1(1) = [90]
+    integer, parameter :: nums2(4) = [9, 4, 1, 7]
+    integer, parameter :: nums3(5) = [3, 4, 5, 1, 2]
+    integer, parameter :: nums4(6) = [9, 4, 1, 7, 9, 4]
+    integer, parameter :: k1 = 1
+    integer, parameter :: k2 = 2
+    integer, parameter :: k3 = 3
+    integer, parameter :: k4 = 4
+    integer :: minDiff
+
+    ! Test case 1:
+    minDiff = minimumDifference(nums1, k1)
+    if (minDiff /= 0) then
+        write (*,*) "Test case 1 failed. Expected minimum difference = 0. Got", minDiff
+        stop 1
+    end if
+
+    ! Test case 2:
+    minDiff = minimumDifference(nums2, k2)
+    if (minDiff /= 2) then
+        write (*,*) "Test case 2 failed. Expected minimum difference = 2. Got", minDiff
+        stop 1
+    end if
+
+    ! Test case 3:
+    minDiff = minimumDifference(nums3, k3)
+    if (minDiff /= 2) then
+        write (*,*) "Test case 3 failed. Expected minimum difference = 2. Got", minDiff
+        stop 1
+    end if
+
+    ! Test case 4:
+    minDiff = minimumDifference(nums4, k4)
+    if (minDiff /= 2) then
+        write (*,*) "Test case 4 failed. Expected minimum difference = 2. Got", minDiff
+        stop 1
+    end if
+
+    write (*,*) "All test cases passed!"
+end program testMinimumDifference
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:31:
+
+    4 |     public :: minimumDifference
+      |                               1
+Error: PUBLIC attribute applied to MODULE minimumdifference at (1)
+temp.f95:6:30:
+
+    6 |     function minimumDifference(nums, k) result(minDiff)
+      |                              1
+Error: MODULE attribute of ‘minimumdifference’ conflicts with PROCEDURE attribute at (1)
+temp.f95:7:38:
+
+    7 |         integer, intent(in) :: nums(:)
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:32:
+
+    8 |         integer, intent(in) :: k
+      |                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:26:
+
+    9 |         integer :: minDiff
+      |                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:32:
+
+   10 |         integer :: i, j, n, temp
+      |                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:32:
+
+   13 |         do i = 1, size(nums) - 1
+      |                                1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:14:36:
+
+   14 |             do j = i + 1, size(nums)
+      |                                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:15:43:
+
+   15 |                 if (nums(i) > nums(j)) then
+      |                                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:16:34:
+
+   16 |                     temp = nums(i)
+      |                                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:37:
+
+   17 |                     nums(i) = nums(j)
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:18:34:
+
+   18 |                     nums(j) = temp
+      |                                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:19:
+
+   19 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:20:15:
+
+   20 |             end do
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:21:11:
+
+   21 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:24:25:
+
+   24 |         minDiff = huge(0)
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:27:36:
+
+   27 |         do i = 1, size(nums) - k + 1
+      |                                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:28:41:
+
+   28 |             n = nums(i + k - 1) - nums(i)
+      |                                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:29:33:
+
+   29 |             if (n < minDiff) then
+      |                                 1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:30:27:
+
+   30 |                 minDiff = n
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:31:15:
+
+   31 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:32:11:
+
+   32 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:33:7:
+
+   33 |     end function minimumDifference
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:38:9:
+
+   38 |     use MinimumDifference
+      |         1
+Fatal Error: Cannot open module file ‘minimumdifference.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def max_distance(nums1, nums2):
+    i, j, max_dist = 0, 0, 0
+    while i &lt; len(nums1) and j &lt; len(nums2):
+        if i &lt;= j and nums1[i] &lt;= nums2[j]:
+            max_dist = max(max_dist, j - i)
+            j += 1
+        else:
+            i += 1
+    return max_dist
+</code></pre>
+<ol>
+<li>Initialize variables <code>i</code> and <code>j</code> to 0 and <code>maxDist</code> to 0.</li>
+<li>Loop with a <code>while</code> condition until we reach the end of either of the arrays.</li>
+<li>Check the valid pair condition: <code>i &lt;= j</code> and <code>nums1[i] &lt;= nums2[j]</code>.</li>
+<li>If the pair is valid, calculate the distance as <code>j - i</code> and update <code>maxDist</code> if this distance is greater than its current value.</li>
+<li>Increment <code>j</code> to check the next element in array <code>nums2</code>.</li>
+<li>If the pair condition is not valid, increment <code>i</code> to check the next element in array <code>nums1</code>.</li>
+<li>Repeat steps 3-4 until the end of either array is reached.</li>
+<li>Return the <code>maxDist</code> as the maximum distance of a valid pair.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int maxDistance(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+    int i = 0, j = 0, maxDist = 0;
+    while (i &lt; nums1.size() &amp;&amp; j &lt; nums2.size()) {
+        if (i &lt;= j &amp;&amp; nums1[i] &lt;= nums2[j]) {
+            maxDist = max(maxDist, j - i);
+            j++;
+        } else {
+            i++;
+        }
+    }
+    return maxDist;
+}
+</code></pre>
+<ol>
+<li>Initialize variables <code>i</code> and <code>j</code> to 0 and <code>maxDist</code> to 0.</li>
+<li>Loop with a <code>while</code> condition until we reach the end of either of the arrays.</li>
+<li>Check the valid pair condition: <code>i &lt;= j</code> and <code>nums1[i] &lt;= nums2[j]</code>.</li>
+<li>If the pair is valid, calculate the distance as <code>j - i</code> and update <code>maxDist</code> if this distance is greater than its current value.</li>
+<li>Increment <code>j</code> to check the next element in array <code>nums2</code>.</li>
+<li>If the pair condition is not valid, increment <code>i</code> to check the next element in array <code>nums1</code>.</li>
+<li>Repeat steps 3-4 until the end of either array is reached.</li>
+<li>Return the <code>maxDist</code> as the maximum distance of a valid pair.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count Largest Group</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1394/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1403/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer <code>n</code>.</p>
+<p>Each number from <code>1</code> to <code>n</code> is grouped according to the sum of its digits.</p>
+<p>Return <em>the number of groups that have the largest size</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 13
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> There are 9 groups in total, they are grouped according sum of its digits of numbers from 1 to 13:
+[1,10], [2,11], [3,12], [4,13], [5], [6], [7], [8], [9].
+There are 4 groups with largest size.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 2
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> There are 2 groups [1], [2] of size 1.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 104</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-largest-group/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n
+
+    call get_arguments(n)
+
+    write (*, '(A, I0)') 'The number of groups with largest size is ', solve(n)
+
+contains
+
+    subroutine get_arguments(n)
+        implicit none
+        integer, intent(out) :: n
+
+        if (command_argument_count() /= 1) then
+            write (*, '(A)') 'ERROR: Expected one argument'
+            stop 1
+        end if
+
+        call get_command_argument(1, buffer)
+        read (buffer, '(I0)', iostat=iostat) n
+        if (iostat /= 0) then
+            write (*, '(A)') 'ERROR: Invalid argument'
+            stop 1
+        end if
+    end subroutine get_arguments
+
+    function solve(n) result(groups)
+        implicit none
+        integer, value :: n
+        integer :: groups
+
+        integer :: i, j, k, l, m, n_digits, digit_sums(n), max_digit_sum, &
+                   group_size(n), group_index(n)
+
+        do i = 1, n
+            digit_sums(i) = 0
+            do j = 1, n_digits(i)
+                digit_sums(i) = digit_sums(i) + mod(i, 10)
+                i = i / 10
+            end do
+        end do
+
+        max_digit_sum = 0
+        do i = 1, n
+            if (digit_sums(i) > max_digit_sum) then
+                max_digit_sum = digit_sums(i)
+            end if
+        end do
+
+        groups = 0
+        do i = 1, n
+            if (digit_sums(i) == max_digit_sum) then
+                groups = groups + 1
+            end if
+        end do
+
+    contains
+
+        function n_digits(x) result(nd)
+            implicit none
+            integer, value :: x
+            integer :: nd
+
+            nd = 0
+            do while (x > 0)
+                nd = nd + 1
+                x = x / 10
+            end do
+        end function n_digits
+
+    end function solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:22:25:
+
+   22 |         read (buffer, '(I0)', iostat=iostat) n
+      |                         1
+Error: Positive width required in format string at (1)
+temp.f95:41:26:
+
+   37 |         do i = 1, n
+      |                   2       
+......
+   41 |                 i = i / 10
+      |                          1
+Error: Variable ‘i’ at (1) cannot be redefined inside loop beginning at (2)
+temp.f95:59:12:
+
+   59 |     contains
+      |            1
+Error: CONTAINS statement at (1) is already in a contained program unit
+temp.f95:62:25:
+
+   62 |             implicit none
+      |                         1
+Error: Duplicate IMPLICIT NONE statement at (1)
+temp.f95:63:31:
+
+   63 |             integer, value :: x
+      |                               1
+Error: Unexpected data declaration statement at (1)
+temp.f95:64:25:
+
+   64 |             integer :: nd
+      |                         1
+Error: Unexpected data declaration statement at (1)
+temp.f95:71:29:
+
+   71 |         end function n_digits
+      |                             1
+Error: Expected label ‘solve’ for END FUNCTION statement at (1)
+temp.f95:66:14:
+
+   66 |             nd = 0
+      |              1
+Error: Symbol ‘nd’ at (1) has no IMPLICIT type; did you mean ‘n’?
+temp.f95:67:23:
+
+   67 |             do while (x > 0)
+      |                       1
+Error: Symbol ‘x’ at (1) has no IMPLICIT type
+temp.f95:21:43:
+
+   21 |         call get_command_argument(1, buffer)
+      |                                           1
+Error: Symbol ‘buffer’ at (1) has no IMPLICIT type
+temp.f95:23:18:
+
+   23 |         if (iostat /= 0) then
+      |                  1
+Error: Symbol ‘iostat’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module e99_largest_group_size
+
+implicit none
+
+contains
+
+integer function largest_group_size(n) result(largest_size)
+
+integer, intent(in) :: n
+
+integer :: i, j, k, l, m, n_digits, digit_sum, max_digit_sum, &
+max_digit_sum_index, group_size, largest_group_size
+
+! Initialize variables
+largest_size = 0
+max_digit_sum = 0
+max_digit_sum_index = 0
+
+! Loop through all numbers from 1 to n
+do i = 1, n
+
+! Get the number of digits of the current number
+n_digits = number_of_digits(i)
+
+! Initialize the digit sum to 0
+digit_sum = 0
+
+! Loop through all digits of the current number
+do j = 1, n_digits
+
+! Get the current digit
+k = digit(i, j)
+
+! Add the current digit to the digit sum
+digit_sum = digit_sum + k
+
+end do
+
+! If the digit sum is greater than the max digit sum, update the max digit sum and max digit sum index
+if (digit_sum > max_digit_sum) then
+max_digit_sum = digit_sum
+max_digit_sum_index = i
+end if
+
+end do
+
+! Get the group size for the max digit sum index
+group_size = group_size(max_digit_sum_index)
+
+! If the group size is greater than the largest group size, update the largest group size
+if (group_size > largest_size) then
+largest_size = group_size
+end if
+
+end function
+
+! Return the number of digits of a given number
+integer function number_of_digits(n) result(n_digits)
+
+integer, intent(in) :: n
+
+integer :: i, j
+
+! Initialize the number of digits to 1
+n_digits = 1
+
+! Loop through all digits of the number
+do i = 1, n
+
+! If the current digit is not 0, increment the number of digits
+if (digit(n, i) /= 0) then
+n_digits = n_digits + 1
+end if
+
+end do
+
+end function
+
+! Return the digit of a given number at a given position
+integer function digit(n, i) result(digit)
+
+integer, intent(in) :: n, i
+
+integer :: j, k
+
+! Initialize the digit to 0
+digit = 0
+
+! Loop through all digits of the number
+do j = 1, i
+
+! If the current digit is not 0, increment the digit
+if (digit(n, j) /= 0) then
+digit = digit + 1
+end if
+
+end do
+
+! Get the current digit
+k = digit(n, i)
+
+! If the current digit is not 0, add it to the digit
+if (k /= 0) then
+digit = digit + k
+end if
+
+end function
+
+! Return the group size of a given number
+integer function group_size(n) result(group_size)
+
+integer, intent(in) :: n
+
+integer :: i, j, k, l, m, n_digits, digit_sum, group_size
+
+! Initialize the group size to 1
+group_size = 1
+
+! Loop through all numbers from 1 to n
+do i = 1, n
+
+! Get the number of digits of the current number
+n_digits = number_of_digits(i)
+
+! Initialize the digit sum to 0
+digit_sum = 0
+
+! Loop through all digits of the current number
+do j = 1, n_digits
+
+! Get the current digit
+k = digit(i, j)
+
+! Add the current digit to the digit sum
+digit_sum = digit_sum + k
+
+end do
+
+! If the digit sum is equal to the current number, increment the group size
+if (digit_sum == i) then
+group_size = group_size + 1
+end if
+
+end do
+
+end function
+
+end module
+
+program main
+
+use e99_largest_group_size
+
+implicit none
+
+integer :: n, largest_group_size
+
+! Read the value of n
+read
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:12:51:
+
+   12 | max_digit_sum_index, group_size, largest_group_size
+      |                                                   1
+Error: Symbol ‘largest_group_size’ at (1) already has basic type of INTEGER
+temp.f95:80:42:
+
+   80 | integer function digit(n, i) result(digit)
+      |                                          1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:82:27:
+
+   82 | integer, intent(in) :: n, i
+      |                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:84:15:
+
+   84 | integer :: j, k
+      |               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:87:6:
+
+   87 | digit = 0
+      |      1
+Error: Symbol ‘digit’ at (1) has already been host associated
+temp.f95:90:11:
+
+   90 | do j = 1, i
+      |           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:93:26:
+
+   93 | if (digit(n, j) /= 0) then
+      |                          1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:94:6:
+
+   94 | digit = digit + 1
+      |      1
+Error: Symbol ‘digit’ at (1) has already been host associated
+temp.f95:95:3:
+
+   95 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:97:3:
+
+   97 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:100:15:
+
+  100 | k = digit(n, i)
+      |               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:103:16:
+
+  103 | if (k /= 0) then
+      |                1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:104:6:
+
+  104 | digit = digit + k
+      |      1
+Error: Symbol ‘digit’ at (1) has already been host associated
+temp.f95:105:3:
+
+  105 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:107:3:
+
+  107 | end function
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:110:49:
+
+  110 | integer function group_size(n) result(group_size)
+      |                                                 1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:112:24:
+
+  112 | integer, intent(in) :: n
+      |                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:114:57:
+
+  114 | integer :: i, j, k, l, m, n_digits, digit_sum, group_size
+      |                                                         1
+Error: Symbol ‘group_size’ at (1) has already been host associated
+temp.f95:117:11:
+
+  117 | group_size = 1
+      |           1
+Error: Symbol ‘group_size’ at (1) has already been host associated
+temp.f95:120:11:
+
+  120 | do i = 1, n
+      |           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:123:30:
+
+  123 | n_digits = number_of_digits(i)
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:126:13:
+
+  126 | digit_sum = 0
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:129:18:
+
+  129 | do j = 1, n_digits
+      |                  1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:132:15:
+
+  132 | k = digit(i, j)
+      |               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:135:25:
+
+  135 | digit_sum = digit_sum + k
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:137:3:
+
+  137 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:140:24:
+
+  140 | if (digit_sum == i) then
+      |                        1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:141:11:
+
+  141 | group_size = group_size + 1
+      |           1
+Error: Symbol ‘group_size’ at (1) has already been host associated
+temp.f95:142:3:
+
+  142 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:144:3:
+
+  144 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:146:3:
+
+  146 | end function
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:9:
+
+   26 | digit_sum = 0
+      |         1
+Error: Symbol ‘digit_sum’ at (1) has no IMPLICIT type
+temp.f95:51:14:
+
+   51 | if (group_size > largest_size) then
+      |              1
+Error: Symbol ‘group_size’ at (1) has no IMPLICIT type; did you mean ‘largest_size’?
+temp.f95:20:4:
+
+   20 | do i = 1, n
+      |    1
+Error: Symbol ‘i’ at (1) has no IMPLICIT type
+temp.f95:29:4:
+
+   29 | do j = 1, n_digits
+      |    1
+Error: Symbol ‘j’ at (1) has no IMPLICIT type
+temp.f95:32:1:
+
+   32 | k = digit(i, j)
+      | 1
+Error: Symbol ‘k’ at (1) has no IMPLICIT type
+temp.f95:16:13:
+
+   16 | max_digit_sum = 0
+      |             1
+Error: Symbol ‘max_digit_sum’ at (1) has no IMPLICIT type
+temp.f95:17:19:
+
+   17 | max_digit_sum_index = 0
+      |                   1
+Error: Symbol ‘max_digit_sum_index’ at (1) has no IMPLICIT type
+temp.f95:23:8:
+
+   23 | n_digits = number_of_digits(i)
+      |        1
+Error: Symbol ‘n_digits’ at (1) has no IMPLICIT type
+temp.f95:71:4:
+
+   71 | if (digit(n, i) /= 0) then
+      |    1
+Error: Function ‘digit’ at (1) has no IMPLICIT type
+temp.f95:152:5:
+
+  152 | use e99_largest_group_size
+      |     1
+Fatal Error: Cannot open module file ‘e99_largest_group_size.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def countLargestGroup(n: int) -&gt; int:
+    groups = [0] * 37
+    largest_group_size = 0
+    count_largest_groups = 0
+
+    for i in range(1, n + 1):
+        sum_of_digits = sum(map(int, str(i)))
+        groups[sum_of_digits] += 1
+        if groups[sum_of_digits] &gt; largest_group_size:
+            largest_group_size = groups[sum_of_digits]
+            count_largest_groups = 1
+        elif groups[sum_of_digits] == largest_group_size:
+            count_largest_groups += 1
+
+    return count_largest_groups
+</code></pre>
+<p>The algorithm iterates through every number from 1 to n. For each number, calculate the sum of its digits. Increment the count for the group corresponding to that sum of digits. Update the largest group size if the current group becomes larger than the previous largest group. If the current group size is equal to the largest group size, increment the count of largest groups.</p>
+<p>The algorithm has a time complexity of O(n), as it processes each number from 1 to n once.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int countLargestGroup(int n) {
+    std::vector&lt;int&gt; groups(37, 0);
+    int largest_group_size = 0;
+    int count_largest_groups = 0;
+
+    for (int i = 1; i &lt;= n; i++) {
+        int sum = 0, num = i;
+        while (num) {
+            sum += num % 10;
+            num /= 10;
+        }
+        groups[sum]++;
+        if (groups[sum] &gt; largest_group_size) {
+            largest_group_size = groups[sum];
+            count_largest_groups = 1;
+        } else if (groups[sum] == largest_group_size) {
+            count_largest_groups++;
+        }
+    }
+    return count_largest_groups;
+}
+</code></pre>
+<p>The algorithm iterates through every number from 1 to n. For each number, calculate the sum of its digits. Increment the count for the group corresponding to that sum of digits. Update the largest group size if the current group becomes larger than the previous largest group. If the current group size is equal to the largest group size, increment the count of largest groups.</p>
+<p>The algorithm has a time complexity of O(n), as it processes each number from 1 to n once.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

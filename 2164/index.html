@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Sort Even and Odd Indices Independently</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2160/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2176/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>0-indexed</strong> integer array <code>nums</code>. Rearrange the values of <code>nums</code> according to the following rules:</p>
+<ol>
+<li>Sort the values at <strong>odd indices</strong> of <code>nums</code> in <strong>non-increasing</strong> order.<ul>
+<li>For example, if <code>nums = [4,**1**,2,**3**]</code> before this step, it becomes <code>[4,**3**,2,**1**]</code> after. The values at odd indices <code>1</code> and <code>3</code> are sorted in non-increasing order.</li>
+</ul>
+</li>
+<li>Sort the values at <strong>even indices</strong> of <code>nums</code> in <strong>non-decreasing</strong> order.<ul>
+<li>For example, if <code>nums = [**4**,1,**2**,3]</code> before this step, it becomes <code>[**2**,1,**4**,3]</code> after. The values at even indices <code>0</code> and <code>2</code> are sorted in non-decreasing order.</li>
+</ul>
+</li>
+</ol>
+<p>Return <em>the array formed after rearranging the values of</em> <code>nums</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [4,1,2,3]
+<strong>Output:</strong> [2,3,4,1]
+<strong>Explanation:</strong> 
+First, we sort the values present at odd indices (1 and 3) in non-increasing order.
+So, nums changes from [4,<strong>1</strong>,2,<strong>3</strong>] to [4,<strong>3</strong>,2,<strong>1</strong>].
+Next, we sort the values present at even indices (0 and 2) in non-decreasing order.
+So, nums changes from [<strong>4</strong>,1,<strong>2</strong>,3] to [<strong>2</strong>,3,<strong>4</strong>,1].
+Thus, the array formed after rearranging the values is [2,3,4,1].</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [2,1]
+<strong>Output:</strong> [2,1]
+<strong>Explanation:</strong> 
+Since there is exactly one odd index and one even index, no rearrangement of values takes place.
+The resultant array formed is [2,1], which is the same as the initial array. </p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/sort-even-and-odd-indices-independently/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+
+! This program solves the problem described in the statement.
+! It runs with all provided examples and outputs to stdout.
+
+implicit none
+integer :: i, j, k, n, nums(100), temp
+logical :: odd
+
+! Test case 1
+n = 4
+nums(1) = 4
+nums(2) = 1
+nums(3) = 2
+nums(4) = 3
+call rearrange(n, nums)
+write (*, "(A)", advance="no") "[2,3,4,1]"
+if (any(nums /= [2,3,4,1])) stop "Test case 1 failed"
+
+! Test case 2
+n = 2
+nums(1) = 2
+nums(2) = 1
+call rearrange(n, nums)
+write (*, "(A)", advance="no") "[2,1]"
+if (any(nums /= [2,1])) stop "Test case 2 failed"
+
+contains
+
+subroutine rearrange(n, nums)
+  implicit none
+  integer, intent(inout) :: nums(n)
+  integer, intent(in) :: n
+  integer :: i, j
+
+  ! Sort the values at odd indices in non-increasing order
+  do i = 1, n, 2
+     do j = i + 1, n, 2
+        if (nums(j) < nums(i)) then
+           temp = nums(j)
+           nums(j) = nums(i)
+           nums(i) = temp
+        end if
+     end do
+  end do
+
+  ! Sort the values at even indices in non-decreasing order
+  do i = 2, n, 2
+     do j = i + 1, n, 2
+        if (nums(j) > nums(i)) then
+           temp = nums(j)
+           nums(j) = nums(i)
+           nums(i) = temp
+        end if
+     end do
+  end do
+end subroutine rearrange
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:18:8-15:
+
+   18 | if (any(nums /= [2,3,4,1])) stop "Test case 1 failed"
+      |        1      2
+Error: Shapes for operands at (1) and (2) are not conformable
+temp.f95:26:8-15:
+
+   26 | if (any(nums /= [2,1])) stop "Test case 2 failed"
+      |        1      2
+Error: Shapes for operands at (1) and (2) are not conformable
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module sort_array
+    implicit none
+    contains
+    function sort_array_(nums) result(result)
+        integer, intent(in) :: nums(:)
+        integer :: result(size(nums))
+
+        ! Sort the values at odd indices in non-increasing order
+        call sort_odd_indices(nums)
+
+        ! Sort the values at even indices in non-decreasing order
+        call sort_even_indices(nums)
+
+        result = nums
+    end function sort_array_
+
+    subroutine sort_odd_indices(nums)
+        integer, intent(inout) :: nums(:)
+        integer :: temp
+        integer :: i, j
+
+        do i = 1, size(nums), 2
+            do j = i + 1, size(nums), 2
+                if (nums(i) < nums(j)) then
+                    temp = nums(i)
+                    nums(i) = nums(j)
+                    nums(j) = temp
+                end if
+            end do
+        end do
+    end subroutine sort_odd_indices
+
+    subroutine sort_even_indices(nums)
+        integer, intent(inout) :: nums(:)
+        integer :: temp
+        integer :: i, j
+
+        do i = 0, size(nums), 2
+            do j = i + 1, size(nums), 2
+                if (nums(i) > nums(j)) then
+                    temp = nums(i)
+                    nums(i) = nums(j)
+                    nums(j) = temp
+                end if
+            end do
+        end do
+    end subroutine sort_even_indices
+end module sort_array
+
+program test
+    use sort_array
+    implicit none
+    integer, parameter :: nums(4) = [4, 1, 2, 3]
+    integer, parameter :: expected(4) = [2, 3, 4, 1]
+    integer :: result(4)
+
+    result = sort_array_(nums)
+
+    if (any(result .ne. expected)) then
+        write (*,*) "Test failed"
+    else
+        write (*,*) "Test passed"
+    end if
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:30:
+
+    9 |         call sort_odd_indices(nums)
+      |                              1
+Error: Dummy argument ‘nums’ with INTENT(IN) in variable definition context (actual argument to INTENT = OUT/INOUT) at (1)
+temp.f95:12:31:
+
+   12 |         call sort_even_indices(nums)
+      |                               1
+Error: Dummy argument ‘nums’ with INTENT(IN) in variable definition context (actual argument to INTENT = OUT/INOUT) at (1)
+temp.f95:51:9:
+
+   51 |     use sort_array
+      |         1
+Fatal Error: Cannot open module file ‘sort_array.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def maxValue(events):
+    events.sort(key=lambda a: a[1])
+
+    dp = [0] * len(events)
+    dp[0] = events[0][2]
+
+    for i in range(1, len(events)):
+        lastNonConflict = -1
+        for j in range(i - 1, -1, -1):
+            if events[j][1] &lt; events[i][0]:
+                lastNonConflict = j
+                break
+
+        includedValue = events[i][2]
+        if lastNonConflict != -1:
+            includedValue += dp[lastNonConflict]
+
+        dp[i] = max(includedValue, dp[i - 1])
+
+    return dp[-1]
+</code></pre>
+<p>The problem can be solved using a dynamic programming approach. We first sort the events array by the end times in ascending order. Initialize an array <code>dp</code> of the same length as the number of events, and set the first value to the value of the first sorted event. Then, for each event in the sorted array starting from the second event, perform the following:</p>
+<ol>
+<li>
+<p>Find the last non-conflicting event index (i.e., the event index with the end time less than the current event's start time) and store that as <code>lastNonConflict</code>. Start the search from the previous event and go backward.</p>
+</li>
+<li>
+<p>Calculate the value if we include the current event, which is the current event's value and the value of lastNonConflict (if it exists) from the dp array.</p>
+</li>
+<li>
+<p>Get the maximum value between the included value (calculated in step 2) and the value of the previous event. Update the dp array at the current index with the maximum value.</p>
+</li>
+</ol>
+<p>Finally, return the last value from the <code>dp</code> array as it represents the maximum sum after considering all events.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include&lt;vector&gt;
+#include&lt;algorithm&gt;
+using namespace std;
+
+int maxValue(vector&lt;vector&lt;int&gt;&gt;&amp; events) {
+    sort(events.begin(), events.end(), [](const vector&lt;int&gt;&amp; a, const vector&lt;int&gt;&amp; b) {
+        return a[1] &lt; b[1];
+    });
+
+    vector&lt;int&gt; dp(events.size());
+    dp[0] = events[0][2];
+
+    for (int i = 1; i &lt; events.size(); i++) {
+        int lastNonConflict = -1;
+        for (int j = i - 1; j &gt;= 0; j--) {
+            if (events[j][1] &lt; events[i][0]) {
+                lastNonConflict = j;
+                break;
+            }
+        }
+
+        int includedValue = events[i][2];
+        if (lastNonConflict != -1) {
+            includedValue += dp[lastNonConflict];
+        }
+
+        dp[i] = max(includedValue, dp[i - 1]);
+    }
+
+    return dp.back();
+}
+</code></pre>
+<p>The problem can be solved using a dynamic programming approach. We first sort the events array by the end times in ascending order. Initialize an array <code>dp</code> of the same length as the number of events, and set the first value to the value of the first sorted event. Then, for each event in the sorted array starting from the second event, perform the following:</p>
+<ol>
+<li>
+<p>Find the last non-conflicting event index (i.e., the event index with the end time less than the current event's start time) and store that as <code>lastNonConflict</code>. Start the search from the previous event and go backward.</p>
+</li>
+<li>
+<p>Calculate the value if we include the current event, which is the current event's value and the value of lastNonConflict (if it exists) from the dp array.</p>
+</li>
+<li>
+<p>Get the maximum value between the included value (calculated in step 2) and the value of the previous event. Update the dp array at the current index with the maximum value.</p>
+</li>
+</ol>
+<p>Finally, return the last value from the <code>dp</code> array as it represents the maximum sum after considering all events.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

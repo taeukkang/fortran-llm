@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Remove Outermost Parentheses</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1018/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1022/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A valid parentheses string is either empty <code>" "</code>, <code>"( " + A + ") "</code>, or <code>A + B</code>, where <code>A</code> and <code>B</code> are valid parentheses strings, and <code>+</code> represents string concatenation.</p>
+<ul>
+<li>For example, <code>" "</code>, <code>"() "</code>, <code>"(())() "</code>, and <code>"(()(())) "</code> are all valid parentheses strings.</li>
+</ul>
+<p>A valid parentheses string <code>s</code> is primitive if it is nonempty, and there does not exist a way to split it into <code>s = A + B</code>, with <code>A</code> and <code>B</code> nonempty valid parentheses strings.</p>
+<p>Given a valid parentheses string <code>s</code>, consider its primitive decomposition: <code>s = P1 + P2 + ... + Pk</code>, where <code>Pi</code> are primitive valid parentheses strings.</p>
+<p>Return <code>s</code> <em>after removing the outermost parentheses of every primitive string in the primitive decomposition of</em> <code>s</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "(()())(()) "
+<strong>Output:</strong>  "()()() "
+<strong>Explanation:</strong> 
+The input string is  "(()())(()) ", with primitive decomposition  "(()()) " +  "(()) ".
+After removing outer parentheses of each part, this is  "()() " +  "() " =  "()()() ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "(()())(())(()(())) "
+<strong>Output:</strong>  "()()()()(()) "
+<strong>Explanation:</strong> 
+The input string is  "(()())(())(()(())) ", with primitive decomposition  "(()()) " +  "(()) " +  "(()(())) ".
+After removing outer parentheses of each part, this is  "()() " +  "() " +  "()(()) " =  "()()()()(()) ".</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "()() "
+<strong>Output:</strong>  " "
+<strong>Explanation:</strong> 
+The input string is  "()() ", with primitive decomposition  "() " +  "() ".
+After removing outer parentheses of each part, this is  " " +  " " =  " ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 105</code></li>
+<li><code>s[i]</code> is either <code>'('</code> or <code>')'</code>.</li>
+<li><code>s</code> is a valid parentheses string.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/remove-outermost-parentheses/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=100) :: s
+    integer :: i
+
+    ! Examples
+    s = ""
+    call remove_outer_parens(s)
+    write (*,*) trim(s)
+
+    s = "()"
+    call remove_outer_parens(s)
+    write (*,*) trim(s)
+
+    s = "(())()"
+    call remove_outer_parens(s)
+    write (*,*) trim(s)
+
+    s = "((()))()"
+    call remove_outer_parens(s)
+    write (*,*) trim(s)
+
+contains
+
+    subroutine remove_outer_parens(s)
+        implicit none
+        character(len=*), intent(inout) :: s
+        integer :: i
+
+        do while (s(1:1) == '(' .and. s(len_trim(s):len_trim(s)) == ')')
+            s = s(2:len_trim(s)-1)
+        end do
+
+        do while (s(1:1) == '(')
+            i = index(s, '(')
+            s = s(i+1:)
+        end do
+
+        do while (s(len_trim(s):len_trim(s)) == ')')
+            s = s(:len_trim(s)-1)
+        end do
+    end subroutine remove_outer_parens
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> 
+ 
+ ))(
+ )))(
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module remove_outer_parentheses
+
+implicit none
+
+contains
+
+function remove_outer_parentheses_recursive(s, i, j) result(result)
+
+character(len=*), intent(in) :: s
+integer, intent(in) :: i, j
+character(len=:), allocatable :: result
+
+if (i > j) then
+    result = ""
+elseif (s(i:i) == "(" .and. s(j:j) == ")") then
+    result = remove_outer_parentheses_recursive(s, i+1, j-1)
+else
+    result = s(i:j)
+endif
+
+end function remove_outer_parentheses_recursive
+
+function remove_outer_parentheses_iterative(s) result(result)
+
+character(len=*), intent(in) :: s
+character(len=:), allocatable :: result
+
+integer :: i, j
+
+i = 1
+j = len(s)
+
+do while (i <= j)
+    if (s(i:i) == "(" .and. s(j:j) == ")") then
+        result = remove_outer_parentheses_recursive(s, i+1, j-1)
+        exit
+    endif
+    i = i + 1
+enddo
+
+end function remove_outer_parentheses_iterative
+
+end module remove_outer_parentheses
+
+program test_remove_outer_parentheses
+
+use remove_outer_parentheses
+
+implicit none
+
+character(len=*), parameter :: EXAMPLE_1 = "(()())(()) "
+character(len=*), parameter :: EXAMPLE_2 = "(()())(())(()(())) "
+character(len=*), parameter :: EXAMPLE_3 = "()() "
+
+character(len=:), allocatable :: result
+
+result = remove_outer_parentheses_iterative(EXAMPLE_1)
+write (*,*) "Example 1: ", result
+result = remove_outer_parentheses_iterative(EXAMPLE_2)
+write (*,*) "Example 2: ", result
+result = remove_outer_parentheses_iterative(EXAMPLE_3)
+write (*,*) "Example 3: ", result
+
+end program test_remove_outer_parentheses
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:16:13:
+
+   16 |     result = remove_outer_parentheses_recursive(s, i+1, j-1)
+      |             1
+Error: Function ‘remove_outer_parentheses_recursive’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:47:5:
+
+   47 | use remove_outer_parentheses
+      |     1
+Fatal Error: Cannot open module file ‘remove_outer_parentheses.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def distributeCoins(root):
+    def dfs(node):
+        if not node:
+            return 0
+        left, right = dfs(node.left), dfs(node.right)
+        moves[0] += abs(left) + abs(right)
+        return node.val + left + right - 1
+
+    moves = [0]
+    dfs(root)
+    return moves[0]
+</code></pre>
+<p>The algorithm uses DFS (Depth-first search) to traverse the binary tree. We start from the root node and move down to the leaf nodes before returning to the parent nodes. In each step, we calculate the number of moves as the absolute difference between the current node's value and 1, because we want every node to have exactly one coin. The total number of moves required is the sum of these absolute differences.</p>
+<p>We use a helper function that takes the current node as its argument and returns its excess coins. In each recursive call, the helper function calls itself for left and right children of the node. The number of moves is then incremented by the absolute values of the returned excess coins from the left and right children.</p>
+<p>Finally, we return the total number of moves calculated during the traversal.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int distributeCoins(TreeNode* root, int &amp;moves) {
+    if (root == nullptr) return 0;
+    int left = distributeCoins(root-&gt;left, moves);
+    int right = distributeCoins(root-&gt;right, moves);
+    moves += abs(left) + abs(right);
+    return root-&gt;val + left + right - 1;
+}
+
+int distributeCoins(TreeNode* root) {
+    int moves = 0;
+    distributeCoins(root, moves);
+    return moves;
+}
+</code></pre>
+<p>The algorithm uses DFS (Depth-first search) to traverse the binary tree. We start from the root node and move down to the leaf nodes before returning to the parent nodes. In each step, we calculate the number of moves as the absolute difference between the current node's value and 1, because we want every node to have exactly one coin. The total number of moves required is the sum of these absolute differences.</p>
+<p>We use a helper function that takes the current node as its argument and returns its excess coins. In each recursive call, the helper function calls itself for left and right children of the node. The number of moves is then incremented by the absolute values of the returned excess coins from the left and right children.</p>
+<p>Finally, we return the total number of moves calculated during the traversal.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

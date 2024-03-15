@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Largest Substring Between Two Equal Characters</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1619/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1629/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string <code>s</code>, return <em>the length of the longest substring between two equal characters, excluding the two characters.</em> If there is no such substring return <code>-1</code>.</p>
+<p>A <strong>substring</strong> is a contiguous sequence of characters within a string.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "aa "
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> The optimal substring here is an empty substring between the two <code>'a's</code>.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "abca "
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The optimal substring here is  "bc ".</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "cbzxy "
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> There are no characters that appear twice in s.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 300</code></li>
+<li><code>s</code> contains only lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/largest-substring-between-two-equal-characters/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: s
+    integer :: i, j, k, l, m, n
+
+    ! Example 1
+    s = 'aa '
+    write (*,*) 'Example 1:'
+    write (*,*) 'Input: ', trim(s)
+    write (*,*) 'Output: ', longest_substring(s)
+    write (*,*) ''
+
+    ! Example 2
+    s = 'abca '
+    write (*,*) 'Example 2:'
+    write (*,*) 'Input: ', trim(s)
+    write (*,*) 'Output: ', longest_substring(s)
+    write (*,*) ''
+
+    ! Example 3
+    s = 'cbzxy '
+    write (*,*) 'Example 3:'
+    write (*,*) 'Input: ', trim(s)
+    write (*,*) 'Output: ', longest_substring(s)
+    write (*,*) ''
+
+contains
+
+    function longest_substring(s) result(res)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer :: res
+
+        integer :: i, j, k, l, m, n
+
+        do i = 1, len(s) - 1
+            do j = i + 1, len(s)
+                if (s(i:j) == s(i+1:j+1)) then
+                    res = max(res, j - i)
+                end if
+            end do
+        end do
+
+        if (res == 0) then
+            res = -1
+        end if
+
+    end function longest_substring
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Example 1:
+ Input: aa
+ Output:        32765
+ 
+ Example 2:
+ Input: abca
+ Output:        32765
+ 
+ Example 3:
+ Input: cbzxy
+ Output:        32765
+ 
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module longest_substring
+
+implicit none
+
+contains
+
+function longest_substring(s) result(ans)
+
+character(len=*), intent(in) :: s
+integer :: ans
+
+integer :: i, j, count
+
+do i = 1, len(s) - 1
+
+    do j = i + 1, len(s)
+
+        if (s(i:i) == s(j:j)) then
+
+            count = 0
+
+            do while (s(i + count:i + count) == s(j + count:j + count))
+
+                count = count + 1
+
+            end do
+
+            ans = max(ans, count - 1)
+
+        end if
+
+    end do
+
+end do
+
+end function longest_substring
+
+end module
+
+program test_longest_substring
+
+use longest_substring
+
+implicit none
+
+character(len=300) :: s
+integer :: ans
+
+s = "aa "
+ans = longest_substring(s)
+write (*,*) "The longest substring between two equal characters in '", s, "' is ", ans
+
+s = "abca "
+ans = longest_substring(s)
+write (*,*) "The longest substring between two equal characters in '", s, "' is ", ans
+
+s = "cbzxy "
+ans = longest_substring(s)
+write (*,*) "The longest substring between two equal characters in '", s, "' is ", ans
+
+end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:26:
+
+    7 | function longest_substring(s) result(ans)
+      |                          1
+Error: MODULE attribute of ‘longest_substring’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:33:
+
+    9 | character(len=*), intent(in) :: s
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:14:
+
+   10 | integer :: ans
+      |              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:22:
+
+   12 | integer :: i, j, count
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:20:
+
+   14 | do i = 1, len(s) - 1
+      |                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:16:24:
+
+   16 |     do j = i + 1, len(s)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:18:16:
+
+   18 |         if (s(i:i) == s(j:j)) then
+      |                1
+Error: Syntax error in argument list at (1)
+temp.f95:20:21:
+
+   20 |             count = 0
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:34:
+
+   22 |             do while (s(i + count:i + count) == s(j + count:j + count))
+      |                                  1
+Error: Syntax error in argument list at (1)
+temp.f95:24:33:
+
+   24 |                 count = count + 1
+      |                                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:15:
+
+   26 |             end do
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:37:
+
+   28 |             ans = max(ans, count - 1)
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:30:11:
+
+   30 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:32:7:
+
+   32 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:3:
+
+   34 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:36:3:
+
+   36 | end function longest_substring
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:42:5:
+
+   42 | use longest_substring
+      |     1
+Fatal Error: Cannot open module file ‘longest_substring.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def maxLengthBetweenEqualCharacters(s: str) -&gt; int:
+    result = -1
+    char_map = {}
+
+    for i, c in enumerate(s):
+        if c not in char_map:
+            char_map[c] = i
+        else:
+            result = max(result, i - char_map[c] - 1)
+
+    return result
+</code></pre>
+<p>The algorithm uses a hash map to store the index of the first occurrence of each character in the string. It then iterates through the string, and for each character, checks if it's present in the hash map. If it's not, the character is added to the hash map with its index. If it is present, the length of the substring between the two occurrences of the character is calculated as (current index - stored index - 1). The result is updated as the maximum length between equal characters found so far.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int maxLengthBetweenEqualCharacters(std::string s) {
+    int result = -1;
+    std::unordered_map&lt;char, int&gt; char_map;
+
+    for (int i = 0; i &lt; s.length(); ++i) {
+        if (char_map.find(s[i]) == char_map.end()) {
+            char_map[s[i]] = i;
+        } else {
+            result = std::max(result, i - char_map[s[i]] - 1);
+        }
+    }
+    return result;
+}
+</code></pre>
+<p>The algorithm uses a hash map to store the index of the first occurrence of each character in the string. It then iterates through the string, and for each character, checks if it's present in the hash map. If it's not, the character is added to the hash map with its index. If it is present, the length of the substring between the two occurrences of the character is calculated as (current index - stored index - 1). The result is updated as the maximum length between equal characters found so far.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Add Strings</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/414/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/422/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two non-negative integers, <code>num1</code> and <code>num2</code> represented as string, return <em>the sum of</em> <code>num1</code> <em>and</em> <code>num2</code> <em>as a string</em>.</p>
+<p>You must solve the problem without using any built-in library for handling large integers (such as <code>BigInteger</code>). You must also not convert the inputs to integers directly.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num1 =  "11 ", num2 =  "123 "
+<strong>Output:</strong>  "134 "</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num1 =  "456 ", num2 =  "77 "
+<strong>Output:</strong>  "533 "</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> num1 =  "0 ", num2 =  "0 "
+<strong>Output:</strong>  "0 "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= num1.length, num2.length &lt;= 104</code></li>
+<li><code>num1</code> and <code>num2</code> consist of only digits.</li>
+<li><code>num1</code> and <code>num2</code> don't have any leading zeros except for the zero itself.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/add-strings/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=100) :: num1, num2, result
+
+    ! Example 1
+    num1 = "11 "
+    num2 = "123 "
+    call add_strings(num1, num2, result)
+    print '(A)', trim(result)
+
+    ! Example 2
+    num1 = "456 "
+    num2 = "77 "
+    call add_strings(num1, num2, result)
+    print '(A)', trim(result)
+
+    ! Example 3
+    num1 = "0 "
+    num2 = "0 "
+    call add_strings(num1, num2, result)
+    print '(A)', trim(result)
+
+contains
+
+    subroutine add_strings(num1, num2, result)
+        implicit none
+        character(len=*), intent(in) :: num1, num2
+        character(len=*), intent(out) :: result
+        integer :: i, j, carry
+
+        result = ""
+        carry = 0
+        do while (i < len(num1) .or. j < len(num2))
+            if (i < len(num1)) then
+                carry = carry + ichar(num1(i+1:i+1)) - ichar('0')
+            end if
+            if (j < len(num2)) then
+                carry = carry + ichar(num2(j+1:j+1)) - ichar('0')
+            end if
+            result = char(carry%10 + ichar('0')) // result
+            carry = carry / 10
+            i = i + 1
+            j = j + 1
+        end do
+        if (carry > 0) then
+            result = char(carry%10 + ichar('0')) // result
+        end if
+    end subroutine add_strings
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:41:33:
+
+   41 |             result = char(carry%10 + ichar('0')) // result
+      |                                 1
+Error: Unexpected ‘%’ for nonderived-type variable ‘carry’ at (1)
+temp.f95:47:33:
+
+   47 |             result = char(carry%10 + ichar('0')) // result
+      |                                 1
+Error: Unexpected ‘%’ for nonderived-type variable ‘carry’ at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM SUM_STRINGS
+      IMPLICIT NONE
+
+      CHARACTER(len=1000) :: num1, num2, result
+      INTEGER :: i, j, carry
+
+      ! Read the input numbers
+      READ(*,*) num1, num2
+
+      ! Initialize the result string
+      result = "0"
+
+      ! Initialize the carry
+      carry = 0
+
+      ! Sum the digits of the two numbers
+      DO i = LEN(num1), 1, -1
+         DO j = LEN(num2), 1, -1
+            IF (i .LE. LEN(num1) .AND. j .LE. LEN(num2)) THEN
+               ! Add the current digits and the carry
+               result(i:i) = CHAR(MOD(INT(result(i:i)) + INT(num1(j:j)) + carry, 10) + 48)
+               carry = INT(result(i:i)) + INT(num1(j:j)) + carry
+            ELSE IF (i .LE. LEN(num1)) THEN
+               ! Add the current digit and the carry
+               result(i:i) = CHAR(MOD(INT(result(i:i)) + carry, 10) + 48)
+               carry = INT(result(i:i)) + carry
+            ELSE IF (j .LE. LEN(num2)) THEN
+               ! Add the current digit and the carry
+               result(i:i) = CHAR(MOD(INT(num2(j:j)) + carry, 10) + 48)
+               carry = INT(num2(j:j)) + carry
+            END IF
+         END DO
+      END DO
+
+      ! Print the result
+      WRITE(*,*) result
+
+      END PROGRAM SUM_STRINGS
+
+This program uses the `MOD` function to perform the addition of the digits of the two numbers, and the `INT` function to convert the characters to integers. The `LEN` function is used to get the length of the strings. The `CHAR` function is used to convert the integers to characters. The `READ` statement is used to read the input numbers from the console, and the `WRITE` statement is used to print the result to the console.
+
+Note that this program assumes that the input numbers are non-negative integers represented as strings. If the input numbers can be negative integers, then the program will need to be modified to handle the negative sign.
+
+Also note that this program does not use any built-in library for handling large integers, and it does not convert the inputs to integers directly. It uses the `MOD` function to perform the addition of the digits of the two numbers, and the `INT` function to convert the characters to integers.
+
+This program should run with all provided examples and output to stdout.
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:40:132:
+
+   40 | This program uses the `MOD` function to perform the addition of the digits of the two numbers, and the `INT` function to convert the characters to integers. The `LEN` function is used to get the length of the strings. The `CHAR` function is used to convert the integers to characters. The `READ` statement is used to read the input numbers from the console, and the `WRITE` statement is used to print the result to the console.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:42:132:
+
+   42 | Note that this program assumes that the input numbers are non-negative integers represented as strings. If the input numbers can be negative integers, then the program will need to be modified to handle the negative sign.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:44:132:
+
+   44 | Also note that this program does not use any built-in library for handling large integers, and it does not convert the inputs to integers directly. It uses the `MOD` function to perform the addition of the digits of the two numbers, and the `INT` function to convert the characters to integers.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:21:61:
+
+   21 |                result(i:i) = CHAR(MOD(INT(result(i:i)) + INT(num1(j:j)) + carry, 10) + 48)
+      |                                                             1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+temp.f95:22:46:
+
+   22 |                carry = INT(result(i:i)) + INT(num1(j:j)) + carry
+      |                                              1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+temp.f95:25:42:
+
+   25 |                result(i:i) = CHAR(MOD(INT(result(i:i)) + carry, 10) + 48)
+      |                                          1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+temp.f95:26:27:
+
+   26 |                carry = INT(result(i:i)) + carry
+      |                           1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+temp.f95:29:42:
+
+   29 |                result(i:i) = CHAR(MOD(INT(num2(j:j)) + carry, 10) + 48)
+      |                                          1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+temp.f95:30:27:
+
+   30 |                carry = INT(num2(j:j)) + carry
+      |                           1
+Error: ‘a’ argument of ‘int’ intrinsic at (1) must have a numeric type
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def addStrings(num1: str, num2: str) -&gt; str:
+    i, j, carry, result = len(num1) - 1, len(num2) - 1, 0, []
+
+    while i &gt;= 0 or j &gt;= 0 or carry:
+        sum = carry
+
+        if i &gt;= 0:
+            sum += int(num1[i])
+            i -= 1
+        if j &gt;= 0:
+            sum += int(num2[j])
+            j -= 1
+
+        carry = sum // 10
+        result.append(str(sum % 10))
+
+    return ''.join(result[::-1])
+</code></pre>
+<pre><code>1. Initialize pointers `i` and `j` to the end of `num1` and `num2`, a `carry` variable to 0, and an empty `result` container.
+</code></pre>
+<ol>
+<li>While there are still digits to process or a carry to propagate:
+   a. Initialize a <code>sum</code> variable with the current carry.
+   b. Add the current digits from num<code>1[i]</code> and <code>num2[j]</code> to <code>sum</code> if exist, decreasing <code>i</code> and <code>j</code> respectively after each addition.
+   c. Update the value of <code>carry</code> to be the integer division of <code>sum</code> by 10.
+   d. Add the value of <code>sum % 10</code> to the <code>result</code> container.</li>
+<li>Return the reversed <code>result</code> container as a string.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">std::string addStrings(std::string num1, std::string num2) {
+    int i = num1.size() - 1, j = num2.size() - 1, carry = 0;
+    std::string result;
+
+    while (i &gt;= 0 || j &gt;= 0 || carry) {
+        int sum = carry;
+
+        if (i &gt;= 0) {
+            sum += num1[i] - '0';
+            --i;
+        }
+        if (j &gt;= 0) {
+            sum += num2[j] - '0';
+            --j;
+        }
+
+        carry = sum / 10;
+        result.push_back(sum % 10 + '0');
+    }
+
+    std::reverse(result.begin(), result.end());
+    return result;
+}
+</code></pre>
+<pre><code>1. Initialize pointers `i` and `j` to the end of `num1` and `num2`, a `carry` variable to 0, and an empty `result` container.
+</code></pre>
+<ol>
+<li>While there are still digits to process or a carry to propagate:
+   a. Initialize a <code>sum</code> variable with the current carry.
+   b. Add the current digits from num<code>1[i]</code> and <code>num2[j]</code> to <code>sum</code> if exist, decreasing <code>i</code> and <code>j</code> respectively after each addition.
+   c. Update the value of <code>carry</code> to be the integer division of <code>sum</code> by 10.
+   d. Add the value of <code>sum % 10</code> to the <code>result</code> container.</li>
+<li>Return the reversed <code>result</code> container as a string.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

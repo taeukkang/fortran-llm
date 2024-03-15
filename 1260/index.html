@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Shift 2D Grid</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1252/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1266/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a 2D <code>grid</code> of size <code>m x n</code> and an integer <code>k</code>. You need to shift the <code>grid</code> <code>k</code> times.</p>
+<p>In one shift operation:</p>
+<ul>
+<li>Element at <code>grid[i][j]</code> moves to <code>grid[i][j + 1]</code>.</li>
+<li>Element at <code>grid[i][n - 1]</code> moves to <code>grid[i + 1][0]</code>.</li>
+<li>Element at <code>grid[m - 1][n - 1]</code> moves to <code>grid[0][0]</code>.</li>
+</ul>
+<p>Return the <em>2D grid</em> after applying shift operation <code>k</code> times.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> <code>grid</code> = [[1,2,3],[4,5,6],[7,8,9]], k = 1
+<strong>Output:</strong> [[9,1,2],[3,4,5],[6,7,8]]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> <code>grid</code> = [[3,8,1,9],[19,7,2,5],[4,6,11,10],[12,0,21,13]], k = 4
+<strong>Output:</strong> [[12,0,21,13],[3,8,1,9],[19,7,2,5],[4,6,11,10]]</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> <code>grid</code> = [[1,2,3],[4,5,6],[7,8,9]], k = 9
+<strong>Output:</strong> [[1,2,3],[4,5,6],[7,8,9]]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>m == grid.length</code></li>
+<li><code>n == grid[i].length</code></li>
+<li><code>1 &lt;= m &lt;= 50</code></li>
+<li><code>1 &lt;= n &lt;= 50</code></li>
+<li><code>-1000 &lt;= grid[i][j] &lt;= 1000</code></li>
+<li><code>0 &lt;= k &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/shift-2d-grid/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: m = 3, n = 3
+    integer, dimension(m, n) :: grid
+    integer :: i, j, k
+
+    ! Example 1
+    grid = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], shape=[m, n])
+    k = 1
+    call shift(grid, k)
+    write(*, "(A)") "Example 1:"
+    do i = 1, m
+        write(*, "(A)", advance="no") "["
+        do j = 1, n
+            write(*, "(I2)", advance="no") grid(i, j)
+            if (j < n) then
+                write(*, "(A)", advance="no") ", "
+            end if
+        end do
+        write(*, "(A)") "]"
+        if (i < m) then
+            write(*, "(A)") ""
+        end if
+    end do
+
+    ! Example 2
+    grid = reshape([3, 8, 1, 9, 19, 7, 2, 5, 4, 6, 11, 10, 12, 0, 21, 13], &
+                   shape=[m, n])
+    k = 4
+    call shift(grid, k)
+    write(*, "(A)") "Example 2:"
+    do i = 1, m
+        write(*, "(A)", advance="no") "["
+        do j = 1, n
+            write(*, "(I2)", advance="no") grid(i, j)
+            if (j < n) then
+                write(*, "(A)", advance="no") ", "
+            end if
+        end do
+        write(*, "(A)") "]"
+        if (i < m) then
+            write(*, "(A)") ""
+        end if
+    end do
+
+    ! Example 3
+    grid = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], shape=[m, n])
+    k = 9
+    call shift(grid, k)
+    write(*, "(A)") "Example 3:"
+    do i = 1, m
+        write(*, "(A)", advance="no") "["
+        do j = 1, n
+            write(*, "(I2)", advance="no") grid(i, j)
+            if (j < n) then
+                write(*, "(A)", advance="no") ", "
+            end if
+        end do
+        write(*, "(A)") "]"
+        if (i < m) then
+            write(*, "(A)") ""
+        end if
+    end do
+
+contains
+
+    subroutine shift(grid, k)
+        implicit none
+        integer, dimension(:, :), intent(inout) :: grid
+        integer, intent(in) :: k
+        integer :: i, j, temp
+
+        do while (k > 0)
+            ! Shift elements in each row
+            do i = 1, size(grid, 1)
+                ! Move element at grid[i][j] to grid[i][j + 1]
+                if (j < size(grid, 2)) then
+                    temp = grid(i, j)
+                    grid(i, j) = grid(i, j + 1)
+                    grid(i, j + 1) = temp
+                end if
+
+                ! Move element at grid[i][n - 1] to grid[i + 1][0]
+                if (i < size(grid, 1) .and. j == size(grid, 2)) then
+                    temp = grid(i, j)
+                    grid(i, j) = grid(i + 1, 0)
+                    grid(i + 1, 0) = temp
+                end if
+
+                ! Move element at grid[m - 1][n - 1] to grid[0][0]
+                if (i == size(grid, 1) .and. j == size(grid, 2)) then
+                    temp = grid(i, j)
+                    grid(i, j) = grid(0, 0)
+                    grid(0, 0) = temp
+                end if
+            end</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:97:15:
+
+   97 |             end
+      |               1
+Error: END DO statement expected at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module shift_grid
+  implicit none
+contains
+  subroutine shift_grid(grid, m, n, k, result)
+    integer, intent(in) :: m, n, k
+    integer, intent(in) :: grid(m, n)
+    integer, intent(out) :: result(m, n)
+
+    integer :: i, j
+
+    do i = 1, m
+      do j = 1, n
+        if (i == m .and. j == n) then
+          result(1, 1) = grid(i, j)
+        else if (i == m .and. j < n) then
+          result(1, j + 1) = grid(i, j)
+        else if (i < m .and. j == n) then
+          result(i + 1, 1) = grid(i, j)
+        else
+          result(i, j + 1) = grid(i, j)
+        end if
+      end do
+    end do
+
+    do i = 1, k - 1
+      call shift_once(result, m, n)
+    end do
+  end subroutine shift_grid
+
+  subroutine shift_once(grid, m, n)
+    integer, intent(inout) :: grid(m, n)
+    integer :: i, j
+
+    do i = 1, m
+      do j = 1, n
+        if (i == m .and. j == n) then
+          grid(1, 1) = grid(i, j)
+        else if (i == m .and. j < n) then
+          grid(1, j + 1) = grid(i, j)
+        else if (i < m .and. j == n) then
+          grid(i + 1, 1) = grid(i, j)
+        else
+          grid(i, j + 1) = grid(i, j)
+        end if
+      end do
+    end do
+  end subroutine shift_once
+end module shift_grid
+
+program test_shift_grid
+  use shift_grid
+  implicit none
+
+  integer, parameter :: m = 3
+  integer, parameter :: n = 3
+  integer, parameter :: k = 1
+  integer :: grid(m, n) = reshape((/ 1, 2, 3, 4, 5, 6, 7, 8, 9 /), shape=(/ m, n /))
+  integer :: result(m, n)
+
+  call shift_grid(grid, m, n, k, result)
+
+  write (*, *) "Expected:"
+  write (*, *) "9 1 2"
+  write (*, *) "3 4 5"
+  write (*, *) "6 7 8"
+  write (*, *) "Actual:"
+  write (*, *) result
+end program test_shift_grid
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:23:
+
+    4 |   subroutine shift_grid(grid, m, n, k, result)
+      |                       1
+Error: MODULE attribute of ‘shift_grid’ conflicts with PROCEDURE attribute at (1)
+temp.f95:5:34:
+
+    5 |     integer, intent(in) :: m, n, k
+      |                                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:6:37:
+
+    6 |     integer, intent(in) :: grid(m, n)
+      |                                     1
+Error: Explicit array shape at (1) must be constant of INTEGER type and not UNKNOWN type
+temp.f95:7:40:
+
+    7 |     integer, intent(out) :: result(m, n)
+      |                                        1
+Error: Explicit array shape at (1) must be constant of INTEGER type and not UNKNOWN type
+temp.f95:9:19:
+
+    9 |     integer :: i, j
+      |                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:15:
+
+   11 |     do i = 1, m
+      |               1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:12:17:
+
+   12 |       do j = 1, n
+      |                 1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:13:37:
+
+   13 |         if (i == m .and. j == n) then
+      |                                     1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:14:35:
+
+   14 |           result(1, 1) = grid(i, j)
+      |                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:41:
+
+   15 |         else if (i == m .and. j < n) then
+      |                                         1
+Error: Unexpected ELSE IF statement in CONTAINS section at (1)
+temp.f95:16:39:
+
+   16 |           result(1, j + 1) = grid(i, j)
+      |                                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:41:
+
+   17 |         else if (i < m .and. j == n) then
+      |                                         1
+Error: Unexpected ELSE IF statement in CONTAINS section at (1)
+temp.f95:18:39:
+
+   18 |           result(i + 1, 1) = grid(i, j)
+      |                                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:12:
+
+   19 |         else
+      |            1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:20:39:
+
+   20 |           result(i, j + 1) = grid(i, j)
+      |                                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:21:11:
+
+   21 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:22:9:
+
+   22 |       end do
+      |         1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:7:
+
+   23 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:19:
+
+   25 |     do i = 1, k - 1
+      |                   1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:26:35:
+
+   26 |       call shift_once(result, m, n)
+      |                                   1
+Error: Unexpected CALL statement in CONTAINS section at (1)
+temp.f95:27:7:
+
+   27 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:5:
+
+   28 |   end subroutine shift_grid
+      |     1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:31:
+
+   30 |   subroutine shift_once(grid, m, n)
+      |                               1
+Error: Symbol ‘m’ at (1) has no IMPLICIT type
+temp.f95:30:34:
+
+   30 |   subroutine shift_once(grid, m, n)
+      |                                  1
+Error: Symbol ‘n’ at (1) has no IMPLICIT type
+temp.f95:51:7:
+
+   51 |   use shift_grid
+      |       1
+Fatal Error: Cannot open module file ‘shift_grid.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def dayOfYear(date: str) -&gt; int:
+    year, month, day = map(int, date.split('-'))
+
+    daysInMonth = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
+        daysInMonth[2] = 29
+
+    dayOfYear = sum(daysInMonth[:month]) + day
+    return dayOfYear
+</code></pre>
+<ol>
+<li>Parse the input string to extract the year, month, and day as integers.</li>
+<li>Create an array <code>daysInMonth</code> representing the days in each month, with a special case for February in leap years.</li>
+<li>Iterate through the <code>daysInMonth</code> array up to the given month, accumulating the days in each month.</li>
+<li>Add the given day to the accumulated days to get the day number of the year.</li>
+<li>Return the resulting day number of the year.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int dayOfYear(std::string date) {
+    int year = stoi(date.substr(0, 4));
+    int month = stoi(date.substr(5, 2));
+    int day = stoi(date.substr(8, 2));
+
+    int daysInMonth[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    if (year % 4 == 0 &amp;&amp; (year % 100 != 0 || year % 400 == 0)) {
+        daysInMonth[2] = 29;
+    }
+
+    int dayOfYear = 0;
+    for (int i = 1; i &lt; month; ++i) {
+        dayOfYear += daysInMonth[i];
+    }
+    dayOfYear += day;
+
+    return dayOfYear;
+}
+</code></pre>
+<ol>
+<li>Parse the input string to extract the year, month, and day as integers.</li>
+<li>Create an array <code>daysInMonth</code> representing the days in each month, with a special case for February in leap years.</li>
+<li>Iterate through the <code>daysInMonth</code> array up to the given month, accumulating the days in each month.</li>
+<li>Add the given day to the accumulated days to get the day number of the year.</li>
+<li>Return the resulting day number of the year.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

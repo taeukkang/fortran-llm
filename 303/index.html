@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Range Sum Query - Immutable</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/293/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/326/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code>, handle multiple queries of the following type:</p>
+<ol>
+<li>Calculate the <strong>sum</strong> of the elements of <code>nums</code> between indices <code>left</code> and <code>right</code> <strong>inclusive</strong> where <code>left &lt;= right</code>.</li>
+</ol>
+<p>Implement the <code>NumArray</code> class:</p>
+<ul>
+<li><code>NumArray(int[] nums)</code> Initializes the object with the integer array <code>nums</code>.</li>
+<li><code>int sumRange(int left, int right)</code> Returns the <strong>sum</strong> of the elements of <code>nums</code> between indices <code>left</code> and <code>right</code> <strong>inclusive</strong> (i.e. <code>nums[left] + nums[left + 1] + ... + nums[right]</code>).</li>
+</ul>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input</strong>
+[ "NumArray ",  "sumRange ",  "sumRange ",  "sumRange "]
+[[[-2, 0, 3, -5, 2, -1]], [0, 2], [2, 5], [0, 5]]
+<strong>Output</strong>
+[null, 1, -1, -3]</p>
+<p><strong>Explanation</strong>
+NumArray numArray = new NumArray([-2, 0, 3, -5, 2, -1]);
+numArray.sumRange(0, 2); // return (-2) + 0 + 3 = 1
+numArray.sumRange(2, 5); // return 3 + (-5) + 2 + (-1) = -1
+numArray.sumRange(0, 5); // return (-2) + 0 + 3 + (-5) + 2 + (-1) = -3</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 104</code></li>
+<li><code>-105 &lt;= nums[i] &lt;= 105</code></li>
+<li><code>0 &lt;= left &lt;= right &lt; nums.length</code></li>
+<li>At most <code>104</code> calls will be made to <code>sumRange</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/range-sum-query-immutable/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: n = 6
+    integer, parameter :: m = 4
+    integer, dimension(n) :: nums = [-2, 0, 3, -5, 2, -1]
+    integer, dimension(m, 2) :: queries = reshape([0, 2, &
+                                                    2, 5, &
+                                                    0, 5], shape=[m, 2])
+    type(NumArray) :: na
+    integer :: i, j
+
+    ! Initialize the NumArray object
+    na = NumArray(nums)
+
+    ! Print the results for each query
+    do i = 1, size(queries, 1)
+        write (unit=error_unit, fmt='(*(g0))') 'Sum of elements between ', &
+            queries(i, 1), ' and ', queries(i, 2), ' inclusive: ', &
+            na%sumRange(queries(i, 1), queries(i, 2))
+    end do
+
+contains
+
+    type NumArray
+        private
+        integer, allocatable :: nums(:)
+
+        contains
+            procedure, public :: sumRange
+            generic :: operator(.sum.) => sumRange
+    end type NumArray
+
+    interface NumArray
+        module procedure :: constructor
+    end interface NumArray
+
+    function constructor(nums) result(this)
+        implicit none
+        integer, intent(in) :: nums(:)
+        type(NumArray) :: this
+
+        allocate(this%nums(size(nums)))
+        this%nums = nums
+    end function constructor
+
+    function sumRange(this, left, right) result(sum)
+        implicit none
+        class(NumArray), intent(in) :: this
+        integer, value :: left, right
+        integer :: sum
+
+        sum = sum(this%nums(left:right))
+    end function sumRange
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:50:
+
+    7 |     integer, dimension(m, 2) :: queries = reshape([0, 2, &
+      |                                                  1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+temp.f95:10:19:
+
+   10 |     type(NumArray) :: na
+      |                   1
+Error: Derived type ‘numarray’ at (1) is being used before it is defined
+temp.f95:20:16:
+
+   20 |             na%sumRange(queries(i, 1), queries(i, 2))
+      |                1
+Error: Symbol ‘na’ at (1) has no IMPLICIT type
+temp.f95:25:17:
+
+   25 |     type NumArray
+      |                 1
+Error: Unexpected derived type declaration statement in CONTAINS section at (1)
+temp.f95:26:15:
+
+   26 |         private
+      |               1
+Error: PRIVATE statement at (1) is only allowed in the specification part of a module
+temp.f95:27:39:
+
+   27 |         integer, allocatable :: nums(:)
+      |                                       1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:29:16:
+
+   29 |         contains
+      |                1
+Error: Unexpected CONTAINS statement in CONTAINS section at (1)
+temp.f95:32:7:
+
+   32 |     end type NumArray
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:34:22:
+
+   34 |     interface NumArray
+      |                      1
+Error: Unexpected INTERFACE statement in CONTAINS section at (1)
+temp.f95:35:25:
+
+   35 |         module procedure :: constructor
+      |                         1
+Error: MODULE PROCEDURE at (1) must be in a generic module interface
+temp.f95:36:7:
+
+   36 |     end interface NumArray
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:41:23:
+
+   14 |     na = NumArray(nums)
+      |                 2      
+......
+   41 |         type(NumArray) :: this
+      |                       1
+Error: Type name ‘numarray’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:43:23:
+
+   43 |         allocate(this%nums(size(nums)))
+      |                       1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:44:14:
+
+   44 |         this%nums = nums
+      |              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:49:24:
+
+   14 |     na = NumArray(nums)
+      |                 2       
+......
+   49 |         class(NumArray), intent(in) :: this
+      |                        1
+Error: Type name ‘numarray’ at (1) conflicts with previously declared entity at (2), which has the same name
+temp.f95:47:26:
+
+   47 |     function sumRange(this, left, right) result(sum)
+      |                          1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:38:43:
+
+   38 |     function constructor(nums) result(this)
+      |                                           1
+Error: Result ‘this’ of contained function ‘constructor’ at (1) has no IMPLICIT type
+temp.f95:14:6:
+
+   14 |     na = NumArray(nums)
+      |      1
+Error: Symbol ‘na’ at (1) has no IMPLICIT type; did you mean ‘n’?
+temp.f95:17:26:
+
+   17 |     do i = 1, size(queries, 1)
+      |                          1
+Error: Symbol ‘queries’ at (1) has no IMPLICIT type
+temp.f95:14:9:
+
+   14 |     na = NumArray(nums)
+      |         1
+Error: Function ‘numarray’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module NumArray
+    implicit none
+
+    type :: NumArray
+        integer, allocatable :: nums(:)
+    contains
+        procedure :: sumRange
+    end type NumArray
+
+    interface NumArray
+        module procedure constructor
+    end interface NumArray
+
+contains
+
+    function constructor(nums) result(this)
+        integer, intent(in) :: nums(:)
+        type(NumArray) :: this
+
+        allocate(this%nums(size(nums)))
+        this%nums = nums
+    end function constructor
+
+    function sumRange(this, left, right) result(sum)
+        class(NumArray), intent(in) :: this
+        integer, intent(in) :: left, right
+        integer :: sum
+
+        sum = sum(this%nums(left:right))
+    end function sumRange
+end module NumArray
+
+program main
+    use NumArray
+    implicit none
+
+    integer, parameter :: N = 6
+    integer, parameter :: M = 4
+    integer :: nums(N) = [-2, 0, 3, -5, 2, -1]
+    integer :: queries(M, 2) = reshape([0, 2, 2, 5, 0, 5], shape=[M, 2])
+    type(NumArray) :: numArray
+    integer :: i, j
+
+    numArray = NumArray(nums)
+
+    do i = 1, M
+        write (*, *) numArray%sumRange(queries(i, 1), queries(i, 2))
+    end do
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:20:
+
+    4 |     type :: NumArray
+      |                    1
+Error: MODULE attribute of ‘numarray’ conflicts with PROCEDURE attribute at (1)
+temp.f95:8:7:
+
+    8 |     end type NumArray
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:10:22:
+
+   10 |     interface NumArray
+      |                      1
+Error: Unexpected INTERFACE statement in CONTAINS section at (1)
+temp.f95:11:25:
+
+   11 |         module procedure constructor
+      |                         1
+Error: MODULE PROCEDURE at (1) must be in a generic module interface
+temp.f95:12:7:
+
+   12 |     end interface NumArray
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:14:8:
+
+   14 | contains
+      |        1
+Error: Unexpected CONTAINS statement in CONTAINS section at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class NumArray:
+
+    def __init__(self, nums: List[int]):
+        self.pSum = [0] * (len(nums) + 1)
+        for i, num in enumerate(nums):
+            self.pSum[i + 1] = self.pSum[i] + num
+
+    def sumRange(self, left: int, right: int) -&gt; int:
+        return self.pSum[right + 1] - self.pSum[left]
+</code></pre>
+<p>The algorithm uses the concept of prefix-sum to answer range-sum queries efficiently. In the constructor, we iterate through the input <code>nums</code> array and build an additional <code>pSum</code> array, which stores the prefix sum for each position i, i.e., sum of all elements from index 0 to index i (inclusive) of <code>nums</code>.</p>
+<p>The <code>sumRange</code> method is simply a matter of taking the difference between two elements in the prefix-sum array. This difference will be the sum of elements between the given <code>left</code> and <code>right</code> indices (inclusive) in the input array.</p>
+<p>The algorithm has a time complexity of O(1) for <code>sumRange</code> queries after the O(n) pre-processing of the input array during the constructor call. The space complexity is O(n) for the <code>pSum</code> array.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+
+class NumArray {
+public:
+    std::vector&lt;int&gt; pSum;
+
+    NumArray(std::vector&lt;int&gt; &amp;nums) {
+        pSum.resize(nums.size() + 1);
+        for (int i = 0; i &lt; nums.size(); i++) {
+            pSum[i + 1] = pSum[i] + nums[i];
+        }
+    }
+
+    int sumRange(int left, int right) {
+        return pSum[right + 1] - pSum[left];
+    }
+};
+</code></pre>
+<p>The algorithm uses the concept of prefix-sum to answer range-sum queries efficiently. In the constructor, we iterate through the input <code>nums</code> array and build an additional <code>pSum</code> array, which stores the prefix sum for each position i, i.e., sum of all elements from index 0 to index i (inclusive) of <code>nums</code>.</p>
+<p>The <code>sumRange</code> method is simply a matter of taking the difference between two elements in the prefix-sum array. This difference will be the sum of elements between the given <code>left</code> and <code>right</code> indices (inclusive) in the input array.</p>
+<p>The algorithm has a time complexity of O(1) for <code>sumRange</code> queries after the O(n) pre-processing of the input array during the constructor call. The space complexity is O(n) for the <code>pSum</code> array.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

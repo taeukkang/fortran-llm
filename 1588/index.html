@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Sum of All Odd Length Subarrays</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1582/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1592/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array of positive integers <code>arr</code>, return <em>the sum of all possible <strong>odd-length subarrays</strong> of</em> <code>arr</code>.</p>
+<p>A <strong>subarray</strong> is a contiguous subsequence of the array.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [1,4,2,5,3]
+<strong>Output:</strong> 58
+<strong>Explanation:</strong> The odd-length subarrays of arr and their sums are:
+[1] = 1
+[4] = 4
+[2] = 2
+[5] = 5
+[3] = 3
+[1,4,2] = 7
+[4,2,5] = 11
+[2,5,3] = 10
+[1,4,2,5,3] = 15
+If we add all these together we get 1 + 4 + 2 + 5 + 3 + 7 + 11 + 10 + 15 = 58</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [1,2]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> There are only 2 subarrays of odd length, [1] and [2]. Their sum is 3.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> arr = [10,11,12]
+<strong>Output:</strong> 66</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= arr.length &lt;= 100</code></li>
+<li><code>1 &lt;= arr[i] &lt;= 1000</code></li>
+</ul>
+<p><strong>Follow up:</strong></p>
+<p>Could you solve this problem in O(n) time complexity?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/sum-of-all-odd-length-subarrays/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: n = 100
+    real(kind=DP), dimension(n) :: arr
+    integer :: i, j, k
+    real(kind=DP) :: sum
+
+    ! read input
+    do i = 1, n
+        read (*, *) arr(i)
+    end do
+
+    ! compute sum of all odd-length subarrays
+    sum = 0.0_DP
+    do i = 1, n - 1
+        do j = i + 1, n
+            if (mod(j - i + 1, 2) /= 0) then
+                sum = sum + sum_of_subarray(arr, i, j)
+            end if
+        end do
+    end do
+
+    ! print result
+    write (unit=error_unit, fmt='(F10.2)') sum
+
+contains
+
+    function sum_of_subarray(arr, i, j) result(sum)
+        implicit none
+        real(kind=DP), intent(in) :: arr(:)
+        integer, value :: i, j
+        integer :: k
+        real(kind=DP) :: sum
+
+        sum = 0.0_DP
+        do k = i, j
+            sum = sum + arr(k)
+        end do
+    end function sum_of_subarray
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 11 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7b888c972960 in ???
+#1  0x7b888c9734d9 in ???
+#2  0x7b888cbc717b in ???
+#3  0x7b888cbc0684 in ???
+#4  0x7b888cbc12aa in ???
+#5  0x590fed8be301 in MAIN__
+#6  0x590fed8be4e8 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module odd_length_subarrays
+    implicit none
+    private
+    public :: sum_odd_length_subarrays
+contains
+    function sum_odd_length_subarrays(arr) result(sum)
+        integer, intent(in) :: arr(:)
+        integer :: sum
+        integer :: i, j, k, n
+        n = size(arr)
+        sum = 0
+        do i = 1, n
+            do j = i + 1, n
+                do k = j + 1, n
+                    if (mod(k - j, 2) == 1) then
+                        sum = sum + sum(arr(i:k))
+                    end if
+                end do
+            end do
+        end do
+    end function sum_odd_length_subarrays
+end module odd_length_subarrays
+
+program test_odd_length_subarrays
+    use odd_length_subarrays
+    implicit none
+    integer, parameter :: arr1(3) = [1, 4, 2]
+    integer, parameter :: arr2(2) = [1, 2]
+    integer, parameter :: arr3(3) = [10, 11, 12]
+    integer :: sum
+
+    sum = sum_odd_length_subarrays(arr1)
+    write (*, '(A, I0)') 'Sum of odd-length subarrays of arr1: ', sum
+
+    sum = sum_odd_length_subarrays(arr2)
+    write (*, '(A, I0)') 'Sum of odd-length subarrays of arr2: ', sum
+
+    sum = sum_odd_length_subarrays(arr3)
+    write (*, '(A, I0)') 'Sum of odd-length subarrays of arr3: ', sum
+end program test_odd_length_subarrays
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:16:25:
+
+   16 |                         sum = sum + sum(arr(i:k))
+      |                         1
+Error: Unclassifiable statement at (1)
+temp.f95:25:9:
+
+   25 |     use odd_length_subarrays
+      |         1
+Fatal Error: Cannot open module file ‘odd_length_subarrays.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def sumOddLengthSubarrays(arr):
+    sum = 0
+    n = len(arr)
+    for i in range(n):
+        oddSubarrays = ((i + 1) * (n - i) + 1) // 2
+        sum += arr[i] * oddSubarrays
+    return sum
+</code></pre>
+<p>First, we loop through the input array with index <code>i</code>. For each element <code>arr[i]</code>, calculate how many odd-length subarrays it appears in by using the formula <code>((i + 1) * (n - i) + 1) / 2</code>, where <code>n</code> is the length of the array. This gives us the number of odd-length subarrays that have <code>arr[i]</code> in them.</p>
+<p>Then, add the product of <code>arr[i]</code> and the number of odd-length subarrays it appears in to the total sum. Finally, return the total sum.</p>
+<p>This algorithm runs in O(n) time complexity, where n is the length of the input array.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int sumOddLengthSubarrays(vector&lt;int&gt;&amp; arr) {
+    int sum = 0, n = arr.size();
+    for (int i = 0; i &lt; n; i++) {
+        int oddSubarrays = ((i + 1) * (n - i) + 1) / 2;
+        sum += arr[i] * oddSubarrays;
+    }
+    return sum;
+}
+</code></pre>
+<p>First, we loop through the input array with index <code>i</code>. For each element <code>arr[i]</code>, calculate how many odd-length subarrays it appears in by using the formula <code>((i + 1) * (n - i) + 1) / 2</code>, where <code>n</code> is the length of the array. This gives us the number of odd-length subarrays that have <code>arr[i]</code> in them.</p>
+<p>Then, add the product of <code>arr[i]</code> and the number of odd-length subarrays it appears in to the total sum. Finally, return the total sum.</p>
+<p>This algorithm runs in O(n) time complexity, where n is the length of the input array.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

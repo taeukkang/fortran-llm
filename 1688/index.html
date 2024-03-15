@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count of Matches in Tournament</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1684/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1694/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer <code>n</code>, the number of teams in a tournament that has strange rules:</p>
+<ul>
+<li>If the current number of teams is <strong>even</strong>, each team gets paired with another team. A total of <code>n / 2</code> matches are played, and <code>n / 2</code> teams advance to the next round.</li>
+<li>If the current number of teams is <strong>odd</strong>, one team randomly advances in the tournament, and the rest gets paired. A total of <code>(n - 1) / 2</code> matches are played, and <code>(n - 1) / 2 + 1</code> teams advance to the next round.</li>
+</ul>
+<p>Return <em>the number of matches played in the tournament until a winner is decided.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 7
+<strong>Output:</strong> 6
+<strong>Explanation:</strong> Details of the tournament: 
+- 1st Round: Teams = 7, Matches = 3, and 4 teams advance.
+- 2nd Round: Teams = 4, Matches = 2, and 2 teams advance.
+- 3rd Round: Teams = 2, Matches = 1, and 1 team is declared the winner.
+Total number of matches = 3 + 2 + 1 = 6.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 14
+<strong>Output:</strong> 13
+<strong>Explanation:</strong> Details of the tournament:
+- 1st Round: Teams = 14, Matches = 7, and 7 teams advance.
+- 2nd Round: Teams = 7, Matches = 3, and 4 teams advance.
+- 3rd Round: Teams = 4, Matches = 2, and 2 teams advance.
+- 4th Round: Teams = 2, Matches = 1, and 1 team is declared the winner.
+Total number of matches = 7 + 3 + 2 + 1 = 13.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 200</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-of-matches-in-tournament/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n
+    integer :: result
+
+    print '(A)', 'Enter the number of teams:'
+    read *, n
+
+    result = solve_problem(n)
+
+    print '(A, I0)', 'The number of matches played in the tournament until a winner is decided is: ', result
+
+contains
+
+    function solve_problem(n) result(result_)
+        implicit none
+
+        integer, intent(in) :: n
+        integer :: result_
+
+        if (mod(n, 2) == 0) then
+            ! Even number of teams
+            result_ = n / 2
+        else
+            ! Odd number of teams
+            result_ = (n - 1) / 2 + 1
+        end if
+
+    end function solve_problem
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Enter the number of teams:
+</pre>
+          </div>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 8 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7afe21d8e960 in ???
+#1  0x7afe21d8f4d9 in ???
+#2  0x7afe21fe317b in ???
+#3  0x7afe21fdc684 in ???
+#4  0x7afe21fdd2aa in ???
+#5  0x5be604c3c2ec in MAIN__
+#6  0x5be604c3c3e9 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM tournament
+      IMPLICIT NONE
+
+      INTEGER, PARAMETER :: n = 7
+
+      INTEGER :: matches
+
+      matches = tournament_matches(n)
+
+      WRITE (*,*) "Number of matches: ", matches
+
+      END PROGRAM tournament
+
+      FUNCTION tournament_matches(n) RESULT(matches)
+      IMPLICIT NONE
+
+      INTEGER, INTENT(IN) :: n
+      INTEGER :: matches
+
+      IF (MODULO(n, 2) == 0) THEN
+          matches = n / 2
+      ELSE
+          matches = (n - 1) / 2
+      END IF
+
+      END FUNCTION tournament_matches
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:8:34:
+
+    8 |       matches = tournament_matches(n)
+      |                                  1
+Error: Return type mismatch of function ‘tournament_matches’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:8:16:
+
+    8 |       matches = tournament_matches(n)
+      |                1
+Error: Function ‘tournament_matches’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def numberOfMatches(n: int) -&gt; int:
+    matches = 0
+    while n &gt; 1:
+        matches += n // 2
+        n = (n + 1) // 2
+    return matches
+</code></pre>
+<p>The algorithm starts with <code>n</code> teams and initializes a <code>matches</code> counter with 0. In each iteration of the loop, it calculates the number of matches played in the current round and adds it to the <code>matches</code> counter. Then, the number of teams advancing to the next round is calculated as <code>(n + 1) / 2</code>. The loop continues until there is a single winner left, i.e., <code>n === 1</code>. Finally, the total number of matches played throughout the tournament is returned.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int numberOfMatches(int n) {
+    int matches = 0;
+    while (n &gt; 1) {
+        matches += n / 2;
+        n = (n + 1) / 2;
+    }
+    return matches;
+}
+</code></pre>
+<p>The algorithm starts with <code>n</code> teams and initializes a <code>matches</code> counter with 0. In each iteration of the loop, it calculates the number of matches played in the current round and adds it to the <code>matches</code> counter. Then, the number of teams advancing to the next round is calculated as <code>(n + 1) / 2</code>. The loop continues until there is a single winner left, i.e., <code>n === 1</code>. Finally, the total number of matches played throughout the tournament is returned.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

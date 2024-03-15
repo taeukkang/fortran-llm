@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Destination City</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1431/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1437/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given the array <code>paths</code>, where <code>paths[i] = [cityAi, cityBi]</code> means there exists a direct path going from <code>cityAi</code> to <code>cityBi</code>. <em>Return the destination city, that is, the city without any path outgoing to another city.</em></p>
+<p>It is guaranteed that the graph of paths forms a line without any loop, therefore, there will be exactly one destination city.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> paths = [[ "London ", "New York "],[ "New York ", "Lima "],[ "Lima ", "Sao Paulo "]]
+<strong>Output:</strong>  "Sao Paulo " 
+<strong>Explanation:</strong> Starting at  "London " city you will reach  "Sao Paulo " city which is the destination city. Your trip consist of:  "London " -&gt;  "New York " -&gt;  "Lima " -&gt;  "Sao Paulo ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> paths = [[ "B ", "C "],[ "D ", "B "],[ "C ", "A "]]
+<strong>Output:</strong>  "A "
+<strong>Explanation:</strong> All possible trips are: 
+ "D " -&gt;  "B " -&gt;  "C " -&gt;  "A ". 
+ "B " -&gt;  "C " -&gt;  "A ". 
+ "C " -&gt;  "A ". 
+ "A ". 
+Clearly the destination city is  "A ".</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> paths = [[ "A ", "Z "]]
+<strong>Output:</strong>  "Z "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= paths.length &lt;= 100</code></li>
+<li><code>paths[i].length == 2</code></li>
+<li><code>1 &lt;= cityAi.length, cityBi.length &lt;= 10</code></li>
+<li><code>cityAi != cityBi</code></li>
+<li>All strings consist of lowercase and uppercase English letters and the space character.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/destination-city/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j
+    character(len=10) :: paths(10,2)
+    character(len=10) :: dest_city
+
+    ! Example 1
+    paths(1,:) = ['London ', 'New York']
+    paths(2,:) = ['New York ', 'Lima']
+    paths(3,:) = ['Lima ', 'Sao Paulo']
+    call solve(paths, dest_city)
+    write(*,'(a)') trim(dest_city) // ' ' // 'Sao Paulo'
+
+    ! Example 2
+    paths(:,1) = ['B', 'C', 'D']
+    paths(:,2) = ['C', 'A', 'B']
+    call solve(paths, dest_city)
+    write(*,'(a)') trim(dest_city) // ' ' // 'A'
+
+    ! Example 3
+    paths(:,:) = ['A', 'Z']
+    call solve(paths, dest_city)
+    write(*,'(a)') trim(dest_city) // ' ' // 'Z'
+
+contains
+
+subroutine solve(paths, dest_city)
+    implicit none
+    character(len=10), intent(in) :: paths(:,:)
+    character(len=10), intent(out) :: dest_city
+    logical :: visited(size(paths,1))
+    integer :: i, j
+
+    visited(:) = .false.
+    do i = 1, size(paths,1)
+        if (.not. visited(i)) then
+            do j = 1, size(paths,1)
+                if (visited(j)) cycle
+                if (paths(j,1) == paths(i,2)) then
+                    visited(j) = .true.
+                    exit
+                end if
+            end do
+        end if
+    end do
+
+    do i = 1, size(paths,1)
+        if (.not. visited(i)) then
+            dest_city = paths(i,1)
+            return
+        end if
+    end do
+end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:28:
+
+    9 |     paths(1,:) = ['London ', 'New York']
+      |                            1
+Error: Different CHARACTER lengths (7/8) in array constructor at (1)
+temp.f95:10:30:
+
+   10 |     paths(2,:) = ['New York ', 'Lima']
+      |                              1
+Error: Different CHARACTER lengths (9/4) in array constructor at (1)
+temp.f95:11:26:
+
+   11 |     paths(3,:) = ['Lima ', 'Sao Paulo']
+      |                          1
+Error: Different CHARACTER lengths (5/9) in array constructor at (1)
+temp.f95:16:4:
+
+   16 |     paths(:,1) = ['B', 'C', 'D']
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 3)
+temp.f95:17:4:
+
+   17 |     paths(:,2) = ['C', 'A', 'B']
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 3)
+temp.f95:22:4:
+
+   22 |     paths(:,:) = ['A', 'Z']
+      |    1
+Error: Incompatible ranks 2 and 1 in assignment at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: i, j, k, n, m
+character(len=10) :: cityA, cityB, cityC
+character(len=10), dimension(:,:), allocatable :: paths
+logical, dimension(:), allocatable :: visited
+
+! Read input
+read(*,*) n
+allocate(paths(n,2))
+do i=1,n
+    read(*,*) paths(i,1), paths(i,2)
+end do
+
+! Initialize variables
+m = 0
+allocate(visited(n))
+visited = .false.
+
+! Find destination city
+do i=1,n
+    if (visited(i)) cycle
+    cityA = paths(i,1)
+    cityB = paths(i,2)
+    do j=1,n
+        if (visited(j)) cycle
+        cityC = paths(j,1)
+        if (cityC == cityB) then
+            visited(j) = .true.
+            m = m + 1
+            exit
+        end if
+    end do
+end do
+
+! Print output
+if (m == 1) then
+    write(*,*) cityA
+else
+    write(*,*) "Destination city not found"
+end if
+
+! Deallocate memory
+deallocate(paths)
+deallocate(visited)
+
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 8 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7c06dce0a960 in ???
+#1  0x7c06dce0b4d9 in ???
+#2  0x7c06dd05f17b in ???
+#3  0x7c06dd058684 in ???
+#4  0x7c06dd0592aa in ???
+#5  0x563d511e9302 in MAIN__
+#6  0x563d511e9ad6 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from collections import deque
+from collections import defaultdict
+
+def watched_videos_by_friends(watched_videos, friends, id, level):
+    visited = set()
+    q = deque([(id, 0)])
+    video_freq = defaultdict(int)
+
+    while q:
+        current_id, current_level = q.popleft()
+
+        if current_level == level:
+            for video in watched_videos[current_id]:
+                video_freq[video] += 1
+        elif current_level &lt; level:
+            for friend_id in friends[current_id]:
+                if friend_id not in visited:
+                    visited.add(friend_id)
+                    q.append((friend_id, current_level + 1))
+
+    result = sorted(video_freq.keys(), key=lambda x: (video_freq[x], x))
+
+    return result
+</code></pre>
+<p>The algorithm works as follows:
+1. Initialize a visited set to keep track of the visited person ids, and a queue, which stores pairs containing the person id and the level or search depth.
+2. Push the given id and level 0 onto the queue and mark the id visited.
+3. While there are still unprocessed items in the queue, check the current level of the person in the queue. 
+  a) If the current level is equal to the given level, increment the count of each video watched by this person in a frequency map.
+  b) If the current level is less than the given level, iterate through the friends of the current person and push those friends' ids in the queue with the incremented level if they haven't been visited yet, and mark them visited.
+4. Create a result list from the keys in the frequency map.
+5. Sort the result list based on the frequency of the videos and their names.
+6. Return the sorted result list.</p>
+<p>This algorithm has a breadth-first search (BFS) traversal through the connections, which helps in finding the shortest path.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;unordered_set&gt;
+#include &lt;unordered_map&gt;
+#include &lt;queue&gt;
+#include &lt;algorithm&gt;
+#include &lt;string&gt;
+
+using namespace std;
+
+vector&lt;string&gt; watchedVideosByFriends(vector&lt;vector&lt;string&gt;&gt;&amp; watchedVideos, vector&lt;vector&lt;int&gt;&gt;&amp; friends, int id, int level) {
+    unordered_set&lt;int&gt; visited;
+    queue&lt;pair&lt;int, int&gt;&gt; q;
+    unordered_map&lt;string, int&gt; video_freq;
+
+    q.push({id, 0});
+    visited.insert(id);
+
+    while (!q.empty()) {
+        int current_id = q.front().first;
+        int current_level = q.front().second;
+        q.pop();
+
+        if (current_level == level) {
+            for (const string&amp; video : watchedVideos[current_id]) {
+                video_freq[video]++;
+            }
+        } else if (current_level &lt; level) {
+            for (int friend_id : friends[current_id]) {
+                if (visited.find(friend_id) == visited.end()) {
+                    visited.insert(friend_id);
+                    q.push({friend_id, current_level + 1});
+                }
+            }
+        }
+    }
+
+    vector&lt;string&gt; result;
+    for (const auto&amp; p : video_freq) {
+        result.push_back(p.first);
+    }
+
+    sort(result.begin(), result.end(), [&amp;video_freq](const string&amp; a, const string&amp; b) {
+        if (video_freq[a] == video_freq[b]) {
+            return a &lt; b;
+        } else {
+            return video_freq[a] &lt; video_freq[b];
+        }
+    });
+
+    return result;
+}
+</code></pre>
+<p>The algorithm works as follows:
+1. Initialize a visited set to keep track of the visited person ids, and a queue, which stores pairs containing the person id and the level or search depth.
+2. Push the given id and level 0 onto the queue and mark the id visited.
+3. While there are still unprocessed items in the queue, check the current level of the person in the queue. 
+  a) If the current level is equal to the given level, increment the count of each video watched by this person in a frequency map.
+  b) If the current level is less than the given level, iterate through the friends of the current person and push those friends' ids in the queue with the incremented level if they haven't been visited yet, and mark them visited.
+4. Create a result list from the keys in the frequency map.
+5. Sort the result list based on the frequency of the videos and their names.
+6. Return the sorted result list.</p>
+<p>This algorithm has a breadth-first search (BFS) traversal through the connections, which helps in finding the shortest path.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

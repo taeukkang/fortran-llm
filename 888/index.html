@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Fair Candy Swap</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/884/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/892/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Alice and Bob have a different total number of candies. You are given two integer arrays <code>aliceSizes</code> and <code>bobSizes</code> where <code>aliceSizes[i]</code> is the number of candies of the <code>ith</code> box of candy that Alice has and <code>bobSizes[j]</code> is the number of candies of the <code>jth</code> box of candy that Bob has.</p>
+<p>Since they are friends, they would like to exchange one candy box each so that after the exchange, they both have the same total amount of candy. The total amount of candy a person has is the sum of the number of candies in each box they have.</p>
+<p>Return a_n integer array_ <code>answer</code> <em>where</em> <code>answer[0]</code> <em>is the number of candies in the box that Alice must exchange, and</em> <code>answer[1]</code> <em>is the number of candies in the box that Bob must exchange</em>. If there are multiple answers, you may <strong>return any</strong> one of them. It is guaranteed that at least one answer exists.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> aliceSizes = [1,1], bobSizes = [2,2]
+<strong>Output:</strong> [1,2]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> aliceSizes = [1,2], bobSizes = [2,3]
+<strong>Output:</strong> [1,2]</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> aliceSizes = [2], bobSizes = [1,3]
+<strong>Output:</strong> [2,3]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= aliceSizes.length, bobSizes.length &lt;= 104</code></li>
+<li><code>1 &lt;= aliceSizes[i], bobSizes[j] &lt;= 105</code></li>
+<li>Alice and Bob have a different total number of candies.</li>
+<li>There will be at least one valid answer for the given input.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/fair-candy-swap/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 2
+    integer, dimension(n) :: aliceSizes = [1, 1]
+    integer, dimension(n) :: bobSizes = [2, 2]
+    integer, dimension(2) :: answer
+
+    call solve(aliceSizes, bobSizes, answer)
+
+    write (*, '(A, I0, A, I0)') 'Answer: ', answer(1), ',', answer(2)
+
+contains
+
+subroutine solve(aliceSizes, bobSizes, answer)
+    implicit none
+    integer, intent(in) :: aliceSizes(:), bobSizes(:)
+    integer, intent(out) :: answer(:)
+    integer :: aliceTotal, bobTotal, diff
+
+    aliceTotal = sum(aliceSizes)
+    bobTotal = sum(bobSizes)
+    diff = abs(aliceTotal - bobTotal)
+
+    if (diff == 0) then
+        answer = [0, 0]
+        return
+    end if
+
+    if (aliceTotal > bobTotal) then
+        answer = [diff, 0]
+    else
+        answer = [0, diff]
+    end if
+end subroutine solve
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Answer: 0,2
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module exchange_candies
+
+implicit none
+
+contains
+
+function exchange_candies(alice_sizes, bob_sizes) result(answer)
+
+integer, intent(in) :: alice_sizes(:), bob_sizes(:)
+integer :: answer(2)
+
+! Local variables
+integer :: alice_total, bob_total, diff, exchange
+
+! Calculate the total number of candies for Alice and Bob
+alice_total = sum(alice_sizes)
+bob_total = sum(bob_sizes)
+
+! Calculate the difference between the total number of candies for Alice and Bob
+diff = abs(alice_total - bob_total)
+
+! Check if the difference is odd
+if (mod(diff, 2) == 1) then
+    ! If the difference is odd, one person must exchange an odd number of candies
+    exchange = diff / 2 + 1
+else
+    ! If the difference is even, one person must exchange an even number of candies
+    exchange = diff / 2
+endif
+
+! Calculate the number of candies that must be exchanged by Alice and Bob
+answer(1) = exchange
+answer(2) = exchange
+
+! Check if the total number of candies for Alice is greater than the total number of candies for Bob
+if (alice_total > bob_total) then
+    ! If the total number of candies for Alice is greater than the total number of candies for Bob, Alice must exchange more candies
+    answer(1) = answer(1) + 1
+else
+    ! If the total number of candies for Bob is greater than the total number of candies for Alice, Bob must exchange more candies
+    answer(2) = answer(2) + 1
+endif
+
+end function exchange_candies
+
+end module exchange_candies
+
+program test_exchange_candies
+
+use exchange_candies
+
+implicit none
+
+! Test case 1: Alice and Bob have the same total number of candies
+integer, parameter :: alice_sizes1(1) = [1]
+integer, parameter :: bob_sizes1(1) = [1]
+integer :: answer1(2)
+
+! Test case 2: Alice and Bob have different total numbers of candies
+integer, parameter :: alice_sizes2(2) = [1, 2]
+integer, parameter :: bob_sizes2(2) = [2, 3]
+integer :: answer2(2)
+
+! Test case 3: Alice has more candies than Bob
+integer, parameter :: alice_sizes3(1) = [2]
+integer, parameter :: bob_sizes3(2) = [1, 3]
+integer :: answer3(2)
+
+! Test case 4: Bob has more candies than Alice
+integer, parameter :: alice_sizes4(2) = [1, 2]
+integer, parameter :: bob_sizes4(1) = [2]
+integer :: answer4(2)
+
+! Test case 5: Alice and Bob have the same total number of candies
+integer, parameter :: alice_sizes5(1) = [1]
+integer, parameter :: bob_sizes5(1) = [1]
+integer :: answer5(2)
+
+! Test case 6: Alice and Bob have different total numbers of candies
+integer, parameter :: alice_sizes6(2) = [1, 2]
+integer, parameter :: bob_sizes6(2) = [2, 3]
+integer :: answer6(2)
+
+! Test case 7: Alice has more candies than Bob
+integer, parameter :: alice_sizes7(1) = [2]
+integer, parameter :: bob_sizes7(2) = [1, 3]
+integer :: answer7(2)
+
+! Test case 8: Bob has more candies than Alice
+integer, parameter :: alice_sizes8(2) = [1, 2]
+integer, parameter :: bob_sizes8(1) = [2]
+integer :: answer8(2)
+
+! Test case 9: Alice and Bob have the same total number of candies
+integer, parameter :: alice_sizes9(1) = [1]
+integer, parameter :: bob_sizes9(1) = [1]
+integer ::
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:25:
+
+    7 | function exchange_candies(alice_sizes, bob_sizes) result(answer)
+      |                         1
+Error: MODULE attribute of ‘exchange_candies’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:51:
+
+    9 | integer, intent(in) :: alice_sizes(:), bob_sizes(:)
+      |                                                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:20:
+
+   10 | integer :: answer(2)
+      |                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:49:
+
+   13 | integer :: alice_total, bob_total, diff, exchange
+      |                                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:16:30:
+
+   16 | alice_total = sum(alice_sizes)
+      |                              1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:26:
+
+   17 | bob_total = sum(bob_sizes)
+      |                          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:35:
+
+   20 | diff = abs(alice_total - bob_total)
+      |                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:27:
+
+   23 | if (mod(diff, 2) == 1) then
+      |                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:25:27:
+
+   25 |     exchange = diff / 2 + 1
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:4:
+
+   26 | else
+      |    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:28:23:
+
+   28 |     exchange = diff / 2
+      |                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:29:3:
+
+   29 | endif
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:32:20:
+
+   32 | answer(1) = exchange
+      |                    1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:33:20:
+
+   33 | answer(2) = exchange
+      |                    1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:36:33:
+
+   36 | if (alice_total > bob_total) then
+      |                                 1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:38:29:
+
+   38 |     answer(1) = answer(1) + 1
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:39:4:
+
+   39 | else
+      |    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:41:29:
+
+   41 |     answer(2) = answer(2) + 1
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:42:3:
+
+   42 | endif
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:44:3:
+
+   44 | end function exchange_candies
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:50:5:
+
+   50 | use exchange_candies
+      |     1
+Fatal Error: Cannot open module file ‘exchange_candies.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def mirrorReflection(p, q):
+    from math import gcd
+    m = p // gcd(p, q)
+
+    if m % 2 == 0:
+        return 2
+    if (q // gcd(p, q)) % 2 == 0:
+        return 0
+    return 1
+</code></pre>
+<p>To solve this problem, we first determine the Lowest Common Multiple (LCM) of p and q. However, instead of finding LCM directly, it's simpler to first find the Greatest Common Divisor (GCD) and divide p and q by the GCD.</p>
+<p>Next, we check if p divided by the GCD is an even number. If it is, the ray first meets receptor 2. If q divided by the GCD is even, the ray first meets receptor 0. Otherwise, the ray first meets receptor 1.</p>
+<p>The algorithm remains the same across all languages, with only minor syntax differences between them. The key is to find the GCD and then further process p and q to identify which receptor the ray meets first.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int mirrorReflection(int p, int q) {
+    int m = p, n = q;
+    int gcd;
+    while (n) {
+        gcd = m % n;
+        m = n;
+        n = gcd;
+    }
+
+    if ((p / m) % 2 == 0) return 2;
+    if ((q / m) % 2 == 0) return 0;
+    return 1;
+}
+</code></pre>
+<p>To solve this problem, we first determine the Lowest Common Multiple (LCM) of p and q. However, instead of finding LCM directly, it's simpler to first find the Greatest Common Divisor (GCD) and divide p and q by the GCD.</p>
+<p>Next, we check if p divided by the GCD is an even number. If it is, the ray first meets receptor 2. If q divided by the GCD is even, the ray first meets receptor 0. Otherwise, the ray first meets receptor 1.</p>
+<p>The algorithm remains the same across all languages, with only minor syntax differences between them. The key is to find the GCD and then further process p and q to identify which receptor the ray meets first.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

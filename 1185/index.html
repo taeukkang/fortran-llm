@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Day of the Week</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1184/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1189/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a date, return the corresponding day of the week for that date.</p>
+<p>The input is given as three integers representing the <code>day</code>, <code>month</code> and <code>year</code> respectively.</p>
+<p>Return the answer as one of the following values <code>{ "Sunday ", "Monday ", "Tuesday ", "Wednesday ", "Thursday ", "Friday ", "Saturday "}</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> day = 31, month = 8, year = 2019
+<strong>Output:</strong>  "Saturday "</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> day = 18, month = 7, year = 1999
+<strong>Output:</strong>  "Sunday "</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> day = 15, month = 8, year = 1993
+<strong>Output:</strong>  "Sunday "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The given dates are valid dates between the years <code>1971</code> and <code>2100</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/day-of-the-week/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: day, month, year
+    character(len=9) :: answer
+
+    call get_answer(day, month, year, answer)
+    print '(A)', trim(answer)
+
+contains
+
+subroutine get_answer(day, month, year, answer)
+    implicit none
+    integer, intent(in) :: day, month, year
+    character(len=9), intent(out) :: answer
+
+    select case (day + 1 + (month-1)*31 + (year-1971)*365)
+        case (0, 6)
+            answer = "Saturday "
+        case (1, 7)
+            answer = "Sunday "
+        case (2, 8)
+            answer = "Monday "
+        case (3, 9)
+            answer = "Tuesday "
+        case (4, 10)
+            answer = "Wednesday "
+        case (5, 11)
+            answer = "Thursday "
+        case default
+            answer = "Friday "
+    end select
+end subroutine get_answer
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Friday
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! This program takes three integers as input representing the day, month, and year respectively.
+! It returns the corresponding day of the week for that date.
+
+program dayOfWeek
+    implicit none
+
+    integer :: day, month, year
+    character(len=9) :: dayOfWeek
+
+    ! Read input
+    read(*,*) day, month, year
+
+    ! Calculate day of the week
+    select case(mod(day + ((month - 1) * 30) + (year - 1971) * 365, 7))
+        case(0)
+            dayOfWeek = "Sunday "
+        case(1)
+            dayOfWeek = "Monday "
+        case(2)
+            dayOfWeek = "Tuesday "
+        case(3)
+            dayOfWeek = "Wednesday "
+        case(4)
+            dayOfWeek = "Thursday "
+        case(5)
+            dayOfWeek = "Friday "
+        case(6)
+            dayOfWeek = "Saturday "
+    end select
+
+    ! Print output
+    write(*,*) dayOfWeek
+
+end program dayOfWeek
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:8:33:
+
+    8 |     character(len=9) :: dayOfWeek
+      |                                 1
+Error: Symbol ‘dayofweek’ at (1) cannot have a type
+temp.f95:16:22:
+
+   16 |             dayOfWeek = "Sunday "
+      |                      1
+Error: ‘dayofweek’ at (1) is not a variable
+temp.f95:18:22:
+
+   18 |             dayOfWeek = "Monday "
+      |                      1
+Error: ‘dayofweek’ at (1) is not a variable
+temp.f95:20:22:
+
+   20 |             dayOfWeek = "Tuesday "
+      |                      1
+Error: ‘dayofweek’ at (1) is not a variable
+temp.f95:22:22:
+
+   22 |             dayOfWeek = "Wednesday "
+      |                      1
+Error: ‘dayofweek’ at (1) is not a variable
+temp.f95:24:22:
+
+   24 |             dayOfWeek = "Thursday "
+      |                      1
+Error: ‘dayofweek’ at (1) is not a variable
+temp.f95:26:22:
+
+   26 |             dayOfWeek = "Friday "
+      |                      1
+Error: ‘dayofweek’ at (1) is not a variable
+temp.f95:28:22:
+
+   28 |             dayOfWeek = "Saturday "
+      |                      1
+Error: ‘dayofweek’ at (1) is not a variable
+temp.f95:32:24:
+
+   32 |     write(*,*) dayOfWeek
+      |                        1
+Error: Symbol at (1) is not appropriate for an expression
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def day_of_the_week(day, month, year):
+    from datetime import date
+    days = [&quot;Sunday &quot;, &quot;Monday &quot;, &quot;Tuesday &quot;, &quot;Wednesday &quot;, &quot;Thursday &quot;, &quot;Friday &quot;, &quot;Saturday &quot;]
+    return days[date(year, month, day).weekday()]
+</code></pre>
+<p>The algorithm calculates the day of the week based on the given day, month, and year. For the C++ implementation, we implement the calculation of days since the year 1971 and then use the modulus operator to determine the day of the week. For Java, Python, and JavaScript implementations, we take advantage of built-in date libraries (LocalDate, datetime, and Date respectively) to calculate the day of the week. All implementations use a string array <code>days[]</code> to get the correct day of the week as the output.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+
+std::string dayOfTheWeek(int day, int month, int year) {
+    int days[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    std::string week[] = {&quot;Sunday &quot;, &quot;Monday &quot;, &quot;Tuesday &quot;, &quot;Wednesday &quot;, &quot;Thursday &quot;, &quot;Friday &quot;, &quot;Saturday &quot;};
+    if (year &lt; 1971) year += (1971 - year) / 400 * 400;
+    int sum = -1;
+    for (int i = 1971; i &lt; year; ++i) {
+        sum += 365;
+        if (i % 4 == 0 &amp;&amp; (i % 100 != 0 || i % 400 == 0)) ++sum;
+    }
+    for (int i = 1; i &lt; month; ++i) {
+        sum += days[i];
+        if (i == 2 &amp;&amp; year % 4 == 0 &amp;&amp; (year % 100 != 0 || year % 400 == 0)) ++sum;
+    }
+    return week[(sum + day) % 7];
+}
+</code></pre>
+<p>The algorithm calculates the day of the week based on the given day, month, and year. For the C++ implementation, we implement the calculation of days since the year 1971 and then use the modulus operator to determine the day of the week. For Java, Python, and JavaScript implementations, we take advantage of built-in date libraries (LocalDate, datetime, and Date respectively) to calculate the day of the week. All implementations use a string array <code>days[]</code> to get the correct day of the week as the output.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

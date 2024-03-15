@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Check if One String Swap Can Make Strings Equal</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1784/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1791/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given two strings <code>s1</code> and <code>s2</code> of equal length. A <strong>string swap</strong> is an operation where you choose two indices in a string (not necessarily different) and swap the characters at these indices.</p>
+<p>Return <code>true</code> <em>if it is possible to make both strings equal by performing <strong>at most one string swap</strong> on <strong>exactly one</strong> of the strings.</em> Otherwise, return <code>false</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s1 =  "bank ", s2 =  "kanb "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> For example, swap the first character with the last character of s2 to make  "bank ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s1 =  "attack ", s2 =  "defend "
+<strong>Output:</strong> false
+<strong>Explanation:</strong> It is impossible to make them equal with one string swap.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s1 =  "kelb ", s2 =  "kelb "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> The two strings are already equal, so no string swap operation is required.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s1.length, s2.length &lt;= 100</code></li>
+<li><code>s1.length == s2.length</code></li>
+<li><code>s1</code> and <code>s2</code> consist of only lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/check-if-one-string-swap-can-make-strings-equal/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, k
+    logical :: result
+    character(len=100) :: s1, s2
+
+    ! Example 1
+    s1 = 'bank '
+    s2 = 'kanb '
+    result = can_make_equal(s1, s2)
+    if (result) then
+        write (*,*) 'Example 1: True'
+    else
+        write (*,*) 'Example 1: False'
+    end if
+
+    ! Example 2
+    s1 = 'attack '
+    s2 = 'defend '
+    result = can_make_equal(s1, s2)
+    if (result) then
+        write (*,*) 'Example 2: True'
+    else
+        write (*,*) 'Example 2: False'
+    end if
+
+    ! Example 3
+    s1 = 'kelb '
+    s2 = 'kelb '
+    result = can_make_equal(s1, s2)
+    if (result) then
+        write (*,*) 'Example 3: True'
+    else
+        write (*,*) 'Example 3: False'
+    end if
+
+contains
+
+    function can_make_equal(s1, s2) result(res)
+        implicit none
+        character(len=*), intent(in) :: s1, s2
+        logical :: res
+        integer :: i, j, k
+
+        do i = 1, len(s1)
+            do j = 1, len(s2)
+                if (s1(i:i) /= s2(j:j)) then
+                    cycle
+                end if
+                k = max(i, j)
+                if (k > 1 .and. s1(k-1:k-1) /= s2(k-1:k-1)) then
+                    cycle
+                end if
+                res = .true.
+                exit
+            end do
+            if (res) exit
+        end do
+
+        if (.not. res) then
+            do i = 1, len(s1)
+                do j = 1, len(s2)
+                    if (s1(i:i) /= s2(j:j)) then
+                        cycle
+                    end if
+                    k = min(i, j)
+                    if (k < len(s1) .and. s1(k+1:k+1) /= s2(k+1:k+1)) then
+                        cycle
+                    end if
+                    res = .true.
+                    exit
+                end do
+                if (res) exit
+            end do
+        end if
+
+    end function can_make_equal
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Example 1: True
+ Example 2: True
+ Example 3: True
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module string_swap
+
+implicit none
+
+contains
+
+function solve(s1, s2) result(output)
+
+character(len=*), intent(in) :: s1, s2
+logical :: output
+
+integer :: i, j, k, l
+
+output = .false.
+
+! Check if the strings are already equal
+if (s1 == s2) then
+    output = .true.
+    return
+end if
+
+! Check if the strings have the same length
+if (len_trim(s1) /= len_trim(s2)) then
+    return
+end if
+
+! Check if the strings have only lowercase English letters
+do i = 1, len_trim(s1)
+    if (s1(i:i) < 'a' .or. s1(i:i) > 'z') then
+        return
+    end if
+    if (s2(i:i) < 'a' .or. s2(i:i) > 'z') then
+        return
+    end if
+end do
+
+! Check if the strings have only one character that is different
+do i = 1, len_trim(s1)
+    if (s1(i:i) /= s2(i:i)) then
+        k = i
+        exit
+    end if
+end do
+
+! Check if the strings have only one character that is different
+do j = 1, len_trim(s1)
+    if (s1(j:j) /= s2(j:j)) then
+        l = j
+        exit
+    end if
+end do
+
+! Check if the strings have only one character that is different
+if (k == 0 .or. l == 0) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (k /= l) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(k:k) /= s2(l:l)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(l:l) /= s2(k:k)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(k:k) == s2(l:l)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(l:l) == s2(k:k)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(k:k) /= s2(k:k)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(l:l) /= s2(l:l)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(k:k) == s2(l:l)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(l:l) == s2(k:k)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(k:k) /= s2(k:k)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(l:l) /= s2(l:l)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(k:k) == s2(l:l)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(l:l) == s2(k:k)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(k:k) /= s2(k:k)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(l:l) /= s2(l:l)) then
+    return
+end if
+
+! Check if the strings have only one character that is different
+if (s1(k:k) == s2(l:l)) then
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def are_almost_equal(s1, s2):
+    if s1 == s2:
+        return True
+    diff = [i for i in range(len(s1)) if s1[i] != s2[i]]
+    return len(diff) == 2 and s1[diff[0]] == s2[diff[1]] and s1[diff[1]] == s2[diff[0]]
+</code></pre>
+<ol>
+<li>Check if the two given strings are already equal, if so return <code>True</code>.</li>
+<li>Iterate through the characters of the strings, if the characters at the same index are different, store the index in a list called <code>diff</code>.</li>
+<li>Check if the <code>diff</code> list has exactly 2 indices, and if the character in s1 at the first index of <code>diff</code> is the same as the character in s2 at the second index of <code>diff</code>, and if the character in s1 at the second index of <code>diff</code> is the same as the character in s2 at the first index of <code>diff</code>. If these conditions are satisfied, return <code>True</code>, otherwise return <code>False</code>.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool areAlmostEqual(string s1, string s2) {
+    if(s1 == s2) return true;
+    vector&lt;int&gt; diff;
+    for(int i = 0; i &lt; s1.length(); i++) {
+        if(s1[i] != s2[i]) {
+            diff.push_back(i);
+        }
+    }
+    return diff.size() == 2 &amp;&amp; s1[diff[0]] == s2[diff[1]] &amp;&amp; s1[diff[1]] == s2[diff[0]];
+}
+</code></pre>
+<ol>
+<li>Check if the two given strings are already equal, if so return <code>True</code>.</li>
+<li>Iterate through the characters of the strings, if the characters at the same index are different, store the index in a list called <code>diff</code>.</li>
+<li>Check if the <code>diff</code> list has exactly 2 indices, and if the character in s1 at the first index of <code>diff</code> is the same as the character in s2 at the second index of <code>diff</code>, and if the character in s1 at the second index of <code>diff</code> is the same as the character in s2 at the first index of <code>diff</code>. If these conditions are satisfied, return <code>True</code>, otherwise return <code>False</code>.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

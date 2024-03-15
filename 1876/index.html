@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Substrings of Size Three with Distinct Characters</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1869/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1880/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A string is <strong>good</strong> if there are no repeated characters.</p>
+<p>Given a string <code>s</code>​​​​​, return <em>the number of <strong>good substrings</strong> of length <strong>three</strong> in</em> <code>s</code>​​​​​​.</p>
+<p>Note that if there are multiple occurrences of the same substring, every occurrence should be counted.</p>
+<p>A <strong>substring</strong> is a contiguous sequence of characters in a string.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "xyzzaz "
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> There are 4 substrings of size 3:  "xyz ",  "yzz ",  "zza ", and  "zaz ". 
+The only good substring of length 3 is  "xyz ".</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "aababcabc "
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> There are 7 substrings of size 3:  "aab ",  "aba ",  "bab ",  "abc ",  "bca ",  "cab ", and  "abc ".
+The good substrings are  "abc ",  "bca ",  "cab ", and  "abc ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 100</code></li>
+<li><code>s</code>​​​​​​ consists of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/substrings-of-size-three-with-distinct-characters/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=*), parameter :: input_format = "(A)"
+    character(len=:), allocatable :: s
+    integer :: n_good_substrings
+
+    call get_string(input_format, s)
+    n_good_substrings = count_good_substrings(s)
+    write (*, '(I0)') n_good_substrings
+
+contains
+
+    function count_good_substrings(s) result(n)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer :: i, j, k, n
+
+        do i = 1, len(s)-2
+            do j = i+1, len(s)-1
+                do k = j+1, len(s)
+                    if (s(i:j) == s(j:k)) then
+                        n = n + 1
+                    end if
+                end do
+            end do
+        end do
+    end function count_good_substrings
+
+    subroutine get_string(fmt, str)
+        implicit none
+        character(len=*), intent(in) :: fmt
+        character(len=:), allocatable, intent(out) :: str
+        character(len=100) :: buffer
+
+        read (*, fmt) buffer
+        allocate(character(len=len_trim(buffer)) :: str)
+        str = trim(buffer)
+    end subroutine get_string
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 36 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x78b6918be960 in ???
+#1  0x78b6918bf4d9 in ???
+#2  0x78b691b1317b in ???
+#3  0x78b691b13752 in ???
+#4  0x78b691b0ff1b in ???
+#5  0x78b691b14e3c in ???
+#6  0x78b691b15e55 in ???
+#7  0x585076b9c2fb in get_string.0
+#8  0x585076b9c576 in MAIN__
+#9  0x585076b9c761 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module good_substrings
+
+implicit none
+
+contains
+
+integer function count_good_substrings(s) result(count)
+
+character(len=*), intent(in) :: s
+
+integer :: i, j, k, n
+
+count = 0
+n = len(s)
+
+do i = 1, n - 2
+    do j = i + 1, n - 1
+        do k = j + 1, n
+            if (s(i:j) == s(j:k) .and. s(j:k) /= s(i:j)) then
+                count = count + 1
+            end if
+        end do
+    end do
+end do
+
+end function count_good_substrings
+
+end module good_substrings
+
+program test_good_substrings
+
+use good_substrings
+
+implicit none
+
+integer :: count
+
+count = count_good_substrings("xyzzaz")
+write (*,*) count
+
+count = count_good_substrings("aababcabc")
+write (*,*) count
+
+end program test_good_substrings
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>           0
+           0
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from collections import deque
+
+def highest_island(is_water):
+    m, n = len(is_water), len(is_water[0])
+    height = [[-1] * n for _ in range(m)]
+    q = deque()
+
+    for i in range(m):
+        for j in range(n):
+            if is_water[i][j] == 1:
+                height[i][j] = 0
+                q.append((i, j))
+
+    dx = [-1, 0, 1, 0]
+    dy = [0, 1, 0, -1]
+
+    while q:
+        x, y = q.popleft()
+
+        for i in range(4):
+            newX = x + dx[i]
+            newY = y + dy[i]
+
+            if 0 &lt;= newX &lt; m and 0 &lt;= newY &lt; n and height[newX][newY] == -1:
+                height[newX][newY] = height[x][y] + 1
+                q.append((newX, newY))
+
+    return height
+</code></pre>
+<p>The algorithm works by performing a breadth-first search (BFS) from each water cell (value 1). It first initializes the height matrix with -1 for all cells, except water cells are assigned height 0. It then pushes all water cells to the queue. This queue is used for BFS.</p>
+<p>Inside the while loop, we dequeue the cell and explore its neighbors. If a neighbor cell's height is -1 (which means it hasn't been visited yet), we assign it a height that is one more than the height of the current cell, then push the neighbor into the queue. By doing this for all cells in the queue, we will eventually assign every cell its maximum possible height.</p>
+<p>The time complexity of this algorithm is O(mn) since the BFS processes each cell once.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+vector&lt;vector&lt;int&gt;&gt; highestIsland(vector&lt;vector&lt;int&gt;&gt;&amp; isWater) {
+    int m = isWater.size();
+    int n = isWater[0].size();
+    vector&lt;vector&lt;int&gt;&gt; height(m, vector&lt;int&gt;(n, -1));
+    queue&lt;pair&lt;int, int&gt;&gt; q;
+
+    for (int i = 0; i &lt; m; i++) {
+        for (int j = 0; j &lt; n; j++) {
+            if (isWater[i][j] == 1) {
+                height[i][j] = 0;
+                q.push({i, j});
+            }
+        }
+    }
+
+    vector&lt;int&gt; dx = {-1, 0, 1, 0};
+    vector&lt;int&gt; dy = {0, 1, 0, -1};
+
+    while (!q.empty()) {
+        int x = q.front().first;
+        int y = q.front().second;
+        q.pop();
+
+        for (int i = 0; i &lt; 4; i++) {
+            int newX = x + dx[i];
+            int newY = y + dy[i];
+
+            if (newX &gt;= 0 &amp;&amp; newX &lt; m &amp;&amp; newY &gt;= 0 &amp;&amp; newY &lt; n &amp;&amp; height[newX][newY] == -1) {
+                height[newX][newY] = height[x][y] + 1;
+                q.push({newX, newY});
+            }
+        }
+    }
+
+    return height;
+}
+</code></pre>
+<p>The algorithm works by performing a breadth-first search (BFS) from each water cell (value 1). It first initializes the height matrix with -1 for all cells, except water cells are assigned height 0. It then pushes all water cells to the queue. This queue is used for BFS.</p>
+<p>Inside the while loop, we dequeue the cell and explore its neighbors. If a neighbor cell's height is -1 (which means it hasn't been visited yet), we assign it a height that is one more than the height of the current cell, then push the neighbor into the queue. By doing this for all cells in the queue, we will eventually assign every cell its maximum possible height.</p>
+<p>The time complexity of this algorithm is O(mn) since the BFS processes each cell once.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

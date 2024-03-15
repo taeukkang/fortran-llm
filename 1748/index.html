@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Sum of Unique Elements</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1742/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1752/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer array <code>nums</code>. The unique elements of an array are the elements that appear <strong>exactly once</strong> in the array.</p>
+<p>Return <em>the <strong>sum</strong> of all the unique elements of</em> <code>nums</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,3,2]
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> The unique elements are [1,3], and the sum is 4.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,1,1,1,1]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There are no unique elements, and the sum is 0.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [1,2,3,4,5]
+<strong>Output:</strong> 15
+<strong>Explanation:</strong> The unique elements are [1,2,3,4,5], and the sum is 15.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+<li><code>1 &lt;= nums[i] &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/sum-of-unique-elements/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: nums(5)
+
+    nums = [1, 2, 3, 2, 1]
+    print '(I0)', sum_unique_elements(nums)
+
+    nums = [1, 1, 1, 1, 1]
+    print '(I0)', sum_unique_elements(nums)
+
+    nums = [1, 2, 3, 4, 5]
+    print '(I0)', sum_unique_elements(nums)
+
+contains
+
+    function sum_unique_elements(nums) result(sum)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: sum, i, count
+
+        sum = 0
+        do i = 1, size(nums)
+            count = 0
+            do j = 1, size(nums)
+                if (nums(i) == nums(j)) then
+                    count = count + 1
+                end if
+            end do
+            if (count == 1) then
+                sum = sum + nums(i)
+            end if
+        end do
+    end function sum_unique_elements
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:25:16:
+
+   25 |             do j = 1, size(nums)
+      |                1
+Error: Symbol ‘j’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module SumUniqueElements
+    implicit none
+    private
+    public :: sumUniqueElements
+
+contains
+
+    function sumUniqueElements(nums) result(sum)
+        integer, intent(in) :: nums(:)
+        integer :: sum
+        integer :: i, j, count
+        logical :: found
+
+        sum = 0
+        do i = 1, size(nums)
+            found = .false.
+            do j = 1, i - 1
+                if (nums(i) == nums(j)) then
+                    found = .true.
+                    exit
+                end if
+            end do
+            if (.not. found) then
+                count = 1
+                do j = i + 1, size(nums)
+                    if (nums(i) == nums(j)) then
+                        count = count + 1
+                    end if
+                end do
+                if (count == 1) then
+                    sum = sum + nums(i)
+                end if
+            end if
+        end do
+    end function sumUniqueElements
+end module SumUniqueElements
+
+program test_sumUniqueElements
+    use SumUniqueElements
+    implicit none
+    integer, parameter :: nums1(4) = [1, 2, 3, 2]
+    integer, parameter :: nums2(5) = [1, 1, 1, 1, 1]
+    integer, parameter :: nums3(5) = [1, 2, 3, 4, 5]
+    integer :: sum
+
+    sum = sumUniqueElements(nums1)
+    write (*,*) "Sum of unique elements in nums1:", sum
+    sum = sumUniqueElements(nums2)
+    write (*,*) "Sum of unique elements in nums2:", sum
+    sum = sumUniqueElements(nums3)
+    write (*,*) "Sum of unique elements in nums3:", sum
+end program test_sumUniqueElements
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:31:
+
+    4 |     public :: sumUniqueElements
+      |                               1
+Error: PUBLIC attribute applied to MODULE sumuniqueelements at (1)
+temp.f95:8:30:
+
+    8 |     function sumUniqueElements(nums) result(sum)
+      |                              1
+Error: MODULE attribute of ‘sumuniqueelements’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:38:
+
+    9 |         integer, intent(in) :: nums(:)
+      |                                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:22:
+
+   10 |         integer :: sum
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:30:
+
+   11 |         integer :: i, j, count
+      |                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:24:
+
+   12 |         logical :: found
+      |                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:15:
+
+   14 |         sum = 0
+      |               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:28:
+
+   15 |         do i = 1, size(nums)
+      |                            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:16:27:
+
+   16 |             found = .false.
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:27:
+
+   17 |             do j = 1, i - 1
+      |                           1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:18:44:
+
+   18 |                 if (nums(i) == nums(j)) then
+      |                                            1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:19:34:
+
+   19 |                     found = .true.
+      |                                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:24:
+
+   20 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:21:19:
+
+   21 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:22:15:
+
+   22 |             end do
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:33:
+
+   23 |             if (.not. found) then
+      |                                 1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:24:25:
+
+   24 |                 count = 1
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:25:40:
+
+   25 |                 do j = i + 1, size(nums)
+      |                                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:26:48:
+
+   26 |                     if (nums(i) == nums(j)) then
+      |                                                1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:27:41:
+
+   27 |                         count = count + 1
+      |                                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:28:23:
+
+   28 |                     end if
+      |                       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:19:
+
+   29 |                 end do
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:36:
+
+   30 |                 if (count == 1) then
+      |                                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:31:39:
+
+   31 |                     sum = sum + nums(i)
+      |                                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:32:19:
+
+   32 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:33:15:
+
+   33 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:11:
+
+   34 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:35:7:
+
+   35 |     end function sumUniqueElements
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:39:9:
+
+   39 |     use SumUniqueElements
+      |         1
+Fatal Error: Cannot open module file ‘sumuniqueelements.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def bestTeamScore(scores, ages):
+    players = sorted(zip(ages, scores))
+    n = len(players)
+    dp = [0] * n
+    best_score = 0
+
+    for i in range(n):
+        dp[i] = players[i][1]
+        for j in range(i):
+            if players[i][1] &gt;= players[j][1]:
+                dp[i] = max(dp[i], dp[j] + players[i][1])
+        best_score = max(best_score, dp[i])
+
+    return best_score
+</code></pre>
+<pre><code>1. First, we create a new array/list (`players`) of pairs containing the players' ages and scores.
+</code></pre>
+<ol>
+<li>Next, we sort the <code>players</code> array/list by age, followed by sorting by scores within the same age.</li>
+<li>We create a <code>dp</code> array/list of length <code>n</code> (number of players) initializing it with 0.</li>
+<li>Then, we iterate through each player in the sorted <code>players</code> array/list:
+    a. Set <code>dp[i]</code> to the current player's score.
+    b. Iterate through all previous players (0 to i-1) and check if the current player's score is greater or equal to the previous player's score. If true, set <code>dp[i]</code> to the maximum value between existing <code>dp[i]</code> and the sum of that previous player's DP value plus the current player's score.
+    c. Update the <code>best_score</code> with the maximum of its current value and <code>dp[i]</code> for each player.</li>
+<li>Lastly, return the <code>best_score</code> which represents the highest overall score of all possible basketball teams without conflicts.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+using namespace std;
+
+int bestTeamScore(vector&lt;int&gt;&amp; scores, vector&lt;int&gt;&amp; ages) {
+    int n = scores.size();
+    vector&lt;pair&lt;int, int&gt;&gt; players(n);
+
+    for (int i = 0; i &lt; n; ++i) {
+        players[i] = {ages[i], scores[i]};
+    }
+
+    sort(players.begin(), players.end());
+
+    vector&lt;int&gt; dp(n);
+    int best_score = 0;
+
+    for (int i = 0; i &lt; n; ++i) {
+        dp[i] = players[i].second;
+        for (int j = 0; j &lt; i; ++j) {
+            if (players[i].second &gt;= players[j].second) {
+                dp[i] = max(dp[i], dp[j] + players[i].second);
+            }
+        }
+        best_score = max(best_score, dp[i]);
+    }
+
+    return best_score;
+}
+</code></pre>
+<pre><code>1. First, we create a new array/list (`players`) of pairs containing the players' ages and scores.
+</code></pre>
+<ol>
+<li>Next, we sort the <code>players</code> array/list by age, followed by sorting by scores within the same age.</li>
+<li>We create a <code>dp</code> array/list of length <code>n</code> (number of players) initializing it with 0.</li>
+<li>Then, we iterate through each player in the sorted <code>players</code> array/list:
+    a. Set <code>dp[i]</code> to the current player's score.
+    b. Iterate through all previous players (0 to i-1) and check if the current player's score is greater or equal to the previous player's score. If true, set <code>dp[i]</code> to the maximum value between existing <code>dp[i]</code> and the sum of that previous player's DP value plus the current player's score.
+    c. Update the <code>best_score</code> with the maximum of its current value and <code>dp[i]</code> for each player.</li>
+<li>Lastly, return the <code>best_score</code> which represents the highest overall score of all possible basketball teams without conflicts.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

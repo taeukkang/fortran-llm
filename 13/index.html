@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Roman to Integer</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/9/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/14/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Roman numerals are represented by seven different symbols: <code>I</code>, <code>V</code>, <code>X</code>, <code>L</code>, <code>C</code>, <code>D</code> and <code>M</code>.</p>
+<p><strong>Symbol</strong>       <strong>Value</strong>
+I             1
+V             5
+X             10
+L             50
+C             100
+D             500
+M             1000</p>
+<p>For example, <code>2</code> is written as <code>II</code> in Roman numeral, just two ones added together. <code>12</code> is written as <code>XII</code>, which is simply <code>X + II</code>. The number <code>27</code> is written as <code>XXVII</code>, which is <code>XX + V + II</code>.</p>
+<p>Roman numerals are usually written largest to smallest from left to right. However, the numeral for four is not <code>IIII</code>. Instead, the number four is written as <code>IV</code>. Because the one is before the five we subtract it making four. The same principle applies to the number nine, which is written as <code>IX</code>. There are six instances where subtraction is used:</p>
+<ul>
+<li><code>I</code> can be placed before <code>V</code> (5) and <code>X</code> (10) to make 4 and 9.</li>
+<li><code>X</code> can be placed before <code>L</code> (50) and <code>C</code> (100) to make 40 and 90.</li>
+<li><code>C</code> can be placed before <code>D</code> (500) and <code>M</code> (1000) to make 400 and 900.</li>
+</ul>
+<p>Given a roman numeral, convert it to an integer.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "III "
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> III = 3.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "LVIII "
+<strong>Output:</strong> 58
+<strong>Explanation:</strong> L = 50, V= 5, III = 3.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "MCMXCIV "
+<strong>Output:</strong> 1994
+<strong>Explanation:</strong> M = 1000, CM = 900, XC = 90 and IV = 4.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 15</code></li>
+<li><code>s</code> contains only the characters <code>('I', 'V', 'X', 'L', 'C', 'D', 'M')</code>.</li>
+<li>It is <strong>guaranteed</strong> that <code>s</code> is a valid roman numeral in the range <code>[1, 3999]</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/roman-to-integer/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=10), parameter :: I = "I", V = "V", X = "X", L = "L", &
+                                     C = "C", D = "D", M = "M"
+    character(len=*) :: s
+    integer :: n
+
+    call get_command_argument(1, s)
+    read(s, *) n
+
+    write(*, "(A)", advance="no") decode(n)
+
+contains
+
+    function decode(n) result(roman)
+        implicit none
+        integer, intent(in) :: n
+        character(len=:), allocatable :: roman
+
+        if (n == 1) then
+            allocate(character(len=1) :: roman)
+            roman = I
+        else if (n == 5) then
+            allocate(character(len=1) :: roman)
+            roman = V
+        else if (n == 10) then
+            allocate(character(len=1) :: roman)
+            roman = X
+        else if (n == 50) then
+            allocate(character(len=1) :: roman)
+            roman = L
+        else if (n == 100) then
+            allocate(character(len=1) :: roman)
+            roman = C
+        else if (n == 500) then
+            allocate(character(len=1) :: roman)
+            roman = D
+        else if (n == 1000) then
+            allocate(character(len=1) :: roman)
+            roman = M
+        else if (n > 1000) then
+            allocate(character(len=len(decode(n / 1000))+1) :: roman)
+            roman = decode(n / 1000) // M
+            n = mod(n, 1000)
+            if (n > 0) then
+                allocate(character(len=len(roman)+len(decode(n))) :: roman)
+                roman = roman // decode(n)
+            end if
+        end if
+    end function decode
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:25:
+
+    6 |     character(len=*) :: s
+      |                         1
+Error: Entity with assumed character length at (1) must be a dummy argument or a PARAMETER
+temp.f95:47:54:
+
+   47 |                 allocate(character(len=len(roman)+len(decode(n))) :: roman)
+      |                                                      1
+Error: Function ‘decode’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:43:39:
+
+   43 |             allocate(character(len=len(decode(n / 1000))+1) :: roman)
+      |                                       1
+Error: Function ‘decode’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:44:20:
+
+   44 |             roman = decode(n / 1000) // M
+      |                    1
+Error: Function ‘decode’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:45:12:
+
+   45 |             n = mod(n, 1000)
+      |            1
+Error: Dummy argument ‘n’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:48:32:
+
+   48 |                 roman = roman // decode(n)
+      |                                1
+Error: Function ‘decode’ at (1) cannot be called recursively, as it is not RECURSIVE
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">PROGRAM ROMAN_TO_INTEGER
+
+IMPLICIT NONE
+
+CHARACTER(LEN=15) :: s
+INTEGER :: i, j, value
+
+! Read input
+READ(*,*) s
+
+! Initialize variables
+i = 1
+j = 1
+value = 0
+
+! Loop through the input string
+DO WHILE (i <= LEN(s))
+
+    ! Check for valid characters
+    IF (s(i:i) /= "I" .AND. s(i:i) /= "V" .AND. s(i:i) /= "X" .AND. &
+        s(i:i) /= "L" .AND. s(i:i) /= "C" .AND. s(i:i) /= "D" .AND. &
+        s(i:i) /= "M") THEN
+        PRINT *, "Invalid input"
+        STOP
+    END IF
+
+    ! Check for subtraction
+    IF (s(i:i+1) == "IV" .OR. s(i:i+1) == "IX" .OR. s(i:i+1) == "XL" .OR. &
+        s(i:i+1) == "XC" .OR. s(i:i+1) == "CD" .OR. s(i:i+1) == "CM") THEN
+        value = value - (10 ** (j-1))
+        i = i + 2
+        j = j + 1
+    ELSE
+        ! Check for addition
+        IF (s(i:i+1) == "II" .OR. s(i:i+1) == "XX" .OR. s(i:i+1) == "XXX" .OR. &
+            s(i:i+1) == "CCC" .OR. s(i:i+1) == "DDD" .OR. s(i:i+1) == "MMM") THEN
+            value = value + (10 ** (j-1))
+            i = i + 2
+            j = j + 1
+        ELSE
+            ! Check for single digit
+            IF (s(i:i) == "I") THEN
+                value = value + 1
+                i = i + 1
+                j = j + 1
+            ELSE IF (s(i:i) == "V") THEN
+                value = value + 5
+                i = i + 1
+                j = j + 1
+            ELSE IF (s(i:i) == "X") THEN
+                value = value + 10
+                i = i + 1
+                j = j + 1
+            ELSE IF (s(i:i) == "L") THEN
+                value = value + 50
+                i = i + 1
+                j = j + 1
+            ELSE IF (s(i:i) == "C") THEN
+                value = value + 100
+                i = i + 1
+                j = j + 1
+            ELSE IF (s(i:i) == "D") THEN
+                value = value + 500
+                i = i + 1
+                j = j + 1
+            ELSE IF (s(i:i) == "M") THEN
+                value = value + 1000
+                i = i + 1
+                j = j + 1
+            END IF
+        END IF
+    END IF
+
+END DO
+
+! Print output
+PRINT *, value
+
+END PROGRAM ROMAN_TO_INTEGER
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 9 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7e92e15dc960 in ???
+#1  0x7e92e15dd4d9 in ???
+#2  0x7e92e183117b in ???
+#3  0x7e92e182a684 in ???
+#4  0x7e92e182b2aa in ???
+#5  0x5679b07db262 in MAIN__
+#6  0x5679b07db864 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def roman_to_int(s):
+    roman_values = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
+    total = 0
+    prev_value = 0
+
+    for c in s:
+        current_value = roman_values[c]
+        if current_value &gt; prev_value:
+            total += current_value - 2 * prev_value
+        else:
+            total += current_value
+        prev_value = current_value
+
+    return total
+</code></pre>
+<pre><code>The algorithm iterates through the input string, which represents the Roman numeral. At each iteration, the character is converted to its corresponding integer value using a hash map. Then, the value is added to the total. However, if the current value is greater than the previous value, it means that we need to subtract the previous value from the current value (while considering that the previous value has already been added once). To do this, we add to the total the current value minus 2 times the previous value. Finally, the previous value is updated, and the loop continues. After the loop finishes, the total gives us the integer value equivalent to the Roman numeral.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int romanToInt(string s) {
+    unordered_map&lt;char, int&gt; roman_values = { {'I', 1}, {'V', 5}, {'X', 10}, {'L', 50}, {'C', 100}, {'D', 500}, {'M', 1000} };
+    int total = 0;
+    int prev_value = 0;
+
+    for (char c : s) {
+        int current_value = roman_values[c];
+        if (current_value &gt; prev_value)
+            total += current_value - (2 * prev_value);
+        else
+            total += current_value;
+        prev_value = current_value;
+    }
+
+    return total;
+}
+</code></pre>
+<pre><code>The algorithm iterates through the input string, which represents the Roman numeral. At each iteration, the character is converted to its corresponding integer value using a hash map. Then, the value is added to the total. However, if the current value is greater than the previous value, it means that we need to subtract the previous value from the current value (while considering that the previous value has already been added once). To do this, we add to the total the current value minus 2 times the previous value. Finally, the previous value is updated, and the loop continues. After the loop finishes, the total gives us the integer value equivalent to the Roman numeral.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Second Minimum Node In a Binary Tree</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/661/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/674/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a non-empty special binary tree consisting of nodes with the non-negative value, where each node in this tree has exactly <code>two</code> or <code>zero</code> sub-node. If the node has two sub-nodes, then this node's value is the smaller value among its two sub-nodes. More formally, the property <code>root.val = min(root.left.val, root.right.val)</code> always holds.</p>
+<p>Given such a binary tree, you need to output the <strong>second minimum</strong> value in the set made of all the nodes' value in the whole tree.</p>
+<p>If no such second minimum value exists, output -1 instead.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [2,2,5,null,null,5,7]
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> The smallest value is 2, the second smallest value is 5.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [2,2,2]
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> The smallest value is 2, but there isn't any second smallest value.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[1, 25]</code>.</li>
+<li><code>1 &lt;= Node.val &lt;= 231 - 1</code></li>
+<li><code>root.val == min(root.left.val, root.right.val)</code> for each internal node of the tree.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/second-minimum-node-in-a-binary-tree/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, DP => REAL64
+    implicit none
+    integer, parameter :: unit_in = 10, unit_out = 20
+    character(len=*), parameter :: filename_in = "example_input.txt", &
+                                   filename_out = "example_output.txt"
+    type :: node
+        real(kind=DP) :: val
+        class(*), pointer :: left => null(), right => null()
+    end type
+    type(node), pointer :: root
+    integer :: i, n
+    logical :: file_exists
+
+    ! Read input from file
+    inquire(file=filename_in, exist=file_exists)
+    if (file_exists) then
+        open(newunit=unit_in, file=filename_in, status="old", action="read")
+        read(unit=unit_in, fmt=*) n
+        allocate(root)
+        do i = 1, n
+            call read_node(unit_in, root)
+        end do
+        close(unit=unit_in)
+    else
+        write(unit=error_unit, fmt="('error: ',A)") "file not found: '" // trim(filename_in) // "'."
+        stop 1
+    end if
+
+    ! Print output to file
+    open(newunit=unit_out, file=filename_out, status="replace", action="write")
+    call print_second_min(root, unit=unit_out)
+    close(unit=unit_out)
+
+contains
+
+    subroutine read_node(unit, node)
+        implicit none
+        integer, intent(in) :: unit
+        class(*), pointer, intent(out) :: node
+        integer :: i
+        character(len=100) :: line
+
+        read(unit=unit, fmt=*) line
+        if (line == "null") then
+            nullify(node)
+        else
+            allocate(node)
+            read(unit=unit, fmt=*) node%val
+            read(unit=unit, fmt=*) i
+            if (i > 0) then
+                allocate(node%left)
+                call read_node(unit, node%left)
+            end if
+            read(unit=unit, fmt=*) i
+            if (i > 0) then
+                allocate(node%right)
+                call read_node(unit, node%right)
+            end if
+        end if
+    end subroutine
+
+    subroutine print_second_min(node, unit)
+        implicit none
+        class(*), pointer, intent(in) :: node
+        integer, intent(in) :: unit
+        integer :: i
+
+        if (.not. associated(node)) then
+            write(unit=unit, fmt="(-1)")
+        else
+            if (associated(node%left) .and. associated(node%right)) then
+                call print_second_min(node%left, unit=unit)
+                call print_second_min(node%right, unit=unit)
+            else if (associated(node%left)) then
+                call print_second_min(node%left, unit=unit)
+            else if (associated(node%right)) then
+                call print_second_min(node%right, unit=unit)
+            else
+                write(unit=unit, fmt=*) node%val
+            end if
+        end if
+    end subroutine
+
+end program</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:48:21:
+
+   48 |             allocate(node)
+      |                     1
+Error: Unlimited polymorphic allocate-object at (1) requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:49:43:
+
+   49 |             read(unit=unit, fmt=*) node%val
+      |                                           1
+Error: ‘val’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:52:35:
+
+   52 |                 allocate(node%left)
+      |                                   1
+Error: ‘left’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:53:47:
+
+   53 |                 call read_node(unit, node%left)
+      |                                               1
+Error: ‘left’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:57:36:
+
+   57 |                 allocate(node%right)
+      |                                    1
+Error: ‘right’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:58:48:
+
+   58 |                 call read_node(unit, node%right)
+      |                                                1
+Error: ‘right’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:70:37:
+
+   70 |             write(unit=unit, fmt="(-1)")
+      |                                     1
+Error: Expected P edit descriptor in format string at (1)
+temp.f95:72:37:
+
+   72 |             if (associated(node%left) .and. associated(node%right)) then
+      |                                     1
+Error: ‘left’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:73:48:
+
+   73 |                 call print_second_min(node%left, unit=unit)
+      |                                                1
+Error: ‘left’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:74:49:
+
+   74 |                 call print_second_min(node%right, unit=unit)
+      |                                                 1
+Error: ‘right’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:75:42:
+
+   75 |             else if (associated(node%left)) then
+      |                                          1
+Error: ‘left’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:76:48:
+
+   76 |                 call print_second_min(node%left, unit=unit)
+      |                                                1
+Error: ‘left’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:77:43:
+
+   77 |             else if (associated(node%right)) then
+      |                                           1
+Error: ‘right’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:78:49:
+
+   78 |                 call print_second_min(node%right, unit=unit)
+      |                                                 1
+Error: ‘right’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:71:12:
+
+   71 |         else
+      |            1
+......
+   79 |             else
+      |                2
+Error: Duplicate ELSE statements at (1) and (2)
+temp.f95:80:48:
+
+   80 |                 write(unit=unit, fmt=*) node%val
+      |                                                1
+Error: ‘val’ at (1) is not a member of the ‘__class__STAR_p’ structure
+temp.f95:82:11:
+
+   82 |         end if
+      |           1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:18:21:
+
+   18 |         open(newunit=unit_in, file=filename_in, status="old", action="read")
+      |                     1
+Error: Named constant ‘unit_in’ in variable definition context (NEWUNIT tag) at (1)
+temp.f95:22:36:
+
+   22 |             call read_node(unit_in, root)
+      |                                    1
+Error: Actual argument to ‘node’ at (1) must be polymorphic
+temp.f95:31:17:
+
+   31 |     open(newunit=unit_out, file=filename_out, status="replace", action="write")
+      |                 1
+Error: Named constant ‘unit_out’ in variable definition context (NEWUNIT tag) at (1)
+temp.f95:32:26:
+
+   32 |     call print_second_min(root, unit=unit_out)
+      |                          1
+Error: Actual argument to ‘node’ at (1) must be unlimited polymorphic since the formal argument is a pointer or allocatable unlimited polymorphic entity [F2008: 12.5.2.5]
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module second_minimum_node
+    implicit none
+    private
+    public :: second_minimum
+
+contains
+
+    function second_minimum(root) result(second_min)
+        type(node), pointer, intent(in) :: root
+        integer :: second_min
+
+        ! Initialize variables
+        second_min = -1
+
+        ! Base case: if the root is null, return -1
+        if (.not. associated(root)) then
+            return
+        end if
+
+        ! If the root has a left child, recurse on the left child
+        if (associated(root%left)) then
+            second_min = second_minimum(root%left)
+        end if
+
+        ! If the root has a right child, recurse on the right child
+        if (associated(root%right)) then
+            if (second_min == -1) then
+                second_min = second_minimum(root%right)
+            else
+                second_min = min(second_min, second_minimum(root%right))
+            end if
+        end if
+
+        ! If the root is the smallest value, return the second minimum value
+        if (root%val == min(root%left%val, root%right%val)) then
+            second_min = root%val
+        end if
+
+    end function second_minimum
+
+    type :: node
+        integer :: val
+        type(node), pointer :: left
+        type(node), pointer :: right
+    end type node
+end module second_minimum_node
+
+program test_second_minimum
+    use second_minimum_node
+    implicit none
+
+    ! Test case 1
+    type(node), pointer :: root
+    root => node(2, null(), null())
+    root%left => node(2, null(), null())
+    root%right => node(5, null(), null())
+    root%left%left => node(5, null(), null())
+    root%left%right => node(7, null(), null())
+    write (*,*) second_minimum(root)
+
+    ! Test case 2
+    root => node(2, null(), null())
+    root%left => node(2, null(), null())
+    root%right => node(2, null(), null())
+    root%left%left => node(2, null(), null())
+    root%left%right => node(2, null(), null())
+    root%right%left => node(2, null(), null())
+    root%right%right => node(2, null(), null())
+    write (*,*) second_minimum(root)
+
+    ! Test case 3
+    root => node(2, null(), null())
+    root%left => node(2, null(), null())
+    root%right => node(2, null(), null())
+    root%left%left => node(2, null(), null())
+    root%left%right => node(2, null(), null())
+    root%right%left => node(2, null(), null())
+    root%right%right => node(2, null(), null())
+    write (*,*) second_minimum(root)
+
+    ! Test case 4
+    root => node(2, null(), null())
+    root%left => node(2, null(), null())
+    root%right => node(2, null(), null())
+    root%left%left => node(2, null(), null())
+    root%left%right => node(2, null(), null())
+    root%right%left => node(2, null(), null())
+    root%right%right => node(2, null(), null())
+    write (*,*) second_minimum(root)
+
+    ! Test case 5
+    root => node(2, null(), null())
+    root%left => node(2, null(), null())
+    root%right => node(2, null(), null())
+    root%left%left => node(2, null(), null())
+    root%left%right => node(2, null(), null())
+    root%right%left => node(2, null(), null())
+    root%right%right => node(2, null(), null())
+    write (*,*) second_minimum(root)
+
+    ! Test case 6
+    root => node(2, null(), null())
+    root%left => node(2, null(), null())
+    root%right => node(2
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:19:
+
+    9 |         type(node), pointer, intent(in) :: root
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:21:29:
+
+   21 |         if (associated(root%left)) then
+      |                             1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:22:46:
+
+   22 |             second_min = second_minimum(root%left)
+      |                                              1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:23:11:
+
+   23 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:26:29:
+
+   26 |         if (associated(root%right)) then
+      |                             1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:28:50:
+
+   28 |                 second_min = second_minimum(root%right)
+      |                                                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:30:66:
+
+   30 |                 second_min = min(second_min, second_minimum(root%right))
+      |                                                                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:32:11:
+
+   32 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:35:18:
+
+   35 |         if (root%val == min(root%left%val, root%right%val)) then
+      |                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:36:31:
+
+   36 |             second_min = root%val
+      |                               1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:37:11:
+
+   37 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:41:16:
+
+   41 |     type :: node
+      |                1
+Error: Unexpected derived type declaration statement in CONTAINS section at (1)
+temp.f95:42:22:
+
+   42 |         integer :: val
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:43:19:
+
+   43 |         type(node), pointer :: left
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:44:19:
+
+   44 |         type(node), pointer :: right
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:45:7:
+
+   45 |     end type node
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:8:32:
+
+    8 |     function second_minimum(root) result(second_min)
+      |                                1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:49:9:
+
+   49 |     use second_minimum_node
+      |         1
+Fatal Error: Cannot open module file ‘second_minimum_node.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def find_second_minimum_value(root, current=-1):
+    if root is None:
+        return current
+    if current == -1 or root.val &lt; current:
+        current = root.val
+    if root.left is not None and root.right is not None:
+        if root.val == root.left.val:
+            current = find_second_minimum_value(root.left, current)
+            if root.val != root.right.val:
+                current = root.right.val if current == -1 else min(current, root.right.val)
+        else:
+            current = find_second_minimum_value(root.right, current)
+            if root.val != root.left.val:
+                current = root.left.val if current == -1 else min(current, root.left.val)
+    return current
+</code></pre>
+<p>The algorithm starts at the root of the tree and recursively searches for the second smallest value in the tree. It maintains a variable <code>current</code> that stores the current smallest or second smallest value found so far, initialized to -1.</p>
+<p>The base case is when the tree is empty, in which case the algorithm returns the value of <code>current</code>. When the value of the root is smaller than <code>current</code>, the value of the root is assigned to <code>current</code>. </p>
+<p>If the root has left and right child, the algorithm checks if the root's value is equal to its left child or its right child, and then compares the current value, if any, with the root's children value. Then, the function is called recursively to explore their sub-trees to find the second minimum value. Eventually, it will return -1 if there is no such second minimum value, or it will return the second minimum value found in the tree.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;algorithm&gt;
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+};
+
+int findSecondMinimumValue(TreeNode* root, int current = -1) {
+    if (!root) return current;
+    if (current == -1 || root-&gt;val &lt; current) current = root-&gt;val;
+    if (root-&gt;left &amp;&amp; root-&gt;right) {
+        if (root-&gt;val == root-&gt;left-&gt;val) {
+            current = findSecondMinimumValue(root-&gt;left, current);
+            if (root-&gt;val != root-&gt;right-&gt;val)
+                current = (current == -1) ? root-&gt;right-&gt;val : std::min(current, root-&gt;right-&gt;val);
+        } else {
+            current = findSecondMinimumValue(root-&gt;right, current);
+            if (root-&gt;val != root-&gt;left-&gt;val)
+                current = (current == -1) ? root-&gt;left-&gt;val : std::min(current, root-&gt;left-&gt;val);
+        }
+    }
+    return current;
+}
+</code></pre>
+<p>The algorithm starts at the root of the tree and recursively searches for the second smallest value in the tree. It maintains a variable <code>current</code> that stores the current smallest or second smallest value found so far, initialized to -1.</p>
+<p>The base case is when the tree is empty, in which case the algorithm returns the value of <code>current</code>. When the value of the root is smaller than <code>current</code>, the value of the root is assigned to <code>current</code>. </p>
+<p>If the root has left and right child, the algorithm checks if the root's value is equal to its left child or its right child, and then compares the current value, if any, with the root's children value. Then, the function is called recursively to explore their sub-trees to find the second minimum value. Eventually, it will return -1 if there is no such second minimum value, or it will return the second minimum value found in the tree.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

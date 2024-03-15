@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Maximum Nesting Depth of the Parentheses</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1608/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1619/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A string is a <strong>valid parentheses string</strong> (denoted <strong>VPS</strong>) if it meets one of the following:</p>
+<ul>
+<li>It is an empty string <code>" "</code>, or a single character not equal to <code>"( "</code> or <code>") "</code>,</li>
+<li>It can be written as <code>AB</code> (<code>A</code> concatenated with <code>B</code>), where <code>A</code> and <code>B</code> are <strong>VPS</strong>'s, or</li>
+<li>It can be written as <code>(A)</code>, where <code>A</code> is a <strong>VPS</strong>.</li>
+</ul>
+<p>We can similarly define the <strong>nesting depth</strong> <code>depth(S)</code> of any VPS <code>S</code> as follows:</p>
+<ul>
+<li><code>depth( " ") = 0</code></li>
+<li><code>depth(C) = 0</code>, where <code>C</code> is a string with a single character not equal to <code>"( "</code> or <code>") "</code>.</li>
+<li><code>depth(A + B) = max(depth(A), depth(B))</code>, where <code>A</code> and <code>B</code> are <strong>VPS</strong>'s.</li>
+<li><code>depth( "( " + A + ") ") = 1 + depth(A)</code>, where <code>A</code> is a <strong>VPS</strong>.</li>
+</ul>
+<p>For example, <code>" "</code>, <code>"()() "</code>, and <code>"()(()()) "</code> are <strong>VPS</strong>'s (with nesting depths 0, 1, and 2), and <code>")( "</code> and <code>"(() "</code> are not <strong>VPS</strong>'s.</p>
+<p>Given a <strong>VPS</strong> represented as string <code>s</code>, return <em>the <strong>nesting depth</strong> of</em> <code>s</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "(1+(2*3)+((8)/4))+1 "
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> Digit 8 is inside of 3 nested parentheses in the string.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "(1)+((2))+(((3))) "
+<strong>Output:</strong> 3</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 100</code></li>
+<li><code>s</code> consists of digits <code>0-9</code> and characters <code>'+'</code>, <code>'-'</code>, <code>'*'</code>, <code>'/'</code>, <code>'('</code>, and <code>')'</code>.</li>
+<li>It is guaranteed that parentheses expression <code>s</code> is a <strong>VPS</strong>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solves the problem:
+    ! A string is a valid parentheses string (denoted VPS) if it meets one of the following:
+    ! - It is an empty string " ", or a single character not equal to "( ".
+    ! - It can be written as AB (A concatenated with B), where A and B are VPS's.
+    ! - It can be written as (A), where A is a VPS.
+    implicit none
+
+    integer :: i, j, k, n, depth
+    character(len=100) :: s
+
+    ! Examples
+    print '("Example 1:")'
+    s = "(1+(2*3)+((8)/4))+1"
+    print '(*(g0,1x))', s, depth(s)
+    print '("Example 2:")'
+    s = "(1)+((2))+(((3)))"
+    print '(*(g0,1x))', s, depth(s)
+
+contains
+
+    function depth(s) result(d)
+        ! Returns the nesting depth of a valid parentheses string (VPS)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer :: d
+
+        d = 0
+        do i = 1, len(s)
+            select case(s(i:i))
+                case(' ')
+                    cycle
+                case('(')
+                    d = d + 1
+                case(')')
+                    d = d - 1
+            end select
+        end do
+    end function depth
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:22:19:
+
+   22 |     function depth(s) result(d)
+      |                   1
+Error: Procedure ‘depth’ at (1) has an explicit interface from a previous declaration
+temp.f95:24:21:
+
+   24 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:25:41:
+
+   25 |         character(len=*), intent(in) :: s
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:26:20:
+
+   26 |         integer :: d
+      |                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:28:13:
+
+   28 |         d = 0
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:29:24:
+
+   29 |         do i = 1, len(s)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:30:31:
+
+   30 |             select case(s(i:i))
+      |                               1
+Error: Unexpected SELECT CASE statement in CONTAINS section at (1)
+temp.f95:31:21:
+
+   31 |                 case(' ')
+      |                     1
+Error: Unexpected CASE statement at (1)
+temp.f95:32:25:
+
+   32 |                     cycle
+      |                         1
+Error: CYCLE statement at (1) is not within a construct
+temp.f95:33:21:
+
+   33 |                 case('(')
+      |                     1
+Error: Unexpected CASE statement at (1)
+temp.f95:34:29:
+
+   34 |                     d = d + 1
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:35:21:
+
+   35 |                 case(')')
+      |                     1
+Error: Unexpected CASE statement at (1)
+temp.f95:36:29:
+
+   36 |                     d = d - 1
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:37:15:
+
+   37 |             end select
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:38:11:
+
+   38 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:39:7:
+
+   39 |     end function depth
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module ParenthesesDepth
+    implicit none
+    private
+    public :: depth
+contains
+    function depth(s) result(depth_)
+        character(len=*), intent(in) :: s
+        integer :: depth_
+        integer :: i, j, k
+        character :: c
+        logical :: is_open_paren
+
+        ! Initialize variables
+        depth_ = 0
+        i = 1
+        j = 1
+        k = 1
+        is_open_paren = .false.
+
+        ! Iterate over the characters in the string
+        do while (i <= len(s))
+            c = s(i:i)
+
+            ! If we encounter an opening parenthesis, increment the nesting depth
+            if (c == '(') then
+                depth_ = depth_ + 1
+                is_open_paren = .true.
+            ! If we encounter a closing parenthesis, decrement the nesting depth
+            else if (c == ')') then
+                depth_ = depth_ - 1
+                is_open_paren = .false.
+            end if
+
+            ! If we encounter a digit and we are not in a nested expression,
+            ! increment the index
+            if (c >= '0' .and. c <= '9' .and. .not. is_open_paren) then
+                j = j + 1
+            end if
+
+            ! Increment the index
+            i = i + 1
+        end do
+
+        ! Return the nesting depth
+        depth_ = depth_ + 1
+    end function depth
+end module ParenthesesDepth
+
+! Test the function with some examples
+program test_depth
+    use ParenthesesDepth
+    implicit none
+    integer :: depth
+
+    ! Test case 1: " "
+    depth = depth(" ")
+    write (*,*) "Test case 1: ", depth
+
+    ! Test case 2: "()() "
+    depth = depth("()() ")
+    write (*,*) "Test case 2: ", depth
+
+    ! Test case 3: "()(()()) "
+    depth = depth("()(()()) ")
+    write (*,*) "Test case 3: ", depth
+
+    ! Test case 4: ")("
+    depth = depth(")(")
+    write (*,*) "Test case 4: ", depth
+
+    ! Test case 5: "(() "
+    depth = depth("(() ")
+    write (*,*) "Test case 5: ", depth
+
+    ! Test case 6: "(()())"
+    depth = depth("(()())")
+    write (*,*) "Test case 6: ", depth
+
+    ! Test case 7: "(((((18)))))"
+    depth = depth("(((((18)))))")
+    write (*,*) "Test case 7: ", depth
+
+    ! Test case 8: "(1+(2\*3)+((8)/4))+1 "
+    depth = depth("(1+(2*3)+((8)/4))+1 ")
+    write (*,*) "Test case 8: ", depth
+
+    ! Test case 9: "(1)+((2))+(((3))) "
+    depth = depth("(1)+((2))+(((3))) ")
+    write (*,*) "Test case 9: ", depth
+end program test_depth
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:53:20:
+
+   51 |     use ParenthesesDepth
+      |        2            
+   52 |     implicit none
+   53 |     integer :: depth
+      |                    1
+Error: Symbol ‘depth’ at (1) conflicts with symbol from module ‘parenthesesdepth’, use-associated at (2)
+temp.f95:56:10:
+
+   56 |     depth = depth(" ")
+      |          1
+Error: ‘depth’ at (1) is not a variable
+temp.f95:57:38:
+
+   57 |     write (*,*) "Test case 1: ", depth
+      |                                      1
+Error: Function ‘depth’ requires an argument list at (1)
+temp.f95:60:10:
+
+   60 |     depth = depth("()() ")
+      |          1
+Error: ‘depth’ at (1) is not a variable
+temp.f95:61:38:
+
+   61 |     write (*,*) "Test case 2: ", depth
+      |                                      1
+Error: Function ‘depth’ requires an argument list at (1)
+temp.f95:64:10:
+
+   64 |     depth = depth("()(()()) ")
+      |          1
+Error: ‘depth’ at (1) is not a variable
+temp.f95:65:38:
+
+   65 |     write (*,*) "Test case 3: ", depth
+      |                                      1
+Error: Function ‘depth’ requires an argument list at (1)
+temp.f95:68:10:
+
+   68 |     depth = depth(")(")
+      |          1
+Error: ‘depth’ at (1) is not a variable
+temp.f95:69:38:
+
+   69 |     write (*,*) "Test case 4: ", depth
+      |                                      1
+Error: Function ‘depth’ requires an argument list at (1)
+temp.f95:72:10:
+
+   72 |     depth = depth("(() ")
+      |          1
+Error: ‘depth’ at (1) is not a variable
+temp.f95:73:38:
+
+   73 |     write (*,*) "Test case 5: ", depth
+      |                                      1
+Error: Function ‘depth’ requires an argument list at (1)
+temp.f95:76:10:
+
+   76 |     depth = depth("(()())")
+      |          1
+Error: ‘depth’ at (1) is not a variable
+temp.f95:77:38:
+
+   77 |     write (*,*) "Test case 6: ", depth
+      |                                      1
+Error: Function ‘depth’ requires an argument list at (1)
+temp.f95:80:10:
+
+   80 |     depth = depth("(((((18)))))")
+      |          1
+Error: ‘depth’ at (1) is not a variable
+temp.f95:81:38:
+
+   81 |     write (*,*) "Test case 7: ", depth
+      |                                      1
+Error: Function ‘depth’ requires an argument list at (1)
+temp.f95:84:10:
+
+   84 |     depth = depth("(1+(2*3)+((8)/4))+1 ")
+      |          1
+Error: ‘depth’ at (1) is not a variable
+temp.f95:85:38:
+
+   85 |     write (*,*) "Test case 8: ", depth
+      |                                      1
+Error: Function ‘depth’ requires an argument list at (1)
+temp.f95:88:10:
+
+   88 |     depth = depth("(1)+((2))+(((3))) ")
+      |          1
+Error: ‘depth’ at (1) is not a variable
+temp.f95:89:38:
+
+   89 |     write (*,*) "Test case 9: ", depth
+      |                                      1
+Error: Function ‘depth’ requires an argument list at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def maxDepth(s: str) -&gt; int:
+    depth = 0
+    max_depth = 0
+
+    for c in s:
+        if c == '(':
+            depth += 1
+            max_depth = max(depth, max_depth)
+        elif c == ')':
+            depth -= 1
+
+    return max_depth
+</code></pre>
+<p>Iterate through the string <code>s</code>. When an opening parenthesis '(' is encountered, increment the <code>depth</code> value, update the <code>max_depth</code> with the maximum between the current <code>max_depth</code> and the <code>depth</code>. In contrast, when a closing parenthesis ')' is encountered, decrement the <code>depth</code>. The <code>max_depth</code> will be the nesting depth of the given valid parentheses string.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int maxDepth(std::string s) {
+    int depth = 0, max_depth = 0;
+
+    for (char c : s) {
+        if (c == '(') {
+            depth++;
+            max_depth = std::max(depth, max_depth);
+        } else if (c == ')') {
+            depth--;
+        }
+    }
+
+    return max_depth;
+}
+</code></pre>
+<p>Iterate through the string <code>s</code>. When an opening parenthesis '(' is encountered, increment the <code>depth</code> value, update the <code>max_depth</code> with the maximum between the current <code>max_depth</code> and the <code>depth</code>. In contrast, when a closing parenthesis ')' is encountered, decrement the <code>depth</code>. The <code>max_depth</code> will be the nesting depth of the given valid parentheses string.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

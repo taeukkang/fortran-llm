@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Shortest Completing Word</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/747/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/760/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a string <code>licensePlate</code> and an array of strings <code>words</code>, find the <strong>shortest completing</strong> word in <code>words</code>.</p>
+<p>A <strong>completing</strong> word is a word that <strong>contains all the letters</strong> in <code>licensePlate</code>. <strong>Ignore numbers and spaces</strong> in <code>licensePlate</code>, and treat letters as <strong>case insensitive</strong>. If a letter appears more than once in <code>licensePlate</code>, then it must appear in the word the same number of times or more.</p>
+<p>For example, if <code>licensePlate</code> <code>= "aBc 12c "</code>, then it contains letters <code>'a'</code>, <code>'b'</code> (ignoring case), and <code>'c'</code> twice. Possible <strong>completing</strong> words are <code>"abccdef "</code>, <code>"caaacab "</code>, and <code>"cbca "</code>.</p>
+<p>Return <em>the shortest <strong>completing</strong> word in</em> <code>words</code><em>.</em> It is guaranteed an answer exists. If there are multiple shortest <strong>completing</strong> words, return the <strong>first</strong> one that occurs in <code>words</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> licensePlate =  "1s3 PSt ", words = [ "step ", "steps ", "stripe ", "stepple "]
+<strong>Output:</strong>  "steps "
+<strong>Explanation:</strong> licensePlate contains letters 's', 'p', 's' (ignoring case), and 't'.
+ "step " contains 't' and 'p', but only contains 1 's'.
+ "steps " contains 't', 'p', and both 's' characters.
+ "stripe " is missing an 's'.
+ "stepple " is missing an 's'.
+Since  "steps " is the only word containing all the letters, that is the answer.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> licensePlate =  "1s3 456 ", words = [ "looks ", "pest ", "stew ", "show "]
+<strong>Output:</strong>  "pest "
+<strong>Explanation:</strong> licensePlate only contains the letter 's'. All the words contain 's', but among these  "pest ",  "stew ", and  "show " are shortest. The answer is  "pest " because it is the word that appears earliest of the 3.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= licensePlate.length &lt;= 7</code></li>
+<li><code>licensePlate</code> contains digits, letters (uppercase or lowercase), or space <code>' '</code>.</li>
+<li><code>1 &lt;= words.length &lt;= 1000</code></li>
+<li><code>1 &lt;= words[i].length &lt;= 15</code></li>
+<li><code>words[i]</code> consists of lower case English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/shortest-completing-word/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=7) :: licensePlate = "1s3 PSt "
+    character(len=15), dimension(4) :: words = ["step ", "steps ", "stripe ", "stepple "]
+    character(len=15) :: shortestCompletingWord
+
+    shortestCompletingWord = solve(licensePlate, words)
+
+    print *, shortestCompletingWord
+
+contains
+
+    function solve(licensePlate, words) result(shortestCompletingWord)
+        implicit none
+        character(len=*), intent(in) :: licensePlate
+        character(len=*), intent(in) :: words(:)
+        integer :: i, j, k, l, m
+        logical :: found
+        character(len=15) :: word
+        character(len=15) :: temp
+        integer, allocatable :: count(:)
+
+        allocate(count(26))
+        count = 0
+
+        ! Ignore numbers and spaces in licensePlate
+        do i = 1, len_trim(licensePlate)
+            if (index('abcdefghijklmnopqrstuvwxyz', licensePlate(i:i)) /= 0) then
+                k = index('abcdefghijklmnopqrstuvwxyz', licensePlate(i:i)) - 1
+                count(k) = count(k) + 1
+            end if
+        end do
+
+        ! Find the shortest completing word
+        shortestCompletingWord = ""
+        do i = 1, size(words)
+            word = words(i)
+            found = .true.
+            do j = 1, len_trim(word)
+                if (index('abcdefghijklmnopqrstuvwxyz', word(j:j)) /= 0) then
+                    k = index('abcdefghijklmnopqrstuvwxyz', word(j:j)) - 1
+                    if (count(k) < 1) then
+                        found = .false.
+                        exit
+                    else
+                        count(k) = count(k) - 1
+                    end if
+                end if
+            end do
+            if (found) then
+                if (len_trim(shortestCompletingWord) == 0) then
+                    shortestCompletingWord = word
+                else
+                    temp = word
+                    call sort(temp)
+                    call sort(shortestCompletingWord)
+                    if (temp < shortestCompletingWord) then
+                        shortestCompletingWord = word
+                    end if
+                end if
+            end if
+        end do
+
+        deallocate(count)
+
+    end function solve
+
+    subroutine sort(string)
+        implicit none
+        character(len=*), intent(inout) :: string
+        integer :: i, j
+        character :: temp
+
+        do i = 1, len_trim(string) - 1
+            do j = i + 1, len_trim(string)
+                if (string(i:i) > string(j:j)) then
+                    temp = string(i:i)
+                    string(i:i) = string(j:j)
+                    string(j:j) = temp
+                end if
+            end do
+        end do
+
+    end subroutine sort
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:56:
+
+    5 |     character(len=15), dimension(4) :: words = ["step ", "steps ", "stripe ", "stepple "]
+      |                                                        1
+Error: Different CHARACTER lengths (5/6) in array constructor at (1)
+temp.f95:14:70:
+
+   14 |     function solve(licensePlate, words) result(shortestCompletingWord)
+      |                                                                      1
+Error: Function result ‘shortestcompletingword’ at (1) has no IMPLICIT type
+temp.f95:8:54:
+
+    8 |     shortestCompletingWord = solve(licensePlate, words)
+      |                                                      1
+Error: Symbol ‘words’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: i, j, k, l, m, n, o
+character(len=7) :: licensePlate
+character(len=15) :: words(1000)
+character(len=15) :: shortestWord
+logical :: found
+
+! Initialize variables
+shortestWord = ""
+found = .false.
+
+! Read input
+read(*,*) licensePlate
+read(*,*) words
+
+! Loop through words
+do i = 1, 1000
+    ! Check if word contains all letters in licensePlate
+    found = .true.
+    do j = 1, 7
+        if (index(licensePlate, words(i)(j:j)) == 0) then
+            found = .false.
+            exit
+        end if
+    end do
+    
+    ! If word is completing, check if it is shortest
+    if (found) then
+        if (shortestWord == "") then
+            shortestWord = words(i)
+        else
+            ! Check length of shortestWord and current word
+            if (len(shortestWord) > len(words(i))) then
+                shortestWord = words(i)
+            end if
+        end if
+    end if
+end do
+
+! Print output
+write(*,*) shortestWord
+
+end
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 13 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x783553456960 in ???
+#1  0x7835534574d9 in ???
+#2  0x7835536ab17b in ???
+#3  0x7835536a4684 in ???
+#4  0x7835536a52aa in ???
+#5  0x5b162995b262 in MAIN__
+#6  0x5b162995b4f3 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def shortestCompletingWord(licensePlate: str, words: list[str]) -&gt; str:
+    from collections import Counter
+
+    lp_count = Counter(c.lower() for c in licensePlate if c.isalpha())
+
+    result = &quot;&quot;
+    for word in words:
+        word_count = Counter(word)
+
+        valid = all(word_count[ch] &gt;= count for ch, count in lp_count.items())
+
+        if valid and (not result or len(word) &lt; len(result)):
+            result = word
+
+    return result
+</code></pre>
+<pre><code>1. Create a hash map (or dictionary in Python) to store the count of characters in the `licensePlate`.
+</code></pre>
+<ol>
+<li>Iterate through the <code>words</code> array.</li>
+<li>For each word, create a hash map storing the count of characters in the current word.</li>
+<li>Check whether the current word is a valid completing word by comparing the counts in both hash maps. It's valid if it has equal or more count of characters compared to the <code>licensePlate</code> for each character.</li>
+<li>If the word is valid and the result is empty or the length of the word is shorter than the result's length, update the result with the current word.</li>
+<li>Return the result.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;unordered_map&gt;
+#include &lt;algorithm&gt;
+
+std::string shortestCompletingWord(std::string licensePlate, std::vector&lt;std::string&gt;&amp; words) {
+    std::unordered_map&lt;char, int&gt; lp_count;
+    for (char c : licensePlate)
+        if (isalpha(c))
+            lp_count[tolower(c)]++;
+
+    std::string result = &quot;&quot;;
+    for (const std::string&amp; word : words) {
+        std::unordered_map&lt;char, int&gt; word_count;
+        for (char c : word)
+            word_count[c]++;
+
+        bool valid = true;
+        for (const auto&amp; [ch, count] : lp_count)
+            if (word_count[ch] &lt; count) {
+                valid = false;
+                break;
+            }
+
+        if (valid &amp;&amp; (result.empty() || word.length() &lt; result.length()))
+            result = word;
+    }
+    return result;
+}
+</code></pre>
+<pre><code>1. Create a hash map (or dictionary in Python) to store the count of characters in the `licensePlate`.
+</code></pre>
+<ol>
+<li>Iterate through the <code>words</code> array.</li>
+<li>For each word, create a hash map storing the count of characters in the current word.</li>
+<li>Check whether the current word is a valid completing word by comparing the counts in both hash maps. It's valid if it has equal or more count of characters compared to the <code>licensePlate</code> for each character.</li>
+<li>If the word is valid and the result is empty or the length of the word is shorter than the result's length, update the result with the current word.</li>
+<li>Return the result.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

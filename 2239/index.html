@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find Closest Number to Zero</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2236/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2243/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code> of size <code>n</code>, return <em>the number with the value <strong>closest</strong> to</em> <code>0</code> <em>in</em> <code>nums</code>. If there are multiple answers, return <em>the number with the <strong>largest</strong> value</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [-4,-2,1,4,8]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong>
+The distance from -4 to 0 is |-4| = 4.
+The distance from -2 to 0 is |-2| = 2.
+The distance from 1 to 0 is |1| = 1.
+The distance from 4 to 0 is |4| = 4.
+The distance from 8 to 0 is |8| = 8.
+Thus, the closest number to 0 in the array is 1.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [2,-1,1]
+<strong>Output:</strong> 1
+<strong>Explanation:</strong> 1 and -1 are both the closest numbers to 0, so 1 being larger is returned.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 1000</code></li>
+<li><code>-105 &lt;= nums[i] &lt;= 105</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-closest-number-to-zero/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solve the problem: Given an integer array `nums` of size `n`, return the number with the value closest to 0 in `nums`. If there are multiple answers, return the number with the largest value.
+    implicit none
+    integer, parameter :: n = 5
+    integer, dimension(n) :: nums
+    integer :: i
+
+    nums = [-4, -2, 1, 4, 8]
+    call solve(nums)
+
+    nums = [2, -1, 1]
+    call solve(nums)
+
+contains
+
+    subroutine solve(nums)
+        implicit none
+        integer, dimension(:), intent(in) :: nums
+        integer :: closest, largest
+        integer :: i
+
+        closest = nums(1)
+        largest = nums(1)
+
+        do i = 2, size(nums)
+            if (abs(nums(i)) < abs(closest)) then
+                closest = nums(i)
+            end if
+            if (abs(nums(i)) > abs(largest)) then
+                largest = nums(i)
+            end if
+        end do
+
+        print '(I0)', closest
+        print '(I0)', largest
+    end subroutine solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:11:4:
+
+   11 |     nums = [2, -1, 1]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (5 and 3)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module closest_number
+
+contains
+
+  function closest_number(nums) result(closest)
+    implicit none
+    integer, intent(in) :: nums(:)
+    integer :: closest, i, j, diff, min_diff
+    logical :: found
+
+    ! Initialize closest to the first element
+    closest = nums(1)
+
+    ! Loop through the array and find the closest number to 0
+    do i = 2, size(nums)
+      diff = abs(nums(i) - 0)
+      if (diff < min_diff .or. min_diff == -1) then
+        closest = nums(i)
+        min_diff = diff
+      end if
+    end do
+
+    ! If there are multiple closest numbers, return the one with the largest value
+    if (min_diff == 0) then
+      do i = 1, size(nums)
+        if (nums(i) == closest) then
+          found = .true.
+          exit
+        end if
+      end do
+      if (.not. found) then
+        do i = 1, size(nums)
+          if (nums(i) > closest) then
+            closest = nums(i)
+          end if
+        end do
+      end if
+    end if
+
+  end function closest_number
+
+end module closest_number
+
+program test_closest_number
+  use closest_number
+  implicit none
+  integer, parameter :: n = 5
+  integer :: nums(n) = [ -4, -2, 1, 4, 8 ]
+  integer :: closest
+
+  closest = closest_number(nums)
+  write (*,*) 'Closest number to 0 in nums:', closest
+
+  nums = [ 2, -1, 1 ]
+  closest = closest_number(nums)
+  write (*,*) 'Closest number to 0 in nums:', closest
+
+  nums = [ 1, 2, 3, 4, 5 ]
+  closest = closest_number(nums)
+  write (*,*) 'Closest number to 0 in nums:', closest
+
+  nums = [ -1, -2, -3, -4, -5 ]
+  closest = closest_number(nums)
+  write (*,*) 'Closest number to 0 in nums:', closest
+
+end program test_closest_number
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:25:
+
+    5 |   function closest_number(nums) result(closest)
+      |                         1
+Error: MODULE attribute of ‘closest_number’ conflicts with PROCEDURE attribute at (1)
+temp.f95:6:17:
+
+    6 |     implicit none
+      |                 1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:7:34:
+
+    7 |     integer, intent(in) :: nums(:)
+      |                                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:44:
+
+    8 |     integer :: closest, i, j, diff, min_diff
+      |                                            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:20:
+
+    9 |     logical :: found
+      |                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:21:
+
+   12 |     closest = nums(1)
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:24:
+
+   15 |     do i = 2, size(nums)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:16:29:
+
+   16 |       diff = abs(nums(i) - 0)
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:51:
+
+   17 |       if (diff < min_diff .or. min_diff == -1) then
+      |                                                   1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:18:25:
+
+   18 |         closest = nums(i)
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:23:
+
+   19 |         min_diff = diff
+      |                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:9:
+
+   20 |       end if
+      |         1
+Error: Expecting END MODULE statement at (1)
+temp.f95:21:7:
+
+   21 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:24:27:
+
+   24 |     if (min_diff == 0) then
+      |                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:25:26:
+
+   25 |       do i = 1, size(nums)
+      |                          1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:26:36:
+
+   26 |         if (nums(i) == closest) then
+      |                                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:27:24:
+
+   27 |           found = .true.
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:28:14:
+
+   28 |           exit
+      |              1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:29:11:
+
+   29 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:9:
+
+   30 |       end do
+      |         1
+Error: Expecting END MODULE statement at (1)
+temp.f95:31:27:
+
+   31 |       if (.not. found) then
+      |                           1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:32:28:
+
+   32 |         do i = 1, size(nums)
+      |                            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:33:37:
+
+   33 |           if (nums(i) > closest) then
+      |                                     1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:34:29:
+
+   34 |             closest = nums(i)
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:35:13:
+
+   35 |           end if
+      |             1
+Error: Expecting END MODULE statement at (1)
+temp.f95:36:11:
+
+   36 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:37:9:
+
+   37 |       end if
+      |         1
+Error: Expecting END MODULE statement at (1)
+temp.f95:38:7:
+
+   38 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:40:5:
+
+   40 |   end function closest_number
+      |     1
+Error: Expecting END MODULE statement at (1)
+temp.f95:45:7:
+
+   45 |   use closest_number
+      |       1
+Fatal Error: Cannot open module file ‘closest_number.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def robot_instructions(n: int, start_pos: list, s: str) -&gt; list:
+    answer = [0] * len(s)
+
+    for idx in range(len(s)):
+        row, col = start_pos
+
+        for i in range(idx, len(s)):
+            move = s[i]
+            if move == 'L':
+                col -= 1
+            elif move == 'R':
+                col += 1
+            elif move == 'U':
+                row -= 1
+            elif move == 'D':
+                row += 1
+
+            if row &lt; 0 or row &gt;= n or col &lt; 0 or col &gt;= n:
+                break
+
+            answer[idx] += 1
+
+    return answer
+</code></pre>
+<pre><code>This algorithm implements a nested loop. The outer loop iterates through each starting instruction index. In the inner loop, we execute the instructions while updating the position of the robot in terms of row and column. If a move will take the robot outside the grid, we break from the inner loop. If the robot hasn't exited the grid, we increase the number of instructions it has executed, which is stored in the answer array indexed by the starting instruction index.
+</code></pre>
+<p>The time complexity is O(m^2), where m is the length of the instructions string s. The space complexity is O(m), as we need to store the answer for each starting instruction index in an array.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+
+std::vector&lt;int&gt; robotInstructions(int n, std::vector&lt;int&gt;&amp; startPos, const std::string&amp; s) {
+    std::vector&lt;int&gt; answer(s.length(), 0);
+
+    for (int idx = 0; idx &lt; s.length(); ++idx) {
+        int row = startPos[0];
+        int col = startPos[1];
+
+        for (int i = idx; i &lt; s.length(); ++i) {
+            if (s[i] == 'L') --col;
+            else if (s[i] == 'R') ++col;
+            else if (s[i] == 'U') --row;
+            else if (s[i] == 'D') ++row;
+
+            if (row &lt; 0 || row &gt;= n || col &lt; 0 || col &gt;= n) {
+                break;
+            }
+
+            answer[idx]++;
+        }
+    }
+
+    return answer;
+}
+</code></pre>
+<pre><code>This algorithm implements a nested loop. The outer loop iterates through each starting instruction index. In the inner loop, we execute the instructions while updating the position of the robot in terms of row and column. If a move will take the robot outside the grid, we break from the inner loop. If the robot hasn't exited the grid, we increase the number of instructions it has executed, which is stored in the answer array indexed by the starting instruction index.
+</code></pre>
+<p>The time complexity is O(m^2), where m is the length of the instructions string s. The space complexity is O(m), as we need to store the answer for each starting instruction index in an array.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Construct String from Binary Tree</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/605/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/617/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of a binary tree, construct a string consisting of parenthesis and integers from a binary tree with the preorder traversal way, and return it.</p>
+<p>Omit all the empty parenthesis pairs that do not affect the one-to-one mapping relationship between the string and the original binary tree.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [1,2,3,4]
+<strong>Output:</strong>  "1(2(4))(3) "
+<strong>Explanation:</strong> Originally, it needs to be  "1(2(4)())(3()()) ", but you need to omit all the unnecessary empty parenthesis pairs. And it will be  "1(2(4))(3) "</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = [1,2,3,null,4]
+<strong>Output:</strong>  "1(2()(4))(3) "
+<strong>Explanation:</strong> Almost the same as the first example, except we cannot omit the first parenthesis pair to break the one-to-one mapping relationship between the input and the output.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of nodes in the tree is in the range <code>[1, 104]</code>.</li>
+<li><code>-1000 &lt;= Node.val &lt;= 1000</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/construct-string-from-binary-tree/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solve the problem described in the task
+    implicit none
+
+    type :: node_t
+        integer :: val
+        type(node_t), pointer :: left => null(), right => null()
+    end type
+
+    type(node_t), target :: root
+    character(len=:), allocatable :: str
+
+    call solve(root, str)
+    write (unit=*, fmt='(A)') trim(str)
+
+contains
+
+    subroutine solve(root, str)
+        ! Solve the problem
+        implicit none
+        class(node_t), intent(inout) :: root
+        character(len=:), allocatable, intent(out) :: str
+        integer :: i, j, k, n
+        character(len=:), allocatable :: tmp
+
+        if (.not. associated(root%left)) then
+            ! If there are no children, just print the value
+            allocate (character(len=len(trim(str))) :: tmp)
+            write (tmp, fmt='(I0)') root%val
+            str = trim(adjustl(tmp)) // ' ' // str
+            deallocate (tmp)
+        else
+            ! Otherwise, recurse on both children
+            call solve(root%left, str)
+            call solve(root%right, str)
+        end if
+
+        ! Omit any empty parenthesis pairs that don't affect the one-to-one
+        ! mapping relationship between the string and the original binary tree
+        n = len_trim(str)
+        do i = 1, n - 1
+            if (str(i:i+1) == '()') then
+                j = i + 2
+                do while (j <= n .and. str(j:j) /= ')')
+                    j = j + 1
+                end do
+                if (j > n) exit
+                if (str(j:j) == ')') then
+                    k = j - 1
+                    do while (k >= 1 .and. str(k:k) /= '(')
+                        k = k - 1
+                    end do
+                    if (k < 1) exit
+                    if (str(k:k+1) == '(())') then
+                        str = str(:i-1) // str(j+1:)
+                    end if
+                end if
+            end if
+        end do
+
+    end subroutine
+
+end program</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:34:38:
+
+   34 |             call solve(root%left, str)
+      |                                      1
+Error: SUBROUTINE ‘solve’ at (1) cannot be called recursively, as it is not RECURSIVE
+temp.f95:35:39:
+
+   35 |             call solve(root%right, str)
+      |                                       1
+Error: SUBROUTINE ‘solve’ at (1) cannot be called recursively, as it is not RECURSIVE
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module binary_tree_preorder_traversal
+
+implicit none
+
+private
+public :: binary_tree_preorder_traversal
+
+type :: binary_tree_node
+    integer :: val
+    type(binary_tree_node), pointer :: left
+    type(binary_tree_node), pointer :: right
+end type binary_tree_node
+
+contains
+
+recursive function binary_tree_preorder_traversal(root) result(output)
+    type(binary_tree_node), pointer, intent(in) :: root
+    character(len=:), allocatable :: output
+
+    if (associated(root)) then
+        output = trim(adjustl(str(root%val))) // &
+            binary_tree_preorder_traversal(root%left) // &
+            binary_tree_preorder_traversal(root%right)
+    else
+        output = ""
+    end if
+end function binary_tree_preorder_traversal
+
+end module binary_tree_preorder_traversal
+
+program test_binary_tree_preorder_traversal
+    use binary_tree_preorder_traversal
+    implicit none
+
+    type(binary_tree_node), pointer :: root
+    character(len=:), allocatable :: output
+
+    ! Example 1
+    root => binary_tree_node(1, &
+        binary_tree_node(2, &
+            binary_tree_node(4), &
+            null()), &
+        binary_tree_node(3))
+    output = binary_tree_preorder_traversal(root)
+    write (*,*) "Example 1: ", output
+
+    ! Example 2
+    root => binary_tree_node(1, &
+        binary_tree_node(2, &
+            null(), &
+            binary_tree_node(4)), &
+        binary_tree_node(3))
+    output = binary_tree_preorder_traversal(root)
+    write (*,*) "Example 2: ", output
+
+end program test_binary_tree_preorder_traversal
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:6:40:
+
+    6 | public :: binary_tree_preorder_traversal
+      |                                        1
+Error: PUBLIC attribute applied to MODULE binary_tree_preorder_traversal at (1)
+temp.f95:16:49:
+
+   16 | recursive function binary_tree_preorder_traversal(root) result(output)
+      |                                                 1
+Error: MODULE attribute of ‘binary_tree_preorder_traversal’ conflicts with PROCEDURE attribute at (1)
+temp.f95:17:55:
+
+   17 |     type(binary_tree_node), pointer, intent(in) :: root
+      |                                                       1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:18:43:
+
+   18 |     character(len=:), allocatable :: output
+      |                                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:20:30:
+
+   20 |     if (associated(root)) then
+      |                              1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:21:40:
+
+   21 |         output = trim(adjustl(str(root%val))) // &
+      |                                        1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:24:8:
+
+   24 |     else
+      |        1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:25:19:
+
+   25 |         output = ""
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:7:
+
+   26 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:27:3:
+
+   27 | end function binary_tree_preorder_traversal
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:32:9:
+
+   32 |     use binary_tree_preorder_traversal
+      |         1
+Fatal Error: Cannot open module file ‘binary_tree_preorder_traversal.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+
+def tree2str(t):
+    if not t:
+        return &quot;&quot;
+    if not t.left and not t.right:
+        return str(t.val)
+    if not t.right:
+        return &quot;{}({})&quot;.format(t.val, tree2str(t.left))
+    return &quot;{}({})({})&quot;.format(t.val, tree2str(t.left), tree2str(t.right))
+</code></pre>
+<p>The algorithm performs a modified preorder traversal of the binary tree. During the traversal, when we encounter a non-null node, we add the value of the node followed by left and right sub-trees enclosed in parentheses if they are not null. If the right subtree is null but the left subtree is not, then only the left subtree is added in parentheses. This way, we get a unique string representing the binary tree without any redundant empty parentheses. The algorithm works for each of the languages mentioned in the same way. The traversal is performed using recursion which saves nodes' values in the string representation.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;cstdlib&gt;
+using namespace std;
+
+class TreeNode {
+public:
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+string tree2str(TreeNode* t) {
+    if (t == nullptr) {
+        return &quot;&quot;;
+    }
+    if (t-&gt;left == nullptr &amp;&amp; t-&gt;right == nullptr) {
+        return to_string(t-&gt;val);
+    }
+    if (t-&gt;right == nullptr) {
+        return to_string(t-&gt;val) + &quot;(&quot; + tree2str(t-&gt;left) + &quot;)&quot;;
+    }
+    return to_string(t-&gt;val) + &quot;(&quot; + tree2str(t-&gt;left) + &quot;)(&quot; + tree2str(t-&gt;right) + &quot;)&quot;;
+}
+</code></pre>
+<p>The algorithm performs a modified preorder traversal of the binary tree. During the traversal, when we encounter a non-null node, we add the value of the node followed by left and right sub-trees enclosed in parentheses if they are not null. If the right subtree is null but the left subtree is not, then only the left subtree is added in parentheses. This way, we get a unique string representing the binary tree without any redundant empty parentheses. The algorithm works for each of the languages mentioned in the same way. The traversal is performed using recursion which saves nodes' values in the string representation.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

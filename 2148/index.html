@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count Elements With Strictly Smaller and Greater Elements </h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2144/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2154/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code>, return <em>the number of elements that have <strong>both</strong> a strictly smaller and a strictly greater element appear in</em> <code>nums</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [11,7,2,15]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The element 7 has the element 2 strictly smaller than it and the element 11 strictly greater than it.
+Element 11 has element 7 strictly smaller than it and element 15 strictly greater than it.
+In total there are 2 elements having both a strictly smaller and a strictly greater element appear in <code>nums</code>.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [-3,3,3,90]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The element 3 has the element -3 strictly smaller than it and the element 90 strictly greater than it.
+Since there are two elements with the value 3, in total there are 2 elements having both a strictly smaller and a strictly greater element appear in <code>nums</code>.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+<li><code>-105 &lt;= nums[i] &lt;= 105</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-elements-with-strictly-smaller-and-greater-elements/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, dimension(n) :: nums
+    integer :: i, j, count
+
+    ! Example 1
+    nums(1) = 11
+    nums(2) = 7
+    nums(3) = 2
+    nums(4) = 15
+    write(*,*) 'Example 1:'
+    write(*,*) 'Input: ', nums
+    count = count_strictly_smaller_and_greater(nums)
+    write(*,*) 'Output: ', count
+    write(*,*) ''
+
+    ! Example 2
+    nums(1) = -3
+    nums(2) = 3
+    nums(3) = 3
+    nums(4) = 90
+    write(*,*) 'Example 2:'
+    write(*,*) 'Input: ', nums
+    count = count_strictly_smaller_and_greater(nums)
+    write(*,*) 'Output: ', count
+    write(*,*) ''
+
+contains
+
+    function count_strictly_smaller_and_greater(nums) result(count)
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: count
+        logical :: found_smaller, found_greater
+
+        count = 0
+        do i = 1, size(nums)-1
+            found_smaller = .false.
+            found_greater = .false.
+            do j = i+1, size(nums)
+                if (nums(j) < nums(i)) then
+                    found_smaller = .true.
+                end if
+                if (nums(j) > nums(i)) then
+                    found_greater = .true.
+                end if
+                if (found_smaller .and. found_greater) then
+                    count = count + 1
+                    exit
+                end if
+            end do
+        end do
+    end function count_strictly_smaller_and_greater
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Example 1:
+ Input:           11           7           2          15
+ Output:            2
+ 
+ Example 2:
+ Input:           -3           3           3          90
+ Output:            0
+ 
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">```
+module count_strictly_increasing_elements_module
+    implicit none
+
+contains
+
+    function count_strictly_increasing_elements(nums) result(count)
+        integer, intent(in) :: nums(:)
+        integer :: count
+        integer :: i, j
+
+        count = 0
+        do i = 2, size(nums)
+            do j = 1, i - 1
+                if (nums(i) > nums(j) .and. nums(i) > nums(j + 1)) then
+                    count = count + 1
+                end if
+            end do
+        end do
+    end function count_strictly_increasing_elements
+end module count_strictly_increasing_elements_module
+
+program main
+    use count_strictly_increasing_elements_module
+    implicit none
+
+    integer, parameter :: nums1(4) = [11, 7, 2, 15]
+    integer, parameter :: nums2(4) = [-3, 3, 3, 90]
+    integer :: count
+
+    count = count_strictly_increasing_elements(nums1)
+    write (*, '(A, I0)') 'Example 1: ', count
+
+    count = count_strictly_increasing_elements(nums2)
+    write (*, '(A, I0)') 'Example 2: ', count
+end program main
+```
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:1:2:
+
+    1 | ```
+      |  1
+Error: Invalid character in name at (1)
+temp.f95:37:2:
+
+   37 | ```
+      |  1
+Error: Invalid character in name at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def min_moves(seats, students):
+    seats.sort()
+    students.sort()
+
+    moves = 0
+    for i in range(len(seats)):
+        moves += abs(seats[i] - students[i])
+    return moves
+</code></pre>
+<ol>
+<li>Sort both the <code>seats</code> and <code>students</code> arrays in ascending order. 
+   This ensures that students will be paired up with the nearest available seat.</li>
+<li>Initialize a variable <code>moves</code> to store the total number of moves.</li>
+<li>Iterate through both arrays simultaneously using a single index.</li>
+<li>In each iteration, add the absolute difference between the current seat and student position to the <code>moves</code> variable.</li>
+<li>After the iteration, return the <code>moves</code> variable for the minimum number of moves required.</li>
+</ol>
+<p>Note: This solution assumes that the input arrays have the same length and are non-empty.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+
+int min_moves(std::vector&lt;int&gt;&amp; seats, std::vector&lt;int&gt;&amp; students) {
+    std::sort(seats.begin(), seats.end());
+    std::sort(students.begin(), students.end());
+
+    int moves = 0;
+    for (int i = 0; i &lt; seats.size(); i++) {
+        moves += std::abs(seats[i] - students[i]);
+    }
+    return moves;
+}
+</code></pre>
+<ol>
+<li>Sort both the <code>seats</code> and <code>students</code> arrays in ascending order. 
+   This ensures that students will be paired up with the nearest available seat.</li>
+<li>Initialize a variable <code>moves</code> to store the total number of moves.</li>
+<li>Iterate through both arrays simultaneously using a single index.</li>
+<li>In each iteration, add the absolute difference between the current seat and student position to the <code>moves</code> variable.</li>
+<li>After the iteration, return the <code>moves</code> variable for the minimum number of moves required.</li>
+</ol>
+<p>Note: This solution assumes that the input arrays have the same length and are non-empty.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>A Number After a Double Reversal</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2114/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2124/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p><strong>Reversing</strong> an integer means to reverse all its digits.</p>
+<ul>
+<li>For example, reversing <code>2021</code> gives <code>1202</code>. Reversing <code>12300</code> gives <code>321</code> as the <strong>leading zeros are not retained</strong>.</li>
+</ul>
+<p>Given an integer <code>num</code>, <strong>reverse</strong> <code>num</code> to get <code>reversed1</code>, <strong>then reverse</strong> <code>reversed1</code> to get <code>reversed2</code>. Return <code>true</code> <em>if</em> <code>reversed2</code> <em>equals</em> <code>num</code>. Otherwise return <code>false</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num = 526
+<strong>Output:</strong> true
+<strong>Explanation:</strong> Reverse num to get 625, then reverse 625 to get 526, which equals num.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num = 1800
+<strong>Output:</strong> false
+<strong>Explanation:</strong> Reverse num to get 81, then reverse 81 to get 18, which does not equal num.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> num = 0
+<strong>Output:</strong> true
+<strong>Explanation:</strong> Reverse num to get 0, then reverse 0 to get 0, which equals num.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= num &lt;= 106</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/a-number-after-a-double-reversal/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-warning"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ⚠️
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: num, reversed1, reversed2
+    logical :: result
+
+    ! Example 1
+    num = 526
+    call reverse(num, reversed1)
+    call reverse(reversed1, reversed2)
+    result = (reversed2 == num)
+    write (*, '(A, L1)') 'Example 1: ', result
+
+    ! Example 2
+    num = 1800
+    call reverse(num, reversed1)
+    call reverse(reversed1, reversed2)
+    result = (reversed2 == num)
+    write (*, '(A, L1)') 'Example 2: ', result
+
+    ! Example 3
+    num = 0
+    call reverse(num, reversed1)
+    call reverse(reversed1, reversed2)
+    result = (reversed2 == num)
+    write (*, '(A, L1)') 'Example 3: ', result
+
+contains
+
+    subroutine reverse(num, reversed)
+        implicit none
+        integer, intent(in) :: num
+        integer, intent(out) :: reversed
+        character(len=4) :: str
+        integer :: i, j
+
+        write (str, '(I4)') num
+        reversed = 0
+        do i = 1, len(str)
+            j = len(str) - i + 1
+            reversed = (reversed * 10) + ichar(str(j:j)) - ichar('0')
+        end do
+    end subroutine reverse
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Example 1: F
+Example 2: F
+Example 3: F
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Reverse an integer
+
+integer function reverse(num) result(reversed)
+    implicit none
+    integer, intent(in) :: num
+    integer :: reversed1, reversed2
+
+    ! Reverse num to get reversed1
+    reversed1 = 0
+    do while (num > 0)
+        reversed1 = reversed1 * 10 + mod(num, 10)
+        num = num / 10
+    end do
+
+    ! Reverse reversed1 to get reversed2
+    reversed2 = 0
+    do while (reversed1 > 0)
+        reversed2 = reversed2 * 10 + mod(reversed1, 10)
+        reversed1 = reversed1 / 10
+    end do
+
+    ! Check if reversed2 equals num
+    if (reversed2 == num) then
+        reversed = .true.
+    else
+        reversed = .false.
+    end if
+end function reverse
+
+! Test the reverse function with some examples
+program main
+    implicit none
+    integer :: num, reversed
+
+    ! Example 1: 526
+    num = 526
+    reversed = reverse(num)
+    if (reversed) then
+        write (*,*) "Reversing ", num, " gives ", num, " which equals ", num
+    else
+        write (*,*) "Reversing ", num, " gives ", num, " which does not equal ", num
+    end if
+
+    ! Example 2: 1800
+    num = 1800
+    reversed = reverse(num)
+    if (reversed) then
+        write (*,*) "Reversing ", num, " gives ", num, " which equals ", num
+    else
+        write (*,*) "Reversing ", num, " gives ", num, " which does not equal ", num
+    end if
+
+    ! Example 3: 0
+    num = 0
+    reversed = reverse(num)
+    if (reversed) then
+        write (*,*) "Reversing ", num, " gives ", num, " which equals ", num
+    else
+        write (*,*) "Reversing ", num, " gives ", num, " which does not equal ", num
+    end if
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:12:8:
+
+   12 |         num = num / 10
+      |        1
+Error: Dummy argument ‘num’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:24:19:
+
+   24 |         reversed = .true.
+      |                   1
+Warning: Extension: Conversion from LOGICAL(4) to INTEGER(4) at (1)
+temp.f95:26:19:
+
+   26 |         reversed = .false.
+      |                   1
+Warning: Extension: Conversion from LOGICAL(4) to INTEGER(4) at (1)
+temp.f95:37:22:
+
+   37 |     reversed = reverse(num)
+      |                      1
+Error: Return type mismatch of function ‘reverse’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:37:15:
+
+   37 |     reversed = reverse(num)
+      |               1
+Error: Function ‘reverse’ at (1) has no IMPLICIT type
+temp.f95:38:8:
+
+   38 |     if (reversed) then
+      |        1
+Error: IF clause at (1) requires a scalar LOGICAL expression
+temp.f95:37:22:
+
+   37 |     reversed = reverse(num)
+      |                      1
+Error: Return type mismatch of function ‘reverse’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:46:15:
+
+   46 |     reversed = reverse(num)
+      |               1
+Error: Function ‘reverse’ at (1) has no IMPLICIT type
+temp.f95:47:8:
+
+   47 |     if (reversed) then
+      |        1
+Error: IF clause at (1) requires a scalar LOGICAL expression
+temp.f95:37:22:
+
+   37 |     reversed = reverse(num)
+      |                      1
+Error: Return type mismatch of function ‘reverse’ at (1) (UNKNOWN/INTEGER(4))
+temp.f95:55:15:
+
+   55 |     reversed = reverse(num)
+      |               1
+Error: Function ‘reverse’ at (1) has no IMPLICIT type
+temp.f95:56:8:
+
+   56 |     if (reversed) then
+      |        1
+Error: IF clause at (1) requires a scalar LOGICAL expression
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def minOperations(nums):
+    nums = sorted(set(nums))
+    n = len(nums)
+    ans = n
+    for i in range(n):
+        j = 0
+        while j &lt; n and nums[j] &lt;= nums[i] + n - 1:
+            j += 1
+        ans = min(ans, n - (j - i))
+    return ans
+</code></pre>
+<p>The algorithm first sorts the input array <code>nums</code> and removes duplicates. Then, for each element in the sorted array, it calculates the upper bound position (<code>j</code>) of the elements that can be included in a continuous range with the given element. The difference between the positions <code>j</code> and <code>i</code> is the number of elements in the continuous range. Subtracting this difference from the total number of unique elements in <code>nums</code> gives the number of operations required for this particular range. The final answer is the minimum number of operations required for all possible ranges.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+int minOperations(vector&lt;int&gt;&amp; nums) {
+    sort(nums.begin(), nums.end());
+    nums.erase(unique(nums.begin(), nums.end()), nums.end());
+    int n = nums.size();
+    int ans = n;
+    for (int i = 0; i &lt; n; ++i) {
+        int j = upper_bound(nums.begin() + i, nums.end(), nums[i] + n - 1) - nums.begin();
+        ans = min(ans, n - (j - i));
+    }
+    return ans;
+}
+</code></pre>
+<p>The algorithm first sorts the input array <code>nums</code> and removes duplicates. Then, for each element in the sorted array, it calculates the upper bound position (<code>j</code>) of the elements that can be included in a continuous range with the given element. The difference between the positions <code>j</code> and <code>i</code> is the number of elements in the continuous range. Subtracting this difference from the total number of unique elements in <code>nums</code> gives the number of operations required for this particular range. The final answer is the minimum number of operations required for all possible ranges.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

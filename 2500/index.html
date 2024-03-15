@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Delete Greatest Value in Each Row</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2496/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2506/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an <code>m x n</code> matrix <code>grid</code> consisting of positive integers.</p>
+<p>Perform the following operation until <code>grid</code> becomes empty:</p>
+<ul>
+<li>Delete the element with the greatest value from each row. If multiple such elements exist, delete any of them.</li>
+<li>Add the maximum of deleted elements to the answer.</li>
+</ul>
+<p><strong>Note</strong> that the number of columns decreases by one after each operation.</p>
+<p>Return <em>the answer after performing the operations described above</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> grid = [[1,2,4],[3,3,1]]
+<strong>Output:</strong> 8
+<strong>Explanation:</strong> The diagram above shows the removed values in each step.
+- In the first operation, we remove 4 from the first row and 3 from the second row (notice that, there are two cells with value 3 and we can remove any of them). We add 4 to the answer.
+- In the second operation, we remove 2 from the first row and 3 from the second row. We add 3 to the answer.
+- In the third operation, we remove 1 from the first row and 1 from the second row. We add 1 to the answer.
+The final answer = 4 + 3 + 1 = 8.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> grid = [[10]]
+<strong>Output:</strong> 10
+<strong>Explanation:</strong> The diagram above shows the removed values in each step.
+- In the first operation, we remove 10 from the first row. We add 10 to the answer.
+The final answer = 10.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>m == grid.length</code></li>
+<li><code>n == grid[i].length</code></li>
+<li><code>1 &lt;= m, n &lt;= 50</code></li>
+<li><code>1 &lt;= grid[i][j] &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/delete-greatest-value-in-each-row/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: m = 2, n = 3
+    integer, dimension(m, n) :: grid = reshape([1, 2, 4, 3, 3, 1], shape(grid))
+    integer :: i, j, max_val, ans
+
+    do while (any(grid /= 0))
+        max_val = -huge(max_val)
+        do i = 1, m
+            if (grid(i, :) > max_val) then
+                max_val = grid(i, :)
+            end if
+        end do
+        do i = 1, m
+            if (grid(i, :) == max_val) then
+                grid(i, :) = 0
+                exit
+            end if
+        end do
+        ans = ans + max_val
+    end do
+
+    print '(I0)', ans
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:11:16:
+
+   11 |             if (grid(i, :) > max_val) then
+      |                1
+Error: IF clause at (1) requires a scalar LOGICAL expression
+temp.f95:12:16:
+
+   12 |                 max_val = grid(i, :)
+      |                1
+Error: Incompatible ranks 0 and 1 in assignment at (1)
+temp.f95:16:16:
+
+   16 |             if (grid(i, :) == max_val) then
+      |                1
+Error: IF clause at (1) requires a scalar LOGICAL expression
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program max_sum_matrix
+      implicit none
+
+      integer, parameter :: m = 50, n = 50
+      integer :: grid(m, n)
+      integer :: max_val, max_row, max_col
+      integer :: i, j
+      integer :: answer
+
+      ! Read the grid from the input
+      read (*, *) grid
+
+      ! Initialize the answer
+      answer = 0
+
+      ! Loop until the grid is empty
+      do while (any(grid /= 0))
+         ! Find the maximum value in the grid
+         max_val = -1
+         max_row = -1
+         max_col = -1
+         do i = 1, m
+            do j = 1, n
+               if (grid(i, j) > max_val) then
+                  max_val = grid(i, j)
+                  max_row = i
+                  max_col = j
+               end if
+            end do
+         end do
+
+         ! Add the maximum value to the answer
+         answer = answer + max_val
+
+         ! Remove the maximum value from the grid
+         grid(max_row, max_col) = 0
+
+         ! Decrease the number of columns
+         n = n - 1
+      end do
+
+      ! Print the answer
+      write (*, *) answer
+
+      end program max_sum_matrix
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:39:9:
+
+   39 |          n = n - 1
+      |         1
+Error: Named constant ‘n’ in variable definition context (assignment) at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def maxValueAfterOperations(grid):
+    ans = 0
+    while grid:
+        maxVal = 0
+        maxRow = -1
+
+        for i, row in enumerate(grid):
+            rowMax = max(row)
+            if rowMax &gt; maxVal:
+                maxVal = rowMax
+                maxRow = i
+            grid[i] = [e for e in row if e != rowMax]
+
+        ans += maxVal
+        if not grid[maxRow]:
+            grid.pop(maxRow)
+
+    return ans
+</code></pre>
+<pre><code>- Loop until 'grid' becomes empty.
+</code></pre>
+<ul>
+<li>Search for the greatest element in each row and delete any of them if there's a tie. Keep track of the maximum of deleted elements and the respective row number.</li>
+<li>Add the maximum of deleted elements to 'ans'.</li>
+<li>If the row with initially found maximum becomes empty, remove that row from 'grid'.</li>
+<li>Finally, return the sum of all maximum deleted elements 'ans'.</li>
+</ul>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int maxValueAfterOperations(vector&lt;vector&lt;int&gt;&gt;&amp; grid) {
+    int ans = 0;
+    while (!grid.empty()) {
+        int maxVal = 0, maxRow = -1;
+
+        for(int i = 0; i &lt; grid.size(); ++i) {
+            auto it = max_element(grid[i].begin(), grid[i].end());
+            if(*it &gt; maxVal) {
+                maxVal = *it;
+                maxRow = i;
+            }
+            grid[i].erase(it);
+        }
+
+        ans += maxVal;
+        if (grid[maxRow].empty()) {
+            grid.erase(grid.begin() + maxRow);
+        }
+    }
+
+    return ans;
+}
+</code></pre>
+<pre><code>- Loop until 'grid' becomes empty.
+</code></pre>
+<ul>
+<li>Search for the greatest element in each row and delete any of them if there's a tie. Keep track of the maximum of deleted elements and the respective row number.</li>
+<li>Add the maximum of deleted elements to 'ans'.</li>
+<li>If the row with initially found maximum becomes empty, remove that row from 'grid'.</li>
+<li>Finally, return the sum of all maximum deleted elements 'ans'.</li>
+</ul>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

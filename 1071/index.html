@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Greatest Common Divisor of Strings</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1065/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1078/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>For two strings <code>s</code> and <code>t</code>, we say "<code>t</code> divides <code>s</code> " if and only if <code>s = t + ... + t</code> (i.e., <code>t</code> is concatenated with itself one or more times).</p>
+<p>Given two strings <code>str1</code> and <code>str2</code>, return <em>the largest string</em> <code>x</code> <em>such that</em> <code>x</code> <em>divides both</em> <code>str1</code> <em>and</em> <code>str2</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> str1 =  "ABCABC ", str2 =  "ABC "
+<strong>Output:</strong>  "ABC "</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> str1 =  "ABABAB ", str2 =  "ABAB "
+<strong>Output:</strong>  "AB "</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> str1 =  "LEET ", str2 =  "CODE "
+<strong>Output:</strong>  " "</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= str1.length, str2.length &lt;= 1000</code></li>
+<li><code>str1</code> and <code>str2</code> consist of English uppercase letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/greatest-common-divisor-of-strings/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: str1, str2, x
+    integer :: i
+
+    ! Example 1
+    str1 = "ABCABC "
+    str2 = "ABC "
+    call solve(str1, str2, x)
+    write (*, '(A)') trim(x)
+
+    ! Example 2
+    str1 = "ABABAB "
+    str2 = "ABAB "
+    call solve(str1, str2, x)
+    write (*, '(A)') trim(x)
+
+    ! Example 3
+    str1 = "LEET "
+    str2 = "CODE "
+    call solve(str1, str2, x)
+    write (*, '(A)') trim(x)
+
+contains
+
+    subroutine solve(str1, str2, x)
+        implicit none
+        character(len=*), intent(in) :: str1, str2
+        character(len=:), allocatable, intent(out) :: x
+        integer :: n
+
+        n = len(str2)
+        do while (n > 0)
+            if (index(str1, str2) /= 0 .and. index(str2, str2) == 0) then
+                x = str2
+                exit
+            end if
+            n = n - 1
+            str2 = str2 // str2
+        end do
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:40:12:
+
+   40 |             str2 = str2 // str2
+      |            1
+Error: Dummy argument ‘str2’ with INTENT(IN) in variable definition context (assignment) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program longest_common_divisor
+      implicit none
+
+      character(len=1000) :: str1, str2, x
+      integer :: i, j, k, l, m, n
+
+      read(*,*) str1, str2
+
+      ! Initialize x as an empty string
+      x = ""
+
+      ! Loop through all possible lengths of x
+      do i = 1, len(str1)
+
+         ! Loop through all possible starting indices of x in str1
+         do j = 1, len(str1) - i + 1
+
+            ! Loop through all possible lengths of x in str2
+            do k = 1, len(str2)
+
+               ! Loop through all possible starting indices of x in str2
+               do l = 1, len(str2) - k + 1
+
+                  ! Check if x divides both str1 and str2
+                  if (str1(j:j+i-1) == str2(l:l+k-1)) then
+                     x = str1(j:j+i-1)
+                     exit
+                  end if
+
+               end do
+
+               if (x /= "") exit
+
+            end do
+
+            if (x /= "") exit
+
+         end do
+
+         if (x /= "") exit
+
+      end do
+
+      ! Output the largest string x that divides both str1 and str2
+      write(*,*) x
+
+      end program longest_common_divisor
+
+This script uses a brute force approach to solve the problem. It loops through all possible lengths of the string `x` and checks if `x` divides both `str1` and `str2`. If `x` divides both strings, it is the largest string that divides both strings. The script uses the `len` function to get the length of the strings and the `==` operator to check if two strings are equal. The `exit` statement is used to exit the loops early if `x` is found to divide both strings.
+
+Note that this script assumes that the input strings are uppercase and contain only English uppercase letters. If the input strings can contain other characters, you may need to modify the script accordingly.
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:49:132:
+
+   49 | This script uses a brute force approach to solve the problem. It loops through all possible lengths of the string `x` and checks if `x` divides both `str1` and `str2`. If `x` divides both strings, it is the largest string that divides both strings. The script uses the `len` function to get the length of the strings and the `==` operator to check if two strings are equal. The `exit` statement is used to exit the loops early if `x` is found to divide both strings.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+temp.f95:51:132:
+
+   51 | Note that this script assumes that the input strings are uppercase and contain only English uppercase letters. If the input strings can contain other characters, you may need to modify the script accordingly.
+      |                                                                                                                                    1
+Error: Line truncated at (1) [-Werror=line-truncation]
+f951: some warnings being treated as errors
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def prefixesDivBy5(nums):
+    result = []
+    current = 0
+    for num in nums:
+        current = ((current &lt;&lt; 1) | num) % 5
+        result.append(current == 0)
+    return result
+</code></pre>
+<p>The problem requires to find out if the binary representation of the subarray from 0 to i is divisible by 5. To solve this, we can maintain an integer <code>current</code> that keeps track of the value of this binary representation modulo 5.</p>
+<p>Iterate through the <code>nums</code> array, and, for each number in the array, update the running total <code>current</code> as follows:
+- Shift <code>current</code> one bit to the left (multiply by 2) using the bitwise left shift operator <code>&lt;&lt; 1</code>
+- Perform bitwise OR operation with the current number <code>num</code> to add it as the least significant bit to the binary representation
+- Compute this binary representation modulo 5</p>
+<p>After computing the current binary representation (modulo 5), check if it is divisible by 5. If it's divisible, then the value of <code>current</code> would be 0. Append the result (true or false) to the answer list or vector.</p>
+<p>Finally, return the resultant list of booleans.###</p>
+<p>End ###</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+
+std::vector&lt;bool&gt; prefixesDivBy5(std::vector&lt;int&gt;&amp; nums) {
+    std::vector&lt;bool&gt; result;
+    int current = 0;
+    for (int num : nums) {
+        current = ((current &lt;&lt; 1) | num) % 5;
+        result.push_back(current == 0);
+    }
+    return result;
+}
+</code></pre>
+<p>The problem requires to find out if the binary representation of the subarray from 0 to i is divisible by 5. To solve this, we can maintain an integer <code>current</code> that keeps track of the value of this binary representation modulo 5.</p>
+<p>Iterate through the <code>nums</code> array, and, for each number in the array, update the running total <code>current</code> as follows:
+- Shift <code>current</code> one bit to the left (multiply by 2) using the bitwise left shift operator <code>&lt;&lt; 1</code>
+- Perform bitwise OR operation with the current number <code>num</code> to add it as the least significant bit to the binary representation
+- Compute this binary representation modulo 5</p>
+<p>After computing the current binary representation (modulo 5), check if it is divisible by 5. If it's divisible, then the value of <code>current</code> would be 0. Append the result (true or false) to the answer list or vector.</p>
+<p>Finally, return the resultant list of booleans.###</p>
+<p>End ###</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

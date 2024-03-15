@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Check if the Sentence Is Pangram</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1827/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1837/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A <strong>pangram</strong> is a sentence where every letter of the English alphabet appears at least once.</p>
+<p>Given a string <code>sentence</code> containing only lowercase English letters, return <code>true</code> <em>if</em> <code>sentence</code> <em>is a <strong>pangram</strong>, or</em> <code>false</code> <em>otherwise.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> sentence =  "thequickbrownfoxjumpsoverthelazydog "
+<strong>Output:</strong> true
+<strong>Explanation:</strong> sentence contains at least one of every letter of the English alphabet.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> sentence =  "leetcode "
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= sentence.length &lt;= 1000</code></li>
+<li><code>sentence</code> consists of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/check-if-the-sentence-is-pangram/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program pangrams
+    implicit none
+
+    character(len=100) :: sentence
+    logical :: is_pangram
+
+    ! Example 1
+    sentence = 'thequickbrownfoxjumpsoverthelazydog'
+    if (is_pangram(sentence)) then
+        print *, 'True'
+    else
+        print *, 'False'
+    end if
+
+    ! Example 2
+    sentence = 'leetcode'
+    if (is_pangram(sentence)) then
+        print *, 'True'
+    else
+        print *, 'False'
+    end if
+
+contains
+
+    function is_pangram(sentence) result(is_pangram_)
+        implicit none
+        character(len=*), intent(in) :: sentence
+        integer :: i
+        logical :: is_pangram_
+
+        is_pangram_ = .true.
+        do i = 97, 122
+            if (index(sentence, char(i)) == 0) then
+                is_pangram_ = .false.
+                exit
+            end if
+        end do
+    end function is_pangram
+end program pangrams</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:25:24:
+
+   25 |     function is_pangram(sentence) result(is_pangram_)
+      |                        1
+Error: Procedure ‘is_pangram’ at (1) has an explicit interface from a previous declaration
+temp.f95:26:21:
+
+   26 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:27:48:
+
+   27 |         character(len=*), intent(in) :: sentence
+      |                                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:28:20:
+
+   28 |         integer :: i
+      |                    1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:29:30:
+
+   29 |         logical :: is_pangram_
+      |                              1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:31:28:
+
+   31 |         is_pangram_ = .true.
+      |                            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:32:22:
+
+   32 |         do i = 97, 122
+      |                      1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:33:51:
+
+   33 |             if (index(sentence, char(i)) == 0) then
+      |                                                   1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:34:37:
+
+   34 |                 is_pangram_ = .false.
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:35:20:
+
+   35 |                 exit
+      |                    1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:36:15:
+
+   36 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:37:11:
+
+   37 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:38:7:
+
+   38 |     end function is_pangram
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module pangram
+
+implicit none
+
+contains
+
+function is_pangram(sentence) result(is_pangram)
+
+character(len=*), intent(in) :: sentence
+logical :: is_pangram
+
+character(len=26) :: alphabet
+integer :: i
+
+alphabet = 'abcdefghijklmnopqrstuvwxyz'
+is_pangram = .true.
+
+do i = 1, 26
+    if (index(sentence, alphabet(i:i)) == 0) then
+        is_pangram = .false.
+        exit
+    end if
+end do
+
+end function is_pangram
+
+end module pangram
+
+program main
+
+use pangram
+implicit none
+
+character(len=1000) :: sentence
+logical :: is_pangram
+
+sentence = "thequickbrownfoxjumpsoverthelazydog "
+is_pangram = is_pangram(sentence)
+if (is_pangram) then
+    print *, "True"
+else
+    print *, "False"
+end if
+
+sentence = "leetcode "
+is_pangram = is_pangram(sentence)
+if (is_pangram) then
+    print *, "True"
+else
+    print *, "False"
+end if
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:48:
+
+    7 | function is_pangram(sentence) result(is_pangram)
+      |                                                1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:9:40:
+
+    9 | character(len=*), intent(in) :: sentence
+      |                                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:21:
+
+   10 | logical :: is_pangram
+      |                     1
+Error: Symbol ‘is_pangram’ at (1) has already been host associated
+temp.f95:12:29:
+
+   12 | character(len=26) :: alphabet
+      |                             1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:12:
+
+   13 | integer :: i
+      |            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:39:
+
+   15 | alphabet = 'abcdefghijklmnopqrstuvwxyz'
+      |                                       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:11:
+
+   16 | is_pangram = .true.
+      |           1
+Error: Symbol ‘is_pangram’ at (1) has already been host associated
+temp.f95:18:12:
+
+   18 | do i = 1, 26
+      |            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:19:35:
+
+   19 |     if (index(sentence, alphabet(i:i)) == 0) then
+      |                                   1
+Error: Syntax error in argument list at (1)
+temp.f95:20:19:
+
+   20 |         is_pangram = .false.
+      |                   1
+Error: Symbol ‘is_pangram’ at (1) has already been host associated
+temp.f95:21:12:
+
+   21 |         exit
+      |            1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:22:7:
+
+   22 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:23:3:
+
+   23 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:3:
+
+   25 | end function is_pangram
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:31:5:
+
+   31 | use pangram
+      |     1
+Fatal Error: Cannot open module file ‘pangram.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">from bisect import bisect_left
+
+def min_operations(target, arr):
+    index_map = {num: i for i, num in enumerate(target)}
+
+    lis = []
+    for num in arr:
+        if num in index_map:
+            pos = bisect_left(lis, index_map[num])
+            if pos == len(lis):
+                lis.append(index_map[num])
+            else:
+                lis[pos] = index_map[num]
+
+    return len(target) - len(lis)
+</code></pre>
+<p>The algorithm first creates a mapping of the target integers to their index positions. This mapping will later be used to determine if a number in <code>arr</code> is in the target sequence and its relative order. It then initializes an empty list called <code>lis</code> (Longest Increasing Subsequence) and iterates through <code>arr</code>.</p>
+<p>For each number <code>num</code> in <code>arr</code>, if it's also in the target, we check if that number can be appended to the end of <code>lis</code>. If not, it replaces the first number in <code>lis</code> that is greater than or equal to it to maintain the sorted order. This is done using <code>lowerBound</code> (C++, JavaScript) or <code>bisect_left</code> (Python) or <code>Arrays.binarySearch</code> (Java) functions - all of which perform binary search to find the position at which the new number should be inserted.</p>
+<p>Finally, the algorithm returns the difference between the lengths of the target sequence and <code>lis</code>, which represents the minimum number of operations needed to make <code>target</code> a subsequence of <code>arr</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;unordered_map&gt;
+
+int minOperations(std::vector&lt;int&gt;&amp; target, std::vector&lt;int&gt;&amp; arr) {
+    std::unordered_map&lt;int, int&gt; index_map;
+    for (int i = 0; i &lt; target.size(); ++i) {
+        index_map[target[i]] = i;
+    }
+
+    std::vector&lt;int&gt; lis;
+    for (int num : arr) {
+        if (index_map.count(num)) {
+            int pos = std::lower_bound(lis.begin(), lis.end(), index_map[num]) - lis.begin();
+            if (pos == lis.size()) {
+                lis.push_back(index_map[num]);
+            } else {
+                lis[pos] = index_map[num];
+            }
+        }
+    }
+
+    return target.size() - lis.size();
+}
+</code></pre>
+<p>The algorithm first creates a mapping of the target integers to their index positions. This mapping will later be used to determine if a number in <code>arr</code> is in the target sequence and its relative order. It then initializes an empty list called <code>lis</code> (Longest Increasing Subsequence) and iterates through <code>arr</code>.</p>
+<p>For each number <code>num</code> in <code>arr</code>, if it's also in the target, we check if that number can be appended to the end of <code>lis</code>. If not, it replaces the first number in <code>lis</code> that is greater than or equal to it to maintain the sorted order. This is done using <code>lowerBound</code> (C++, JavaScript) or <code>bisect_left</code> (Python) or <code>Arrays.binarySearch</code> (Java) functions - all of which perform binary search to find the position at which the new number should be inserted.</p>
+<p>Finally, the algorithm returns the difference between the lengths of the target sequence and <code>lis</code>, which represents the minimum number of operations needed to make <code>target</code> a subsequence of <code>arr</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

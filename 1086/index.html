@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>High Five</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1085/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1089/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a list of the scores of different students, <code>items</code>, where <code>items[i] = [IDi, scorei]</code> represents one score from a student with <code>IDi</code>, calculate each student's <strong>top five average</strong>.</p>
+<p>Return <em>the answer as an array of pairs</em> <code>result</code><em>, where</em> <code>result[j] = [IDj, topFiveAveragej]</code> <em>represents the student with</em> <code>IDj</code> <em>and their <strong>top five average</strong>. Sort</em> <code>result</code> <em>by</em> <code>IDj</code> <em>in <strong>increasing order</strong>.</em></p>
+<p>A student's <strong>top five average</strong> is calculated by taking the sum of their top five scores and dividing it by <code>5</code> using <strong>integer division</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> items = [[1,91],[1,92],[2,93],[2,97],[1,60],[2,77],[1,65],[1,87],[1,100],[2,100],[2,76]]
+<strong>Output:</strong> [[1,87],[2,88]]
+<strong>Explanation:</strong> 
+The student with ID = 1 got scores 91, 92, 60, 65, 87, and 100. Their top five average is (100 + 92 + 91 + 87 + 65) / 5 = 87.
+The student with ID = 2 got scores 93, 97, 77, 100, and 76. Their top five average is (100 + 97 + 93 + 77 + 76) / 5 = 88.6, but with integer division their average converts to 88.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> items = [[1,100],[7,100],[1,100],[7,100],[1,100],[7,100],[1,100],[7,100],[1,100],[7,100]]
+<strong>Output:</strong> [[1,100],[7,100]]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= items.length &lt;= 1000</code></li>
+<li><code>items[i].length == 2</code></li>
+<li><code>1 &lt;= IDi &lt;= 1000</code></li>
+<li><code>0 &lt;= scorei &lt;= 100</code></li>
+<li>For each <code>IDi</code>, there will be <strong>at least</strong> five scores.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/high-five/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, n
+    integer, allocatable :: ids(:), scores(:)
+    real(kind=8), allocatable :: result(:,:)
+
+    ! read input
+    read(*,*) n
+    allocate(ids(n))
+    allocate(scores(n))
+    do i = 1, n
+        read(*,*) ids(i), scores(i)
+    end do
+
+    ! solve problem
+    allocate(result(n,2))
+    do i = 1, n
+        result(i,1) = ids(i)
+        result(i,2) = topFiveAverage(scores(i))
+    end do
+
+    ! sort result by id in increasing order
+    call sort(result, n, 2, 1)
+
+    ! print output
+    do i = 1, n
+        write(*,fmt='(I4, F6.2)') result(i,1), result(i,2)
+    end do
+
+contains
+
+    function topFiveAverage(score) result(average)
+        implicit none
+        integer, intent(in) :: score
+        integer :: topScores(5)
+        integer :: i, sum
+
+        ! find top five scores
+        topScores = score
+        do i = 2, size(topScores)
+            if (topScores(i-1) < score) then
+                topScores(i) = topScores(i-1)
+                topScores(i-1) = score
+            end if
+        end do
+
+        ! calculate top five average
+        sum = 0
+        do i = 1, size(topScores)
+            sum = sum + topScores(i)
+        end do
+        average = sum / 5
+    end function topFiveAverage
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:33:50:
+
+   33 |     function topFiveAverage(score) result(average)
+      |                                                  1
+Error: Function result ‘average’ at (1) has no IMPLICIT type
+temp.f95:20:22:
+
+   20 |         result(i,2) = topFiveAverage(scores(i))
+      |                      1
+Error: Cannot convert UNKNOWN to REAL(8) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module top_five_average
+
+implicit none
+
+contains
+
+subroutine solve(items, result)
+    integer, intent(in) :: items(:, :)
+    integer, intent(out) :: result(:, :)
+
+    ! Declare variables
+    integer :: i, j, k, n, m, id, score, sum, avg
+    integer, allocatable :: scores(:)
+
+    ! Initialize variables
+    n = size(items, 1)
+    m = size(items, 2)
+    allocate(scores(m))
+
+    ! Sort the scores in increasing order
+    do i = 1, n
+        do j = 1, m
+            scores(j) = items(i, j)
+        end do
+        call sort(scores)
+
+        ! Calculate the top five average
+        sum = 0
+        k = 1
+        do while (k <= 5 .and. k <= m)
+            sum = sum + scores(k)
+            k = k + 1
+        end do
+        avg = sum / 5
+
+        ! Store the result
+        id = items(i, 1)
+        result(i, :) = [id, avg]
+    end do
+
+    ! Sort the result by ID in increasing order
+    call sort(result, 1)
+
+end subroutine solve
+
+subroutine sort(array, dim)
+    integer, intent(inout) :: array(:, :)
+    integer, intent(in) :: dim
+
+    ! Declare variables
+    integer :: i, j, temp
+
+    ! Bubble sort algorithm
+    do i = 1, size(array, 1) - 1
+        do j = 1, size(array, 1) - i
+            if (array(j, dim) > array(j + 1, dim)) then
+                temp = array(j, dim)
+                array(j, dim) = array(j + 1, dim)
+                array(j + 1, dim) = temp
+            end if
+        end do
+    end do
+
+end subroutine sort
+
+end module top_five_average
+
+program test
+    use top_five_average
+    implicit none
+
+    ! Test case 1
+    integer, parameter :: items1(10, 2) = reshape([1, 91, 1, 92, 2, 93, 2, 97, 1, 60, 1, 65, 1, 87, 1, 100, 2, 2, 77, 2, 100, 2, 76], [10, 2])
+    integer, allocatable :: result1(:, :)
+    call solve(items1, result1)
+    write (*, *) "Test case 1:"
+    write (*, *) "Expected: [[1,87],[2,88]]"
+    write (*, *) "Actual: ", result1
+    write (*, *) ""
+
+    ! Test case 2
+    integer, parameter :: items2(10, 2) = reshape([1, 100, 7, 100, 1, 100, 7, 100, 1, 100, 7, 100], [10, 2])
+    integer, allocatable :: result2(:, :)
+    call solve(items2, result2)
+    write (*, *) "Test case 2:"
+    write (*, *) "Expected: [[1,100],[7,100]]"
+    write (*, *) "Actual: ", result2
+    write (*, *) ""
+
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:25:18:
+
+   25 |         call sort(scores)
+      |                  1
+Error: Rank mismatch in argument ‘array’ at (1) (rank-2 and rank-1)
+temp.f95:69:9:
+
+   69 |     use top_five_average
+      |         1
+Fatal Error: Cannot open module file ‘top_five_average.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def alice_win(n):
+    return n % 2 == 0
+</code></pre>
+<pre><code>The game is a simple parity-based game, where Alice and Bob alternately change the number on the board. Since Alice goes first, if the number on the board is even initially, Alice has the opportunity to make a move and maintain the even number status of the board. If Alice and Bob are playing optimally, they will always choose a number that is a divisor of the current number by 2, to guarantee they leave an even number on the board. In this way, the parity of the number on the board never changes.
+</code></pre>
+<p>So, when the number becomes 1, the player whose turn it is will lose, as they cannot choose a divisor of the current number that is less than the current number. Since the number remains even throughout the game, if it starts as an even number, Alice will always win; if it starts as an odd number, Bob will always win. The algorithm simply checks if the given number is even and returns true if Alice wins, and false otherwise. The code implementations for each language perform the modulo operation <code>%</code> to check if the given number is even.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool aliceWin(int n) {
+    return n % 2 == 0;
+}
+</code></pre>
+<pre><code>The game is a simple parity-based game, where Alice and Bob alternately change the number on the board. Since Alice goes first, if the number on the board is even initially, Alice has the opportunity to make a move and maintain the even number status of the board. If Alice and Bob are playing optimally, they will always choose a number that is a divisor of the current number by 2, to guarantee they leave an even number on the board. In this way, the parity of the number on the board never changes.
+</code></pre>
+<p>So, when the number becomes 1, the player whose turn it is will lose, as they cannot choose a divisor of the current number that is less than the current number. Since the number remains even throughout the game, if it starts as an even number, Alice will always win; if it starts as an odd number, Bob will always win. The algorithm simply checks if the given number is even and returns true if Alice wins, and false otherwise. The code implementations for each language perform the modulo operation <code>%</code> to check if the given number is even.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

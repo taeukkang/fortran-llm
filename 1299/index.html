@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Replace Elements with Greatest Element on Right Side</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1295/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1304/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an array <code>arr</code>, replace every element in that array with the greatest element among the elements to its right, and replace the last element with <code>-1</code>.</p>
+<p>After doing so, return the array.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [17,18,5,4,6,1]
+<strong>Output:</strong> [18,6,6,6,1,-1]
+<strong>Explanation:</strong> 
+- index 0 --&gt; the greatest element to the right of index 0 is index 1 (18).
+- index 1 --&gt; the greatest element to the right of index 1 is index 4 (6).
+- index 2 --&gt; the greatest element to the right of index 2 is index 4 (6).
+- index 3 --&gt; the greatest element to the right of index 3 is index 4 (6).
+- index 4 --&gt; the greatest element to the right of index 4 is index 5 (1).
+- index 5 --&gt; there are no elements to the right of index 5, so we put -1.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [400]
+<strong>Output:</strong> [-1]
+<strong>Explanation:</strong> There are no elements to the right of index 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= arr.length &lt;= 104</code></li>
+<li><code>1 &lt;= arr[i] &lt;= 105</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/replace-elements-with-greatest-element-on-right-side/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 6
+    integer, dimension(n) :: arr
+    integer :: i
+
+    ! Example 1
+    arr = [17, 18, 5, 4, 6, 1]
+    call solve(arr)
+    write (*, '(A)') 'Example 1:'
+    do i = 1, size(arr)
+        write (*, '(I2)', advance='no') arr(i)
+    end do
+    write (*, *) ''
+
+    ! Example 2
+    arr = [400]
+    call solve(arr)
+    write (*, '(A)') 'Example 2:'
+    do i = 1, size(arr)
+        write (*, '(I2)', advance='no') arr(i)
+    end do
+    write (*, *) ''
+
+contains
+
+    subroutine solve(arr)
+        implicit none
+        integer, intent(inout) :: arr(:)
+        integer :: i, j
+
+        do i = 1, size(arr) - 1
+            j = maxloc(arr(i+1:size(arr)), dim=1) + i - 1
+            arr(i) = arr(j)
+        end do
+        arr(size(arr)) = -1
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:18:4:
+
+   18 |     arr = [400]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (6 and 1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module greatest_right_side
+
+implicit none
+
+contains
+
+function greatest_right_side(arr) result(res)
+
+integer, intent(in) :: arr(:)
+integer :: res(size(arr))
+integer :: i
+
+do i = 1, size(arr) - 1
+    res(i) = max(arr(i), arr(i+1:))
+end do
+
+res(size(arr)) = -1
+
+end function greatest_right_side
+
+end module greatest_right_side
+
+program test_greatest_right_side
+
+use greatest_right_side
+
+implicit none
+
+integer, parameter :: arr1(6) = [17, 18, 5, 4, 6, 1]
+integer, parameter :: arr2(1) = [400]
+integer :: res1(6)
+integer :: res2(1)
+
+res1 = greatest_right_side(arr1)
+res2 = greatest_right_side(arr2)
+
+write (*,*) res1
+write (*,*) res2
+
+end program test_greatest_right_side
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:28:
+
+    7 | function greatest_right_side(arr) result(res)
+      |                            1
+Error: MODULE attribute of ‘greatest_right_side’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:29:
+
+    9 | integer, intent(in) :: arr(:)
+      |                             1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:20:
+
+   10 | integer :: res(size(arr))
+      |                    1
+Error: Symbol ‘arr’ is used before it is typed at (1)
+temp.f95:11:12:
+
+   11 | integer :: i
+      |            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:23:
+
+   13 | do i = 1, size(arr) - 1
+      |                       1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:15:3:
+
+   15 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:17:19:
+
+   17 | res(size(arr)) = -1
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:3:
+
+   19 | end function greatest_right_side
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:5:
+
+   25 | use greatest_right_side
+      |     1
+Fatal Error: Cannot open module file ‘greatest_right_side.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def kConcatenationMaxSum(arr, k):
+    M = 10**9 + 7
+    s = sum(arr)
+    max_sum = max_ending_here = 0
+    for i in range(len(arr) * min(2, k)):
+        max_ending_here = max(arr[i % len(arr)], max_ending_here + arr[i % len(arr)])
+        max_sum = max(max_sum, max_ending_here)
+    return 0 if k == 1 else (((max_sum - max_ending_here) % M) * (k - 2) % M + max_ending_here) % M
+</code></pre>
+<ol>
+<li>Calculate the sum of the array elements.</li>
+<li>Find the maximum subarray sum using Kadane's algorithm in a single array.</li>
+<li>If k is 1, return the maximum subarray sum from the single array.</li>
+<li>Concatenate the array twice and find the maximum subarray sum, considering that the subarray can go over the boundaries.</li>
+<li>Calculate the final maximum sum by considering the maximum subarray found in the two concatenated arrays, plus the sum of arrays multiplied by (k - 2), if the sum is positive.</li>
+<li>Return the maximum sum modulo 1,000,000,007.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int kConcatenationMaxSum(vector&lt;int&gt;&amp; arr, int k) {
+    int M = 1e9 + 7;
+    long long sum = 0, maxSum = 0, curMax = 0;
+    for (int i = 0; i &lt; arr.size(); i++) {
+        sum += arr[i];
+        curMax = max(arr[i], curMax + arr[i]);
+        maxSum = max(maxSum, curMax);
+    }
+    if (k == 1) return maxSum % M;
+    long long twoConcatenation = 0, twoConcatenationMax = 0;
+    for (int i = 0; i &lt; 2 * arr.size(); i++) {
+        twoConcatenation = max((long long)arr[i % arr.size()], twoConcatenation + arr[i % arr.size()]);
+        twoConcatenationMax = max(twoConcatenationMax, twoConcatenation);
+    }
+    return max({maxSum, twoConcatenationMax + (k - 2) * max(0LL, sum)}) % M;
+}
+</code></pre>
+<ol>
+<li>Calculate the sum of the array elements.</li>
+<li>Find the maximum subarray sum using Kadane's algorithm in a single array.</li>
+<li>If k is 1, return the maximum subarray sum from the single array.</li>
+<li>Concatenate the array twice and find the maximum subarray sum, considering that the subarray can go over the boundaries.</li>
+<li>Calculate the final maximum sum by considering the maximum subarray found in the two concatenated arrays, plus the sum of arrays multiplied by (k - 2), if the sum is positive.</li>
+<li>Return the maximum sum modulo 1,000,000,007.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

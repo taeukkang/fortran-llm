@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Number of Equivalent Domino Pairs</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1122/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1133/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a list of <code>dominoes</code>, <code>dominoes[i] = [a, b]</code> is <strong>equivalent to</strong> <code>dominoes[j] = [c, d]</code> if and only if either (<code>a == c</code> and <code>b == d</code>), or (<code>a == d</code> and <code>b == c</code>) - that is, one domino can be rotated to be equal to another domino.</p>
+<p>Return <em>the number of pairs</em> <code>(i, j)</code> <em>for which</em> <code>0 &lt;= i &lt; j &lt; dominoes.length</code><em>, and</em> <code>dominoes[i]</code> <em>is <strong>equivalent to</strong></em> <code>dominoes[j]</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> dominoes = [[1,2],[2,1],[3,4],[5,6]]
+<strong>Output:</strong> 1</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> dominoes = [[1,2],[1,2],[1,1],[1,2],[2,2]]
+<strong>Output:</strong> 3</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= dominoes.length &lt;= 4 * 104</code></li>
+<li><code>dominoes[i].length == 2</code></li>
+<li><code>1 &lt;= dominoes[i][j] &lt;= 9</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/number-of-equivalent-domino-pairs/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 4
+    integer, dimension(n) :: dominoes
+    integer :: i, j, k, l, m, n_pairs
+
+    ! Example 1
+    dominoes = reshape([1, 2, 2, 1, 3, 4, 5, 6], shape=[n])
+    write(*,*) 'Example 1'
+    write(*,*) 'Input:'
+    do i = 1, size(dominoes)
+        write(*,'(A,I0,A,I0)') '[', dominoes(i,1), ',', dominoes(i,2), ']'
+    end do
+    call solve(dominoes)
+    write(*,*) 'Output:'
+    write(*,*) n_pairs
+
+    ! Example 2
+    dominoes = reshape([1, 2, 1, 2, 1, 2, 1, 2], shape=[n])
+    write(*,*) 'Example 2'
+    write(*,*) 'Input:'
+    do i = 1, size(dominoes)
+        write(*,'(A,I0,A,I0)') '[', dominoes(i,1), ',', dominoes(i,2), ']'
+    end do
+    call solve(dominoes)
+    write(*,*) 'Output:'
+    write(*,*) n_pairs
+
+contains
+
+    subroutine solve(dominoes)
+        implicit none
+        integer, intent(inout) :: dominoes(:,:)
+        integer :: i, j, k, l, m, n_pairs
+
+        n_pairs = 0
+        do i = 1, size(dominoes)-1
+            do j = i+1, size(dominoes)
+                if (dominoes(i,1) == dominoes(j,2)) then
+                    if (dominoes(i,2) == dominoes(j,1)) then
+                        n_pairs = n_pairs + 1
+                    end if
+                else if (dominoes(i,2) == dominoes(j,2)) then
+                    if (dominoes(i,1) == dominoes(j,1)) then
+                        n_pairs = n_pairs + 1
+                    end if
+                end if
+            end do
+        end do
+    end subroutine solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:13:44:
+
+   13 |         write(*,'(A,I0,A,I0)') '[', dominoes(i,1), ',', dominoes(i,2), ']'
+      |                                            1
+Error: Rank mismatch in array reference at (1) (2/1)
+temp.f95:13:64:
+
+   13 |         write(*,'(A,I0,A,I0)') '[', dominoes(i,1), ',', dominoes(i,2), ']'
+      |                                                                1
+Error: Rank mismatch in array reference at (1) (2/1)
+temp.f95:15:15:
+
+   15 |     call solve(dominoes)
+      |               1
+Error: Rank mismatch in argument ‘dominoes’ at (1) (rank-2 and rank-1)
+temp.f95:24:44:
+
+   24 |         write(*,'(A,I0,A,I0)') '[', dominoes(i,1), ',', dominoes(i,2), ']'
+      |                                            1
+Error: Rank mismatch in array reference at (1) (2/1)
+temp.f95:24:64:
+
+   24 |         write(*,'(A,I0,A,I0)') '[', dominoes(i,1), ',', dominoes(i,2), ']'
+      |                                                                1
+Error: Rank mismatch in array reference at (1) (2/1)
+temp.f95:26:15:
+
+   26 |     call solve(dominoes)
+      |               1
+Error: Rank mismatch in argument ‘dominoes’ at (1) (rank-2 and rank-1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module dominoes
+  implicit none
+contains
+  function countEquivalentDominoPairs(dominoes) result(count)
+    integer, intent(in) :: dominoes(:, :)
+    integer :: count, i, j, k, l
+    logical :: equivalent
+
+    count = 0
+    do i = 1, size(dominoes, 1) - 1
+      do j = i + 1, size(dominoes, 1)
+        equivalent = .false.
+        do k = 1, 2
+          do l = 1, 2
+            if (dominoes(i, k) == dominoes(j, l)) then
+              equivalent = .true.
+              exit
+            end if
+          end do
+          if (equivalent) exit
+        end do
+        if (equivalent) then
+          count = count + 1
+        end if
+      end do
+    end do
+  end function countEquivalentDominoPairs
+end module dominoes
+
+program main
+  use dominoes
+  implicit none
+  integer, parameter :: N = 5
+  integer :: dominoes(N, 2)
+  integer :: i, j
+
+  dominoes = reshape([1, 2, 2, 1, 3, 4, 5, 6], shape(dominoes))
+  write (*, '(A, I0)') 'Number of equivalent domino pairs: ', &
+                       countEquivalentDominoPairs(dominoes)
+
+  dominoes = reshape([1, 2, 1, 2, 1, 2, 1, 2], shape(dominoes))
+  write (*, '(A, I0)') 'Number of equivalent domino pairs: ', &
+                       countEquivalentDominoPairs(dominoes)
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:34:21:
+
+   34 |   integer :: dominoes(N, 2)
+      |                     1
+Error: Symbol ‘main’ at (1) cannot have a type
+temp.f95:37:11:
+
+   37 |   dominoes = reshape([1, 2, 2, 1, 3, 4, 5, 6], shape(dominoes))
+      |           1
+Error: ‘dominoes’ at (1) is not a variable
+temp.f95:39:59:
+
+   39 |                        countEquivalentDominoPairs(dominoes)
+      |                                                           1
+Error: Symbol at (1) is not appropriate for an expression
+temp.f95:41:11:
+
+   41 |   dominoes = reshape([1, 2, 1, 2, 1, 2, 1, 2], shape(dominoes))
+      |           1
+Error: ‘dominoes’ at (1) is not a variable
+temp.f95:43:59:
+
+   43 |                        countEquivalentDominoPairs(dominoes)
+      |                                                           1
+Error: Symbol at (1) is not appropriate for an expression
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def remove_duplicates(s: str) -&gt; str:
+    stack = []
+    for c in s:
+        if stack and stack[-1] == c:
+            stack.pop()
+        else:
+            stack.append(c)
+    return &quot;&quot;.join(stack)
+</code></pre>
+<p>The algorithm uses a stack data structure to process the input string 's'. Iterate through the string from left to right, if the current character 'c' is equal to the character at the top of the stack, pop the character from the top of the stack, otherwise, push the current character onto the stack.</p>
+<p>After processing the entire string 's', the stack will contain the characters left after all the duplicate removals. Then, convert the stack to the resulting string in the respective language (in C++, Java, and JavaScript, we convert the stack to a string by iterating through it, and in Python, we use the built-in join function).</p>
+<p>The time complexity of the algorithm is O(n), where n is the length of the input string 's', and the space complexity is O(n) considering the stack that can be as big as the input string.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;stack&gt;
+
+std::string removeDuplicates(std::string s) {
+    std::stack&lt;char&gt; st;
+    for (char c : s) {
+        if (!st.empty() &amp;&amp; st.top() == c) {
+            st.pop();
+        } else {
+            st.push(c);
+        }
+    }
+
+    std::string result;
+    while (!st.empty()) {
+        result = st.top() + result;
+        st.pop();
+    }
+
+    return result;
+}
+</code></pre>
+<p>The algorithm uses a stack data structure to process the input string 's'. Iterate through the string from left to right, if the current character 'c' is equal to the character at the top of the stack, pop the character from the top of the stack, otherwise, push the current character onto the stack.</p>
+<p>After processing the entire string 's', the stack will contain the characters left after all the duplicate removals. Then, convert the stack to the resulting string in the respective language (in C++, Java, and JavaScript, we convert the stack to a string by iterating through it, and in Python, we use the built-in join function).</p>
+<p>The time complexity of the algorithm is O(n), where n is the length of the input string 's', and the space complexity is O(n) considering the stack that can be as big as the input string.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

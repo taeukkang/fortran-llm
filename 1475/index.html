@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Final Prices With a Special Discount in a Shop</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1474/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1480/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given an integer array <code>prices</code> where <code>prices[i]</code> is the price of the <code>ith</code> item in a shop.</p>
+<p>There is a special discount for items in the shop. If you buy the <code>ith</code> item, then you will receive a discount equivalent to <code>prices[j]</code> where <code>j</code> is the minimum index such that <code>j &gt; i</code> and <code>prices[j] &lt;= prices[i]</code>. Otherwise, you will not receive any discount at all.</p>
+<p>Return an integer array <code>answer</code> where <code>answer[i]</code> is the final price you will pay for the <code>ith</code> item of the shop, considering the special discount.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> prices = [8,4,6,2,3]
+<strong>Output:</strong> [4,2,4,2,3]
+<strong>Explanation:</strong> 
+For item 0 with price[0]=8 you will receive a discount equivalent to prices[1]=4, therefore, the final price you will pay is 8 - 4 = 4.
+For item 1 with price[1]=4 you will receive a discount equivalent to prices[3]=2, therefore, the final price you will pay is 4 - 2 = 2.
+For item 2 with price[2]=6 you will receive a discount equivalent to prices[3]=2, therefore, the final price you will pay is 6 - 2 = 4.
+For items 3 and 4 you will not receive any discount at all.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> prices = [1,2,3,4,5]
+<strong>Output:</strong> [1,2,3,4,5]
+<strong>Explanation:</strong> In this case, for all items, you will not receive any discount at all.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> prices = [10,1,1,6]
+<strong>Output:</strong> [9,0,1,6]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= prices.length &lt;= 500</code></li>
+<li><code>1 &lt;= prices[i] &lt;= 1000</code></li>
+</ul>
+<p>The left subtree of a node contains only nodes with keys less than the node's key. The right subtree of a node contains only nodes with keys greater than the node's key. Both the left and right subtrees must also be binary search trees.</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/final-prices-with-a-special-discount-in-a-shop/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 5
+    integer, dimension(n) :: prices = (/ 8, 4, 6, 2, 3 /)
+    integer, dimension(n) :: answer
+
+    call solve(prices, answer)
+
+    write (*, '(A)') 'Answer:'
+    write (*, '(*(I0, 1X))') answer
+
+contains
+
+    subroutine solve(prices, answer)
+        implicit none
+        integer, intent(in) :: prices(:)
+        integer, intent(out) :: answer(:)
+
+        integer :: i, j, k
+
+        do i = 1, size(prices)
+            j = i + 1
+            do while (j <= size(prices) .and. prices(j) <= prices(i))
+                j = j + 1
+            end do
+
+            if (j <= size(prices)) then
+                k = j - 1
+                answer(i) = prices(i) - prices(k)
+            else
+                answer(i) = prices(i)
+            end if
+        end do
+    end subroutine solve
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Answer:
+8 0 6 0 3
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module discount
+
+implicit none
+
+contains
+
+function calculate_discount(prices) result(answer)
+
+integer, intent(in) :: prices(:)
+integer :: answer(size(prices))
+
+! Local variables
+integer :: i, j, discount
+
+! Calculate the discount for each item
+do i = 1, size(prices)
+
+    ! Find the minimum index j such that j > i and prices(j) <= prices(i)
+    j = minloc(prices(i+1:), 1) + i
+
+    ! Calculate the discount
+    discount = prices(j) - prices(i)
+
+    ! Set the final price for the item
+    answer(i) = prices(i) - discount
+
+end do
+
+end function calculate_discount
+
+end module discount
+
+program main
+
+use discount
+implicit none
+
+! Test the function with the given examples
+call test_discount(8, 4, 6, 2, 3, 4, 2, 4, 2, 3)
+call test_discount(1, 2, 3, 4, 5)
+call test_discount(10, 1, 1, 6)
+
+contains
+
+subroutine test_discount(prices, expected)
+
+integer, intent(in) :: prices(:)
+integer, intent(in) :: expected(:)
+
+! Local variables
+integer :: answer(size(prices))
+
+! Calculate the discount for the items
+answer = calculate_discount(prices)
+
+! Check if the answer is correct
+if (any(answer .ne. expected)) then
+    write (*,*) "Test failed!"
+else
+    write (*,*) "Test passed!"
+end if
+
+end subroutine test_discount
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:39:19:
+
+   39 | call test_discount(8, 4, 6, 2, 3, 4, 2, 4, 2, 3)
+      |                   1
+Error: Rank mismatch in argument ‘prices’ at (1) (rank-1 and scalar)
+temp.f95:40:19:
+
+   40 | call test_discount(1, 2, 3, 4, 5)
+      |                   1
+Error: Rank mismatch in argument ‘prices’ at (1) (rank-1 and scalar)
+temp.f95:41:19:
+
+   41 | call test_discount(10, 1, 1, 6)
+      |                   1
+Error: Rank mismatch in argument ‘prices’ at (1) (rank-1 and scalar)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, x):
+        self.val = x
+        self.left = None
+        self.right = None
+
+def maxSumBST(root):
+    def helper(node):
+        if not node:
+            return float('inf'), float('-inf'), 0, True
+
+        left_min, left_max, left_sum, is_left_bst = helper(node.left)
+        right_min, right_max, right_sum, is_right_bst = helper(node.right)
+
+        if is_left_bst and is_right_bst and node.val &gt; left_max and node.val &lt; right_min:
+            sum_ = node.val + left_sum + right_sum
+            max_sum[0] = max(max_sum[0], sum_)
+            return min(node.val, left_min), max(node.val, right_max), sum_, True
+
+        return 0, 0, 0, False
+
+    max_sum = [0]
+    helper(root)
+    return max_sum[0]
+</code></pre>
+<p>We perform a post-order traversal of the tree, as we need information about both the left and right children of a node to determine if the current node's subtree is also a BST.</p>
+<p>For every node, we recursively call the helper function for its left and right children, getting their min key, max key, sum of keys, and a boolean representing if the subtree rooted at these children is a BST or not.</p>
+<p>We then check if the current node's subtree can be considered as a BST. If it is true, we update the maximum sum if needed using the sum of the keys in the current subtree. In any case, we return the minimum and maximum keys, the sum of the keys, and a boolean indicating if the current subtree is a BST or not.</p>
+<p>After the post-order traversal is complete, we return the maximum sum found.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+int maxSumBST(TreeNode* root) {
+    int max_sum = 0;
+    helper(root, max_sum);
+    return max_sum;
+}
+
+tuple&lt;int, int, int, bool&gt; helper(TreeNode* node, int&amp; max_sum) {
+    if (node == nullptr) {
+        return {INT_MAX, INT_MIN, 0, true};
+    }
+
+    auto[left_min, left_max, left_sum, is_left_bst] = helper(node-&gt;left, max_sum);
+    auto[right_min, right_max, right_sum, is_right_bst] = helper(node-&gt;right, max_sum);
+
+    if (is_left_bst &amp;&amp; is_right_bst &amp;&amp; node-&gt;val &gt; left_max &amp;&amp; node-&gt;val &lt; right_min) {
+        int sum = node-&gt;val + left_sum + right_sum;
+        max_sum = max(max_sum, sum);
+        return {min(node-&gt;val, left_min), max(node-&gt;val, right_max), sum, true};
+    }
+
+    return {0, 0, 0, false};
+}
+</code></pre>
+<p>We perform a post-order traversal of the tree, as we need information about both the left and right children of a node to determine if the current node's subtree is also a BST.</p>
+<p>For every node, we recursively call the helper function for its left and right children, getting their min key, max key, sum of keys, and a boolean representing if the subtree rooted at these children is a BST or not.</p>
+<p>We then check if the current node's subtree can be considered as a BST. If it is true, we update the maximum sum if needed using the sum of the keys in the current subtree. In any case, we return the minimum and maximum keys, the sum of the keys, and a boolean indicating if the current subtree is a BST or not.</p>
+<p>After the post-order traversal is complete, we return the maximum sum found.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

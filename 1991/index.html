@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find the Middle Index in Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1984/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2000/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a <strong>0-indexed</strong> integer array <code>nums</code>, find the <strong>leftmost</strong> <code>middleIndex</code> (i.e., the smallest amongst all the possible ones).</p>
+<p>A <code>middleIndex</code> is an index where <code>nums[0] + nums[1] + ... + nums[middleIndex-1] == nums[middleIndex+1] + nums[middleIndex+2] + ... + nums[nums.length-1]</code>.</p>
+<p>If <code>middleIndex == 0</code>, the left side sum is considered to be <code>0</code>. Similarly, if <code>middleIndex == nums.length - 1</code>, the right side sum is considered to be <code>0</code>.</p>
+<p>Return <em>the <strong>leftmost</strong></em> <code>middleIndex</code> <em>that satisfies the condition, or</em> <code>-1</code> <em>if there is no such index</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [2,3,-1,8,4]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The sum of the numbers before index 3 is: 2 + 3 + -1 = 4
+The sum of the numbers after index 3 is: 4 = 4</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,-1,4]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The sum of the numbers before index 2 is: 1 + -1 = 0
+The sum of the numbers after index 2 is: 0</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [2,5]
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> There is no valid middleIndex.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+<li><code>-1000 &lt;= nums[i] &lt;= 1000</code></li>
+</ul>
+<p><strong>Note:</strong> This question is the same as 724: <a href="https://leetcode.com/problems/find-pivot-index/">https://leetcode.com/problems/find-pivot-index/</a></p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-the-middle-index-in-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    ! Solves the problem of finding the leftmost middleIndex in a 0-indexed integer array.
+    implicit none
+
+    integer :: i, j, k, n, middleIndex, leftSum, rightSum
+    integer, dimension(10) :: nums
+
+    write (*,*) "Example 1:"
+    nums = [2,3,-1,8,4]
+    middleIndex = findMiddleIndex(nums)
+    write (*,*) "middleIndex = ", middleIndex
+    write (*,*) "leftSum = ", leftSum
+    write (*,*) "rightSum = ", rightSum
+
+    write (*,*) "Example 2:"
+    nums = [1,-1,4]
+    middleIndex = findMiddleIndex(nums)
+    write (*,*) "middleIndex = ", middleIndex
+    write (*,*) "leftSum = ", leftSum
+    write (*,*) "rightSum = ", rightSum
+
+    write (*,*) "Example 3:"
+    nums = [2,5]
+    middleIndex = findMiddleIndex(nums)
+    write (*,*) "middleIndex = ", middleIndex
+    write (*,*) "leftSum = ", leftSum
+    write (*,*) "rightSum = ", rightSum
+
+contains
+
+    function findMiddleIndex(nums) result(middleIndex)
+        ! Finds the leftmost middleIndex in a 0-indexed integer array.
+        implicit none
+        integer, intent(in) :: nums(:)
+        integer :: middleIndex, leftSum, rightSum
+
+        do i=1,size(nums)-1
+            leftSum = 0
+            rightSum = 0
+            do j=0,i-1
+                leftSum = leftSum + nums(j)
+            end do
+            do k=i+1,size(nums)-1
+                rightSum = rightSum + nums(k)
+            end do
+            if (leftSum == rightSum) then
+                middleIndex = i
+                return
+            end if
+        end do
+        middleIndex = -1
+    end function findMiddleIndex
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:4:
+
+    9 |     nums = [2,3,-1,8,4]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 5)
+temp.f95:16:4:
+
+   16 |     nums = [1,-1,4]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 3)
+temp.f95:23:4:
+
+   23 |     nums = [2,5]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (10 and 2)
+temp.f95:41:41:
+
+   40 |             do j=0,i-1
+      |                      2                   
+   41 |                 leftSum = leftSum + nums(j)
+      |                                         1
+Warning: Array reference at (1) out of bounds (0 < 1) in loop beginning at (2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!include(sort.f90)
+
+module FindMiddleIndex
+
+! Declare the interface for the function
+interface
+    function findMiddleIndex(nums) result(middleIndex)
+        integer, intent(in) :: nums(:)
+        integer :: middleIndex
+    end function findMiddleIndex
+end interface
+
+contains
+
+! Implement the function
+function findMiddleIndex(nums) result(middleIndex)
+    integer, intent(in) :: nums(:)
+    integer :: middleIndex, leftSum, rightSum, i
+
+    ! Sort the array in ascending order
+    call sort(nums)
+
+    ! Initialize the left sum and right sum to 0
+    leftSum = 0
+    rightSum = sum(nums)
+
+    ! Iterate through the array
+    do i = 1, size(nums) - 1
+        ! Update the left sum
+        leftSum = leftSum + nums(i)
+
+        ! Update the right sum
+        rightSum = rightSum - nums(i)
+
+        ! Check if the left sum is equal to the right sum
+        if (leftSum == rightSum) then
+            ! If so, return the current index
+            middleIndex = i
+            exit
+        end if
+    end do
+
+    ! If no middle index is found, return -1
+    if (middleIndex == 0) then
+        middleIndex = -1
+    end if
+end function findMiddleIndex
+
+end module FindMiddleIndex
+
+! Test the function with some examples
+program testFindMiddleIndex
+    use FindMiddleIndex
+    implicit none
+    integer :: nums(4), middleIndex
+
+    ! Test case 1:
+    nums = [2, 3, -1, 8, 4]
+    middleIndex = findMiddleIndex(nums)
+    write (*,*) "Test case 1:", middleIndex
+
+    ! Test case 2:
+    nums = [1, -1, 4]
+    middleIndex = findMiddleIndex(nums)
+    write (*,*) "Test case 2:", middleIndex
+
+    ! Test case 3:
+    nums = [2, 5]
+    middleIndex = findMiddleIndex(nums)
+    write (*,*) "Test case 3:", middleIndex
+end program testFindMiddleIndex
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:28:
+
+    7 |     function findMiddleIndex(nums) result(middleIndex)
+      |                            1
+Error: MODULE attribute of ‘findmiddleindex’ conflicts with PROCEDURE attribute at (1)
+temp.f95:8:38:
+
+    8 |         integer, intent(in) :: nums(:)
+      |                                      1
+Error: Unexpected data declaration statement in INTERFACE block at (1)
+temp.f95:9:30:
+
+    9 |         integer :: middleIndex
+      |                              1
+Error: Unexpected data declaration statement in INTERFACE block at (1)
+temp.f95:10:7:
+
+   10 |     end function findMiddleIndex
+      |       1
+Error: Expecting END INTERFACE statement at (1)
+temp.f95:16:24:
+
+   16 | function findMiddleIndex(nums) result(middleIndex)
+      |                        1
+Error: MODULE attribute of ‘findmiddleindex’ conflicts with PROCEDURE attribute at (1)
+temp.f95:17:34:
+
+   17 |     integer, intent(in) :: nums(:)
+      |                                  1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:18:48:
+
+   18 |     integer :: middleIndex, leftSum, rightSum, i
+      |                                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:21:19:
+
+   21 |     call sort(nums)
+      |                   1
+Error: Unexpected CALL statement in CONTAINS section at (1)
+temp.f95:24:15:
+
+   24 |     leftSum = 0
+      |               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:25:24:
+
+   25 |     rightSum = sum(nums)
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:28:28:
+
+   28 |     do i = 1, size(nums) - 1
+      |                            1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:30:35:
+
+   30 |         leftSum = leftSum + nums(i)
+      |                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:33:37:
+
+   33 |         rightSum = rightSum - nums(i)
+      |                                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:36:37:
+
+   36 |         if (leftSum == rightSum) then
+      |                                     1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:38:27:
+
+   38 |             middleIndex = i
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:39:16:
+
+   39 |             exit
+      |                1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:40:11:
+
+   40 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:41:7:
+
+   41 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:44:30:
+
+   44 |     if (middleIndex == 0) then
+      |                              1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:45:24:
+
+   45 |         middleIndex = -1
+      |                        1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:46:7:
+
+   46 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:47:3:
+
+   47 | end function findMiddleIndex
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:53:9:
+
+   53 |     use FindMiddleIndex
+      |         1
+Fatal Error: Cannot open module file ‘findmiddleindex.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def findMiddleIndex(nums):
+    total_sum = sum(nums)
+    left_sum = 0
+
+    for i, num in enumerate(nums):
+        if left_sum == total_sum - left_sum - num:
+            return i
+        left_sum += num
+
+    return -1
+</code></pre>
+<p>Initially, calculate the total sum of the array elements. Iterate through the array and track the left_sum at every index. If the left_sum matches the updated sum of elements (total_sum - left_sum - current_number), then the current index is the middle index. If no such index is found, return -1.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int findMiddleIndex(vector&lt;int&gt;&amp; nums) {
+    int total_sum = 0, left_sum = 0;
+
+    for (int num : nums) {
+        total_sum += num;
+    }
+
+    for (int i = 0; i &lt; nums.size(); i++) {
+        if (left_sum == total_sum - left_sum - nums[i]) {
+            return i;
+        }
+        left_sum += nums[i];
+    }
+
+    return -1;
+}
+</code></pre>
+<p>Initially, calculate the total sum of the array elements. Iterate through the array and track the left_sum at every index. If the left_sum matches the updated sum of elements (total_sum - left_sum - current_number), then the current index is the middle index. If no such index is found, return -1.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

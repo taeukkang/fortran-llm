@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Largest Odd Number in String</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1897/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1909/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a string <code>num</code>, representing a large integer. Return <em>the <strong>largest-valued odd</strong> integer (as a string) that is a <strong>non-empty substring</strong> of</em> <code>num</code><em>, or an empty string</em> <code>" "</code> <em>if no odd integer exists</em>.</p>
+<p>A <strong>substring</strong> is a contiguous sequence of characters within a string.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> num =  "52 "
+<strong>Output:</strong>  "5 "
+<strong>Explanation:</strong> The only non-empty substrings are  "5 ",  "2 ", and  "52 ".  "5 " is the only odd number.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> num =  "4206 "
+<strong>Output:</strong>  " "
+<strong>Explanation:</strong> There are no odd numbers in  "4206 ".</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> num =  "35427 "
+<strong>Output:</strong>  "35427 "
+<strong>Explanation:</strong>  "35427 " is already an odd number.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= num.length &lt;= 105</code></li>
+<li><code>num</code> only consists of digits and does not contain any leading zeros.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/largest-odd-number-in-string/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=100) :: num, largest_odd
+
+    ! Example 1
+    num = "52 "
+    call get_largest_odd(num, largest_odd)
+    print '("Example 1: ", A)', largest_odd
+
+    ! Example 2
+    num = "4206 "
+    call get_largest_odd(num, largest_odd)
+    print '("Example 2: ", A)', largest_odd
+
+    ! Example 3
+    num = "35427 "
+    call get_largest_odd(num, largest_odd)
+    print '("Example 3: ", A)', largest_odd
+
+contains
+
+    subroutine get_largest_odd(num, largest_odd)
+        implicit none
+        character(len=*), intent(in) :: num
+        character(len=*), intent(out) :: largest_odd
+        integer :: i, j, k
+
+        largest_odd = ""
+        do i = len(num), 1, -1
+            if (num(i:i) == " ") cycle
+            if (num(i:i) /= "0") then
+                do j = i + 1, len(num)
+                    if (num(j:j) == " ") exit
+                    if (num(j:j) /= "0") then
+                        largest_odd = num(i:j)
+                        return
+                    end if
+                end do
+            end if
+        end do
+    end subroutine get_largest_odd
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>Example 1: 52                                                                                                  
+Example 2: 206                                                                                                 
+Example 3: 27                                                                                                  
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program largestOddNumber
+      implicit none
+
+      integer :: i, j, k, n
+      character(len=100) :: num, largest_odd
+
+      ! Read the input string
+      read(*,*) num
+
+      ! Initialize the largest odd number to an empty string
+      largest_odd = " "
+
+      ! Iterate over the characters in the input string
+      do i = 1, len_trim(num)
+
+         ! Check if the current character is a digit
+         if (num(i:i) >= '0' .and. num(i:i) <= '9') then
+
+            ! Convert the current character to an integer
+            read(num(i:i),*) n
+
+            ! Check if the current number is odd
+            if (mod(n,2) == 1) then
+
+               ! Check if the current number is the largest odd number so far
+               if (largest_odd == " ") then
+                  largest_odd = num(i:i)
+               else
+                  ! Compare the current number with the largest odd number so far
+                  if (n > largest_odd) then
+                     largest_odd = num(i:i)
+                  end if
+               end if
+            end if
+         end if
+      end do
+
+      ! Print the largest odd number
+      print*, largest_odd
+
+      end program
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:30:22:
+
+   30 |                   if (n > largest_odd) then
+      |                      1
+Error: Operands of comparison operator ‘>’ at (1) are INTEGER(4)/CHARACTER(100)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def largest_odd_number(num: str) -&gt; str:
+    for i in range(len(num) - 1, -1, -1):
+        if int(num[i]) % 2 != 0:
+            return num[:i + 1]
+    return &quot;&quot;
+</code></pre>
+<p>The algorithm starts iterating through the given string <code>num</code> from the last character to the first one. Since we only need the largest odd number as a substring, we only need to find the first odd digit when iterating from right to left. When we find an odd digit, that means the current non-empty substring is the largest odd number, and we return that substring. If no odd digits are found, the function returns an empty string. The time complexity is O(n), where n is the length of the string <code>num</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">std::string largestOddNumber(std::string num) {
+    for (int i = num.length() - 1; i &gt;= 0; i--) {
+        if ((num[i] - '0') % 2 != 0) {
+            return num.substr(0, i + 1);
+        }
+    }
+    return &quot;&quot;;
+}
+</code></pre>
+<p>The algorithm starts iterating through the given string <code>num</code> from the last character to the first one. Since we only need the largest odd number as a substring, we only need to find the first odd digit when iterating from right to left. When we find an odd digit, that means the current non-empty substring is the largest odd number, and we return that substring. If no odd digits are found, the function returns an empty string. The time complexity is O(n), where n is the length of the string <code>num</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

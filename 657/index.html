@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Robot Return to Origin</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/653/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/661/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>There is a robot starting at the position <code>(0, 0)</code>, the origin, on a 2D plane. Given a sequence of its moves, judge if this robot <strong>ends up at</strong> <code>(0, 0)</code> after it completes its moves.</p>
+<p>You are given a string <code>moves</code> that represents the move sequence of the robot where <code>moves[i]</code> represents its <code>ith</code> move. Valid moves are <code>'R'</code> (right), <code>'L'</code> (left), <code>'U'</code> (up), and <code>'D'</code> (down).</p>
+<p>Return <code>true</code> <em>if the robot returns to the origin after it finishes all of its moves, or</em> <code>false</code> <em>otherwise</em>.</p>
+<p><strong>Note</strong>: The way that the robot is "facing " is irrelevant. <code>'R'</code> will always make the robot move to the right once, <code>'L'</code> will always make it move left, etc. Also, assume that the magnitude of the robot's movement is the same for each move.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> moves =  "UD "
+<strong>Output:</strong> true
+<strong>Explanation</strong>: The robot moves up once, and then down once. All moves have the same magnitude, so it ended up at the origin where it started. Therefore, we return true.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> moves =  "LL "
+<strong>Output:</strong> false
+<strong>Explanation</strong>: The robot moves left twice. It ends up two  "moves " to the left of the origin. We return false because it is not at the origin at the end of its moves.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= moves.length &lt;= 2 * 104</code></li>
+<li><code>moves</code> only contains the characters <code>'U'</code>, <code>'D'</code>, <code>'L'</code> and <code>'R'</code>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/robot-return-to-origin/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=3) :: moves
+
+    moves = 'UD '
+    print '(L1)', judgeCircle(moves)
+
+    moves = 'LL '
+    print '(L1)', judgeCircle(moves)
+
+contains
+
+logical function judgeCircle(moves) result(isAtOrigin)
+    implicit none
+    character(len=*), intent(in) :: moves
+    integer :: i
+
+    isAtOrigin = .true.
+    do i = 1, len(moves)
+        select case(moves(i:i))
+            case('R')
+                isAtOrigin = isAtOrigin .and. (0 == modulo(i-1, 2))
+            case('L')
+                isAtOrigin = isAtOrigin .and. (0 == modulo(i-1, 2))
+            case('U')
+                isAtOrigin = isAtOrigin .and. (0 == modulo(i-1, 2))
+            case('D')
+                isAtOrigin = isAtOrigin .and. (0 == modulo(i-1, 2))
+            case default
+                stop 'Invalid input.'
+        end select
+    end do
+end function judgeCircle
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>STOP Invalid input.
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: x, y, i
+character(len=100) :: moves
+
+! Initialize variables
+x = 0
+y = 0
+
+! Loop through each move
+do i = 1, len(moves)
+    select case(moves(i:i))
+        case('U')
+            y = y + 1
+        case('D')
+            y = y - 1
+        case('L')
+            x = x - 1
+        case('R')
+            x = x + 1
+        case default
+            write(*,*) "Invalid move"
+            stop
+    end select
+end do
+
+! Check if the robot is at the origin
+if (x == 0 .and. y == 0) then
+    write(*,*) "True"
+else
+    write(*,*) "False"
+end if
+
+end
+</code></pre>
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Invalid move
+</pre>
+          </div>
+           
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def judgeCircle(moves: str) -&gt; bool:
+    x, y = 0, 0
+    for move in moves:
+        if move == 'U': y += 1
+        elif move == 'D': y -= 1
+        elif move == 'R': x += 1
+        elif move == 'L': x -= 1
+    return x == 0 and y == 0
+</code></pre>
+<p>The algorithm keeps track of the robot's position in a 2D plane using two integer variables <code>x</code> and <code>y</code> initialized to 0. The <code>x</code> represents the horizontal position, and <code>y</code> represents the vertical position. It then iterates through the given moves string and updates the position based on the current move. If a move is 'R', it increments <code>x</code>; if it's 'L', it decrements <code>x</code>; if it's 'U', it increments <code>y</code>; and if it's 'D', it decrements <code>y</code>. After processing all the moves, the algorithm checks if both <code>x</code> equals to 0 and <code>y</code> equals to 0. If both are 0, it means the robot is back to the origin, and it returns true; otherwise, it returns false.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">bool judgeCircle(string moves) {
+    int x = 0, y = 0;
+    for(char move : moves) {
+        if(move == 'U') y++;
+        else if(move == 'D') y--;
+        else if(move == 'R') x++;
+        else if(move == 'L') x--;
+    }
+    return x == 0 &amp;&amp; y == 0;
+}
+</code></pre>
+<p>The algorithm keeps track of the robot's position in a 2D plane using two integer variables <code>x</code> and <code>y</code> initialized to 0. The <code>x</code> represents the horizontal position, and <code>y</code> represents the vertical position. It then iterates through the given moves string and updates the position based on the current move. If a move is 'R', it increments <code>x</code>; if it's 'L', it decrements <code>x</code>; if it's 'U', it increments <code>y</code>; and if it's 'D', it decrements <code>y</code>. After processing all the moves, the algorithm checks if both <code>x</code> equals to 0 and <code>y</code> equals to 0. If both are 0, it means the robot is back to the origin, and it returns true; otherwise, it returns false.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

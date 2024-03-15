@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Unique Email Addresses</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/925/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/933/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Every <strong>valid email</strong> consists of a <strong>local name</strong> and a <strong>domain name</strong>, separated by the <code>'@'</code> sign. Besides lowercase letters, the email may contain one or more <code>'.'</code> or <code>'+'</code>.</p>
+<ul>
+<li>For example, in <code>"alice@leetcode.com "</code>, <code>"alice "</code> is the <strong>local name</strong>, and <code>"leetcode.com "</code> is the <strong>domain name</strong>.</li>
+</ul>
+<p>If you add periods <code>'.'</code> between some characters in the <strong>local name</strong> part of an email address, mail sent there will be forwarded to the same address without dots in the local name. Note that this rule <strong>does not apply</strong> to <strong>domain names</strong>.</p>
+<ul>
+<li>For example, <code>"alice.z@leetcode.com "</code> and <code>"alicez@leetcode.com "</code> forward to the same email address.</li>
+</ul>
+<p>If you add a plus <code>'+'</code> in the <strong>local name</strong>, everything after the first plus sign <strong>will be ignored</strong>. This allows certain emails to be filtered. Note that this rule <strong>does not apply</strong> to <strong>domain names</strong>.</p>
+<ul>
+<li>For example, <code>"m.y+name@email.com "</code> will be forwarded to <code>"my@email.com "</code>.</li>
+</ul>
+<p>It is possible to use both of these rules at the same time.</p>
+<p>Given an array of strings <code>emails</code> where we send one email to each <code>emails[i]</code>, return <em>the number of different addresses that actually receive mails</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> emails = [ "test.email+alex@leetcode.com ", "test.e.mail+bob.cathy@leetcode.com ", "testemail+david@lee.tcode.com "]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong>  "testemail@leetcode.com " and  "testemail@lee.tcode.com " actually receive mails.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> emails = [ "a@leetcode.com ", "b@leetcode.com ", "c@leetcode.com "]
+<strong>Output:</strong> 3</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= emails.length &lt;= 100</code></li>
+<li><code>1 &lt;= emails[i].length &lt;= 100</code></li>
+<li><code>emails[i]</code> consist of lowercase English letters, <code>'+'</code>, <code>'.'</code> and <code>'@'</code>.</li>
+<li>Each <code>emails[i]</code> contains exactly one <code>'@'</code> character.</li>
+<li>All local and domain names are non-empty.</li>
+<li>Local names do not start with a <code>'+'</code> character.</li>
+<li>Domain names end with the <code>".com "</code> suffix.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/unique-email-addresses/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, n
+    character(len=100) :: emails(100), local_name, domain_name
+    logical :: has_plus, has_dot
+
+    ! read input
+    read(*,*) n
+    do i = 1, n
+        read(*,*) emails(i)
+    end do
+
+    ! count unique addresses
+    j = 0
+    do i = 1, n
+        ! extract local name and domain name
+        local_name = trim(emails(i))
+        domain_name = ''
+        has_plus = .false.
+        has_dot = .false.
+        do while (local_name /= '')
+            if (local_name(1:1) == '+') then
+                has_plus = .true.
+                exit
+            else if (local_name(1:1) == '.') then
+                has_dot = .true.
+            end if
+            local_name = local_name(2:)
+        end do
+        if (.not. has_plus) then
+            do while (domain_name /= '')
+                if (domain_name(1:1) == '.') then
+                    domain_name = domain_name(2:)
+                else
+                    exit
+                end if
+            end do
+        end if
+        if (.not. has_dot) then
+            domain_name = trim(emails(i))
+        end if
+
+        ! check if address is unique
+        if (.not. any(trim(local_name) == trim(emails(:i-1)))) then
+            j = j + 1
+        end if
+    end do
+
+    ! print output
+    write(*,*) j
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:45:47:
+
+   45 |         if (.not. any(trim(local_name) == trim(emails(:i-1)))) then
+      |                                               1
+Error: ‘string’ argument of ‘trim’ intrinsic at (1) must be a scalar
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">!include(sort_strings.f90)
+
+program main
+    implicit none
+
+    integer, parameter :: STDIN = 5, STDOUT = 6
+    character(len=100) :: line
+    integer :: i, j, n
+    character(len=100), allocatable :: emails(:)
+
+    ! Read the number of emails
+    read(STDIN, *) n
+
+    ! Allocate memory for the emails
+    allocate(emails(n))
+
+    ! Read the emails
+    do i = 1, n
+        read(STDIN, *) emails(i)
+    end do
+
+    ! Sort the emails
+    call sort_strings(emails, n)
+
+    ! Print the unique emails
+    do i = 1, n
+        write(STDOUT, *) emails(i)
+    end do
+
+    ! Deallocate the memory
+    deallocate(emails)
+end program main
+
+!------------------------------------------------------------------------------
+! Sort_strings.f90
+!------------------------------------------------------------------------------
+
+subroutine sort_strings(strings, n)
+    implicit none
+
+    integer, intent(in) :: n
+    character(len=*), intent(inout) :: strings(n)
+
+    integer :: i, j
+    character(len=:), allocatable :: temp
+
+    do i = 1, n - 1
+        do j = i + 1, n
+            if (strings(i) > strings(j)) then
+                temp = strings(i)
+                strings(i) = strings(j)
+                strings(j) = temp
+            end if
+        end do
+    end do
+end subroutine sort_strings
+
+!------------------------------------------------------------------------------
+! Tests
+!------------------------------------------------------------------------------
+
+program test
+    use sort_strings
+    implicit none
+
+    integer, parameter :: STDIN = 5, STDOUT = 6
+    character(len=100) :: line
+    integer :: i, j, n
+    character(len=100), allocatable :: emails(:)
+
+    ! Test case 1
+    n = 3
+    allocate(emails(n))
+    emails = ["test.email+alex@leetcode.com ", "test.e.mail+bob.cathy@leetcode.com ", "testemail+david@lee.tcode.com "]
+    call sort_strings(emails, n)
+    write(STDOUT, *) emails
+    deallocate(emails)
+
+    ! Test case 2
+    n = 3
+    allocate(emails(n))
+    emails = ["a@leetcode.com ", "b@leetcode.com ", "c@leetcode.com "]
+    call sort_strings(emails, n)
+    write(STDOUT, *) emails
+    deallocate(emails)
+end program test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:3:12:
+
+    3 | program main
+      |            1
+......
+   62 | program test
+      |            2
+Error: Two main PROGRAMs at (1) and (2)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def num_special_equivalent_groups(words):
+    groups = set()
+
+    for word in words:
+        evens = &quot;&quot;.join(sorted(word[0::2]))
+        odds = &quot;&quot;.join(sorted(word[1::2]))
+
+        groups.add(evens + odds)
+
+    return len(groups)
+</code></pre>
+<pre><code>1. Initialize an empty set to store the unique groups.
+</code></pre>
+<ol>
+<li>For each word in the input list:
+   a. Initialize two empty strings <code>evens</code> and <code>odds</code> to store even and odd indexed characters.
+   b. Iterate through the word, and for each character, append it to either <code>evens</code> or <code>odds</code> based on its index being even or odd.
+   c. Sort the <code>evens</code> and <code>odds</code> strings.
+   d. Concatenate <code>evens</code> and <code>odds</code>, and insert the result into the set. If this string is already in the set, it doesn't get duplicated.</li>
+<li>Return the size of the set, which represents the number of unique groups.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;unordered_set&gt;
+#include &lt;algorithm&gt;
+
+int numSpecialEquivalentGroups(std::vector&lt;std::string&gt;&amp; words) {
+    std::unordered_set&lt;std::string&gt; groups;
+
+    for (std::string word : words) {
+        std::string evens, odds;
+
+        for (size_t i = 0; i &lt; word.size(); ++i) {
+            if (i % 2 == 0) evens += word[i];
+            else odds += word[i];
+        }
+
+        std::sort(evens.begin(), evens.end());
+        std::sort(odds.begin(), odds.end());
+
+        groups.insert(evens + odds);
+    }
+
+    return groups.size();
+}
+</code></pre>
+<pre><code>1. Initialize an empty set to store the unique groups.
+</code></pre>
+<ol>
+<li>For each word in the input list:
+   a. Initialize two empty strings <code>evens</code> and <code>odds</code> to store even and odd indexed characters.
+   b. Iterate through the word, and for each character, append it to either <code>evens</code> or <code>odds</code> based on its index being even or odd.
+   c. Sort the <code>evens</code> and <code>odds</code> strings.
+   d. Concatenate <code>evens</code> and <code>odds</code>, and insert the result into the set. If this string is already in the set, it doesn't get duplicated.</li>
+<li>Return the size of the set, which represents the number of unique groups.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

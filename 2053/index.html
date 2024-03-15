@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Kth Distinct String in an Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2047/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2057/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A <strong>distinct string</strong> is a string that is present only <strong>once</strong> in an array.</p>
+<p>Given an array of strings <code>arr</code>, and an integer <code>k</code>, return <em>the</em> <code>kth</code> <em><strong>distinct string</strong> present in</em> <code>arr</code>. If there are <strong>fewer</strong> than <code>k</code> distinct strings, return <em>an <strong>empty string</strong></em> <code>" "</code>.</p>
+<p>Note that the strings are considered in the <strong>order in which they appear</strong> in the array.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> arr = [ "d ", "b ", "c ", "b ", "c ", "a "], k = 2
+<strong>Output:</strong>  "a "
+<strong>Explanation:</strong>
+The only distinct strings in arr are  "d " and  "a ".
+ "d " appears 1st, so it is the 1st distinct string.
+ "a " appears 2nd, so it is the 2nd distinct string.
+Since k == 2,  "a " is returned. </p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> arr = [ "aaa ", "aa ", "a "], k = 1
+<strong>Output:</strong>  "aaa "
+<strong>Explanation:</strong>
+All strings in arr are distinct, so the 1st string  "aaa " is returned.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> arr = [ "a ", "b ", "a "], k = 3
+<strong>Output:</strong>  " "
+<strong>Explanation:</strong>
+The only distinct string is  "b ". Since there are fewer than 3 distinct strings, we return an empty string  " ".</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= k &lt;= arr.length &lt;= 1000</code></li>
+<li><code>1 &lt;= arr[i].length &lt;= 5</code></li>
+<li><code>arr[i]</code> consists of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/kth-distinct-string-in-an-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: arr(:)
+    integer :: k
+    character(len=:), allocatable :: result
+
+    ! Examples
+    allocate(arr(6))
+    arr = ["d ", "b ", "c ", "b ", "c ", "a "]
+    k = 2
+    result = getKthDistinctString(arr, k)
+    print '(A)', result
+
+    allocate(arr(3))
+    arr = ["aaa ", "aa ", "a "]
+    k = 1
+    result = getKthDistinctString(arr, k)
+    print '(A)', result
+
+    allocate(arr(3))
+    arr = ["a ", "b ", "a "]
+    k = 3
+    result = getKthDistinctString(arr, k)
+    print '(A)', result
+
+contains
+
+    function getKthDistinctString(arr, k) result(res)
+        implicit none
+        character(len=*), intent(in) :: arr(:)
+        integer, intent(in) :: k
+        character(len=:), allocatable :: res
+        logical, dimension(:), allocatable :: seen
+        integer :: i, j, n
+
+        n = size(arr)
+        allocate(seen(n))
+        seen = .false.
+        do i = 1, n
+            if (.not. seen(i)) then
+                do j = i + 1, n
+                    if (arr(j) == arr(i)) then
+                        seen(j) = .true.
+                    end if
+                end do
+            end if
+        end do
+
+        if (count(seen) < k) then
+            res = ""
+        else
+            res = arr(k)
+        end if
+    end function getKthDistinctString
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:9:13:
+
+    9 |     allocate(arr(6))
+      |             1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:15:13:
+
+   15 |     allocate(arr(3))
+      |             1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:21:13:
+
+   21 |     allocate(arr(3))
+      |             1
+Error: Allocate-object at (1) with a deferred type parameter requires either a type-spec or SOURCE tag or a MOLD tag
+temp.f95:16:18:
+
+   16 |     arr = ["aaa ", "aa ", "a "]
+      |                  1
+Error: Different CHARACTER lengths (4/3) in array constructor at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program distinct_string
+      implicit none
+
+      integer, parameter :: k = 2
+      character(len=5), dimension(6) :: arr = ["d ", "b ", "c ", "b ", "c ", "a "]
+      character(len=5) :: result
+      integer :: i, count
+
+      ! Initialize result to an empty string
+      result = " "
+
+      ! Count the number of distinct strings in arr
+      count = 0
+      do i = 1, size(arr)
+          if (count(arr == arr(i)) == 1) then
+              count = count + 1
+          end if
+      end do
+
+      ! If there are fewer than k distinct strings, return an empty string
+      if (count < k) then
+          result = " "
+      else
+          ! Find the kth distinct string in arr
+          count = 0
+          do i = 1, size(arr)
+              if (count(arr == arr(i)) == 1) then
+                  count = count + 1
+                  if (count == k) then
+                      result = arr(i)
+                      exit
+                  end if
+              end if
+          end do
+      end if
+
+      ! Print the result
+      write (*,*) result
+
+      end program distinct_string
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:20:
+
+   15 |           if (count(arr == arr(i)) == 1) then
+      |                    1
+Error: Syntax error in IF-expression at (1)
+temp.f95:17:13:
+
+   17 |           end if
+      |             1
+Error: Expecting END DO statement at (1)
+temp.f95:27:24:
+
+   27 |               if (count(arr == arr(i)) == 1) then
+      |                        1
+Error: Syntax error in IF-expression at (1)
+temp.f95:33:17:
+
+   33 |               end if
+      |                 1
+Error: Expecting END DO statement at (1)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def is_good_string(s: str) -&gt; bool:
+    freq_map = {}
+    for c in s:
+        if c in freq_map:
+            freq_map[c] += 1
+        else:
+            freq_map[c] = 1
+
+    count = next(iter(freq_map.values()))
+    for value in freq_map.values():
+        if value != count:
+            return False
+    return True
+</code></pre>
+<p>The algorithm for each implementation is as follows:</p>
+<ol>
+<li>Create a dictionary/hash map to store the frequencies of each character in the string.</li>
+<li>Iterate through the input string and update the dictionary with the character frequencies.</li>
+<li>Get the count of the first character in the dictionary.</li>
+<li>Iterate through the dictionary, compare the count of each character to the initial count obtained in step 3. If the counts are not equal, return false. In the end, if all counts are equal, return true.</li>
+</ol>
+<p>This algorithm works in O(n) time complexity, where n is the length of the input string, since it traverses the input string and dictionary in linear time.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+
+bool isGoodString(const std::string&amp; s) {
+    std::unordered_map&lt;char, int&gt; freq_map;
+    for (char c : s) {
+        freq_map[c]++;
+    }
+
+    int count = freq_map.begin()-&gt;second;
+    for (const auto&amp; entry : freq_map) {
+        if (entry.second != count) {
+            return false;
+        }
+    }
+    return true;
+}
+</code></pre>
+<p>The algorithm for each implementation is as follows:</p>
+<ol>
+<li>Create a dictionary/hash map to store the frequencies of each character in the string.</li>
+<li>Iterate through the input string and update the dictionary with the character frequencies.</li>
+<li>Get the count of the first character in the dictionary.</li>
+<li>Iterate through the dictionary, compare the count of each character to the initial count obtained in step 3. If the counts are not equal, return false. In the end, if all counts are equal, return true.</li>
+</ol>
+<p>This algorithm works in O(n) time complexity, where n is the length of the input string, since it traverses the input string and dictionary in linear time.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Second Largest Digit in a String</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1791/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1800/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an alphanumeric string <code>s</code>, return <em>the <strong>second largest</strong> numerical digit that appears in</em> <code>s</code><em>, or</em> <code>-1</code> <em>if it does not exist</em>.</p>
+<p>An <strong>alphanumeric</strong> string is a string consisting of lowercase English letters and digits.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "dfa12321afd "
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> The digits that appear in s are [1, 2, 3]. The second largest digit is 2.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "abc1111 "
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> The digits that appear in s are [1]. There is no second largest digit. </p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 500</code></li>
+<li><code>s</code> consists of only lowercase English letters and/or digits.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/second-largest-digit-in-a-string/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=500) :: s
+    integer :: i, j, n, m, result
+
+    ! Example 1
+    s = "dfa12321afd "
+    write (*,*) 'Example 1:'
+    write (*,*) 'Input: ', s
+    result = second_largest_digit(s)
+    write (*,*) 'Output: ', result
+    write (*,*) ''
+
+    ! Example 2
+    s = "abc1111 "
+    write (*,*) 'Example 2:'
+    write (*,*) 'Input: ', s
+    result = second_largest_digit(s)
+    write (*,*) 'Output: ', result
+    write (*,*) ''
+
+contains
+
+    function second_largest_digit(s) result(result)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer :: result
+        logical :: found
+
+        found = .false.
+        result = -1
+        do i = 1, len(s)
+            if (is_digit(s(i:i))) then
+                if (.not. found) then
+                    found = .true.
+                    result = ichar(s(i:i)) - ichar('0')
+                else
+                    if (ichar(s(i:i)) - ichar('0') > result) then
+                        result = ichar(s(i:i)) - ichar('0')
+                    end if
+                end if
+            end if
+        end do
+    end function second_largest_digit
+
+    function is_digit(c) result(res)
+        implicit none
+        character(len=*), intent(in) :: c
+        logical :: res
+
+        res = any(c == ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
+    end function is_digit
+
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre> Example 1:
+ Input: dfa12321afd                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+ Output:            3
+ 
+ Example 2:
+ Input: abc1111                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+ Output:            1
+ 
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program largest_digit
+    implicit none
+
+    character(len=*) :: s
+    integer :: i, j, largest, second_largest, digit
+
+    largest = -1
+    second_largest = -1
+
+    do i = 1, len_trim(s)
+        read(s(i:i), '(i1)') digit
+        if (digit >= 0 .and. digit <= 9) then
+            if (digit > largest) then
+                second_largest = largest
+                largest = digit
+            else if (digit > second_largest) then
+                second_largest = digit
+            end if
+        end if
+    end do
+
+    if (second_largest == -1) then
+        write (*, '(i1)') -1
+    else
+        write (*, '(i1)') second_largest
+    end if
+
+end program largest_digit
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:4:25:
+
+    4 |     character(len=*) :: s
+      |                         1
+Error: Entity with assumed character length at (1) must be a dummy argument or a PARAMETER
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def second_highest(s: str) -&gt; int:
+    largest = -1
+    second_largest = -1
+    for c in s:
+        if c.isdigit():
+            d = int(c)
+            if d &gt; largest:
+                second_largest = largest
+                largest = d
+            elif d &lt; largest and d &gt; second_largest:
+                second_largest = d
+    return second_largest
+</code></pre>
+<p>To solve this problem, we keep track of the largest and second largest numerical digit, initializing them to -1.
+We iterate through each character in the input string, check if it's a digit using <code>isdigit</code> function in C++, <code>Character.isDigit</code> in Java, <code>c.isdigit()</code> in Python, and <code>!isNaN(c)</code> in JavaScript. If it's a digit, we convert it to an integer and then compare it with the current largest and second largest values.
+1. If the digit is greater than largest, we update second_largest to the largest value, and set largest to the digit.
+2. If the digit is not equal to the largest value and greater than second_largest, we update second_largest to the digit.
+After the loop, we return the second_largest value. If no second largest digit exists, the value will still be -1.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int secondHighest(string s) {
+    int largest = -1, second_largest = -1;
+    for (char c : s) {
+        if (isdigit(c)) {
+            int d = c - '0';
+            if (d &gt; largest) {
+                second_largest = largest;
+                largest = d;
+            } else if (d &lt; largest &amp;&amp; d &gt; second_largest) {
+                second_largest = d;
+            }
+        }
+    }
+    return second_largest;
+}
+</code></pre>
+<p>To solve this problem, we keep track of the largest and second largest numerical digit, initializing them to -1.
+We iterate through each character in the input string, check if it's a digit using <code>isdigit</code> function in C++, <code>Character.isDigit</code> in Java, <code>c.isdigit()</code> in Python, and <code>!isNaN(c)</code> in JavaScript. If it's a digit, we convert it to an integer and then compare it with the current largest and second largest values.
+1. If the digit is greater than largest, we update second_largest to the largest value, and set largest to the digit.
+2. If the digit is not equal to the largest value and greater than second_largest, we update second_largest to the digit.
+After the loop, we return the second_largest value. If no second largest digit exists, the value will still be -1.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

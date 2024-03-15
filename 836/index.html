@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Rectangle Overlap</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/832/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/844/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>An axis-aligned rectangle is represented as a list <code>[x1, y1, x2, y2]</code>, where <code>(x1, y1)</code> is the coordinate of its bottom-left corner, and <code>(x2, y2)</code> is the coordinate of its top-right corner. Its top and bottom edges are parallel to the X-axis, and its left and right edges are parallel to the Y-axis.</p>
+<p>Two rectangles overlap if the area of their intersection is <strong>positive</strong>. To be clear, two rectangles that only touch at the corner or edges do not overlap.</p>
+<p>Given two axis-aligned rectangles <code>rec1</code> and <code>rec2</code>, return <code>true</code> <em>if they overlap, otherwise return</em> <code>false</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> rec1 = [0,0,2,2], rec2 = [1,1,3,3]
+<strong>Output:</strong> true</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> rec1 = [0,0,1,1], rec2 = [1,0,2,1]
+<strong>Output:</strong> false</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> rec1 = [0,0,1,1], rec2 = [2,2,3,3]
+<strong>Output:</strong> false</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>rec1.length == 4</code></li>
+<li><code>rec2.length == 4</code></li>
+<li><code>-109 &lt;= rec1[i], rec2[i] &lt;= 109</code></li>
+<li><code>rec1</code> and <code>rec2</code> represent a valid rectangle with a non-zero area.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/rectangle-overlap/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: i, j, k
+    logical :: overlap
+    real, dimension(4) :: rec1, rec2
+
+    ! Example 1:
+    rec1 = [0, 0, 2, 2]
+    rec2 = [1, 1, 3, 3]
+    overlap = overlap_rectangles(rec1, rec2)
+    print '(L1)', overlap
+
+    ! Example 2:
+    rec1 = [0, 0, 1, 1]
+    rec2 = [1, 0, 2, 1]
+    overlap = overlap_rectangles(rec1, rec2)
+    print '(L1)', overlap
+
+    ! Example 3:
+    rec1 = [0, 0, 1, 1]
+    rec2 = [2, 2, 3, 3]
+    overlap = overlap_rectangles(rec1, rec2)
+    print '(L1)', overlap
+
+contains
+
+    function overlap_rectangles(rec1, rec2) result(overlap)
+        implicit none
+        real, intent(in) :: rec1(4), rec2(4)
+        logical :: overlap
+        real :: xmin1, xmax1, ymin1, ymax1, xmin2, xmax2, ymin2, ymax2
+
+        xmin1 = min(rec1(1), rec1(3))
+        xmax1 = max(rec1(1), rec1(3))
+        ymin1 = min(rec1(2), rec1(4))
+        ymax1 = max(rec1(2), rec1(4))
+        xmin2 = min(rec2(1), rec2(3))
+        xmax2 = max(rec2(1), rec2(3))
+        ymin2 = min(rec2(2), rec2(4))
+        ymax2 = max(rec2(2), rec2(4))
+
+        overlap = (xmin1 < xmax2 .and. xmax1 > xmin2 .and. &
+                   ymin1 < ymax2 .and. ymax1 > ymin2)
+    end function overlap_rectangles
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>T
+F
+F
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module overlap_rectangles
+implicit none
+contains
+
+function overlap(rec1, rec2) result(overlap)
+integer, intent(in) :: rec1(4), rec2(4)
+logical :: overlap
+
+! Calculate the intersection area
+! If the intersection area is positive, then the rectangles overlap
+overlap = (max(rec1(1), rec2(1)) <= min(rec1(3), rec2(3))) .and. &
+          (max(rec1(2), rec2(2)) <= min(rec1(4), rec2(4)))
+
+end function overlap
+
+end module overlap_rectangles
+
+program main
+use overlap_rectangles
+implicit none
+
+! Test cases
+integer, parameter :: n_test_cases = 3
+integer, parameter :: rec1(4) = [0, 0, 2, 2]
+integer, parameter :: rec2(4) = [1, 1, 3, 3]
+integer, parameter :: rec3(4) = [0, 0, 1, 1]
+integer, parameter :: rec4(4) = [1, 0, 2, 1]
+integer, parameter :: rec5(4) = [2, 2, 3, 3]
+
+! Output
+logical :: overlap
+
+! Test case 1
+overlap = overlap(rec1, rec2)
+if (overlap) then
+    print *, "Test case 1: True"
+else
+    print *, "Test case 1: False"
+end if
+
+! Test case 2
+overlap = overlap(rec3, rec4)
+if (overlap) then
+    print *, "Test case 2: True"
+else
+    print *, "Test case 2: False"
+end if
+
+! Test case 3
+overlap = overlap(rec3, rec5)
+if (overlap) then
+    print *, "Test case 3: True"
+else
+    print *, "Test case 3: False"
+end if
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:44:
+
+    5 | function overlap(rec1, rec2) result(overlap)
+      |                                            1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:6:39:
+
+    6 | integer, intent(in) :: rec1(4), rec2(4)
+      |                                       1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:7:18:
+
+    7 | logical :: overlap
+      |                  1
+Error: Symbol ‘overlap’ at (1) has already been host associated
+temp.f95:11:8:
+
+   11 | overlap = (max(rec1(1), rec2(1)) <= min(rec1(3), rec2(3))) .and. &
+      |        1
+Error: Symbol ‘overlap’ at (1) has already been host associated
+temp.f95:14:3:
+
+   14 | end function overlap
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:19:5:
+
+   19 | use overlap_rectangles
+      |     1
+Fatal Error: Cannot open module file ‘overlap_rectangles.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def racecar(target: int) -&gt; int:
+    memo = {}
+
+    def dp(pos: int, speed: int) -&gt; int:
+        if pos == target:
+            return 0
+        if abs(pos) &gt; 2 * target:
+            return float('inf')
+
+        key = (pos, speed)
+        if key in memo:
+            return memo[key]
+
+        op1 = dp(pos + speed, speed * 2) + 1
+        op2 = dp(pos, -speed) + 2
+
+        ans = min(op1, op2)
+        memo[key] = ans
+        return ans
+
+    return dp(0, 1)
+</code></pre>
+<p>The algorithm for solving this problem consists of a dynamic programming approach. We define a helper function called <code>dp</code> that receives the current position, speed, target and memoization Map. </p>
+<ol>
+<li>Starting from position 0 and speed 1, we use the DP function that uses memoization to find the shortest sequence of instructions.</li>
+<li>If the current position is equal to the target position, return 0 as no additional operations are needed.</li>
+<li>If the absolute value of the current position exceeds twice the target position, we return a large number as the cost of the current path.</li>
+<li>We check two operations at each recursive call: accelerating (moving with the current speed) and reversing (changing the sign of the speed). We calculate the cost for each operation, adding 1 for acceleration and 2 for reversing.</li>
+<li>We return the minimum cost from these operations and memoize this minimum cost for the current position and speed.</li>
+<li>Finally, the algorithm will return the shortest sequence of instructions to reach the target position by adding 1 outside of the DP function.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int racecar(int target) {
+    unordered_map&lt;int, unordered_map&lt;int, int&gt;&gt; memo;
+    function&lt;int(int, int)&gt; dp = [&amp;](int pos, int speed) {
+        if (pos == target) return 0;
+        if (abs(pos) &gt; 2 * target) return INT_MAX;
+
+        int &amp;ans = memo[pos][speed];
+        if (ans) return ans;
+
+        if (speed == -1) {
+            int op1 = dp(pos + speed, 2 * speed) + 1;
+            int op2 = dp(pos, -speed) + 2;
+
+            ans = min(op1, op2);
+        } else {
+            int op1 = dp(pos - speed, -2 * speed) + 1;
+            int op2 = dp(pos, -speed) + 2;
+
+            ans = min(op1, op2);
+        }
+
+        return ans;
+    };
+
+    return dp(0, target) + 1;
+}
+</code></pre>
+<p>The algorithm for solving this problem consists of a dynamic programming approach. We define a helper function called <code>dp</code> that receives the current position, speed, target and memoization Map. </p>
+<ol>
+<li>Starting from position 0 and speed 1, we use the DP function that uses memoization to find the shortest sequence of instructions.</li>
+<li>If the current position is equal to the target position, return 0 as no additional operations are needed.</li>
+<li>If the absolute value of the current position exceeds twice the target position, we return a large number as the cost of the current path.</li>
+<li>We check two operations at each recursive call: accelerating (moving with the current speed) and reversing (changing the sign of the speed). We calculate the cost for each operation, adding 1 for acceleration and 2 for reversing.</li>
+<li>We return the minimum cost from these operations and memoize this minimum cost for the current position and speed.</li>
+<li>Finally, the algorithm will return the shortest sequence of instructions to reach the target position by adding 1 outside of the DP function.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

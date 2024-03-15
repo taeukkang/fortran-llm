@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Maximum Number of Pairs in Array</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2335/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2347/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>0-indexed</strong> integer array <code>nums</code>. In one operation, you may do the following:</p>
+<ul>
+<li>Choose <strong>two</strong> integers in <code>nums</code> that are <strong>equal</strong>.</li>
+<li>Remove both integers from <code>nums</code>, forming a <strong>pair</strong>.</li>
+</ul>
+<p>The operation is done on <code>nums</code> as many times as possible.</p>
+<p>Return <em>a <strong>0-indexed</strong> integer array</em> <code>answer</code> <em>of size</em> <code>2</code> <em>where</em> <code>answer[0]</code> <em>is the number of pairs that are formed and</em> <code>answer[1]</code> <em>is the number of leftover integers in</em> <code>nums</code> <em>after doing the operation as many times as possible</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [1,3,2,1,3,2,2]
+<strong>Output:</strong> [3,1]
+<strong>Explanation:</strong>
+Form a pair with nums[0] and nums[3] and remove them from nums. Now, nums = [3,2,3,2,2].
+Form a pair with nums[0] and nums[2] and remove them from nums. Now, nums = [2,2,2].
+Form a pair with nums[0] and nums[1] and remove them from nums. Now, nums = [2].
+No more pairs can be formed. A total of 3 pairs have been formed, and there is 1 number leftover in nums.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [1,1]
+<strong>Output:</strong> [1,0]
+<strong>Explanation:</strong> Form a pair with nums[0] and nums[1] and remove them from nums. Now, nums = [].
+No more pairs can be formed. A total of 1 pair has been formed, and there are 0 numbers leftover in nums.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> nums = [0]
+<strong>Output:</strong> [0,1]
+<strong>Explanation:</strong> No pairs can be formed, and there is 1 number leftover in nums.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 100</code></li>
+<li><code>0 &lt;= nums[i] &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/maximum-number-of-pairs-in-array/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 8
+    integer, dimension(n) :: nums
+    integer, dimension(2) :: answer
+
+    ! Example 1
+    nums = [1, 3, 2, 1, 3, 2, 2]
+    call solve(nums, answer)
+    print '(A, I0, A, I0)', 'Example 1: ', answer(1), ' ', answer(2)
+
+    ! Example 2
+    nums = [1, 1]
+    call solve(nums, answer)
+    print '(A, I0, A, I0)', 'Example 2: ', answer(1), ' ', answer(2)
+
+    ! Example 3
+    nums = [0]
+    call solve(nums, answer)
+    print '(A, I0, A, I0)', 'Example 3: ', answer(1), ' ', answer(2)
+
+contains
+
+    subroutine solve(nums, answer)
+        implicit none
+        integer, dimension(:), intent(inout) :: nums
+        integer, dimension(2), intent(out) :: answer
+        integer :: i, j, count
+
+        count = 0
+        do while (any(nums == nums(1)))
+            i = minloc(nums, dim=1, mask=(nums == nums(1)))[1]
+            j = maxloc(nums, dim=1, mask=(nums == nums(1)))[1]
+            if (i /= j) then
+                nums(i) = -1
+                nums(j) = -1
+                count = count + 1
+            end if
+        end do
+        answer(1) = count
+        answer(2) = count(nums /= -1)
+    end subroutine solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:33:60:
+
+   33 |             i = minloc(nums, dim=1, mask=(nums == nums(1)))[1]
+      |                                                            1
+Error: Coarray designator at (1) but ‘minloc’ is not a coarray
+temp.f95:34:60:
+
+   34 |             j = maxloc(nums, dim=1, mask=(nums == nums(1)))[1]
+      |                                                            1
+Error: Coarray designator at (1) but ‘maxloc’ is not a coarray
+temp.f95:9:4:
+
+    9 |     nums = [1, 3, 2, 1, 3, 2, 2]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (8 and 7)
+temp.f95:14:4:
+
+   14 |     nums = [1, 1]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (8 and 2)
+temp.f95:19:4:
+
+   19 |     nums = [0]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (8 and 1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module pair_formation
+
+implicit none
+
+contains
+
+function pair_formation_solution(nums) result(answer)
+
+integer, intent(in) :: nums(:)
+integer :: answer(2)
+
+! Declare local variables
+integer :: i, j, pairs, leftovers
+
+! Initialize variables
+pairs = 0
+leftovers = 0
+
+! Loop through the array and find pairs
+do i = 1, size(nums) - 1
+    do j = i + 1, size(nums)
+        if (nums(i) == nums(j)) then
+            pairs = pairs + 1
+            leftovers = leftovers + 1
+            nums(i) = -1
+            nums(j) = -1
+        end if
+    end do
+end do
+
+! Remove any leftover numbers
+do i = 1, size(nums)
+    if (nums(i) /= -1) then
+        leftovers = leftovers + 1
+    end if
+end do
+
+! Assign the answer
+answer = [pairs, leftovers]
+
+end function pair_formation_solution
+
+end module pair_formation
+
+program pair_formation_test
+
+use pair_formation
+
+implicit none
+
+! Test case 1
+print *, pair_formation_solution([1, 3, 2, 1, 3, 2, 2])
+
+! Test case 2
+print *, pair_formation_solution([1, 1])
+
+! Test case 3
+print *, pair_formation_solution([0])
+
+end program pair_formation_test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:25:12:
+
+   25 |             nums(i) = -1
+      |            1
+Error: Dummy argument ‘nums’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:26:12:
+
+   26 |             nums(j) = -1
+      |            1
+Error: Dummy argument ‘nums’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:47:5:
+
+   47 | use pair_formation
+      |     1
+Fatal Error: Cannot open module file ‘pair_formation.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def count_pairs_leftovers(nums):
+    counter = [0] * 101
+    pairs, leftovers = 0, 0
+
+    for n in nums:
+        counter[n] += 1
+
+    for count in counter:
+        pairs += count // 2
+        leftovers += count % 2
+
+    return [pairs, leftovers]
+</code></pre>
+<p>The algorithm first initializes an array or hash map (in Java) to count the occurrences of each number in the given <code>nums</code> array. Then, it iterates through the input array <code>nums</code> and increments the count of each number. </p>
+<p>After that, the algorithm iterates over the counter array or values (in Java, using <code>.values()</code>) and calculates the number of pairs and leftovers for each element. The number of pairs for an element is equal to the integer division of its count by 2 (<code>count // 2</code> or <code>count / 2</code>), and the number of leftovers is equal to the count modulo 2 (<code>count % 2</code>).</p>
+<p>Finally, the function returns an array containing the total number of pairs and leftovers.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+using namespace std;
+
+vector&lt;int&gt; countPairsLeftovers(vector&lt;int&gt;&amp; nums) {
+    vector&lt;int&gt; counter(101, 0);
+    int pairs = 0, leftovers = 0;
+
+    for (int n : nums) {
+        counter[n]++;
+    }
+
+    for (int count : counter) {
+        pairs += count / 2;
+        leftovers += count % 2;
+    }
+
+    return {pairs, leftovers};
+}
+</code></pre>
+<p>The algorithm first initializes an array or hash map (in Java) to count the occurrences of each number in the given <code>nums</code> array. Then, it iterates through the input array <code>nums</code> and increments the count of each number. </p>
+<p>After that, the algorithm iterates over the counter array or values (in Java, using <code>.values()</code>) and calculates the number of pairs and leftovers for each element. The number of pairs for an element is equal to the integer division of its count by 2 (<code>count // 2</code> or <code>count / 2</code>), and the number of leftovers is equal to the count modulo 2 (<code>count % 2</code>).</p>
+<p>Finally, the function returns an array containing the total number of pairs and leftovers.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

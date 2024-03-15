@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find if Path Exists in Graph</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1967/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1974/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>There is a <strong>bi-directional</strong> graph with <code>n</code> vertices, where each vertex is labeled from <code>0</code> to <code>n - 1</code> (<strong>inclusive</strong>). The edges in the graph are represented as a 2D integer array <code>edges</code>, where each <code>edges[i] = [ui, vi]</code> denotes a bi-directional edge between vertex <code>ui</code> and vertex <code>vi</code>. Every vertex pair is connected by <strong>at most one</strong> edge, and no vertex has an edge to itself.</p>
+<p>You want to determine if there is a <strong>valid path</strong> that exists from vertex <code>source</code> to vertex <code>destination</code>.</p>
+<p>Given <code>edges</code> and the integers <code>n</code>, <code>source</code>, and <code>destination</code>, return <code>true</code> <em>if there is a <strong>valid path</strong> from</em> <code>source</code> <em>to</em> <code>destination</code><em>, or</em> <code>false</code> <em>otherwise__.</em></p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> n = 3, edges = [[0,1],[1,2],[2,0]], source = 0, destination = 2
+<strong>Output:</strong> true
+<strong>Explanation:</strong> There are two paths from vertex 0 to vertex 2:
+- 0 -&gt; 1 -&gt; 2
+- 0 -&gt; 2</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> n = 6, edges = [[0,1],[0,2],[3,5],[5,4],[4,3]], source = 0, destination = 5
+<strong>Output:</strong> false
+<strong>Explanation:</strong> There is no path from vertex 0 to vertex 5.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= n &lt;= 2 * 105</code></li>
+<li><code>0 &lt;= edges.length &lt;= 2 * 105</code></li>
+<li><code>edges[i].length == 2</code></li>
+<li><code>0 &lt;= ui, vi &lt;= n - 1</code></li>
+<li><code>ui != vi</code></li>
+<li><code>0 &lt;= source, destination &lt;= n - 1</code></li>
+<li>There are no duplicate edges.</li>
+<li>There are no self edges.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-if-path-exists-in-graph/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ✅
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 3
+    integer, parameter :: edges(n, n) = reshape([&
+        & 0, 1, 2, &
+        & 1, 2, 0, &
+        & 2, 0, 1], shape(edges))
+    integer, parameter :: source = 0
+    integer, parameter :: destination = 2
+
+    write(*, '(L1)') validPath(edges, n, source, destination)
+
+contains
+
+    function validPath(edges, n, source, destination) result(valid)
+        implicit none
+        integer, intent(in) :: n
+        integer, intent(in) :: edges(:, :)
+        integer, intent(in) :: source
+        integer, intent(in) :: destination
+        logical :: valid
+        integer :: i, j
+
+        valid = .false.
+
+        do i = 0, n - 1
+            do j = 0, n - 1
+                if (edges(i, j) == 1) then
+                    if (i == source .and. j == destination) then
+                        valid = .true.
+                    end if
+                end if
+            end do
+        end do
+    end function validPath
+end program main</code></pre>
+
+          
+          <div class="alert alert-info" role="alert">
+            <strong>stdout</strong>
+            <pre>F
+</pre>
+          </div>
+           
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module BidirectionalGraph
+    implicit none
+    private
+    public :: has_path
+
+contains
+
+    logical function has_path(n, edges, source, destination) result(has_path)
+        integer, intent(in) :: n
+        integer, intent(in) :: edges(:, :)
+        integer, intent(in) :: source
+        integer, intent(in) :: destination
+        integer :: i, j, k
+        logical :: visited(n)
+        integer :: parent(n)
+
+        has_path = .false.
+
+        ! Initialize visited and parent arrays
+        visited = .false.
+        parent = -1
+
+        ! Set source vertex as visited and parent to -1
+        visited(source) = .true.
+        parent(source) = -1
+
+        ! Perform BFS from source vertex
+        call bfs(n, edges, source, visited, parent)
+
+        ! Check if destination vertex is visited
+        if (visited(destination)) then
+            ! Find path from source to destination
+            k = destination
+            do while (k /= -1)
+                write (*, *) k
+                k = parent(k)
+            end do
+            has_path = .true.
+        end if
+
+    contains
+
+        ! Breadth-First Search (BFS)
+        subroutine bfs(n, edges, source, visited, parent)
+            integer, intent(in) :: n
+            integer, intent(in) :: edges(:, :)
+            integer, intent(in) :: source
+            logical, intent(inout) :: visited(n)
+            integer, intent(inout) :: parent(n)
+            integer :: i, j, k
+            integer :: queue(n)
+            integer :: front, rear
+
+            ! Initialize queue and counters
+            front = 1
+            rear = 0
+            queue(1) = source
+
+            ! Loop until queue is empty
+            do while (front <= rear)
+                ! Dequeue vertex and mark as visited
+                k = queue(front)
+                front = front + 1
+                visited(k) = .true.
+
+                ! Loop through neighbors of dequeued vertex
+                do i = 1, n
+                    j = edges(k, i)
+                    if (.not. visited(j)) then
+                        ! Enqueue neighbor and set parent
+                        rear = rear + 1
+                        queue(rear) = j
+                        parent(j) = k
+                    end if
+                end do
+            end do
+
+        end subroutine bfs
+
+    end function has_path
+end module BidirectionalGraph
+
+! Test program
+program test
+    use BidirectionalGraph
+    implicit none
+    integer :: n, source, destination
+    integer, allocatable :: edges(:, :)
+    logical :: has_path
+
+    ! Test case 1
+    n = 3
+    allocate(edges(n, n))
+    edges = reshape([0, 1, 1, 2, 2, 0], shape(edges))
+    source = 0
+    destination = 2
+    has_path = has_path(n, edges, source, destination)
+    if (has_path) then
+        write (*, *) "Valid path exists from", source, "to", destination
+    else
+        write (*, *) "No valid path exists from", source, "to", destination
+    end if
+
+    ! Test case 2
+    n = 6
+    allocate(edges(n, n))
+    edges = reshape([0, 1, 0, 2, 1, 3, 2, 4, 3, 5, 4, 5, 0], shape(edges))
+    source = 0
+    destination = 5
+    has_path = has_path(n, edges, source, destination)
+    if (has_path) then
+        write (*, *) "Valid path exists from", source, "to", destination
+    else
+        write (*, *) "No valid path exists from", source, "to", destination
+    end if
+
+    ! Test case 3
+    n = 7
+    allocate(edges(n, n))
+    edges = reshape([0, 1, 0, 2, 1, 3, 2, 4, 3, 5, 4, 6, 5, 6,
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:8:77:
+
+    8 |     logical function has_path(n, edges, source, destination) result(has_path)
+      |                                                                             1
+Error: RESULT variable at (1) must be different than function name
+temp.f95:9:32:
+
+    9 |         integer, intent(in) :: n
+      |                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:42:
+
+   10 |         integer, intent(in) :: edges(:, :)
+      |                                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:37:
+
+   11 |         integer, intent(in) :: source
+      |                                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:42:
+
+   12 |         integer, intent(in) :: destination
+      |                                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:26:
+
+   13 |         integer :: i, j, k
+      |                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:29:
+
+   14 |         logical :: visited(n)
+      |                             1
+Error: Explicit array shape at (1) must be constant of INTEGER type and not UNKNOWN type
+temp.f95:15:28:
+
+   15 |         integer :: parent(n)
+      |                            1
+Error: Explicit array shape at (1) must be constant of INTEGER type and not UNKNOWN type
+temp.f95:17:17:
+
+   17 |         has_path = .false.
+      |                 1
+Error: Symbol ‘has_path’ at (1) has already been host associated
+temp.f95:20:25:
+
+   20 |         visited = .false.
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:21:19:
+
+   21 |         parent = -1
+      |                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:32:
+
+   24 |         visited(source) = .true.
+      |                                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:25:27:
+
+   25 |         parent(source) = -1
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:28:51:
+
+   28 |         call bfs(n, edges, source, visited, parent)
+      |                                                   1
+Error: Unexpected CALL statement in CONTAINS section at (1)
+temp.f95:31:38:
+
+   31 |         if (visited(destination)) then
+      |                                      1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:33:27:
+
+   33 |             k = destination
+      |                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:34:30:
+
+   34 |             do while (k /= -1)
+      |                              1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:35:30:
+
+   35 |                 write (*, *) k
+      |                              1
+Error: Unexpected WRITE statement in CONTAINS section at (1)
+temp.f95:36:29:
+
+   36 |                 k = parent(k)
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:37:15:
+
+   37 |             end do
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:38:21:
+
+   38 |             has_path = .true.
+      |                     1
+Error: Symbol ‘has_path’ at (1) has already been host associated
+temp.f95:39:11:
+
+   39 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:41:12:
+
+   41 |     contains
+      |            1
+Error: Unexpected CONTAINS statement in CONTAINS section at (1)
+temp.f95:80:7:
+
+   80 |     end function has_path
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:4:22:
+
+    4 |     public :: has_path
+      |                      1
+Error: Symbol ‘has_path’ at (1) has no IMPLICIT type
+temp.f95:85:9:
+
+   85 |     use BidirectionalGraph
+      |         1
+Fatal Error: Cannot open module file ‘bidirectionalgraph.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def mem_sticks_crash(memory1, memory2):
+    crash_time = 1
+    while True:
+        if memory1 &gt;= memory2:
+            if memory1 &gt;= crash_time:
+                memory1 -= crash_time
+            else:
+                break
+        else:
+            if memory2 &gt;= crash_time:
+                memory2 -= crash_time
+            else:
+                break
+        crash_time += 1
+    return [crash_time, memory1, memory2]
+</code></pre>
+<p>The algorithm starts with a crashTime counter initialized to 1. Then we enter an infinite loop where we compare the available memory on both sticks. If the memory of stick 1 is greater or equal to stick 2, we try to allocate crashTime bits to it, but only if it has enough bits. If it doesn't have enough bits, we break the loop; otherwise, we subtract the bits used from it. We do the same for the memory stick with the lesser memory. Finally, we increment the crashTime counter by 1 at each iteration. When the loop breaks, the function returns an array containing crashTime, and the memory states of both memory sticks at the time of the crash. The algorithm is the same for all languages, with only minimal syntax adjustments.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+
+std::vector&lt;int&gt; memSticksCrash(int memory1, int memory2) {
+    int crashTime = 1;
+    while (true) {
+        if (memory1 &gt;= memory2) {
+            if (memory1 &gt;= crashTime) {
+                memory1 -= crashTime;
+            } else {
+                break;
+            }
+        } else {
+            if (memory2 &gt;= crashTime) {
+                memory2 -= crashTime;
+            } else {
+                break;
+            }
+        }
+        crashTime++;
+    }
+    return {crashTime, memory1, memory2};
+}
+</code></pre>
+<p>The algorithm starts with a crashTime counter initialized to 1. Then we enter an infinite loop where we compare the available memory on both sticks. If the memory of stick 1 is greater or equal to stick 2, we try to allocate crashTime bits to it, but only if it has enough bits. If it doesn't have enough bits, we break the loop; otherwise, we subtract the bits used from it. We do the same for the memory stick with the lesser memory. Finally, we increment the crashTime counter by 1 at each iteration. When the loop breaks, the function returns an array containing crashTime, and the memory states of both memory sticks at the time of the crash. The algorithm is the same for all languages, with only minimal syntax adjustments.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

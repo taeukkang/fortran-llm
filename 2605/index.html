@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Form Smallest Number From Two Digit Arrays</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2600/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2609/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two arrays of <strong>unique</strong> digits <code>nums1</code> and <code>nums2</code>, return <em>the <strong>smallest</strong> number that contains <strong>at least</strong> one digit from each array</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums1 = [4,1,3], nums2 = [5,7]
+<strong>Output:</strong> 15
+<strong>Explanation:</strong> The number 15 contains the digit 1 from nums1 and the digit 5 from nums2. It can be proven that 15 is the smallest number we can have.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums1 = [3,5,2,6], nums2 = [3,1,7]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The number 3 contains the digit 3 which exists in both arrays.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= nums1.length, nums2.length &lt;= 9</code></li>
+<li><code>1 &lt;= nums1[i], nums2[i] &lt;= 9</code></li>
+<li>All digits in each array are <strong>unique</strong>.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/form-smallest-number-from-two-digit-arrays/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 9
+    integer, dimension(n) :: nums1 = [4, 1, 3], nums2 = [5, 7]
+    integer :: i, j, k, l, m, n1, n2, min_num
+
+    ! solve the problem
+    min_num = solve(nums1, nums2)
+
+    ! print the result
+    write (*, '(A, I0)') 'The smallest number containing at least one digit from each array is: ', min_num
+
+contains
+
+    function solve(nums1, nums2) result(min_num)
+        implicit none
+        integer, intent(in) :: nums1(:), nums2(:)
+        integer :: i, j, k, l, m, n1, n2, min_num
+
+        ! initialize variables
+        n1 = size(nums1)
+        n2 = size(nums2)
+        min_num = huge(1_I8P)
+
+        ! loop over all possible combinations of digits
+        do i = 1, n1
+            do j = 1, n2
+                if (nums1(i) == nums2(j)) then
+                    min_num = min(min_num, nums1(i)*10 + nums2(j))
+                end if
+            end do
+        end do
+
+        ! check if there is no solution
+        if (min_num == huge(1_I8P)) then
+            stop "No solution"
+        end if
+
+        ! return the minimum number
+        min_num = min_num - mod(min_num, 10)
+
+    end function solve
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:34:
+
+    5 |     integer, dimension(n) :: nums1 = [4, 1, 3], nums2 = [5, 7]
+      |                                  1
+Error: Different shape for array assignment at (1) on dimension 1 (9 and 3)
+temp.f95:24:29:
+
+   24 |         min_num = huge(1_I8P)
+      |                             1
+Error: Missing kind-parameter at (1)
+temp.f95:36:34:
+
+   36 |         if (min_num == huge(1_I8P)) then
+      |                                  1
+Error: Missing kind-parameter at (1)
+temp.f95:38:11:
+
+   38 |         end if
+      |           1
+Error: Expecting END FUNCTION statement at (1)
+temp.f95:9:25:
+
+    9 |     min_num = solve(nums1, nums2)
+      |                         1
+Error: Symbol ‘nums1’ at (1) has no IMPLICIT type
+temp.f95:9:32:
+
+    9 |     min_num = solve(nums1, nums2)
+      |                                1
+Error: Symbol ‘nums2’ at (1) has no IMPLICIT type
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module smallest_number
+
+implicit none
+
+contains
+
+function smallest_number(nums1, nums2) result(smallest)
+
+integer, intent(in) :: nums1(:), nums2(:)
+integer :: smallest
+
+integer :: i, j, digit
+logical :: found
+
+smallest = 10
+
+do i = 1, size(nums1)
+    do j = 1, size(nums2)
+        digit = nums1(i) + nums2(j)
+        if (digit < smallest) then
+            smallest = digit
+            found = .true.
+        end if
+    end do
+end do
+
+if (.not. found) then
+    smallest = 0
+end if
+
+end function smallest_number
+
+end module smallest_number
+
+program test_smallest_number
+
+use smallest_number
+
+implicit none
+
+integer :: nums1(3) = [4, 1, 3]
+integer :: nums2(2) = [5, 7]
+integer :: smallest
+
+smallest = smallest_number(nums1, nums2)
+
+write (*,*) smallest
+
+nums1 = [3, 5, 2, 6]
+nums2 = [3, 1, 7]
+
+smallest = smallest_number(nums1, nums2)
+
+write (*,*) smallest
+
+end program test_smallest_number
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:24:
+
+    7 | function smallest_number(nums1, nums2) result(smallest)
+      |                        1
+Error: MODULE attribute of ‘smallest_number’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:41:
+
+    9 | integer, intent(in) :: nums1(:), nums2(:)
+      |                                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:10:19:
+
+   10 | integer :: smallest
+      |                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:22:
+
+   12 | integer :: i, j, digit
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:16:
+
+   13 | logical :: found
+      |                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:15:13:
+
+   15 | smallest = 10
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:17:21:
+
+   17 | do i = 1, size(nums1)
+      |                     1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:18:25:
+
+   18 |     do j = 1, size(nums2)
+      |                         1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:19:35:
+
+   19 |         digit = nums1(i) + nums2(j)
+      |                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:20:34:
+
+   20 |         if (digit < smallest) then
+      |                                  1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:21:28:
+
+   21 |             smallest = digit
+      |                            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:26:
+
+   22 |             found = .true.
+      |                          1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:11:
+
+   23 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:24:7:
+
+   24 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:3:
+
+   25 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:27:21:
+
+   27 | if (.not. found) then
+      |                     1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:28:16:
+
+   28 |     smallest = 0
+      |                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:29:3:
+
+   29 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:31:3:
+
+   31 | end function smallest_number
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:37:5:
+
+   37 | use smallest_number
+      |     1
+Fatal Error: Cannot open module file ‘smallest_number.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def smallest_number_with_at_least_one_digit_from_each_array(nums1, nums2):
+    min1 = min(nums1)
+    min2 = min(nums2)
+    for num1 in nums1:
+        for num2 in nums2:
+            if num1 == num2:
+                return num1
+    return min1 * 10 + min2
+</code></pre>
+<p>The algorithm works as follows:
+1. Find the smallest numbers <code>min1</code> and <code>min2</code> in each input array <code>nums1</code> and <code>nums2</code> respectively.
+2. Check if there is any identical number <code>num1</code> and <code>num2</code> in <code>nums1</code> and <code>nums2</code> respectively (<code>num1 == num2</code>). If found, return that shared number. This is because the problem states that we need the smallest number that contains at least one digit from each array, and a shared number will always be smaller than the result obtained by concatenating the smallest digits from each array (due to the unique digits constraint in the problem statement).
+3. If no shared number is found, concatenate the smallest numbers of each array (<code>min1 * 10 + min2</code>). This gives the smallest possible number containing at least one digit from each array.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int smallestNumberWithAtLeastOneDigitFromEachArray(vector&lt;int&gt;&amp; nums1, vector&lt;int&gt;&amp; nums2) {
+    int min1 = *min_element(nums1.begin(), nums1.end());
+    int min2 = *min_element(nums2.begin(), nums2.end());
+    for (int num1 : nums1) {
+        for (int num2 : nums2) {
+            if (num1 == num2) {
+                return num1;
+            }
+        }
+    }
+    return min1 * 10 + min2;
+}
+</code></pre>
+<p>The algorithm works as follows:
+1. Find the smallest numbers <code>min1</code> and <code>min2</code> in each input array <code>nums1</code> and <code>nums2</code> respectively.
+2. Check if there is any identical number <code>num1</code> and <code>num2</code> in <code>nums1</code> and <code>nums2</code> respectively (<code>num1 == num2</code>). If found, return that shared number. This is because the problem states that we need the smallest number that contains at least one digit from each array, and a shared number will always be smaller than the result obtained by concatenating the smallest digits from each array (due to the unique digits constraint in the problem statement).
+3. If no shared number is found, concatenate the smallest numbers of each array (<code>min1 * 10 + min2</code>). This gives the smallest possible number containing at least one digit from each array.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

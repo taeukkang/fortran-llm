@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Count Pairs Of Similar Strings</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2500/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2511/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a <strong>0-indexed</strong> string array <code>words</code>.</p>
+<p>Two strings are <strong>similar</strong> if they consist of the same characters.</p>
+<ul>
+<li>For example, <code>"abca "</code> and <code>"cba "</code> are similar since both consist of characters <code>'a'</code>, <code>'b'</code>, and <code>'c'</code>.</li>
+<li>However, <code>"abacba "</code> and <code>"bcfd "</code> are not similar since they do not consist of the same characters.</li>
+</ul>
+<p>Return <em>the number of pairs</em> <code>(i, j)</code> <em>such that</em> <code>0 &lt;= i &lt; j &lt;= word.length - 1</code> <em>and the two strings</em> <code>words[i]</code> <em>and</em> <code>words[j]</code> <em>are similar</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> words = [ "aba ", "aabb ", "abcd ", "bac ", "aabc "]
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> There are 2 pairs that satisfy the conditions:
+- i = 0 and j = 1 : both words[0] and words[1] only consist of characters 'a' and 'b'. 
+- i = 3 and j = 4 : both words[3] and words[4] only consist of characters 'a', 'b', and 'c'. </p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> words = [ "aabb ", "ab ", "ba "]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> There are 3 pairs that satisfy the conditions:
+- i = 0 and j = 1 : both words[0] and words[1] only consist of characters 'a' and 'b'. 
+- i = 0 and j = 2 : both words[0] and words[2] only consist of characters 'a' and 'b'.
+- i = 1 and j = 2 : both words[1] and words[2] only consist of characters 'a' and 'b'.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> words = [ "nba ", "cba ", "dba "]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> Since there does not exist any pair that satisfies the conditions, we return 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= words.length &lt;= 100</code></li>
+<li><code>1 &lt;= words[i].length &lt;= 100</code></li>
+<li><code>words[i]</code> consist of only lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/count-pairs-of-similar-strings/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: n, i, j, count
+    character(len=100) :: words(100)
+
+    ! read input
+    read(*,*) n
+    do i = 1, n
+        read(*,'(A)') words(i)
+    end do
+
+    ! solve problem
+    count = 0
+    do i = 1, n - 1
+        do j = i + 1, n
+            if (similar(words(i), words(j))) then
+                count = count + 1
+            end if
+        end do
+    end do
+
+    ! print output
+    write(*,*) count
+
+contains
+
+    logical function similar(str1, str2)
+        implicit none
+        character(len=*), intent(in) :: str1, str2
+        integer :: i
+
+        similar = .true.
+        do i = 1, len(str1)
+            if (index(str2, str1(i:i)) == 0) then
+                similar = .false.
+                exit
+            end if
+        end do
+    end function similar
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 8 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7ca15d705960 in ???
+#1  0x7ca15d7064d9 in ???
+#2  0x7ca15d95a17b in ???
+#3  0x7ca15d953684 in ???
+#4  0x7ca15d9542aa in ???
+#5  0x55760bccc2e3 in MAIN__
+#6  0x55760bccc542 in main
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program similar_strings
+implicit none
+
+integer :: i, j, n, count
+character(len=100) :: words(100)
+
+! read the number of words
+read(*,*) n
+
+! read the words
+do i = 1, n
+    read(*,*) words(i)
+end do
+
+! initialize the count
+count = 0
+
+! loop through the words and check for similar pairs
+do i = 1, n - 1
+    do j = i + 1, n
+        if (similar(words(i), words(j))) then
+            count = count + 1
+        end if
+    end do
+end do
+
+! print the result
+write(*,*) count
+
+contains
+
+! check if two strings are similar
+function similar(str1, str2) result(similarity)
+implicit none
+
+logical :: similarity
+character(len=*), intent(in) :: str1, str2
+
+! initialize the similarity flag
+similarity = .false.
+
+! check if the strings have the same length
+if (len(str1) /= len(str2)) then
+    return
+end if
+
+! check if the strings have the same characters
+do i = 1, len(str1)
+    if (str1(i:i) /= str2(i:i)) then
+        return
+    end if
+end do
+
+! if we reach this point, the strings are similar
+similarity = .true.
+
+end function similar
+end program similar_strings
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:48:19:
+
+   21 |         if (similar(words(i), words(j))) then
+      |            2       
+......
+   48 | do i = 1, len(str1)
+      |                   1
+Error: Index variable ‘i’ redefined at (1) in procedure ‘similar’ called from within DO loop at (2)
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def count_similar_pairs(words):
+    count = 0
+    for i in range(len(words)):
+        for j in range(i + 1, len(words)):
+            set1 = set(words[i])
+            set2 = set(words[j])
+            if set1 == set2:
+                count += 1
+    return count
+</code></pre>
+<pre><code>We will use a nested loop to iterate through all pairs (i, j) such that 0 &lt;= i &lt; j &lt;= words.length - 1. For each pair of words, create two sets containing the constituent characters for each string. To create the sets, use a set object initialized with the characters from the corresponding word. Compare the two sets to see if they are equal. If they are, increment a counter. After iterating through all possible pairs of words, return the counter as the total number of similar pairs.
+</code></pre>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;unordered_set&gt;
+
+int count_similar_pairs(std::vector&lt;std::string&gt;&amp; words) {
+    int count = 0;
+    for (int i = 0; i &lt; words.size(); ++i) {
+        for (int j = i + 1; j &lt; words.size(); ++j) {
+            std::unordered_set&lt;char&gt; set1{words[i].begin(), words[i].end()};
+            std::unordered_set&lt;char&gt; set2{words[j].begin(), words[j].end()};
+            if (set1 == set2) count++;
+        }
+    }
+    return count;
+}
+</code></pre>
+<pre><code>We will use a nested loop to iterate through all pairs (i, j) such that 0 &lt;= i &lt; j &lt;= words.length - 1. For each pair of words, create two sets containing the constituent characters for each string. To create the sets, use a set object initialized with the characters from the corresponding word. Compare the two sets to see if they are equal. If they are, increment a counter. After iterating through all possible pairs of words, return the counter as the total number of similar pairs.
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

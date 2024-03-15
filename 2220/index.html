@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Minimum Bit Flips to Convert Number</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2215/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/2224/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A <strong>bit flip</strong> of a number <code>x</code> is choosing a bit in the binary representation of <code>x</code> and <strong>flipping</strong> it from either <code>0</code> to <code>1</code> or <code>1</code> to <code>0</code>.</p>
+<ul>
+<li>For example, for <code>x = 7</code>, the binary representation is <code>111</code> and we may choose any bit (including any leading zeros not shown) and flip it. We can flip the first bit from the right to get <code>110</code>, flip the second bit from the right to get <code>101</code>, flip the fifth bit from the right (a leading zero) to get <code>10111</code>, etc.</li>
+</ul>
+<p>Given two integers <code>start</code> and <code>goal</code>, return <em>the <strong>minimum</strong> number of <strong>bit flips</strong> to convert</em> <code>start</code> <em>to</em> <code>goal</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> start = 10, goal = 7
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The binary representation of 10 and 7 are 1010 and 0111 respectively. We can convert 10 to 7 in 3 steps:
+- Flip the first bit from the right: 1010 -&gt; 1011.
+- Flip the third bit from the right: 1011 -&gt; 1111.
+- Flip the fourth bit from the right: 1111 -&gt; 0111.
+It can be shown we cannot convert 10 to 7 in less than 3 steps. Hence, we return 3.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> start = 3, goal = 4
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The binary representation of 3 and 4 are 011 and 100 respectively. We can convert 3 to 4 in 3 steps:
+- Flip the first bit from the right: 011 -&gt; 010.
+- Flip the second bit from the right: 010 -&gt; 000.
+- Flip the third bit from the right: 000 -&gt; 100.
+It can be shown we cannot convert 3 to 4 in less than 3 steps. Hence, we return 3.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= start, goal &lt;= 109</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/minimum-bit-flips-to-convert-number/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer :: start, goal, result
+
+    ! Example 1
+    start = 10
+    goal = 7
+    write (*, '(A, I0, A, I0, A, I0)') 'Start: ', start, &
+                                        ' Goal: ', goal, &
+                                        ' Result: ', min_bit_flips(start, goal)
+
+    ! Example 2
+    start = 3
+    goal = 4
+    write (*, '(A, I0, A, I0, A, I0)') 'Start: ', start, &
+                                        ' Goal: ', goal, &
+                                        ' Result: ', min_bit_flips(start, goal)
+
+contains
+
+    function min_bit_flips(start, goal) result(result)
+        implicit none
+        integer, intent(in) :: start, goal
+        integer :: i, j, k, n, m, result
+        logical :: found
+
+        ! Initialize variables
+        i = 0
+        j = 0
+        k = 0
+        n = 0
+        m = 0
+        found = .false.
+
+        ! Loop until we find the minimum number of bit flips
+        do while (.not. found)
+            ! Increment i
+            i = i + 1
+
+            ! Check if we have reached the end of the binary representation of start
+            if (i > size(start)) then
+                ! Reset i
+                i = 0
+
+                ! Increment j
+                j = j + 1
+
+                ! Check if we have reached the end of the binary representation of goal
+                if (j > size(goal)) then
+                    ! Reset j
+                    j = 0
+
+                    ! Increment k
+                    k = k + 1
+
+                    ! Check if we have reached the end of the binary representation of start
+                    if (k > size(start)) then
+                        ! Reset k
+                        k = 0
+
+                        ! Increment n
+                        n = n + 1
+
+                        ! Check if we have reached the end of the binary representation of goal
+                        if (n > size(goal)) then
+                            ! Reset n
+                            n = 0
+
+                            ! Increment m
+                            m = m + 1
+
+                            ! Check if we have reached the end of the binary representation of start
+                            if (m > size(start)) then
+                                ! Reset m
+                                m = 0
+
+                                ! Set found to true
+                                found = .true.
+
+                                ! Break out of loop
+                                exit
+                            end if
+                        end if
+                    end if
+                end if
+            end if
+
+            ! Check if the current bit is different between start and goal
+            if (btest(start, i) /= btest(goal, j)) then
+                ! Increment result
+                result = result + 1
+            end if
+        end do
+    end function min_bit_flips
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:42:25:
+
+   42 |             if (i > size(start)) then
+      |                         1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+temp.f95:50:29:
+
+   50 |                 if (j > size(goal)) then
+      |                             1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+temp.f95:58:33:
+
+   58 |                     if (k > size(start)) then
+      |                                 1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+temp.f95:66:37:
+
+   66 |                         if (n > size(goal)) then
+      |                                     1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+temp.f95:74:41:
+
+   74 |                             if (m > size(start)) then
+      |                                         1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+temp.f95:90:16:
+
+   90 |             if (btest(start, i) /= btest(goal, j)) then
+      |                1
+Error: Logicals at (1) must be compared with .neqv. instead of /=
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">! Declare variables
+integer :: start, goal, min_flips, i, j, temp
+logical :: found
+
+! Initialize variables
+start = 10
+goal = 7
+min_flips = 0
+found = .false.
+
+! Check if start and goal are equal
+if (start == goal) then
+    write (*,*) "No flips required"
+    return
+endif
+
+! Check if start and goal have the same number of bits
+if (count_bits(start) /= count_bits(goal)) then
+    write (*,*) "Invalid input"
+    return
+endif
+
+! Loop through all possible bit flips
+do i = 1, count_bits(start)
+    ! Flip the bit at position i
+    temp = flip_bit(start, i)
+
+    ! Check if the flipped number is equal to goal
+    if (temp == goal) then
+        ! Increment the number of flips
+        min_flips = min_flips + 1
+
+        ! Set found to true
+        found = .true.
+
+        ! Break the loop
+        exit
+    endif
+enddo
+
+! Check if a flip was found
+if (found) then
+    write (*,*) "Minimum flips: ", min_flips
+else
+    write (*,*) "No solution found"
+endif
+
+! Function to count the number of bits in a number
+function count_bits(n) result(count)
+    integer :: n, count
+
+    ! Initialize variables
+    count = 0
+
+    ! Loop through all bits
+    do while (n > 0)
+        ! Increment the count
+        count = count + 1
+
+        ! Shift the number to the right
+        n = n / 2
+    enddo
+end function count_bits
+
+! Function to flip a bit at a given position
+function flip_bit(n, pos) result(flipped)
+    integer :: n, pos, flipped
+
+    ! Initialize variables
+    flipped = n
+
+    ! Shift the number to the left
+    flipped = flipped * 2
+
+    ! Flip the bit at position pos
+    if (mod(n, 2) == 0) then
+        flipped = flipped - 1
+    else
+        flipped = flipped + 1
+    endif
+
+    ! Shift the number to the right
+    flipped = flipped / 2
+end function flip_bit
+
+! Main program
+program main
+    ! Declare variables
+    integer :: start, goal
+
+    ! Read input from the user
+    write (*,*) "Enter start and goal:"
+    read (*,*) start, goal
+
+    ! Call the function to solve the problem
+    call solve(start, goal)
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:49:1:
+
+   49 | function count_bits(n) result(count)
+      | 1
+Error: Unclassifiable statement at (1)
+temp.f95:50:23:
+
+   50 |     integer :: n, count
+      |                       1
+Error: Unexpected data declaration statement at (1)
+temp.f95:63:3:
+
+   63 | end function count_bits
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:67:30:
+
+   67 |     integer :: n, pos, flipped
+      |                              1
+Error: Unexpected data declaration statement at (1)
+temp.f95:84:3:
+
+   84 | end function flip_bit
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:87:12:
+
+   87 | program main
+      |            1
+Error: Unexpected PROGRAM statement at (1)
+temp.f95:89:20:
+
+   89 |     integer :: start, goal
+      |                    1
+Error: Symbol ‘start’ at (1) already has basic type of INTEGER
+temp.f95:97:16:
+
+   97 | end program main
+      |                1
+Error: Syntax error in END PROGRAM statement at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <p>None  <br />
+    None</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+#include &lt;unordered_set&gt;
+#include &lt;queue&gt;
+
+std::vector&lt;std::string&gt; makeableRecipes(std::vector&lt;std::string&gt;&amp; recipes, std::vector&lt;std::vector&lt;std::string&gt;&gt;&amp; ingredients, std::vector&lt;std::string&gt;&amp; supplies) {
+    std::unordered_map&lt;std::string, std::unordered_set&lt;std::string&gt;&gt; dependentRecipes;
+    std::unordered_set&lt;std::string&gt; availableSupplies(supplies.begin(), supplies.end());
+    for (size_t i = 0; i &lt; recipes.size(); ++i) {
+        dependentRecipes[recipes[i]] = std::unordered_set&lt;std::string&gt;(ingredients[i].begin(), ingredients[i].end());
+    }
+
+    std::queue&lt;std::string&gt; q;
+    for (const auto&amp; supply : availableSupplies) {
+        q.push(supply);
+    }
+
+    while (!q.empty()) {
+        const std::string currentItem = q.front();
+        q.pop();
+        for (const auto&amp; recipe : dependentRecipes) {
+            if (recipe.second.count(currentItem)) {
+                recipe.second.erase(currentItem);
+                if (recipe.second.empty()) {
+                    availableSupplies.insert(recipe.first);
+                    q.push(recipe.first);
+                }
+            }
+        }
+    }
+
+    std::vector&lt;std::string&gt; result;
+    for (const auto&amp; recipe : recipes) {
+        if (availableSupplies.count(recipe)) {
+            result.push_back(recipe);
+        }
+    }
+    return result;
+}
+
+</code></pre>
+<pre><code>None
+</code></pre>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

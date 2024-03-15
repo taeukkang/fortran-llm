@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Matrix Diagonal Sum</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1566/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1576/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given a square matrix <code>mat</code>, return the sum of the matrix diagonals.</p>
+<p>Only include the sum of all the elements on the primary diagonal and all the elements on the secondary diagonal that are not part of the primary diagonal.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> mat = [[<strong>1</strong>,2,<strong>3</strong>],
+              [4,<strong>5</strong>,6],
+              [<strong>7</strong>,8,<strong>9</strong>]]
+<strong>Output:</strong> 25
+<strong>Explanation:</strong> Diagonals sum: 1 + 5 + 9 + 3 + 7 = 25
+Notice that element mat[1][1] = 5 is counted only once.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> mat = [[<strong>1</strong>,1,1,<strong>1</strong>],
+              [1,<strong>1</strong>,<strong>1</strong>,1],
+              [1,<strong>1</strong>,<strong>1</strong>,1],
+              [<strong>1</strong>,1,1,<strong>1</strong>]]
+<strong>Output:</strong> 8</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> mat = [[<strong>5</strong>]]
+<strong>Output:</strong> 5</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>n == mat.length == mat[i].length</code></li>
+<li><code>1 &lt;= n &lt;= 100</code></li>
+<li><code>1 &lt;= mat[i][j] &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/matrix-diagonal-sum/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 3
+    integer, dimension(n, n) :: mat
+    integer :: i, j
+    integer :: sum_diagonal
+
+    ! Example 1
+    mat(:, :) = reshape([1, 2, 3, 4, 5, 6, 7, 8, 9], shape(mat))
+    write (*, '(A, I0)') 'Example 1: ', sum_diagonal(mat)
+
+    ! Example 2
+    mat(:, :) = reshape([1, 1, 1, 1, 1, 1, 1, 1, 1], shape(mat))
+    write (*, '(A, I0)') 'Example 2: ', sum_diagonal(mat)
+
+    ! Example 3
+    mat(:, :) = reshape([5], shape(mat))
+    write (*, '(A, I0)') 'Example 3: ', sum_diagonal(mat)
+
+contains
+
+    function sum_diagonal(mat) result(sum_)
+        implicit none
+        integer, intent(in) :: mat(:, :)
+        integer :: sum_
+        integer :: i, j
+
+        sum_ = 0
+        do i = 1, size(mat, 1)
+            if (i /= size(mat, 2)) then
+                sum_ = sum_ + mat(i, i+1)
+            end if
+            sum_ = sum_ + mat(i, i)
+            if (i /= 1) then
+                sum_ = sum_ + mat(i-1, i)
+            end if
+        end do
+    end function sum_diagonal
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:23:26:
+
+   23 |     function sum_diagonal(mat) result(sum_)
+      |                          1
+Error: Procedure ‘sum_diagonal’ at (1) has an explicit interface from a previous declaration
+temp.f95:24:21:
+
+   24 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:25:40:
+
+   25 |         integer, intent(in) :: mat(:, :)
+      |                                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:26:23:
+
+   26 |         integer :: sum_
+      |                       1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:27:23:
+
+   27 |         integer :: i, j
+      |                       1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:29:16:
+
+   29 |         sum_ = 0
+      |                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:30:30:
+
+   30 |         do i = 1, size(mat, 1)
+      |                              1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:31:39:
+
+   31 |             if (i /= size(mat, 2)) then
+      |                                       1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:32:41:
+
+   32 |                 sum_ = sum_ + mat(i, i+1)
+      |                                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:33:15:
+
+   33 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:34:35:
+
+   34 |             sum_ = sum_ + mat(i, i)
+      |                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:35:28:
+
+   35 |             if (i /= 1) then
+      |                            1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:36:41:
+
+   36 |                 sum_ = sum_ + mat(i-1, i)
+      |                                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:37:15:
+
+   37 |             end if
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:38:11:
+
+   38 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:39:7:
+
+   39 |     end function sum_diagonal
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:18:24:
+
+   18 |     mat(:, :) = reshape([5], shape(mat))
+      |                        1
+Error: Without padding, there are not enough elements in the intrinsic RESHAPE source at (1) to match the shape
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module diagonal_sum
+
+implicit none
+
+contains
+
+integer function diagonal_sum(mat) result(sum)
+
+integer, intent(in) :: mat(:,:)
+
+integer :: i, j
+
+sum = 0
+
+! Sum the elements on the primary diagonal
+do i = 1, size(mat, 1)
+    sum = sum + mat(i, i)
+end do
+
+! Sum the elements on the secondary diagonal
+do i = 1, size(mat, 1)
+    j = size(mat, 2) - i + 1
+    if (i /= j) then
+        sum = sum + mat(i, j)
+    end if
+end do
+
+end function diagonal_sum
+
+end module diagonal_sum
+
+program main
+
+use diagonal_sum
+
+implicit none
+
+integer, allocatable :: mat(:,:)
+integer :: n, i, j
+
+! Read the size of the matrix
+read *, n
+
+! Allocate the matrix
+allocate(mat(n, n))
+
+! Read the elements of the matrix
+do i = 1, n
+    do j = 1, n
+        read *, mat(i, j)
+    end do
+end do
+
+! Print the sum of the matrix diagonals
+write (*, '(i0)') diagonal_sum(mat)
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:29:
+
+    7 | integer function diagonal_sum(mat) result(sum)
+      |                             1
+Error: MODULE attribute of ‘diagonal_sum’ conflicts with PROCEDURE attribute at (1)
+temp.f95:9:31:
+
+    9 | integer, intent(in) :: mat(:,:)
+      |                               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:15:
+
+   11 | integer :: i, j
+      |               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:13:7:
+
+   13 | sum = 0
+      |       1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:22:
+
+   16 | do i = 1, size(mat, 1)
+      |                      1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:17:25:
+
+   17 |     sum = sum + mat(i, i)
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:18:3:
+
+   18 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:21:22:
+
+   21 | do i = 1, size(mat, 1)
+      |                      1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:22:28:
+
+   22 |     j = size(mat, 2) - i + 1
+      |                            1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:20:
+
+   23 |     if (i /= j) then
+      |                    1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:24:29:
+
+   24 |         sum = sum + mat(i, j)
+      |                             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:25:7:
+
+   25 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:26:3:
+
+   26 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:28:3:
+
+   28 | end function diagonal_sum
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:5:
+
+   34 | use diagonal_sum
+      |     1
+Fatal Error: Cannot open module file ‘diagonal_sum.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class SubrectangleQueries:
+    def __init__(self, rectangle: List[List[int]]):
+        self.rectangle = rectangle
+
+    def updateSubrectangle(self, row1: int, col1: int, row2: int, col2: int, newValue: int) -&gt; None:
+        for i in range(row1, row2 + 1):
+            for j in range(col1, col2 + 1):
+                self.rectangle[i][j] = newValue
+
+    def getValue(self, row: int, col: int) -&gt; int:
+        return self.rectangle[row][col]
+</code></pre>
+<p>The algorithm creates a class <code>SubrectangleQueries</code> that takes a 2D matrix called <code>rectangle</code> as input. It has two methods: <code>updateSubrectangle</code> and <code>getValue</code>. </p>
+<p><code>updateSubrectangle()</code> takes five parameters: row1, col1, row2, col2, and newValue. It iterates over the subrectangle with top-left corner (row1, col1) and bottom-right corner (row2, col2) and updates all the values inside it to newValue.</p>
+<p><code>getValue()</code> is a simple getter function that takes row and col as parameters and returns the value located at rectangle[row][col].</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">class SubrectangleQueries {
+public:
+    vector&lt;vector&lt;int&gt;&gt; rectangle;
+    SubrectangleQueries(vector&lt;vector&lt;int&gt;&gt;&amp; rectangle) {
+        this-&gt;rectangle = rectangle;
+    }
+
+    void updateSubrectangle(int row1, int col1, int row2, int col2, int newValue) {
+        for(int i = row1; i &lt;= row2; i++) {
+            for(int j = col1; j &lt;= col2; j++) {
+                rectangle[i][j] = newValue;
+            }
+        }
+    }
+
+    int getValue(int row, int col) {
+        return rectangle[row][col];
+    }
+};
+</code></pre>
+<p>The algorithm creates a class <code>SubrectangleQueries</code> that takes a 2D matrix called <code>rectangle</code> as input. It has two methods: <code>updateSubrectangle</code> and <code>getValue</code>. </p>
+<p><code>updateSubrectangle()</code> takes five parameters: row1, col1, row2, col2, and newValue. It iterates over the subrectangle with top-left corner (row1, col1) and bottom-right corner (row2, col2) and updates all the values inside it to newValue.</p>
+<p><code>getValue()</code> is a simple getter function that takes row and col as parameters and returns the value located at rectangle[row][col].</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

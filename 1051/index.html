@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Height Checker</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/1047/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1056/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>A school is trying to take an annual photo of all the students. The students are asked to stand in a single file line in <strong>non-decreasing order</strong> by height. Let this ordering be represented by the integer array <code>expected</code> where <code>expected[i]</code> is the expected height of the <code>ith</code> student in line.</p>
+<p>You are given an integer array <code>heights</code> representing the <strong>current order</strong> that the students are standing in. Each <code>heights[i]</code> is the height of the <code>ith</code> student in line (<strong>0-indexed</strong>).</p>
+<p>Return <em>the <strong>number of indices</strong> where</em> <code>heights[i] != expected[i]</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> heights = [1,1,4,2,1,3]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> 
+heights:  [1,1,4,2,1,3]
+expected: [1,1,1,2,3,4]
+Indices 2, 4, and 5 do not match.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> heights = [5,1,2,3,4]
+<strong>Output:</strong> 5
+<strong>Explanation:</strong>
+heights:  [5,1,2,3,4]
+expected: [1,2,3,4,5]
+All indices do not match.</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> heights = [1,2,3,4,5]
+<strong>Output:</strong> 0
+<strong>Explanation:</strong>
+heights:  [1,2,3,4,5]
+expected: [1,2,3,4,5]
+All indices match.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= heights.length &lt;= 100</code></li>
+<li><code>1 &lt;= heights[i] &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/height-checker/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    integer, parameter :: n = 6
+    integer, dimension(n) :: heights, expected
+    integer :: i, j, count
+
+    ! Examples
+    heights = [1, 1, 4, 2, 1, 3]
+    write (*, '(A)') 'Example 1:'
+    call solve(heights, expected)
+    write (*, '(A)') 'Expected: 3'
+    write (*, '(A)') 'Actual: ', count
+
+    heights = [5, 1, 2, 3, 4]
+    write (*, '(A)') 'Example 2:'
+    call solve(heights, expected)
+    write (*, '(A)') 'Expected: 5'
+    write (*, '(A)') 'Actual: ', count
+
+    heights = [1, 2, 3, 4, 5]
+    write (*, '(A)') 'Example 3:'
+    call solve(heights, expected)
+    write (*, '(A)') 'Expected: 0'
+    write (*, '(A)') 'Actual: ', count
+
+contains
+
+    subroutine solve(heights, expected)
+        implicit none
+        integer, intent(in) :: heights(:), expected(:)
+        integer :: i, j
+
+        count = 0
+        do i = 1, size(heights) - 1
+            if (heights(i) /= expected(i)) then
+                count = count + 1
+            end if
+        end do
+    end subroutine solve
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:15:4:
+
+   15 |     heights = [5, 1, 2, 3, 4]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (6 and 5)
+temp.f95:21:4:
+
+   21 |     heights = [1, 2, 3, 4, 5]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (6 and 5)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module main
+
+implicit none
+
+integer, parameter :: int64 = selected_int_kind(13)
+
+interface
+
+function solve(heights, expected) result(res)
+    integer(int64), dimension(:), intent(in) :: heights
+    integer(int64), dimension(:), intent(in) :: expected
+    integer(int64) :: res
+end function solve
+
+end interface
+
+contains
+
+subroutine run_test_case(heights, expected, output)
+    integer(int64), dimension(:), intent(in) :: heights
+    integer(int64), dimension(:), intent(in) :: expected
+    integer(int64), intent(out) :: output
+
+    output = solve(heights, expected)
+
+    write (*,*) "Output: ", output
+    write (*,*) "Expected: ", expected
+    write (*,*) "Pass: ", (output == expected)
+    write (*,*) ""
+
+end subroutine run_test_case
+
+subroutine run_test_cases()
+    integer(int64), dimension(5) :: heights
+    integer(int64), dimension(5) :: expected
+    integer(int64) :: output
+
+    ! Test case 1:
+    heights = [1, 1, 4, 2, 1, 3]
+    expected = [1, 1, 1, 2, 3, 4]
+    call run_test_case(heights, expected, output)
+
+    ! Test case 2:
+    heights = [5, 1, 2, 3, 4]
+    expected = [1, 2, 3, 4, 5]
+    call run_test_case(heights, expected, output)
+
+    ! Test case 3:
+    heights = [1, 2, 3, 4, 5]
+    expected = [1, 2, 3, 4, 5]
+    call run_test_case(heights, expected, output)
+
+end subroutine run_test_cases
+
+end module main
+
+module solution
+
+contains
+
+function solve(heights, expected) result(res)
+    integer(int64), dimension(:), intent(in) :: heights
+    integer(int64), dimension(:), intent(in) :: expected
+    integer(int64) :: res
+
+    res = count(heights /= expected)
+
+end function solve
+
+end module solution
+
+program main
+    use solution
+    implicit none
+
+    integer(int64), dimension(5) :: heights
+    integer(int64), dimension(5) :: expected
+    integer(int64) :: output
+
+    call run_test_cases()
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:10:12:
+
+   10 |     integer(int64), dimension(:), intent(in) :: heights
+      |            1
+Error: Parameter ‘int64’ at (1) has not been declared or is a variable, which does not reduce to a constant expression
+temp.f95:11:12:
+
+   11 |     integer(int64), dimension(:), intent(in) :: expected
+      |            1
+Error: Parameter ‘int64’ at (1) has not been declared or is a variable, which does not reduce to a constant expression
+temp.f95:12:12:
+
+   12 |     integer(int64) :: res
+      |            1
+Error: Parameter ‘int64’ at (1) has not been declared or is a variable, which does not reduce to a constant expression
+temp.f95:39:4:
+
+   39 |     heights = [1, 1, 4, 2, 1, 3]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (5 and 6)
+temp.f95:40:4:
+
+   40 |     expected = [1, 1, 1, 2, 3, 4]
+      |    1
+Error: Different shape for array assignment at (1) on dimension 1 (5 and 6)
+temp.f95:24:13:
+
+   24 |     output = solve(heights, expected)
+      |             1
+Error: Type mismatch in argument ‘heights’ at (1); passed INTEGER(8) to REAL(4)
+temp.f95:62:12:
+
+   62 |     integer(int64), dimension(:), intent(in) :: heights
+      |            1
+Error: Parameter ‘int64’ at (1) has not been declared or is a variable, which does not reduce to a constant expression
+temp.f95:63:12:
+
+   63 |     integer(int64), dimension(:), intent(in) :: expected
+      |            1
+Error: Parameter ‘int64’ at (1) has not been declared or is a variable, which does not reduce to a constant expression
+temp.f95:64:12:
+
+   64 |     integer(int64) :: res
+      |            1
+Error: Parameter ‘int64’ at (1) has not been declared or is a variable, which does not reduce to a constant expression
+temp.f95:66:16:
+
+   66 |     res = count(heights /= expected)
+      |                1
+Error: ‘mask’ argument of ‘count’ intrinsic at (1) must be a logical array
+temp.f95:72:12:
+
+    1 | module main
+      |           2 
+......
+   72 | program main
+      |            1
+Error: Global name ‘main’ at (1) is already being used as a MODULE at (2)
+temp.f95:73:9:
+
+   73 |     use solution
+      |         1
+Fatal Error: Cannot open module file ‘solution.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def height_checker(heights):
+    expected = sorted(heights)
+
+    count = 0
+    for i in range(len(heights)):
+        if heights[i] != expected[i]:
+            count += 1
+
+    return count
+</code></pre>
+<ol>
+<li>Create a copy of the input array called expected.</li>
+<li>Sort the expected array in non-decreasing order.</li>
+<li>Initialize a counter variable called count to 0.</li>
+<li>Iterate through the input array with index i.
+  4.1. If the element at index i in the input array is not equal to the element at index i in the expected array, increment the count.</li>
+<li>Return the count.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int heightChecker(std::vector&lt;int&gt;&amp; heights) {
+    std::vector&lt;int&gt; expected = heights;
+    std::sort(expected.begin(), expected.end());
+
+    int count = 0;
+    for (int i = 0; i &lt; heights.size(); ++i) {
+        if (heights[i] != expected[i]) {
+            ++count;
+        }
+    }
+
+    return count;
+}
+</code></pre>
+<ol>
+<li>Create a copy of the input array called expected.</li>
+<li>Sort the expected array in non-decreasing order.</li>
+<li>Initialize a counter variable called count to 0.</li>
+<li>Iterate through the input array with index i.
+  4.1. If the element at index i in the input array is not equal to the element at index i in the expected array, increment the count.</li>
+<li>Return the count.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

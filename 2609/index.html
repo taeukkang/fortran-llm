@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Find the Longest Balanced Substring of a Binary String</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/2605/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/1/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>You are given a binary string <code>s</code> consisting only of zeroes and ones.</p>
+<p>A substring of <code>s</code> is considered balanced if <strong>all zeroes are before ones</strong> and the number of zeroes is equal to the number of ones inside the substring. Notice that the empty substring is considered a balanced substring.</p>
+<p>Return <em>the length of the longest balanced substring of</em> <code>s</code>.</p>
+<p>A <strong>substring</strong> is a contiguous sequence of characters within a string.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> s =  "01000111 "
+<strong>Output:</strong> 6
+<strong>Explanation:</strong> The longest balanced substring is  "000111 ", which has length 6.</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> s =  "00111 "
+<strong>Output:</strong> 4
+<strong>Explanation:</strong> The longest balanced substring is  "0011 ", which has length 4. </p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> s =  "111 "
+<strong>Output:</strong> 0
+<strong>Explanation:</strong> There is no balanced substring except the empty substring, so the answer is 0.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= s.length &lt;= 50</code></li>
+<li><code>'0' &lt;= s[i] &lt;= '1'</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/find-the-longest-balanced-substring-of-a-binary-string/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=50) :: s
+    integer :: i, j, n, m, max_len
+
+    ! Examples
+    s = "01000111"
+    write(*,*) "Example 1:"
+    write(*,*) "Input:", s
+    write(*,*) "Output:", longest_balanced_substring(s)
+    write(*,*) ""
+
+    s = "00111"
+    write(*,*) "Example 2:"
+    write(*,*) "Input:", s
+    write(*,*) "Output:", longest_balanced_substring(s)
+    write(*,*) ""
+
+    s = "111"
+    write(*,*) "Example 3:"
+    write(*,*) "Input:", s
+    write(*,*) "Output:", longest_balanced_substring(s)
+    write(*,*) ""
+
+contains
+
+    function longest_balanced_substring(s) result(max_len)
+        implicit none
+        character(len=*), intent(in) :: s
+        integer :: i, j, n, m, max_len
+
+        max_len = 0
+        do i = 1, len(s) - 1
+            do j = i + 1, len(s)
+                if (is_balanced(s(i:j))) then
+                    max_len = max(max_len, j - i + 1)
+                end if
+            end do
+        end do
+    end function longest_balanced_substring
+
+    function is_balanced(s) result(res)
+        implicit none
+        character(len=*), intent(in) :: s
+        logical :: res
+
+        res = .true.
+        do i = 1, len(s)
+            if (s(i:i) == "0") then
+                if (any(s(i+1:) /= "0")) then
+                    res = .false.
+                    exit
+                end if
+            else if (s(i:i) == "1") then
+                if (any(s(i-1:) /= "1")) then
+                    res = .false.
+                    exit
+                end if
+            end if
+        end do
+    end function is_balanced
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:51:24:
+
+   51 |                 if (any(s(i+1:) /= "0")) then
+      |                        1
+Error: ‘mask’ argument of ‘any’ intrinsic at (1) must be a logical array
+temp.f95:56:24:
+
+   56 |                 if (any(s(i-1:) /= "1")) then
+      |                        1
+Error: ‘mask’ argument of ‘any’ intrinsic at (1) must be a logical array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-success"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ✅
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program longest_balanced_substring
+      implicit none
+
+      integer :: i, j, k, n, m, max_len
+      character(len=50) :: s
+
+      ! Read input
+      read(*,*) s
+
+      ! Initialize variables
+      n = len_trim(s)
+      m = 0
+      max_len = 0
+
+      ! Iterate over the string
+      do i = 1, n
+        ! Check if the current character is a zero
+        if (s(i:i) == '0') then
+          ! Increment the number of zeroes
+          m = m + 1
+        ! Check if the current character is a one
+        else if (s(i:i) == '1') then
+          ! Decrement the number of zeroes
+          m = m - 1
+        end if
+
+        ! Check if the current substring is balanced
+        if (m >= 0) then
+          ! Update the maximum length of the balanced substring
+          max_len = max(max_len, m)
+        end if
+      end do
+
+      ! Print output
+      write(*,*) max_len
+
+      end program longest_balanced_substring
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>At line 8 of file temp.f95 (unit = 5, file = 'stdin')
+Fortran runtime error: End of file
+
+Error termination. Backtrace:
+#0  0x7d6139239960 in ???
+#1  0x7d613923a4d9 in ???
+#2  0x7d613948e17b in ???
+#3  0x7d6139487684 in ???
+#4  0x7d61394882aa in ???
+#5  0x56e2d6915219 in MAIN__
+#6  0x56e2d6915343 in main
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def longestBalancedSubstring(s):
+    max_len = 0
+    zeros = ones = 0
+    for c in s:
+        if c == '0':
+            zeros += 1
+        else:
+            ones += 1
+        if zeros == ones:
+            max_len = max(max_len, zeros * 2)
+        elif zeros &gt; ones:
+            zeros = ones = 0
+    zeros = ones = 0
+    for c in reversed(s):
+        if c == '0':
+            zeros += 1
+        else:
+            ones += 1
+        if zeros == ones:
+            max_len = max(max_len, zeros * 2)
+        elif zeros &lt; ones:
+            zeros = ones = 0
+    return max_len
+</code></pre>
+<p>The algorithm scans the string <code>s</code> twice. In the first pass, it counts the number of zeros and ones. 
+1. Whenever the count of zeros and ones is the same, the maximum length of the balanced substring should be updated by selecting the maximum value between <code>max_len</code> and <code>zeros * 2</code>.
+2. If the count of zeros is greater than the count of ones, the current possibility of a balanced substring has failed, so <code>zeros</code> and <code>ones</code> are reset to 0.</p>
+<p>In the second pass, the process is almost the same, but this time it iterates from the end of the string to the beginning. When the count of ones is greater than the count of zeros, <code>zeros</code> and <code>ones</code> are reset to 0.</p>
+<p>After the two passes, the variable <code>max_len</code> stores the length of the longest balanced substring in the input string <code>s</code>.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int longestBalancedSubstring(string s) {
+    int max_len = 0;
+    int zeros = 0;
+    int ones = 0;
+    for (int i = 0; i &lt; s.size(); ++i) {
+        if (s[i] == '0') {
+            zeros++;
+        } else {
+            ones++;
+        }
+        if (zeros == ones) {
+            max_len = max(max_len, zeros * 2);
+        } else if (zeros &gt; ones) {
+            zeros = ones = 0;
+        }
+    }
+    zeros = ones = 0;
+    for (int i = s.size() - 1; i &gt;= 0; --i) {
+        if (s[i] == '0') {
+            zeros++;
+        } else {
+            ones++;
+        }
+        if (zeros == ones) {
+            max_len = max(max_len, zeros * 2);
+        } else if (zeros &lt; ones) {
+            zeros = ones = 0;
+        }
+    }
+    return max_len;
+}
+</code></pre>
+<p>The algorithm scans the string <code>s</code> twice. In the first pass, it counts the number of zeros and ones. 
+1. Whenever the count of zeros and ones is the same, the maximum length of the balanced substring should be updated by selecting the maximum value between <code>max_len</code> and <code>zeros * 2</code>.
+2. If the count of zeros is greater than the count of ones, the current possibility of a balanced substring has failed, so <code>zeros</code> and <code>ones</code> are reset to 0.</p>
+<p>In the second pass, the process is almost the same, but this time it iterates from the end of the string to the beginning. When the count of ones is greater than the count of zeros, <code>zeros</code> and <code>ones</code> are reset to 0.</p>
+<p>After the two passes, the variable <code>max_len</code> stores the length of the longest balanced substring in the input string <code>s</code>.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

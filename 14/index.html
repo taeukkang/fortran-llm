@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Longest Common Prefix</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/13/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/20/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Write a function to find the longest common prefix string amongst an array of strings.</p>
+<p>If there is no common prefix, return an empty string <code>" "</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> strs = [ "flower ", "flow ", "flight "]
+<strong>Output:</strong>  "fl "</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> strs = [ "dog ", "racecar ", "car "]
+<strong>Output:</strong>  " "
+<strong>Explanation:</strong> There is no common prefix among the input strings.</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= strs.length &lt;= 200</code></li>
+<li><code>0 &lt;= strs[i].length &lt;= 200</code></li>
+<li><code>strs[i]</code> consists of only lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/longest-common-prefix/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: strs(:)
+    character(len=:), allocatable :: lcp
+
+    strs = ["flower ", "flow ", "flight "]
+    write(*,*) 'Example 1:'
+    write(*,*) 'Input: ', strs
+    write(*,*) 'Output: ', lcp(strs)
+
+    strs = ["dog ", "racecar ", "car "]
+    write(*,*) 'Example 2:'
+    write(*,*) 'Input: ', strs
+    write(*,*) 'Output: ', lcp(strs)
+
+contains
+
+    function lcp(strs) result(lcp_str)
+        implicit none
+        character(len=:), allocatable :: strs(:)
+        character(len=:), allocatable :: lcp_str
+        integer :: i, j, k
+        logical :: found
+
+        do i = 1, size(strs) - 1
+            do j = i + 1, size(strs)
+                if (strs(i)(1:1) == strs(j)(1:1)) then
+                    found = .true.
+                    do k = 2, min(size(strs(i)), size(strs(j)))
+                        if (strs(i)(k:k) /= strs(j)(k:k)) then
+                            found = .false.
+                            exit
+                        end if
+                    end do
+                    if (found) then
+                        lcp_str = strs(i)(1:k-1)
+                        return
+                    end if
+                end if
+            end do
+        end do
+        lcp_str = ''
+    end function lcp
+
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:19:17:
+
+   19 |     function lcp(strs) result(lcp_str)
+      |                 1
+Error: Procedure ‘lcp’ at (1) has an explicit interface from a previous declaration
+temp.f95:20:21:
+
+   20 |         implicit none
+      |                     1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:21:48:
+
+   21 |         character(len=:), allocatable :: strs(:)
+      |                                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:22:48:
+
+   22 |         character(len=:), allocatable :: lcp_str
+      |                                                1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:23:26:
+
+   23 |         integer :: i, j, k
+      |                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:24:24:
+
+   24 |         logical :: found
+      |                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:26:32:
+
+   26 |         do i = 1, size(strs) - 1
+      |                                1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:27:36:
+
+   27 |             do j = i + 1, size(strs)
+      |                                    1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:28:54:
+
+   28 |                 if (strs(i)(1:1) == strs(j)(1:1)) then
+      |                                                      1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:29:34:
+
+   29 |                     found = .true.
+      |                                  1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:30:63:
+
+   30 |                     do k = 2, min(size(strs(i)), size(strs(j)))
+      |                                                               1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:31:62:
+
+   31 |                         if (strs(i)(k:k) /= strs(j)(k:k)) then
+      |                                                              1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:32:43:
+
+   32 |                             found = .false.
+      |                                           1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:33:32:
+
+   33 |                             exit
+      |                                1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:34:27:
+
+   34 |                         end if
+      |                           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:35:23:
+
+   35 |                     end do
+      |                       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:36:35:
+
+   36 |                     if (found) then
+      |                                   1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:37:48:
+
+   37 |                         lcp_str = strs(i)(1:k-1)
+      |                                                1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:38:30:
+
+   38 |                         return
+      |                              1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:39:23:
+
+   39 |                     end if
+      |                       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:40:19:
+
+   40 |                 end if
+      |                   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:41:15:
+
+   41 |             end do
+      |               1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:42:11:
+
+   42 |         end do
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:43:20:
+
+   43 |         lcp_str = ''
+      |                    1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:44:7:
+
+   44 |     end function lcp
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:7:22:
+
+    7 |     strs = ["flower ", "flow ", "flight "]
+      |                      1
+Error: Different CHARACTER lengths (7/5) in array constructor at (1)
+temp.f95:10:26:
+
+   10 |     write(*,*) 'Output: ', lcp(strs)
+      |                          1
+Error: The allocatable object ‘lcp’ at (1) must have an explicit function interface or be declared as array
+temp.f95:12:19:
+
+   12 |     strs = ["dog ", "racecar ", "car "]
+      |                   1
+Error: Different CHARACTER lengths (4/8) in array constructor at (1)
+temp.f95:15:26:
+
+   15 |     write(*,*) 'Output: ', lcp(strs)
+      |                          1
+Error: The allocatable object ‘lcp’ at (1) must have an explicit function interface or be declared as array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module longest_common_prefix
+
+contains
+
+  function longest_common_prefix(strs) result(prefix)
+    implicit none
+    character(len=*), intent(in) :: strs(:)
+    integer :: i, j, k, l, m, n
+    character(len=:), allocatable :: prefix
+
+    ! Initialize the prefix to an empty string
+    prefix = ""
+
+    ! If there are no strings, return an empty string
+    if (size(strs) == 0) then
+      return
+    end if
+
+    ! Loop through each string and find the longest common prefix
+    do i = 1, size(strs)
+      ! Loop through each character in the current string
+      do j = 1, len_trim(strs(i))
+        ! If the current character is not the same as the previous character,
+        ! break out of the loop
+        if (j > 1 .and. strs(i)(j:j) /= strs(i)(j-1:j-1)) then
+          exit
+        end if
+
+        ! If the current character is the same as the previous character,
+        ! add it to the prefix
+        if (j > 1 .and. strs(i)(j:j) == strs(i)(j-1:j-1)) then
+          prefix = prefix // strs(i)(j:j)
+        end if
+      end do
+    end do
+
+  end function longest_common_prefix
+
+end module longest_common_prefix
+
+program main
+  use longest_common_prefix
+  implicit none
+  character(len=*), parameter :: EXAMPLE_1 = "flower "
+  character(len=*), parameter :: EXAMPLE_2 = "flow "
+  character(len=*), parameter :: EXAMPLE_3 = "flight "
+  character(len=*), parameter :: EXAMPLE_4 = "dog "
+  character(len=*), parameter :: EXAMPLE_5 = "racecar "
+  character(len=*), parameter :: EXAMPLE_6 = "car "
+  character(len=*), parameter :: EXAMPLE_7 = "apple "
+  character(len=*), parameter :: EXAMPLE_8 = "banana "
+  character(len=*), parameter :: EXAMPLE_9 = "cherry "
+  character(len=*), parameter :: EXAMPLE_10 = "dance "
+  character(len=*), parameter :: EXAMPLE_11 = "sing "
+  character(len=*), parameter :: EXAMPLE_12 = "dance "
+  character(len=*), parameter :: EXAMPLE_13 = "sing "
+  character(len=*), parameter :: EXAMPLE_14 = "dance "
+  character(len=*), parameter :: EXAMPLE_15 = "sing "
+  character(len=*), parameter :: EXAMPLE_16 = "dance "
+  character(len=*), parameter :: EXAMPLE_17 = "sing "
+  character(len=*), parameter :: EXAMPLE_18 = "dance "
+  character(len=*), parameter :: EXAMPLE_19 = "sing "
+  character(len=*), parameter :: EXAMPLE_20 = "dance "
+  character(len=*), parameter :: EXAMPLE_21 = "sing "
+  character(len=*), parameter :: EXAMPLE_22 = "dance "
+  character(len=*), parameter :: EXAMPLE_23 = "sing "
+  character(len=*), parameter :: EXAMPLE_24 = "dance "
+  character(len=*), parameter :: EXAMPLE_25 = "sing "
+  character(len=*), parameter :: EXAMPLE_26 = "dance "
+  character(len=*), parameter :: EXAMPLE_27 = "sing "
+  character(len=*), parameter :: EXAMPLE_28 = "dance "
+  character(len=*), parameter :: EXAMPLE_29 = "sing "
+  character(len=*), parameter :: EXAMPLE_30 = "dance "
+  character(len=*), parameter :: EXAMPLE_31 = "sing "
+  character(len=*), parameter :: EXAMPLE_32 = "dance "
+  character(len=
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:32:
+
+    5 |   function longest_common_prefix(strs) result(prefix)
+      |                                1
+Error: MODULE attribute of ‘longest_common_prefix’ conflicts with PROCEDURE attribute at (1)
+temp.f95:6:17:
+
+    6 |     implicit none
+      |                 1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:7:43:
+
+    7 |     character(len=*), intent(in) :: strs(:)
+      |                                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:31:
+
+    8 |     integer :: i, j, k, l, m, n
+      |                               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:9:43:
+
+    9 |     character(len=:), allocatable :: prefix
+      |                                           1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:12:15:
+
+   12 |     prefix = ""
+      |               1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:29:
+
+   15 |     if (size(strs) == 0) then
+      |                             1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:16:12:
+
+   16 |       return
+      |            1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:17:7:
+
+   17 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:20:24:
+
+   20 |     do i = 1, size(strs)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:22:33:
+
+   22 |       do j = 1, len_trim(strs(i))
+      |                                 1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:25:32:
+
+   25 |         if (j > 1 .and. strs(i)(j:j) /= strs(i)(j-1:j-1)) then
+      |                                1
+Error: Syntax error in IF-expression at (1)
+temp.f95:26:14:
+
+   26 |           exit
+      |              1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:27:11:
+
+   27 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:31:32:
+
+   31 |         if (j > 1 .and. strs(i)(j:j) == strs(i)(j-1:j-1)) then
+      |                                1
+Error: Syntax error in IF-expression at (1)
+temp.f95:33:11:
+
+   33 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:34:9:
+
+   34 |       end do
+      |         1
+Error: Expecting END MODULE statement at (1)
+temp.f95:35:7:
+
+   35 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:37:5:
+
+   37 |   end function longest_common_prefix
+      |     1
+Error: Expecting END MODULE statement at (1)
+temp.f95:42:7:
+
+   42 |   use longest_common_prefix
+      |       1
+Fatal Error: Cannot open module file ‘longest_common_prefix.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def longest_common_prefix(strs):
+    if not strs:
+        return &quot;&quot;
+
+    for i, c in enumerate(strs[0]):
+        for j in range(1, len(strs)):
+            if i == len(strs[j]) or strs[j][i] != c:
+                return strs[0][:i]
+    return strs[0]
+</code></pre>
+<p>The algorithm iterates through the characters in the first string and compares the equivalent characters in the subsequent strings. If there is a mismatch detected, return the common prefix up to the mismatch point. If the algorithm finishes iterating over the first string, return the entire first string as the common prefix.</p>
+<ol>
+<li>Check if the input array is empty, if it is, return an empty string as there is no common prefix.</li>
+<li>Iterate through the characters of the first string.</li>
+<li>For each character, iterate through the rest of the strings in the array.</li>
+<li>Compare the current character with the corresponding character in the other strings.</li>
+<li>If there is a mismatch or if we reach the end of a string, return the common prefix substring up to the current index.</li>
+<li>If the loop reaches the end of the first string, then the whole first string is the common prefix. Return the entire first string.</li>
+</ol>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;string&gt;
+using namespace std;
+
+string longestCommonPrefix(vector&lt;string&gt;&amp; strs) {
+    if (strs.empty()) return &quot;&quot;;
+
+    for (int i = 0; i &lt; strs[0].size(); ++i) {
+        char c = strs[0][i];
+        for (int j = 1; j &lt; strs.size(); ++j) {
+            if (i == strs[j].size() || strs[j][i] != c) {
+                return strs[0].substr(0, i);
+            }
+        }
+    }
+    return strs[0];
+}
+</code></pre>
+<p>The algorithm iterates through the characters in the first string and compares the equivalent characters in the subsequent strings. If there is a mismatch detected, return the common prefix up to the mismatch point. If the algorithm finishes iterating over the first string, return the entire first string as the common prefix.</p>
+<ol>
+<li>Check if the input array is empty, if it is, return an empty string as there is no common prefix.</li>
+<li>Iterate through the characters of the first string.</li>
+<li>For each character, iterate through the rest of the strings in the array.</li>
+<li>Compare the current character with the corresponding character in the other strings.</li>
+<li>If there is a mismatch or if we reach the end of a string, return the common prefix substring up to the current index.</li>
+<li>If the loop reaches the end of the first string, then the whole first string is the common prefix. Return the entire first string.</li>
+</ol>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

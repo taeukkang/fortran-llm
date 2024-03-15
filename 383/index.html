@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Ransom Note</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/374/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/387/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given two strings <code>ransomNote</code> and <code>magazine</code>, return <code>true</code> <em>if</em> <code>ransomNote</code> <em>can be constructed by using the letters from</em> <code>magazine</code> <em>and</em> <code>false</code> <em>otherwise</em>.</p>
+<p>Each letter in <code>magazine</code> can only be used once in <code>ransomNote</code>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> ransomNote = "a", magazine = "b"
+<strong>Output:</strong> false</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> ransomNote = "aa", magazine = "ab"
+<strong>Output:</strong> false</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> ransomNote = "aa", magazine = "aab"
+<strong>Output:</strong> true</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>1 &lt;= ransomNote.length, magazine.length &lt;= 105</code></li>
+<li><code>ransomNote</code> and <code>magazine</code> consist of lowercase English letters.</li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/ransom-note/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    implicit none
+
+    character(len=:), allocatable :: ransomNote, magazine
+    logical :: result
+
+    ! Example 1
+    allocate(character(len=1) :: ransomNote)
+    allocate(character(len=1) :: magazine)
+    ransomNote = 'a'
+    magazine = 'b'
+    result = canConstruct(ransomNote, magazine)
+    print *, result
+    deallocate(ransomNote)
+    deallocate(magazine)
+
+    ! Example 2
+    allocate(character(len=2) :: ransomNote)
+    allocate(character(len=2) :: magazine)
+    ransomNote = 'aa'
+    magazine = 'ab'
+    result = canConstruct(ransomNote, magazine)
+    print *, result
+    deallocate(ransomNote)
+    deallocate(magazine)
+
+    ! Example 3
+    allocate(character(len=2) :: ransomNote)
+    allocate(character(len=3) :: magazine)
+    ransomNote = 'aa'
+    magazine = 'aab'
+    result = canConstruct(ransomNote, magazine)
+    print *, result
+    deallocate(ransomNote)
+    deallocate(magazine)
+
+contains
+
+    function canConstruct(ransomNote, magazine) result(result_)
+        implicit none
+        character(len=*), intent(in) :: ransomNote, magazine
+        integer :: i, j
+        logical :: result_
+
+        do i = 1, len(ransomNote)
+            do j = 1, len(magazine)
+                if (ransomNote(i:i) == magazine(j:j)) then
+                    magazine(j:j) = ' '
+                    exit
+                end if
+            end do
+            if (j > len(magazine)) then
+                result_ = .false.
+                return
+            end if
+        end do
+
+        result_ = .true.
+    end function canConstruct
+end program main</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:48:20:
+
+   48 |                     magazine(j:j) = ' '
+      |                    1
+Error: Dummy argument ‘magazine’ with INTENT(IN) in variable definition context (assignment) at (1)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module main
+
+implicit none
+
+interface
+
+    function canConstruct(ransomNote, magazine) result(output)
+        implicit none
+        character(len=*), intent(in) :: ransomNote, magazine
+        logical :: output
+    end function canConstruct
+
+end interface
+
+! Test cases
+character(len=100) :: ransomNote, magazine
+logical :: output
+
+! Test case 1
+ransomNote = "a"
+magazine = "b"
+output = canConstruct(ransomNote, magazine)
+if (output) then
+    write (*,*) "Test case 1: FAILED"
+else
+    write (*,*) "Test case 1: PASSED"
+end if
+
+! Test case 2
+ransomNote = "aa"
+magazine = "ab"
+output = canConstruct(ransomNote, magazine)
+if (output) then
+    write (*,*) "Test case 2: FAILED"
+else
+    write (*,*) "Test case 2: PASSED"
+end if
+
+! Test case 3
+ransomNote = "aa"
+magazine = "aab"
+output = canConstruct(ransomNote, magazine)
+if (output) then
+    write (*,*) "Test case 3: PASSED"
+else
+    write (*,*) "Test case 3: FAILED"
+end if
+
+contains
+
+function canConstruct(ransomNote, magazine) result(output)
+    implicit none
+    character(len=*), intent(in) :: ransomNote, magazine
+    integer :: i, j
+    logical :: output
+
+    ! Initialize the output variable
+    output = .false.
+
+    ! Loop through each character in ransomNote
+    do i = 1, len(ransomNote)
+        ! Loop through each character in magazine
+        do j = 1, len(magazine)
+            ! If the current character in ransomNote matches the current character in magazine
+            if (ransomNote(i:i) == magazine(j:j)) then
+                ! If the current character in magazine is the last character in magazine
+                if (j == len(magazine)) then
+                    ! Set the output variable to true
+                    output = .true.
+                    ! Exit the loop
+                    exit
+                ! Otherwise, continue looping
+                else
+                    cycle
+                end if
+            end if
+        end do
+        ! If the output variable is still false, then the current character in ransomNote cannot be constructed
+        if (.not. output) then
+            exit
+        end if
+    end do
+
+end function canConstruct
+
+end program main
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:20:16:
+
+   20 | ransomNote = "a"
+      |                1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:21:14:
+
+   21 | magazine = "b"
+      |              1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:22:43:
+
+   22 | output = canConstruct(ransomNote, magazine)
+      |                                           1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:23:16:
+
+   23 | if (output) then
+      |                1
+Error: Unexpected block IF statement in MODULE at (1)
+temp.f95:24:37:
+
+   24 |     write (*,*) "Test case 1: FAILED"
+      |                                     1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:25:4:
+
+   25 | else
+      |    1
+Error: Unexpected ELSE statement in MODULE at (1)
+temp.f95:26:37:
+
+   26 |     write (*,*) "Test case 1: PASSED"
+      |                                     1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:27:3:
+
+   27 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:30:17:
+
+   30 | ransomNote = "aa"
+      |                 1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:31:15:
+
+   31 | magazine = "ab"
+      |               1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:32:43:
+
+   32 | output = canConstruct(ransomNote, magazine)
+      |                                           1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:33:16:
+
+   33 | if (output) then
+      |                1
+Error: Unexpected block IF statement in MODULE at (1)
+temp.f95:34:37:
+
+   34 |     write (*,*) "Test case 2: FAILED"
+      |                                     1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:35:4:
+
+   35 | else
+      |    1
+Error: Unexpected ELSE statement in MODULE at (1)
+temp.f95:36:37:
+
+   36 |     write (*,*) "Test case 2: PASSED"
+      |                                     1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:37:3:
+
+   37 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:40:17:
+
+   40 | ransomNote = "aa"
+      |                 1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:41:16:
+
+   41 | magazine = "aab"
+      |                1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:42:43:
+
+   42 | output = canConstruct(ransomNote, magazine)
+      |                                           1
+Error: Unexpected assignment statement in MODULE at (1)
+temp.f95:43:16:
+
+   43 | if (output) then
+      |                1
+Error: Unexpected block IF statement in MODULE at (1)
+temp.f95:44:37:
+
+   44 |     write (*,*) "Test case 3: PASSED"
+      |                                     1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:45:4:
+
+   45 | else
+      |    1
+Error: Unexpected ELSE statement in MODULE at (1)
+temp.f95:46:37:
+
+   46 |     write (*,*) "Test case 3: FAILED"
+      |                                     1
+Error: Unexpected WRITE statement in MODULE at (1)
+temp.f95:47:3:
+
+   47 | end if
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:51:22:
+
+    7 |     function canConstruct(ransomNote, magazine) result(output)
+      |    2                  
+......
+   51 | function canConstruct(ransomNote, magazine) result(output)
+      |                      1
+Error: Procedure ‘canconstruct’ at (1) is already defined at (2)
+temp.f95:52:17:
+
+   52 |     implicit none
+      |                 1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:53:56:
+
+   53 |     character(len=*), intent(in) :: ransomNote, magazine
+      |                                                        1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:54:19:
+
+   54 |     integer :: i, j
+      |                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:55:21:
+
+   55 |     logical :: output
+      |                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:58:20:
+
+   58 |     output = .false.
+      |                    1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:61:29:
+
+   61 |     do i = 1, len(ransomNote)
+      |                             1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:63:31:
+
+   63 |         do j = 1, len(magazine)
+      |                               1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:65:54:
+
+   65 |             if (ransomNote(i:i) == magazine(j:j)) then
+      |                                                      1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:67:44:
+
+   67 |                 if (j == len(magazine)) then
+      |                                            1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:69:35:
+
+   69 |                     output = .true.
+      |                                   1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:71:24:
+
+   71 |                     exit
+      |                        1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:73:20:
+
+   73 |                 else
+      |                    1
+Error: Unexpected ELSE statement in CONTAINS section at (1)
+temp.f95:74:25:
+
+   74 |                     cycle
+      |                         1
+Error: CYCLE statement at (1) is not within a construct
+temp.f95:75:19:
+
+   75 |                 end if
+      |                   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:76:15:
+
+   76 |             end if
+      |               1
+Error: Expecting END MODULE statement at (1)
+temp.f95:77:11:
+
+   77 |         end do
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:79:30:
+
+   79 |         if (.not. output) then
+      |                              1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:80:16:
+
+   80 |             exit
+      |                1
+Error: EXIT statement at (1) is not within a construct
+temp.f95:81:11:
+
+   81 |         end if
+      |           1
+Error: Expecting END MODULE statement at (1)
+temp.f95:82:7:
+
+   82 |     end do
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:84:3:
+
+   84 | end function canConstruct
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:86:3:
+
+   86 | end program main
+      |   1
+Error: Expecting END MODULE statement at (1)
+f951: Error: Unexpected end of file in ‘temp.f95’
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def can_construct(ransom_note, magazine):
+    letter_count = {}
+
+    for c in magazine:
+        letter_count[c] = letter_count.get(c, 0) + 1
+
+    for c in ransom_note:
+        if c not in letter_count or letter_count[c] == 0:
+            return False
+        letter_count[c] -= 1
+
+    return True
+</code></pre>
+<p>The algorithm works as follows:
+1. Create a hash map called <code>letterCount</code>, which holds the count of each character in the <code>magazine</code> string.
+2. Iterate over the characters in <code>ransomNote</code>. For each character:
+   a. If the character is not in <code>letterCount</code> or its count is 0, return <code>false</code>, as the required letter is not available in <code>magazine</code>.
+   b. Decrease the count of the character in <code>letterCount</code> by 1.
+3. Once the iteration is done, if the entire <code>ransomNote</code> string is processed without any issue, return <code>true</code>.</p>
+<p>This algorithm checks if the <code>ransomNote</code> can be made from the available characters in the <code>magazine</code> by using a single pass through each string and maintaining the count of characters in a hash map.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+
+bool canConstruct(std::string ransomNote, std::string magazine) {
+    std::unordered_map&lt;char, int&gt; letterCount;
+    for (char c : magazine) {
+        letterCount[c]++;
+    }
+
+    for (char c : ransomNote) {
+        if (letterCount[c] == 0) {
+            return false;
+        }
+        letterCount[c]--;
+    }
+
+    return true;
+}
+</code></pre>
+<p>The algorithm works as follows:
+1. Create a hash map called <code>letterCount</code>, which holds the count of each character in the <code>magazine</code> string.
+2. Iterate over the characters in <code>ransomNote</code>. For each character:
+   a. If the character is not in <code>letterCount</code> or its count is 0, return <code>false</code>, as the required letter is not available in <code>magazine</code>.
+   b. Decrease the count of the character in <code>letterCount</code> by 1.
+3. Once the iteration is done, if the entire <code>ransomNote</code> string is processed without any issue, return <code>true</code>.</p>
+<p>This algorithm checks if the <code>ransomNote</code> can be made from the available characters in the <code>magazine</code> by using a single pass through each string and maintaining the count of characters in a hash map.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

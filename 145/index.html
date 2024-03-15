@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Binary Tree Postorder Traversal</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/144/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/157/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given the <code>root</code> of a binary tree, return <em>the postorder traversal of its nodes' values</em>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> root = [1,null,2,3]
+<strong>Output:</strong> [3,2,1]</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> root = []
+<strong>Output:</strong> []</p>
+<p><strong>Example 3:</strong></p>
+<p><strong>Input:</strong> root = [1]
+<strong>Output:</strong> [1]</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li>The number of the nodes in the tree is in the range <code>[0, 100]</code>.</li>
+<li><code>-100 &lt;= Node.val &lt;= 100</code></li>
+</ul>
+<p><strong>Follow up:</strong> Recursive solution is trivial, could you do it iteratively?</p>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/binary-tree-postorder-traversal/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+    use, intrinsic :: iso_fortran_env, only : error_unit, output_unit
+    implicit none
+    integer, parameter :: n = 5
+    type(node), allocatable :: roots(:)
+    integer :: i
+
+    allocate(roots(n))
+
+    ! Example 1
+    call init_node(roots(1), 1, null(), null())
+    call init_node(roots(2), 2, roots(1), null())
+    call init_node(roots(3), 3, null(), roots(2))
+    call init_node(roots(4), 4, roots(3), null())
+    call init_node(roots(5), 5, roots(4), null())
+    write (output_unit, '(*(g0,:," "))') 'Example 1:'
+    call print_postorder(roots(5))
+    deallocate(roots)
+
+    ! Example 2
+    allocate(roots(1))
+    call init_node(roots(1), 1, null(), null())
+    write (output_unit, '(*(g0,:," "))') 'Example 2:'
+    call print_postorder(roots(1))
+    deallocate(roots)
+
+    ! Example 3
+    allocate(roots(1))
+    call init_node(roots(1), 1, null(), null())
+    write (output_unit, '(*(g0,:," "))') 'Example 3:'
+    call print_postorder(roots(1))
+    deallocate(roots)
+
+contains
+
+    subroutine init_node(this, val, left, right)
+        class(node), intent(out) :: this
+        integer, intent(in) :: val
+        class(node), intent(in), optional :: left, right
+
+        this%val = val
+        if (present(left)) then
+            this%left => left
+        else
+            this%left => null()
+        end if
+        if (present(right)) then
+            this%right => right
+        else
+            this%right => null()
+        end if
+    end subroutine init_node
+
+    recursive subroutine print_postorder(root)
+        class(node), intent(in) :: root
+
+        if (.not. associated(root%left)) then
+            if (.not. associated(root%right)) then
+                write (output_unit, '(i0)') root%val
+            else
+                call print_postorder(root%right)
+                write (output_unit, '(i0)') root%val
+            end if
+        else
+            call print_postorder(root%left)
+            if (.not. associated(root%right)) then
+                write (output_unit, '(i0)') root%val
+            else
+                call print_postorder(root%right)
+                write (output_unit, '(i0)') root%val
+            end if
+        end if
+    end subroutine print_postorder
+
+end program main
+
+type node
+    integer :: val
+    class(node), pointer :: left => null(), right => null()
+end type node</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:15:
+
+    5 |     type(node), allocatable :: roots(:)
+      |               1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:8:13:
+
+    8 |     allocate(roots(n))
+      |             1
+Error: Allocate-object at (1) is neither a data pointer nor an allocatable variable
+temp.f95:18:21:
+
+   18 |     deallocate(roots)
+      |                     1
+Error: ‘roots’ at (1) is not a variable
+temp.f95:21:19:
+
+   21 |     allocate(roots(1))
+      |                   1
+Error: ‘roots’ at (1) is not a variable
+temp.f95:25:21:
+
+   25 |     deallocate(roots)
+      |                     1
+Error: ‘roots’ at (1) is not a variable
+temp.f95:28:19:
+
+   28 |     allocate(roots(1))
+      |                   1
+Error: ‘roots’ at (1) is not a variable
+temp.f95:32:21:
+
+   32 |     deallocate(roots)
+      |                     1
+Error: ‘roots’ at (1) is not a variable
+temp.f95:37:20:
+
+   37 |         class(node), intent(out) :: this
+      |                    1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:39:20:
+
+   39 |         class(node), intent(in), optional :: left, right
+      |                    1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:41:14:
+
+   41 |         this%val = val
+      |              1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:43:18:
+
+   43 |             this%left => left
+      |                  1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:45:18:
+
+   45 |             this%left => null()
+      |                  1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:48:18:
+
+   48 |             this%right => right
+      |                  1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:50:18:
+
+   50 |             this%right => null()
+      |                  1
+Error: Symbol ‘this’ at (1) has no IMPLICIT type
+temp.f95:55:20:
+
+   55 |         class(node), intent(in) :: root
+      |                    1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:57:35:
+
+   57 |         if (.not. associated(root%left)) then
+      |                                   1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:58:39:
+
+   58 |             if (.not. associated(root%right)) then
+      |                                       1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:59:50:
+
+   59 |                 write (output_unit, '(i0)') root%val
+      |                                                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:60:16:
+
+   60 |             else
+      |                1
+Error: Unexpected ELSE statement at (1)
+temp.f95:61:43:
+
+   61 |                 call print_postorder(root%right)
+      |                                           1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:62:50:
+
+   62 |                 write (output_unit, '(i0)') root%val
+      |                                                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:63:15:
+
+   63 |             end if
+      |               1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:64:12:
+
+   64 |         else
+      |            1
+Error: Unexpected ELSE statement at (1)
+temp.f95:65:39:
+
+   65 |             call print_postorder(root%left)
+      |                                       1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:66:39:
+
+   66 |             if (.not. associated(root%right)) then
+      |                                       1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:67:50:
+
+   67 |                 write (output_unit, '(i0)') root%val
+      |                                                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:68:16:
+
+   68 |             else
+      |                1
+Error: Unexpected ELSE statement at (1)
+temp.f95:69:43:
+
+   69 |                 call print_postorder(root%right)
+      |                                           1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:70:50:
+
+   70 |                 write (output_unit, '(i0)') root%val
+      |                                                  1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:71:15:
+
+   71 |             end if
+      |               1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:72:11:
+
+   72 |         end if
+      |           1
+Error: Expecting END SUBROUTINE statement at (1)
+temp.f95:1:12:
+
+    1 | program main
+      |            1
+......
+   77 | type node
+      |         2   
+Error: Two main PROGRAMs at (1) and (2)
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module BinaryTreePostorderTraversal
+    implicit none
+    private
+    public :: binary_tree_postorder_traversal
+contains
+    subroutine binary_tree_postorder_traversal(root, values)
+        type(Node), pointer, intent(in) :: root
+        integer, allocatable, intent(out) :: values(:)
+
+        integer :: i, n
+
+        ! Allocate memory for the values array
+        n = size(values)
+        allocate(values(n))
+
+        ! Postorder traversal
+        call postorder_traversal(root, values, 1, n)
+    end subroutine binary_tree_postorder_traversal
+
+    recursive subroutine postorder_traversal(root, values, i, n)
+        type(Node), pointer, intent(in) :: root
+        integer, allocatable, intent(inout) :: values(:)
+        integer, intent(in) :: i, n
+
+        if (associated(root)) then
+            ! Recursively traverse the left subtree
+            call postorder_traversal(root%left, values, i, n)
+
+            ! Recursively traverse the right subtree
+            call postorder_traversal(root%right, values, i, n)
+
+            ! Assign the current node's value to the next available position in the values array
+            values(i) = root%val
+            i = i + 1
+        end if
+    end subroutine postorder_traversal
+
+    type Node
+        integer :: val
+        type(Node), pointer :: left
+        type(Node), pointer :: right
+    end type Node
+end module BinaryTreePostorderTraversal
+
+program test_binary_tree_postorder_traversal
+    use BinaryTreePostorderTraversal
+    implicit none
+
+    type(Node), pointer :: root
+    integer, allocatable :: values(:)
+
+    ! Example 1
+    root = Node(1, Node(2, Node(4, Node(8, Node(16, Node(32, Node(64, Node(128, Node(256, Node(512, Node(1024, Node(2048, Node(4096, Node(8192, Node(16384, Node(32768, Node(65536, Node(131072, Node(262144, Node(524288, Node(1048576, Node(2097152, Node(4194304, Node(8388608, Node(16777216, Node(33554432, Node(67108864, Node(134217728, Node(268435456, Node(536870912, Node(1073741824, Node(2147483648, Node(4294967296, Node(8589934592, Node(17179869184, Node(34359738368, Node(68719476736, Node(137438953472, Node(274877906944, Node(549755813888, Node(1199438665216, Node(2398912007424, Node(4797824014848, Node(9595648029792, Node(19191296059584, Node(38382592119168, Node(76765184238336, Node(153530368476736, Node(307061734943488, Node(614123479886976, Node(1228246959773952, Node(24
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:7:19:
+
+    7 |         type(Node), pointer, intent(in) :: root
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:21:19:
+
+   21 |         type(Node), pointer, intent(in) :: root
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:27:43:
+
+   27 |             call postorder_traversal(root%left, values, i, n)
+      |                                           1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:30:43:
+
+   30 |             call postorder_traversal(root%right, values, i, n)
+      |                                           1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:33:30:
+
+   33 |             values(i) = root%val
+      |                              1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:38:13:
+
+   38 |     type Node
+      |             1
+Error: Unexpected derived type declaration statement in CONTAINS section at (1)
+temp.f95:39:22:
+
+   39 |         integer :: val
+      |                      1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:40:19:
+
+   40 |         type(Node), pointer :: left
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:41:19:
+
+   41 |         type(Node), pointer :: right
+      |                   1
+Error: Derived type ‘node’ at (1) is being used before it is defined
+temp.f95:42:7:
+
+   42 |     end type Node
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:6:51:
+
+    6 |     subroutine binary_tree_postorder_traversal(root, values)
+      |                                                   1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:20:49:
+
+   20 |     recursive subroutine postorder_traversal(root, values, i, n)
+      |                                                 1
+Error: Symbol ‘root’ at (1) has no IMPLICIT type
+temp.f95:34:12:
+
+   34 |             i = i + 1
+      |            1
+Error: Dummy argument ‘i’ with INTENT(IN) in variable definition context (assignment) at (1)
+temp.f95:46:9:
+
+   46 |     use BinaryTreePostorderTraversal
+      |         1
+Fatal Error: Cannot open module file ‘binarytreepostordertraversal.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+def postorderTraversal(root):
+    if not root:
+        return []
+
+    result = []
+    s = [root]
+    while s:
+        current = s.pop()
+        result.insert(0, current.val)
+        if current.left:
+            s.append(current.left)
+        if current.right:
+            s.append(current.right)
+
+    return result
+</code></pre>
+<p>The idea of the algorithm is using a stack. Initially, the root node is pushed to the stack. Next, we enter a loop that ends when the stack is empty. In each iteration, we pop a node from the stack, and insert its value at the beginning of the result list (to ensure the correct order for the postorder traversal), then, push its left child, and then its right child to the stack (if they are not null). In the end, we return the result list. The algorithm is non-recursive which makes it easier to understand for some. Since the result list will store the output in reversed order, this iterative version avoids the necessity of reversing the final output.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">#include &lt;vector&gt;
+#include &lt;stack&gt;
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+vector&lt;int&gt; postorderTraversal(TreeNode* root) {
+    vector&lt;int&gt; result;
+    stack&lt;TreeNode*&gt; s;
+
+    if (!root) return result;
+
+    s.push(root);
+    while (!s.empty()) {
+        TreeNode *current = s.top();
+        s.pop();
+        result.insert(result.begin(), current-&gt;val);
+        if (current-&gt;left) s.push(current-&gt;left);
+        if (current-&gt;right) s.push(current-&gt;right);
+    }
+
+    return result;
+}
+</code></pre>
+<p>The idea of the algorithm is using a stack. Initially, the root node is pushed to the stack. Next, we enter a loop that ends when the stack is empty. In each iteration, we pop a node from the stack, and insert its value at the beginning of the result list (to ensure the correct order for the postorder traversal), then, push its left child, and then its right child to the stack (if they are not null). In the end, we return the result list. The algorithm is non-recursive which makes it easier to understand for some. Since the result list will store the output in reversed order, this iterative version avoids the necessity of reversing the final output.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>

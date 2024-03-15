@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fine-tuning CodeLlama-7B for Fortran Code Generation</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.3/zephyr/bootstrap.min.css"
+      integrity="sha512-CWXb9sx63+REyEBV/cte+dE1hSsYpJifb57KkqAXjsN3gZQt6phZt7e5RhgZrUbaNfCdtdpcqDZtuTEB+D3q2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.css" />
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/fortran.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/cpp.min.js"></script>
+    <script src="https://unpkg.com/highlightjs-copy/dist/highlightjs-copy.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"></script>
+  </head>
+  <body>
+    
+<div class="container">
+  <div class="row">
+    <div class="col d-flex justify-content-between align-items-center">
+      <h2>Remove Element</h2>
+      <div>
+        <a href="/" class="btn btn-outline-primary me-2">
+          🏠
+        </a>
+        <a
+          href="/26/"
+          class="btn btn-outline-secondary me-2">
+          ⬅️
+        </a>
+        <a
+          href="/28/"
+          class="btn btn-outline-secondary">
+          ➡️
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="leetcode-problem-content card">
+        <div class="card-body">
+          <p>Given an integer array <code>nums</code> and an integer <code>val</code>, remove all occurrences of <code>val</code> in <code>nums</code> <a href="https://en.wikipedia.org/wiki/In-place_algorithm"><strong>in-place</strong></a>. The order of the elements may be changed. Then return <em>the number of elements in</em> <code>nums</code> <em>which are not equal to</em> <code>val</code>.</p>
+<p>Consider the number of elements in <code>nums</code> which are not equal to <code>val</code> be <code>k</code>, to get accepted, you need to do the following things:</p>
+<ul>
+<li>Change the array <code>nums</code> such that the first <code>k</code> elements of <code>nums</code> contain the elements which are not equal to <code>val</code>. The remaining elements of <code>nums</code> are not important as well as the size of <code>nums</code>.</li>
+<li>Return <code>k</code>.</li>
+</ul>
+<p><strong>Custom Judge:</strong></p>
+<p>The judge will test your solution with the following code:</p>
+<p>int[] nums = [...]; // Input array
+int val = ...; // Value to remove
+int[] expectedNums = [...]; // The expected answer with correct length.
+                            // It is sorted with no values equaling val.</p>
+<p>int k = removeElement(nums, val); // Calls your implementation</p>
+<p>assert k == expectedNums.length;
+sort(nums, 0, k); // Sort the first k elements of nums
+for (int i = 0; i &lt; actualLength; i++) {
+    assert nums[i] == expectedNums[i];
+}</p>
+<p>If all assertions pass, then your solution will be <strong>accepted</strong>.</p>
+<p><strong>Example 1:</strong></p>
+<p><strong>Input:</strong> nums = [3,2,2,3], val = 3
+<strong>Output:</strong> 2, nums = [2,2,_,_]
+<strong>Explanation:</strong> Your function should return k = 2, with the first two elements of nums being 2.
+It does not matter what you leave beyond the returned k (hence they are underscores).</p>
+<p><strong>Example 2:</strong></p>
+<p><strong>Input:</strong> nums = [0,1,2,2,3,0,4,2], val = 2
+<strong>Output:</strong> 5, nums = [0,1,4,0,3,_,_,_]
+<strong>Explanation:</strong> Your function should return k = 5, with the first five elements of nums containing 0, 0, 1, 3, and 4.
+Note that the five elements can be returned in any order.
+It does not matter what you leave beyond the returned k (hence they are underscores).</p>
+<p><strong>Constraints:</strong></p>
+<ul>
+<li><code>0 &lt;= nums.length &lt;= 100</code></li>
+<li><code>0 &lt;= nums[i] &lt;= 50</code></li>
+<li><code>0 &lt;= val &lt;= 100</code></li>
+</ul>
+          <hr />
+          <span class="fst-italic">
+            Note: This problem is from
+            <a
+              href="https://leetcode.com/problems/remove-element/description/">LeetCode</a>.
+          </span>
+        </div>
+      </div>
+      <style>
+        .leetcode-problem-content {
+          max-height: 200px;
+          overflow-y: auto;
+        }
+      </style>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="our-model-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#our-model-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="our-model-tab-pane"
+            aria-selected="true">
+            🦾 Our model
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="our-model-tab-pane"
+          role="tabpanel"
+          aria-labelledby="our-model-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font_emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">program main
+
+! This program solves the problem of removing all occurrences of a value in an integer array
+! in place, without changing the order of the other elements.
+!
+! The problem statement is as follows:
+!
+! Given an integer array nums and an integer val, remove all occurrences of val in nums
+! in-place. The relative order of the elements may be changed. Then return the new length
+! of the array.
+!
+! Custom Judge:
+!
+! The judge will test your solution with the following code:
+!
+! int[] nums = [...]; // Input array
+! int val = ...; // Value to remove
+! int[] expectedNums = [...]; // The expected answer with correct length.
+!                             // It is sorted with no values equaling val.
+!
+! int k = removeElement(nums, val); // Calls your implementation
+!
+! assert k == expectedNums.length;
+! sort(nums, 0, k); // Sort the first k elements of nums
+! for (int i = 0; i < actualLength; i++) {
+!     assert nums[i] == expectedNums[i];
+! }
+!
+! If all assertions pass, then your solution will be accepted.
+!
+! Examples:
+!
+! Example 1:
+!
+! Input: nums = [3,2,2,3], val = 3
+! Output: 2, nums = [2,2,_,_]
+! Explanation: Your function should return k = 2, with the first two elements of nums being 2.
+!              It does not matter what you leave beyond the returned k (hence they are underscores).
+!
+! Example 2:
+!
+! Input: nums = [0,1,2,2,3,0,4,2], val = 2
+! Output: 5, nums = [0,1,4,0,3,_,_,_]
+! Explanation: Your function should return k = 5, with the first five elements of nums containing 0, 0, 1, 3, and 4.
+!              Note that the five elements can be returned in any order.
+!              It does not matter what you leave beyond the returned k (hence they are underscores).
+!
+! Constraints:
+!
+!     0 <= nums.length <= 100
+!     0 <= nums[i] <= 50
+!     0 <= val <= 100
+
+implicit none
+
+integer, parameter :: dp = selected_real_kind(15)
+
+interface
+    subroutine remove_element(nums, val) bind(c)
+        use iso_c_binding
+        implicit none
+        integer(c_int), intent(inout) :: nums(*)
+        integer(c_int), value :: val
+    end subroutine
+end interface
+
+integer, allocatable :: nums(:)
+integer :: val, k, i, j
+character(len=100) :: line
+
+! Read input from stdin
+do while (.true.)
+    read(unit=*, fmt='(A)', iostat=i) line
+    if (i /= 0) exit
+    backspace(unit=*)
+    allocate(nums(size(line)))
+    read(unit=*, fmt=*) nums
+    call remove_element(nums, val)
+    write(*, '(I0, X, *(I0, X))') k, nums(1:k)
+    deallocate(nums)
+end do
+
+contains
+
+subroutine remove_element(nums, val)
+    implicit none
+    integer, intent(inout) :: nums(*)
+    integer, value :: val
+    integer :: i, j
+
+    ! Remove all occurrences of val in nums
+    k = 0
+    do i = 1, size(nums)
+        if (nums(i) /= val) then
+            k = k + 1
+            nums(k) = nums(i)
+        end if
+    end do
+
+    ! Return the new length of nums
+    return
+end subroutine
+
+end program</code></pre>
+
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:75:20:
+
+   75 |     backspace(unit=*)
+      |                    1
+Error: Invalid value for UNIT specification at (1)
+temp.f95:85:36:
+
+   85 | subroutine remove_element(nums, val)
+      |                                    1
+Error: Symbol ‘remove_element’ at (1) already has an explicit interface
+temp.f95:86:17:
+
+   86 |     implicit none
+      |                 1
+Error: Unexpected IMPLICIT NONE statement in CONTAINS section at (1)
+temp.f95:87:37:
+
+   87 |     integer, intent(inout) :: nums(*)
+      |                                     1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:88:25:
+
+   88 |     integer, value :: val
+      |                         1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:89:19:
+
+   89 |     integer :: i, j
+      |                   1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:92:9:
+
+   92 |     k = 0
+      |         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:93:24:
+
+   93 |     do i = 1, size(nums)
+      |                        1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:94:32:
+
+   94 |         if (nums(i) /= val) then
+      |                                1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:95:21:
+
+   95 |             k = k + 1
+      |                     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:97:11:
+
+   97 |         end if
+      |           1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:98:7:
+
+   98 |     end do
+      |       1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:101:10:
+
+  101 |     return
+      |          1
+Error: Unexpected RETURN statement in CONTAINS section at (1)
+temp.f95:102:3:
+
+  102 | end subroutine
+      |   1
+Error: Expecting END PROGRAM statement at (1)
+temp.f95:76:23:
+
+   76 |     allocate(nums(size(line)))
+      |                       1
+Error: ‘array’ argument of ‘size’ intrinsic at (1) must be an array
+</pre>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <ul class="nav nav-underline mb-2" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="codellama-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#codellama-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="codellama-tab-pane"
+            aria-selected="true">
+            🦙 CodeLlama-7B
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="python-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#python-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="python-tab-pane"
+            aria-selected="false">
+            🐍 Python
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="cpp-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#cpp-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="cpp-tab-pane"
+            aria-selected="false">
+            🤠 C++
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div
+          class="tab-pane fade show active"
+          id="codellama-tab-pane"
+          role="tabpanel"
+          aria-labelledby="codellama-tab"
+          tabindex="0">
+          <div class="row mb-2">
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Compiled</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Executed</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="col">
+              <div
+                class="card border-danger"
+                style="border-width: 2px">
+                <div class="card-body">
+                  <span class="font-emoji">
+                    ❌
+                  </span>
+                  <strong>Correct</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <pre><code class="language-fortran model-code">module remove_element
+implicit none
+contains
+
+function remove_element(nums, val) result(k)
+integer, intent(inout) :: nums(:)
+integer, intent(in) :: val
+integer :: k
+
+! Local variables
+integer :: i, j
+
+! Initialize variables
+k = 0
+i = 1
+j = 1
+
+! Loop through the array and remove all occurrences of val
+do while (i <= ubound(nums, 1))
+    if (nums(i) /= val) then
+        nums(j) = nums(i)
+        j = j + 1
+        k = k + 1
+    end if
+    i = i + 1
+end do
+
+! Sort the first k elements of nums
+call sort(nums, 1, k)
+
+end function remove_element
+
+end module remove_element
+
+program test_remove_element
+use remove_element
+implicit none
+
+! Test case 1
+integer, parameter :: nums1(4) = [3, 2, 2, 3]
+integer, parameter :: val1 = 3
+integer, parameter :: expected_nums1(2) = [2, 2]
+integer :: k1
+
+! Test case 2
+integer, parameter :: nums2(8) = [0, 1, 2, 2, 3, 0, 4, 2]
+integer, parameter :: val2 = 2
+integer, parameter :: expected_nums2(5) = [0, 1, 3, 0, 4]
+integer :: k2
+
+! Test case 3
+integer, parameter :: nums3(0) = []
+integer, parameter :: val3 = 1
+integer, parameter :: expected_nums3(0) = []
+integer :: k3
+
+! Test case 4
+integer, parameter :: nums4(1) = [1]
+integer, parameter :: val4 = 1
+integer, parameter :: expected_nums4(0) = []
+integer :: k4
+
+! Test case 5
+integer, parameter :: nums5(2) = [1, 1]
+integer, parameter :: val5 = 1
+integer, parameter :: expected_nums5(0) = []
+integer :: k5
+
+! Test case 6
+integer, parameter :: nums6(3) = [1, 2, 3]
+integer, parameter :: val6 = 4
+integer, parameter :: expected_nums6(3) = [1, 2, 3]
+integer :: k6
+
+! Test case 7
+integer, parameter :: nums7(4) = [1, 1, 1, 1]
+integer, parameter :: val7 = 1
+integer, parameter :: expected_nums7(0) = []
+integer :: k7
+
+! Test case 8
+integer, parameter :: nums8(5) = [1, 2, 3, 4, 5]
+integer, parameter :: val8 = 6
+integer, parameter :: expected_nums8(5) = [1, 2, 3, 4, 5]
+integer :: k8
+
+! Test case 9
+integer, parameter :: nums9(6) = [1, 2, 3, 4, 5, 6]
+integer, parameter :: val9 = 7
+integer, parameter :: expected_nums9(6) = [1, 2, 3, 4, 5, 6]
+integer :: k9
+
+! Test case 10
+integer, parameter :: nums10(7) = [1, 2, 3, 4, 5, 6, 7]
+integer, parameter :: val10 = 8
+integer, parameter :: expected_nums10(7) = [1, 2, 3, 4, 5, 6, 7]
+integer :: k10
+
+! Test case 11
+integer, parameter :: nums11(8) = [1, 2, 3, 4, 5, 6, 7, 8]
+integer, parameter :: val11 = 9
+integer, parameter :: expected_nums11(8) = [1, 2, 3, 4, 5, 6, 7, 8]
+integer :: k11
+
+! Test
+</code></pre>
+           
+          <div class="alert alert-danger" role="alert">
+            <strong>stderr</strong>
+            <pre>temp.f95:5:23:
+
+    5 | function remove_element(nums, val) result(k)
+      |                       1
+Error: MODULE attribute of ‘remove_element’ conflicts with PROCEDURE attribute at (1)
+temp.f95:6:33:
+
+    6 | integer, intent(inout) :: nums(:)
+      |                                 1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:7:26:
+
+    7 | integer, intent(in) :: val
+      |                          1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:8:12:
+
+    8 | integer :: k
+      |            1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:11:15:
+
+   11 | integer :: i, j
+      |               1
+Error: Unexpected data declaration statement in CONTAINS section at (1)
+temp.f95:14:5:
+
+   14 | k = 0
+      |     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:15:5:
+
+   15 | i = 1
+      |     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:16:5:
+
+   16 | j = 1
+      |     1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:19:31:
+
+   19 | do while (i <= ubound(nums, 1))
+      |                               1
+Error: Unexpected DO statement in CONTAINS section at (1)
+temp.f95:20:28:
+
+   20 |     if (nums(i) /= val) then
+      |                            1
+Error: Unexpected block IF statement in CONTAINS section at (1)
+temp.f95:21:25:
+
+   21 |         nums(j) = nums(i)
+      |                         1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:22:17:
+
+   22 |         j = j + 1
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:23:17:
+
+   23 |         k = k + 1
+      |                 1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:24:7:
+
+   24 |     end if
+      |       1
+Error: Expecting END MODULE statement at (1)
+temp.f95:25:13:
+
+   25 |     i = i + 1
+      |             1
+Error: Unexpected assignment statement in CONTAINS section at (1)
+temp.f95:26:3:
+
+   26 | end do
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:29:21:
+
+   29 | call sort(nums, 1, k)
+      |                     1
+Error: Unexpected CALL statement in CONTAINS section at (1)
+temp.f95:31:3:
+
+   31 | end function remove_element
+      |   1
+Error: Expecting END MODULE statement at (1)
+temp.f95:36:5:
+
+   36 | use remove_element
+      |     1
+Fatal Error: Cannot open module file ‘remove_element.mod’ for reading at (1): No such file or directory
+compilation terminated.
+</pre>
+          </div>
+          
+        </div>
+        <div
+          class="tab-pane fade"
+          id="python-tab-pane"
+          role="tabpanel"
+          aria-labelledby="python-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-python">def removeElement(nums, val):
+    i = 0
+    for j in range(len(nums)):
+        if nums[j] != val:
+            nums[i] = nums[j]
+            i += 1
+    return i
+</code></pre>
+<p>The algorithm uses two pointers approach. The pointer <code>i</code> maintains the position where the next non-val element should be placed, and pointer <code>j</code> iterates through the array. If the element at <code>j</code> is not equal to <code>val</code>, we place it at the position <code>i</code> and increment the <code>i</code> pointer. The loop continues until we have checked all the elements in the array. The <code>i</code> pointer will give us the count of elements that are not equal to <code>val</code>, which is the result. Thus, we return the value of <code>i</code> as the final result.</p>
+<p>The time complexity of this algorithm is O(n), where n is the number of elements in the array, as we only iterate through the array once. The space complexity is O(1) since we do not use any extra memory. We modify the input array in-place.</p>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="cpp-tab-pane"
+          role="tabpanel"
+          aria-labelledby="cpp-tab"
+          tabindex="0">
+          <alert class="alert alert-info d-flex">
+            <strong>🌐 Data from online sources</strong>
+          </alert>
+          <pre><code class="language-cpp">int removeElement(vector&lt;int&gt;&amp; nums, int val) {
+    int i = 0;
+    for (int j = 0; j &lt; nums.size(); j++) {
+        if (nums[j] != val) {
+            nums[i] = nums[j];
+            i++;
+        }
+    }
+    return i;
+}
+</code></pre>
+<p>The algorithm uses two pointers approach. The pointer <code>i</code> maintains the position where the next non-val element should be placed, and pointer <code>j</code> iterates through the array. If the element at <code>j</code> is not equal to <code>val</code>, we place it at the position <code>i</code> and increment the <code>i</code> pointer. The loop continues until we have checked all the elements in the array. The <code>i</code> pointer will give us the count of elements that are not equal to <code>val</code>, which is the result. Thus, we return the value of <code>i</code> as the final result.</p>
+<p>The time complexity of this algorithm is O(n), where n is the number of elements in the array, as we only iterate through the array once. The space complexity is O(1) since we do not use any extra memory. We modify the input array in-place.</p>
+        </div>
+      </div>
+      <style>
+        .model-code {
+          max-height: 600px;
+          overflow-y: auto;
+        }
+
+        .font-emoji {
+          font-family: emoji;
+        }
+      </style>
+    </div>
+  </div>
+</div>
+<script>
+  hljs.addPlugin(new CopyButtonPlugin());
+  hljs.highlightAll();
+</script>
+
+  </body>
+</html>
