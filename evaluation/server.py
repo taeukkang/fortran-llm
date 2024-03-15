@@ -29,7 +29,7 @@ with open('data/leetcode_problems.jsonl', 'r') as file:
 @app.template_filter('markdown')
 def markdown_filter(s):
     s = s.strip()
-    return markdown.markdown(s, extensions=['pymdownx.superfences'])
+    return markdown.markdown(s, extensions=['fenced_code'])
 
 
 @app.route('/')
