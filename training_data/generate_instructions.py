@@ -42,7 +42,7 @@ def generate_instructions(client, prompt_prepend, fortran_code, output_file):
         temperature=0.2
     )
     result_content = gpt_result.choices[0].message.content
-    data = {"problem": result_content, "solution": fortran_code}
+    data = {"prompt": result_content, "completion": fortran_code}
     save_to_jsonl(data, output_file)
     return result_content
 
